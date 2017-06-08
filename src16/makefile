@@ -1,0 +1,62 @@
+F90          = ifort
+F90LINKER    = ifort
+
+# for IFORT-Compiler
+#===================
+DEFS      = -D IFORT -diag-disable 8290,8291 
+#FFLAGS   = -r8 -g -traceback -fpe0 -check all,noarg_temp_created
+FFLAGS    = -r8 -g -traceback -O3 -xHOST -prec-div -fp-model source
+INCLUDES  = 
+LFLAGS    = $(FFLAGS)
+
+# for gfortran-Compiler
+#======================
+#DEFS      = 
+#FFLAGS    = -fdefault-real-8 -fdefault-double-8 -fbounds-check -fbacktrace -g 
+#FFLAGS    = -fdefault-real-8 -fdefault-double-8 -g -O5
+#INCLUDES  = 
+#LFLAGS    = $(FFLAGS)
+
+EXECS     = ggchem16
+
+OBJECTS  = datamod.o \
+           database.o \
+           demo_sweep.o \
+           demo_structure.o \
+	   demo_phasediagram.o \
+	   equil_cond.o \
+	   is_nan.o \
+	   init.o \
+	   init_dustchem.o \
+	   ggchem.o \
+           gauss16.o \
+           gauss8.o \
+	   linpack_q.o \
+	   slatec_routines.o \
+           smchem16.o \
+           smchem8.o \
+           supersat.o \
+	   stindex.o \
+           upper.o \
+           main.o
+
+.SUFFIXES : .o .f .F .f90
+
+default: ggchem
+
+ggchem:  $(OBJECTS)
+	 $(F90LINKER) -o $(EXECS) $(OBJECTS) $(LFLAGS) 
+
+clean:
+	rm -f *.o 
+
+realclean:
+	rm -f *.o *~ *.mod $(EXECS)
+
+.f.o:
+	$(F90) $(FFLAGS) $(DEFS) -c $<
+.F.o:
+	$(F90) $(FFLAGS) $(DEFS) -c $<
+.f90.o:
+	$(F90) $(FFLAGS) $(DEFS) -c $<
+
