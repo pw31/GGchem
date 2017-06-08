@@ -1,1 +1,8 @@
+*~
 GIT.commands
+src16/*.o
+src16/*.mod
+src16/makefile
+src16/ggchem16
+src16/*~
+database.dat
