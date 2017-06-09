@@ -808,7 +808,8 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
      &         + g(SII)/pel
       ppp      = aa/g(SiS) + (pSiges-pSges)/bb
       qqq      = -pSges * aa / bb / g(SiS)
-      pS       = vieta(ppp,qqq)
+      fak      = SQRT(-qqq)
+      pS       = vieta(ppp/fak,-1.d0)*fak      
       pSi      = pSiges / ( aa + pS * g(SiS) )
 *
 *     ! Nachiteration wegen Si2C
@@ -834,7 +835,7 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
         pS  = MAX(MIN(pS -dpp(2)*sca(2),pS *fak),pS /fak)        
         delta = MAX(ABS(pSialt/pSi-1.d0),ABS(pSalt/pS-1.d0))
         piter = piter+1
-        if (verbose>1) write(*,'(a11,i3,3(1pE11.4))') 
+        if (verbose>-1) write(*,'(a11,i3,3(1pE11.4))') 
      &       'pSi/pS-iter:',piter,pSialt,pSalt,delta
         if ((piter>99).or.(delta<1.d-3)) exit
       enddo  

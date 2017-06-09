@@ -44,15 +44,26 @@ parameter space.
 
 Change init.f to use different element abundances.
 
+---------------------------------------------------------
 If you want to switch on equilibrium condensation,
 call EQUIL_COND() before GGCHEM(), see e.g. demo_sweep.f.
 In that mode, the code will be much slower, and also
-possibly unstable. Always start from large T
-and then lower T SLOWLY with successive calls. The code
-will create and expand "database.dat" automatically from 
-the results of every successful call, such that once you have 
-filled the (p,T)-plane, results will be faster and more 
-reliable.
+possibly unstable. Always start from large T and then 
+lower T SLOWLY with successive calls. The code will create 
+and expand "database.dat" automatically from the results 
+of every successful call, such that once you have filled 
+in the (p,T)-plane with many points, the results will be 
+faster and more reliable.
+
+---------------------------------------------------------
+The pure gas phase chemistry needs about 0.2 ms per call
+for T > 1000 K (real*8 version) and about 2 ms per call 
+for T < 1000 K (real*16 version). 
+
+The equilibrium condensation code requires many calls 
+of the gas-phase equilibrium chemistry routine, and 
+takes about 0.1 sec per point. 
+
 
 
 
