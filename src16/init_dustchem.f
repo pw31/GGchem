@@ -15,10 +15,10 @@
       call GGCHEM(1.d+15,2000.d0,eps0,.false.,0)   ! damit cmol vorliegt
  
       write(*,*) 
-      write(*,*) "reading DustChem57.dat ..."
-      write(*,*) "=========================="
+      write(*,*) "reading DustChem.dat ..."
+      write(*,*) "========================"
 
-      open(12, file='DustChem57.dat', status='old')
+      open(12, file='DustChem.dat', status='old')
  
       write(*,*) '--- involved elements ---'
       read(12,1000) zeile

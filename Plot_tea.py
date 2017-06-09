@@ -43,8 +43,7 @@ if (Tmax-Tmin>1500): sep=100
 Tmin  = Tmin*0.85
 Tmax  = Tmax*1.05
 
-#file   = 'tmp/results/tmp.tea'
-file   = 'TEAoutOrich/results/TEAoutOrich.tea'
+file   = 'TEAoutOrich_old/results/TEAoutOrich.tea'
 #file   = 'TEAoutCrich/results/TEAoutCrich.tea'
 data   = open(file)
 dum    = data.readline()

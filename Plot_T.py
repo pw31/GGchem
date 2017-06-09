@@ -33,7 +33,6 @@ Tmax  = np.max(Tg)
 #if (Tmax>4*Tmin): Tmax=4*Tmin
 #if (Tmin<Tmax/3): Tmin=Tmax/3
 sep = 20
-Tmax = 500
 if (Tmax-Tmin>1500): sep=100
 if (Tmax-Tmin<500): sep=10
 Tmin  = Tmin*0.95
@@ -59,101 +58,107 @@ plt.savefig(pp,format='pdf')
 plt.clf()
 
 #================== solid particle densities ===================
-fig,ax = plt.subplots()
 iii = np.where((Tg>Tmin) & (Tg<Tmax))[0]
 solids = []
 smean = []
+nmax = float(-100)
 for i in range(4+NELEM+NMOLE,4+NELEM+NMOLE+NDUST,1):
   solid = keyword[i]
   solids.append(solid[1:])
   smean.append(np.mean(dat[iii,i])) 
-print solids
-indices = np.argsort(smean)
-nmax = float(-10)
-count = 0
-for isolid in reversed(indices):
-  solid = solids[isolid]
-  ind = np.where(keyword == 'n'+solid)[0]
+  ind = np.where(keyword == 'n'+solid[1:])[0]
   if (np.size(ind) == 0): continue
   ind = ind[0]
-  #print solid,ind
   yy = dat[:,ind]               # log10 nsolid/n<H>
   nmax = np.max([nmax,np.max(yy[iii])])
-  if (np.max(yy[iii])>nmax-20):
-    plt.plot(Tg,yy,ls=styl[count],lw=widt[count],label=solid)
-    count = count + 1
-plt.title('condensates',fontsize=20)
-plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
-plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{solid}/n_\mathrm{\langle H\rangle}$',fontsize=20)
-#plt.xscale('log')
-plt.xlim(Tmin,Tmax)
-plt.ylim(nmax-9,nmax+0.5)
-plt.tick_params(axis='both', labelsize=14)
-plt.tick_params('both', length=6, width=1.5, which='major')
-plt.tick_params('both', length=3, width=1, which='minor')
-minorLocator = MultipleLocator(sep)
-ax.xaxis.set_minor_locator(minorLocator)
-plt.legend(loc='lower right',fontsize=9,fancybox=True)
-plt.tight_layout()
-plt.savefig(pp,format='pdf')
-plt.clf()
+  #print solid[1:],ind,np.max(yy[iii])
+if (nmax>-99):
+  print solids
+  fig,ax = plt.subplots()
+  indices = np.argsort(smean)
+  count = 0
+  for isolid in reversed(indices):
+    solid = solids[isolid]
+    ind = np.where(keyword == 'n'+solid)[0]
+    if (np.size(ind) == 0): continue
+    ind = ind[0]
+    yy = dat[:,ind]               # log10 nsolid/n<H>
+    nmax = np.max([nmax,np.max(yy[iii])])
+    if (np.max(yy[iii])>nmax-20):
+      plt.plot(Tg,yy,ls=styl[count],lw=widt[count],label=solid)
+      count = count + 1
+  plt.title('condensates',fontsize=20)
+  plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
+  plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{solid}/n_\mathrm{\langle H\rangle}$',fontsize=20)
+  #plt.xscale('log')
+  plt.xlim(Tmin,Tmax)
+  plt.ylim(nmax-9,nmax+0.5)
+  plt.tick_params(axis='both', labelsize=14)
+  plt.tick_params('both', length=6, width=1.5, which='major')
+  plt.tick_params('both', length=3, width=1, which='minor')
+  minorLocator = MultipleLocator(sep)
+  ax.xaxis.set_minor_locator(minorLocator)
+  plt.legend(loc='lower right',fontsize=9,fancybox=True)
+  plt.tight_layout()
+  plt.savefig(pp,format='pdf')
+  plt.clf()
 
 #================== supersaturation ratios ===================
-fig,ax = plt.subplots()
-count = 0
-for isolid in reversed(indices):
-  solid = solids[isolid]
-  ind = np.where(keyword == 'S'+solid)[0]
-  if (np.size(ind) == 0): continue
-  ind = ind[0]
-  #print solid,ind
-  logS = dat[:,ind]              # log10 S
-  if (np.max(logS[iii])>-6):
-    plt.plot(Tg,logS,ls=styl[count],lw=widt[count],label=solid)
-    count = count + 1
-plt.title('supersaturation ratios',fontsize=20)
-plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
-plt.ylabel(r'$\mathrm{log}_{10}\ S$',fontsize=20)
-#plt.xscale('log')
-plt.xlim(Tmin,Tmax)
-plt.ylim(-7,0.5)
-plt.tick_params(axis='both', labelsize=14)
-plt.tick_params('both', length=6, width=1.5, which='major')
-plt.tick_params('both', length=3, width=1, which='minor')
-minorLocator = MultipleLocator(sep)
-ax.xaxis.set_minor_locator(minorLocator)
-plt.legend(loc='lower right',fontsize=6,fancybox=True)
-plt.tight_layout()
-plt.savefig(pp,format='pdf')
-plt.clf()
+  fig,ax = plt.subplots()
+  count = 0
+  for isolid in reversed(indices):
+    solid = solids[isolid]
+    ind = np.where(keyword == 'S'+solid)[0]
+    if (np.size(ind) == 0): continue
+    ind = ind[0]
+    #print solid,ind
+    logS = dat[:,ind]              # log10 S
+    if (np.max(logS[iii])>-6):
+      plt.plot(Tg,logS,ls=styl[count],lw=widt[count],label=solid)
+      count = count + 1
+  plt.title('supersaturation ratios',fontsize=20)
+  plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
+  plt.ylabel(r'$\mathrm{log}_{10}\ S$',fontsize=20)
+  #plt.xscale('log')
+  plt.xlim(Tmin,Tmax)
+  plt.ylim(-7,0.5)
+  plt.tick_params(axis='both', labelsize=14)
+  plt.tick_params('both', length=6, width=1.5, which='major')
+  plt.tick_params('both', length=3, width=1, which='minor')
+  minorLocator = MultipleLocator(sep)
+  ax.xaxis.set_minor_locator(minorLocator)
+  plt.legend(loc='lower right',fontsize=6,fancybox=True)
+  plt.tight_layout()
+  plt.savefig(pp,format='pdf')
+  plt.clf()
 
-fig,ax = plt.subplots()
-count = 0
-for isolid in reversed(indices):
-  solid = solids[isolid]
-  ind = np.where(keyword == 'S'+solid)[0]
-  if (np.size(ind) == 0): continue
-  ind = ind[0]
-  #print solid,ind
-  S = 10**dat[:,ind]              # S
-  if (np.max(S[iii])>0.2):
-    plt.plot(Tg,S,ls=styl[count],lw=widt[count],label=solid)
-    count = count + 1
-plt.title('supersaturation ratios',fontsize=20)
-plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
-plt.ylabel(r'$S$',fontsize=20)
-#plt.xscale('log')
-plt.xlim(Tmin,Tmax)
-plt.ylim(0,1.05)
-plt.tick_params(axis='both', labelsize=14)
-plt.tick_params('both', length=6, width=1.5, which='major')
-plt.tick_params('both', length=3, width=1, which='minor')
-plt.legend(loc='lower right',fontsize=7,fancybox=True)
-minorLocator = MultipleLocator(sep)
-ax.xaxis.set_minor_locator(minorLocator)
-plt.tight_layout()
-plt.savefig(pp,format='pdf')
-plt.clf()
+  fig,ax = plt.subplots()
+  count = 0
+  for isolid in reversed(indices):
+    solid = solids[isolid]
+    ind = np.where(keyword == 'S'+solid)[0]
+    if (np.size(ind) == 0): continue
+    ind = ind[0]
+    #print solid,ind
+    S = 10**dat[:,ind]              # S
+    if (np.max(S[iii])>0.2):
+      plt.plot(Tg,S,ls=styl[count],lw=widt[count],label=solid)
+      count = count + 1
+  plt.title('supersaturation ratios',fontsize=20)
+  plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
+  plt.ylabel(r'$S$',fontsize=20)
+  #plt.xscale('log')
+  plt.xlim(Tmin,Tmax)
+  plt.ylim(0,1.05)
+  plt.tick_params(axis='both', labelsize=14)
+  plt.tick_params('both', length=6, width=1.5, which='major')
+  plt.tick_params('both', length=3, width=1, which='minor')
+  plt.legend(loc='lower right',fontsize=7,fancybox=True)
+  minorLocator = MultipleLocator(sep)
+  ax.xaxis.set_minor_locator(minorLocator)
+  plt.tight_layout()
+  plt.savefig(pp,format='pdf')
+  plt.clf()
 
 #================== some important molecules ====================
 fig,ax = plt.subplots()

@@ -28,12 +28,12 @@
       !---------------------------------
       print*,"start and end temperature [K] (decreasing)"
       !read*,T1,T2
-      T1 = 150
+      T1 = 5000
       T2 = 100
       print*,"start and end p [bar] (any)"
       !read*,p1,p2
-      p1 = 1.E-15*bar  !1.E+11*bk*T1  !1.e-16*bar
-      p2 = 1.E-15*bar  !1.E+11*bk*T2  !1.e-16*bar
+      p1 = bar  !1.E+11*bk*T1  !1.e-16*bar
+      p2 = bar  !1.E+11*bk*T2  !1.e-16*bar
       mu = 2.3*amu
 
       !----------------------------
@@ -177,7 +177,7 @@
         eldust = 0.0
         do 
           nHges = p*mu/(bk*Tg)/muH
-          call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
+          !call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
           call GGCHEM(nHges,Tg,eps,.false.,0)
           call SUPERSAT(Tg,nat,nmol,Sat)
           kT = bk*Tg

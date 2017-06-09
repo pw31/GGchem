@@ -3,7 +3,7 @@
         integer,parameter :: NELEM=37        ! number of elements
         integer,parameter :: NELM=17         ! no of elements treated in smchem
         integer,parameter :: NMOLE=206       ! number of molecules
-        integer,parameter :: NDUST=57        ! number of dust species
+        integer,parameter :: NDUST=42        ! number of dust species
         integer,parameter :: NEPS=14         ! number of affected elements
 
         character(len=2)  :: elnam(NELEM)    ! names of elements

@@ -1,7 +1,58 @@
 =====================
        GGchem
 =====================
-(c) Peter Woitke 2017
+(c) Peter Woitke & Christiane Helling 2017
 
 Fast thermo-chemical equilibrium code with or without 
 equilibrium condensation down to 100K. 
+
+Many thanks to the following St Andrews' students:
+Glen Hunter, Megan Worters, Drew Millard, George Turner.
+
+---------------------------------------------------------
+To checkout the git repository and compile the code, use 
+
+> git clone https://github.com/pw31/GGchem
+> cd GGchem/src16
+> cp makefile.prodimo makefile
+> make
+
+The makefile.prodimo is for ifort compiler, adjust your
+own makfile if you want to compile e.g. with gfortran.
+
+---------------------------------------------------------
+To run the code, type
+
+> cd ..
+> ./ggchem16
+
+It will create the output file "Static_Conc.dat", which
+contain molecular abundances, solid and liquid particle
+densities and supersaturation ratios.
+
+---------------------------------------------------------
+To visualise the results, use e.g.
+
+> python Plot_T.py
+> evince ggchem.pdf
+
+---------------------------------------------------------
+Customize main.f and e.g. demo_sweep.f in folder src16 
+to tell GGchem what it should do, e.g. set pressure and 
+temperature range for a linear track in (logp, logT) 
+parameter space.
+
+Change init.f to use different element abundances.
+
+If you want to switch on equilibrium condensation,
+call EQUIL_COND() before GGCHEM(), see e.g. demo_sweep.f.
+In that mode, the code will be much slower, and also
+possibly unstable. Always start from large T
+and then lower T SLOWLY with successive calls. The code
+will create and expand "database.dat" automatically from 
+the results of every successful call, such that once you have 
+filled the (p,T)-plane, results will be faster and more 
+reliable.
+
+
+
