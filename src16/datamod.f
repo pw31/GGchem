@@ -2,7 +2,7 @@
         integer,parameter :: qp = selected_real_kind ( 33, 4931 )
         integer,parameter :: NELEM=37        ! number of elements
         integer,parameter :: NELM=17         ! no of elements treated in smchem
-        integer,parameter :: NMOLE=206       ! number of molecules
+        integer,parameter :: NMOLE=205       ! number of molecules
         integer,parameter :: NDUST=42        ! number of dust species
         integer,parameter :: NEPS=14         ! number of affected elements
 

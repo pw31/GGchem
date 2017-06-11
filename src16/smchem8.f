@@ -113,7 +113,7 @@
 *  Die Variable "ngestst" entscheidet, ob die Elementerhaltung ueber-
 *  prueft werden soll.
       logical ngestst
-      data ngestst/.true./
+      data ngestst/.false./
 *-----------------------------------------------------------------------
 *  Die Variable tdispol bestimmt, welches die niedrigste Temperatur 
 *  ist, die in die Dissoziationspolynome eingesetzt werden darf.
@@ -835,7 +835,7 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
         pS  = MAX(MIN(pS -dpp(2)*sca(2),pS *fak),pS /fak)        
         delta = MAX(ABS(pSialt/pSi-1.d0),ABS(pSalt/pS-1.d0))
         piter = piter+1
-        if (verbose>-1) write(*,'(a11,i3,3(1pE11.4))') 
+        if (verbose>1) write(*,'(a11,i3,3(1pE11.4))') 
      &       'pSi/pS-iter:',piter,pSialt,pSalt,delta
         if ((piter>99).or.(delta<1.d-3)) exit
       enddo  
@@ -1176,8 +1176,9 @@ c     g(TiC)   : siehe oben!
 *       ===========================
         do i=1,nml
           if (i.ne.TiC) g(i)=gk(i)
-          if (verbose>1.and.g(i)>1.d+300) then
-            print'("huge kp",A12,1pE12.3E4)',cmol(i),g(i)
+          if (g(i)>1.d+300) then
+            print'("huge kp",A12,0pF11.3,1pE12.3E4)',cmol(i),Tg,g(i)
+            stop
           endif  
           pmol = g(i)
           do j=1,m_kind(0,i)
@@ -1192,8 +1193,8 @@ c     g(TiC)   : siehe oben!
               enddo
             endif
           enddo
-  	  anmol(i) = pmol*kT1
-	enddo
+          anmol(i) = pmol*kT1
+        enddo
         if (verbose>1) then
           imin = MINLOC(g(1:nml),1) 
           imax = MAXLOC(g(1:nml),1) 
@@ -1342,18 +1343,18 @@ c     g(TiC)   : siehe oben!
           enddo  
         endif  
         crit = MAXVAL(converge(MAX(0,it-1):it))
-        if (verbose>1) print'(i3,i3,2(1pE9.1)," converged(",i2,"):",
+        if (verbose>0) print'(i3,i3,2(1pE9.1)," converged(",i2,"):",
      >                    A50)',it,Nact,converge(it),limit,Nconv,txt
         if (it==itmax) then 
           write(*,*) '*** keine Konvergenz in SMCHEM!'
           write(*,*) 'it, converge, ind =',it,converge(it),limit
           write(*,*) '  n<H>, T =',anhges,Tg
-          !if (from_merk) then
+          if (from_merk) then
             chemiter  = chemiter + it
             from_merk = .false.
             verbose = 2             
             goto 100                   ! try again from scratch before giving up
-          !endif  
+          endif  
           do ii=1,nact
             i = act_to_all(ii)
             write(*,*) catm(i),eps(i),-dp(ii)/(anmono(i)*kT) 
@@ -1388,7 +1389,7 @@ c     g(TiC)   : siehe oben!
           do i=1,nel
             atfrac = anmono(i)/anHges
             if (redo(i)) cycle   
-            if (atfrac>1.d-100) cycle   
+            if (atfrac>1.d-30) cycle   
             if (atfrac<atmax) cycle
             atmax = atfrac
             e = i
@@ -1498,7 +1499,6 @@ c     g(TiC)   : siehe oben!
           if (abw>1.d-5) then
             if (verbose>1) then
               print'("*** element conservation error ",A2)',catm(e)
-              print'(A12,1pE14.7)',catm(e),anmono(e)/(eps(e)*anHges)
             endif  
             sum = anmono(e)/(eps(e)*anHges)
             do i=1,nml
@@ -1517,6 +1517,8 @@ c     g(TiC)   : siehe oben!
             nachit = .true.
             from_merk = .false.
             ansave = anmono
+            anmono(e)=anmono(e)/sum
+            verbose=2
             goto 200
           endif
         enddo
@@ -1543,8 +1545,10 @@ c     g(TiC)   : siehe oben!
       use CHEM8,ONLY: a,th1,th2,th3,th4,TT1,TT2,TT3,fit,natom
       implicit none
       real*8,parameter :: bar=1.d+6, atm=1.013d+6, Rcal=1.987d+0
+      real*8,parameter :: ln10=DLOG(10.d0)
+      real*8,parameter :: lnatm=DLOG(atm), lnbar=DLOG(bar)
       integer,intent(in) :: i    ! index of molecule
-      real*8 :: gk,dG            ! return kp in [cgs]
+      real*8 :: lnk,gk,dG            ! return kp in [cgs]
       if (i.eq.0) then
         gk = 1.d-300             ! tiny kp for unassigned molecules
         return
@@ -1553,31 +1557,35 @@ c     g(TiC)   : siehe oben!
         !---------------------
         ! ***  Gail's fit  *** 
         !---------------------
-        gk = EXP(MIN(600.d0, a(i,0) + a(i,1)*th1 + a(i,2)*th2
-     &                             + a(i,3)*th3 + a(i,4)*th4 ) )
+        lnk = a(i,0) + a(i,1)*th1 + a(i,2)*th2 
+     &               + a(i,3)*th3 + a(i,4)*th4 
       else if (fit(i).eq.2) then
         !---------------------------
         ! ***  Tsuji (1973) fit  *** 
         !---------------------------
-        gk = 10.d0**(MIN(300.d0, - a(i,0) - a(i,1)*th1 - a(i,2)*th2
-     &                                    - a(i,3)*th3 - a(i,4)*th4 ) )
+        lnk = ln10*( - a(i,0) - a(i,1)*th1 - a(i,2)*th2
+     &                        - a(i,3)*th3 - a(i,4)*th4 ) 
       else if (fit(i).eq.3) then  
         !---------------------------------
         ! ***  Sharp & Huebner (1990)  ***
         !---------------------------------
-        dG = a(i,0)/TT1 + a(i,1) + a(i,2)*TT1 + a(i,3)*TT2 + a(i,4)*TT3
-        gk = EXP(MIN(600.d0,-dG/(Rcal*TT1))) / atm**(Natom(i)-1)
+        dG  = a(i,0)/TT1 + a(i,1) + a(i,2)*TT1 + a(i,3)*TT2 + a(i,4)*TT3
+        lnk = -dG/(Rcal*TT1) + (1-Natom(i))*lnatm
 
       else if (fit(i).eq.4) then
         !-----------------------------------
         ! ***  Stock (2008) & Kietzmann  ***
         !-----------------------------------
-        dG = a(i,0)/TT1+a(i,1)*LOG(TT1)+a(i,2)+a(i,3)*TT1+a(i,4)*TT2
-        gk = EXP(MIN(600.d0,dG)) / bar**(Natom(i)-1)
+        dG  = a(i,0)/TT1+a(i,1)*LOG(TT1)+a(i,2)+a(i,3)*TT1+a(i,4)*TT2
+        lnk = dG + (1-Natom(i))*lnbar
+
       else
         print*,cmol(i),"i,fit=",i,fit(i)
         stop "???"
       endif  
+
+      gk = EXP(MIN(700.d0,lnk))
+
       end FUNCTION gk
 
       end SUBROUTINE smchem8
