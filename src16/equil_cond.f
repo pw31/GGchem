@@ -162,7 +162,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        !if (iread==2775) verbose=2
+        !if (iread==187) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -278,12 +278,12 @@
           !----------------------------------------------------
           ! ***  some explicit help with sudden conversions ***
           !----------------------------------------------------
-          if (active(iKCl).and.active(iKalSi3O8).and.
+          eps_save = eps
+          if (active(iKCl).and.active(iKAlSi3O8).and.
      >        active(iNaCl).and.active(iMgAl2O4).and.
      >        active(iMgSiO3).and.active(iMg2SiO4).and.
      >        active(iNa2SiO3)) then
             changed = .true.
-            eps_save = eps
             !--- decide ---
             if (Sat0(iKCl)>Sat0(iKAlSi3O8)) then
               active(iKAlSi3O8) = .false.
@@ -316,18 +316,60 @@
               call TRANSFORM(iKCl,iMg2SiO4,amount,3.Q0*6.Q0,
      >                       ddust,eps,dscale)
             endif
-            eps(K)  = eps_save(K)
+            eps(Kalium) = eps_save(Kalium)
             eps(Cl) = eps_save(Cl)
             eps(Al) = eps_save(Al)
             eps(Na) = eps_save(Na)
             eps(Mg) = eps_save(Mg)
             eps(Si) = eps_save(Si)
-            eps(O)  = eps_save(O)
+          endif               
+          if (active(iKCl).and.active(iKAlSi3O8).and.
+     >        active(iNaCl).and.active(iAl2O3).and.
+     >        active(iMgSiO3).and.active(iMg2SiO4).and.
+     >        active(iNa2SiO3)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iKCl)>Sat0(iKAlSi3O8)) then
+              active(iKAlSi3O8) = .false.
+              amount = ddust(iKalSi3O8)/6.Q0
+              call TRANSFORM(iKAlSi3O8,iKCl,amount,1.Q0*6.Q0,
+     >                       ddust,eps,dscale)
+              call TRANSFORM(iKAlSi3O8,iNaCl,amount,-1.Q0*6.Q0,
+     >                       ddust,eps,dscale)
+              call TRANSFORM(iKAlSi3O8,iNa2SiO3,amount,0.5Q0*6.Q0,
+     >                       ddust,eps,dscale)
+              call TRANSFORM(iKAlSi3O8,iAl2O3,amount,0.5Q0*6.Q0,
+     >                       ddust,eps,dscale)
+              call TRANSFORM(iKAlSi3O8,iMgSiO3,amount,5.Q0*6.Q0,
+     >                       ddust,eps,dscale)
+              call TRANSFORM(iKAlSi3O8,iMg2SiO4,amount,-2.5Q0*6.Q0,
+     >                       ddust,eps,dscale)
+            else  
+              active(iKCl) = .false.
+              amount = ddust(iKCl)/6.Q0
+              call TRANSFORM(iKCl,iKAlSi3O8,amount,1.Q0*6.Q0,
+     >                       ddust,eps,dscale)
+              call TRANSFORM(iKCl,iNaCl,amount,1.Q0*6.Q0,
+     >                       ddust,eps,dscale)
+              call TRANSFORM(iKCl,iNa2SiO3,amount,-0.5Q0*6.Q0,
+     >                       ddust,eps,dscale)
+              call TRANSFORM(iKCl,iAl2O3,amount,-0.5Q0*6.Q0,
+     >                       ddust,eps,dscale)
+              call TRANSFORM(iKCl,iMgSiO3,amount,-5.0Q0*6.Q0,
+     >                       ddust,eps,dscale)
+              call TRANSFORM(iKCl,iMg2SiO4,amount,2.5Q0*6.Q0,
+     >                       ddust,eps,dscale)
+            endif
+            eps(Kalium) = eps_save(Kalium)
+            eps(Cl) = eps_save(Cl)
+            eps(Al) = eps_save(Al)
+            eps(Na) = eps_save(Na)
+            eps(Mg) = eps_save(Mg)
+            eps(Si) = eps_save(Si)
           endif               
           if (active(iAl2O3).and.active(iMgAl2O4).and.
      >        active(iMgSiO3).and.active(iMg2SiO4)) then
             changed = .true.
-            eps_save = eps
             !--- decide ---
             if (Sat0(iAl2O3)>Sat0(iMgAl2O4)) then
               active(iMgAl2O4) = .false.
@@ -352,22 +394,6 @@
             eps(Mg) = eps_save(Mg)
             eps(Si) = eps_save(Si)
           endif  
-          !if (active(iCaMgSi2O6).and.active(iCaSiO3).and.
-     >    !    .not.e_act(Mg).and..not.e_act(Si)) then
-          !  changed = .true.
-          !  !--- decide ---
-          !  if (Sat0(iCaSiO3).gt.Sat0(iCaMgSi2O6)) then
-          !    active(iCaMgSi2O6) = .false.  
-          !    amount = ddust(iCaMgSi2O6)
-          !    call TRANSFORM(iCaMgSi2O6,iCaSiO3,amount,1.Q0,
-     >    !                   ddust,eps,dscale)
-          !  else  
-          !    active(iCaSiO3) = .false.  
-          !    amount = ddust(iCaSiO3)
-          !    call TRANSFORM(iCaSiO3,iCaMgSi2O6,amount,1.Q0,
-     >    !                   ddust,eps,dscale)
-          !  endif  
-          !endif
           if (active(iFeO).and.active(iFe2SiO4).and.active(iSiO2)) then
             changed = .true.
             !--- decide ---
@@ -426,6 +452,8 @@
               call TRANSFORM(iMgSiO3,iMg2SiO4,amount,0.5Q0*2.Q0,
      >                       ddust,eps,dscale)
             endif  
+            eps(Mg) = eps_save(Mg)
+            eps(Si) = eps_save(Si)
           endif
           if (active(iTi4O7).and.active(iCaTiO3).and.
      >        active(iCaMgSi2O6).and..not.e_act(Mg)) then
@@ -514,7 +542,6 @@
      >        active(iMgSiO3).and.active(iMg2SiO4).and.
      >        active(iMgAl2O4)) then
             changed = .true.
-            eps_save = eps
             !--- decide ---
             if (Sat0(iNa2SiO3).gt.Sat0(iNaAlSi3O8)) then
               active(iNaAlSi3O8) = .false.  
@@ -551,7 +578,6 @@
           endif   
           if (active(iH2O).and.active(iH2O_l)) then
             changed = .true.
-            eps_save = eps
             !--- decide ---
             if (Sat0(iH2O).gt.Sat0(iH2O_l)) then
               active(iH2O_l) = .false.  
@@ -569,7 +595,6 @@
           endif   
           if (active(iFe).and.active(iFe_l)) then
             changed = .true.
-            eps_save = eps
             !--- decide ---
             if (Sat0(iFe).gt.Sat0(iFe_l)) then
               active(iFe_l) = .false.  
@@ -586,7 +611,6 @@
           endif   
           if (active(iMgAl2O4).and.active(iMgAl2O4_l)) then
             changed = .true.
-            eps_save = eps
             !--- decide ---
             if (Sat0(iMgAl2O4).gt.Sat0(iMgAl2O4_l)) then
               active(iMgAl2O4_l) = .false.  
@@ -601,7 +625,7 @@
             endif  
             eps(Mg) = eps_save(Mg)
             eps(Al) = eps_save(Al)
-            eps(O) = eps_save(O)
+            eps(O)  = eps_save(O)
           endif   
         endif  
 

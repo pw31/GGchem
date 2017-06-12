@@ -46,9 +46,9 @@
       write(*,*) '27 = H2SO4'      
       write(*,*) '28 = H2SO4[l]'      
       write(*,*) '29 = C4N2'      
-      write(*,*) '30 = C[cr]'      
+      write(*,*) '30 = C[s]'      
       write(*,*) '31 = CH4'      
-      write(*,*) '32 = Na2S[cr]'      
+      write(*,*) '32 = Na2S[s]'      
       write(*,*) '33 = MgCl'      
       write(*,*) '34 = MgCl2'
       write(*,*) '35 = Mg2Cl4'
@@ -143,7 +143,7 @@
       write(*,*) '124 = CO2-'
       write(*,*) '125 = AlO-'
       write(*,*) '126 = NaO-'
-      write(*,*) '127 = MgO[cr]'
+      write(*,*) '127 = MgO[s]'
       write(*,*) '128 = C2H4O'
       write(*,*) '129 = SiH'
       write(*,*) '130 = Li2O2H2'
@@ -201,11 +201,14 @@
       write(*,*) '182 = Mg2SiO4[l]'
       write(*,*) '183 = MgSiO3[l]'
       write(*,*) '184 = CaO[s]'
-      write(*,*) '185 = TiO2[cr] pvap'
+      write(*,*) '185 = TiO2[s] pvap'
       write(*,*) '186 = TiO2[l] pvap'
       write(*,*) '187 = H2O[l] pvap'
       write(*,*) '188 = SiH3Cl'
       write(*,*) '189 = FeCl3'
+      write(*,*) '190 = MgSiO3[s]'
+      write(*,*) '191 = SiO2[s]'
+      write(*,*) '192 = Mg2SiO4[s]'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -1631,6 +1634,31 @@
         Edzahl = 2
         stoich(2) = 1.D0
         stoich(3) = 3.D0
+      elseif (specie.eq.190) then
+        call READ_DATEI('MgSiO3_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Mg.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('Si.txt'    ,dG,T,Nmax,N,S,3) 
+        call READ_DATEI('O.txt'   ,dG,T,Nmax,N,S,4) 
+        Edzahl = 3
+        stoich(2) = 1.D0
+        stoich(3) = 1.D0
+        stoich(4) = 3.D0
+      elseif (specie.eq.191) then
+        call READ_DATEI('SiO2_cr.txt' ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Si.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('O.txt'     ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 2.D0
+      elseif (specie.eq.192) then
+        call READ_DATEI('Mg2SiO4_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Mg.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('Si.txt'    ,dG,T,Nmax,N,S,3) 
+        call READ_DATEI('O.txt'   ,dG,T,Nmax,N,S,4) 
+        Edzahl = 3
+        stoich(2) = 2.D0
+        stoich(3) = 1.D0
+        stoich(4) = 4.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop
