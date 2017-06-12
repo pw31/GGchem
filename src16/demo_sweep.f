@@ -8,7 +8,7 @@
      >                   Cr,Mn,Fe,Ni
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
-      integer,parameter :: Npoints=200
+      integer,parameter :: Npoints=500
       real,dimension(Npoints) :: nHtot,Tgas
       real :: T1,T2,p1,p2,p,pe,Tg,rho,nHges,nges,kT,pges,mu,muold
       real :: nTEA,pTEA
@@ -28,7 +28,7 @@
       !---------------------------------
       print*,"start and end temperature [K] (decreasing)"
       !read*,T1,T2
-      T1 = 2400
+      T1 = 4000
       T2 = 100
       print*,"start and end p [bar] (any)"
       !read*,p1,p2
@@ -120,15 +120,17 @@
      &  //"OH_g CH_g CN_g HCO_g HCN_g NH_g NO_g NH2_g C2_g CH2_g CH3_g " 
      &  //"C2H_g HNO_g (CN)2_g C2H4_g C3_g C2N_g C2O_g "
      &  //"SiO_g SiH4_g SiS_g SiO2_g SiH_g SiN_g SiC_g Si2C_g SiC2_g "
-     &  //"Si2N_g Si2_g Si3_g  Si(CH3)4_g "
-     &  //"H2S_g HS_g S2_g COS_g SO_g NS_g CS_g CS2_g O2S(OH)2_g "
+     &  //"Si2N_g Si2_g Si3_g Si(CH3)4_g SiH3Cl_g SiH2Cl2_g "
+     &  //"H2S_g HS_g S2_g COS_g SO_g SO2_g SSO_g NS_g CS_g CS2_g "
+     &  //"O2S(OH)2_g "
      &  //"Na2_g NaO_g NaOH_g (NaOH)2_g NaH_g NaCN_g Na2SO4_g "
      &  //"HCl_g NaCl_g (NaCl)2_g CaCl_g CaCl2_g SiCl_g "
-     &  //"CaOH_g Ca(OH)2_g CaS_g CaO_g "                                ! CaH missing
+     &  //"CaOH_g Ca(OH)2_g CaS_g CaO_g Ca2_g "                          ! CaH missing
      &  //"TiO_g TiO2_g TiCl_g TiCl2_g TiCl4_g OTiCl_g TiOCl2_g "        ! TiC,TiC2,TiH,TiS missing
-     &  //"KCl_g KOH_g KH_g (KOH)2_g KCN_g (KCl)2_g K2SO4_g "
+     &  //"KCl_g KOH_g KH_g (KOH)2_g KCN_g (KCl)2_g K2SO4_g KO_g K2_g "
      &  //"AlOH_g OAlOH_g Al2O_g (AlO)2_g AlCl_g AlH_g AlS_g "
-     &  //"AlCl2_g AlCl3_g (AlCl3)2_g AlO_g OAlH_g AlC_g OAlCl_g "
+     &  //"AlCl2_g AlCl3_g (AlCl3)2_g AlO_g AlO2_g OAlH_g AlC_g "
+     &  //"OAlCl_g AlN_g "
      &  //"Mg(OH)2_g MgOH_g MgH_g MgCl2_g MgS_g MgCl_g MgO_g MgN_g "
      &  //"(MgCl2)2_g Fe(OH)2_g FeCl_g FeCl2_g FeO_g FeS_g "             ! FeH missing
      &  //"LiCl_g LiOH_g LiH_g LiO_g (LiOH)2_g (LiCl)2_g (LiCl)3_g "  
@@ -139,15 +141,13 @@
      &  //"Li2_g Li2O_g Li2SO4_g LiN_g (LiO)2_g LiOCl_g LiONa_g LiON_g " ! new Li
      &  //"TiCl3_g "                                                     ! new Ti
      &  //"(FeCl2)2_g (FeCl3)2_g FeCl3_g Fe(CO)5_g "                     ! new Fe
-     &  //"Ca2_g "                                                       ! new Ca
      &  //"Mg2_g "                                                       ! new Mg
-     &  //"Al2_g AlN_g AlO2_g "                                          ! new Al
+     &  //"Al2_g "                                                       ! new Al
      &  //"(NaCN)2_g "                                                   ! new Na
-     &  //"K2_g (KCN)2_g KO_g "                                          ! new K
-     &  //"SiCH3Cl3_g SiCl2_g SiCl3_g SiCl4_g SiH2Cl2_g "     ! new Si
-     &  //"SiH3Cl_g SiHCl3_g "
+     &  //"(KCN)2_g "                                                    ! new K
+     &  //"SiCH3Cl3_g SiCl2_g SiCl3_g SiCl4_g "                          ! new Si
      &  //"ClSSCl_g S2Cl_g S3_g S4_g S5_g S6_g S7_g S8_g SCl2_g SCl_g "  ! new S
-     &  //"SO2Cl2_g SO2_g SO3_g SSO_g "
+     &  //"SO2Cl2_g SO3_g SSO_g "
      &  //"C2Cl2_g C2Cl4_g C2Cl6_g C2HCl_g CCl2_g CCl3_g CCl4_g CCl_g "  ! new Cl
      &  //"CH2Cl2_g CH3Cl_g CHCl3_g CHCl_g Cl2O_g ClCN_g ClO2_g ClO_g "
      &  //"COCl2_g COCl_g HOCl_g NO2Cl_g ONCl_g "
@@ -177,7 +177,7 @@
         eldust = 0.0
         do 
           nHges = p*mu/(bk*Tg)/muH
-          call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
+          !call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
           call GGCHEM(nHges,Tg,eps,.false.,0)
           call SUPERSAT(Tg,nat,nmol,Sat)
           kT = bk*Tg
