@@ -1583,9 +1583,7 @@ c     g(TiC)   : siehe oben!
         print*,cmol(i),"i,fit=",i,fit(i)
         stop "???"
       endif  
-
       gk = EXP(MIN(700.d0,lnk))
-
       end FUNCTION gk
 
       end SUBROUTINE smchem8

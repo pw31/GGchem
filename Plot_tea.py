@@ -147,7 +147,7 @@ ellist = ['H','C','O','N','SI','S','NA','CL','CA','TI','K','AL','MG','FE','LI','
 allist = [' ',' ',' ',' ','Si',' ','Na','Cl','Ca','Ti',' ','Al','Mg','Fe','Li','+']
 exlist = [' He ',' Cl CL Ca CA Cr ',' ',' Na NA Ni ',' ',' Si SI ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
 titels = ['hydrogen','carbon','oxygen','nitrogen','silicon','sulphur','sodium','chlorine','calcium','titanium','potassium','aluminum','magnesium','iron','lithium','charge carriers']
-limits = [2,3,3,3,10,10,10,4,10,10,10,10,10,10,10,5]    #Orich
+limits = [2,3,3,3,10,10,10,4,10,12,10,10,10,12,12,5]    #Orich
 #limits = [2,5,3.5,6,6,5,6,4,6,6,6,6,6,6,6.5,5]  #Crich
 Tind1 = np.where((Tg<Tmax)    & (Tg>100.0))[0]
 Tind2 = np.where((T_tea<Tmax) & (T_tea>100.0))[0]
@@ -186,7 +186,7 @@ for i in range(0,16):
   indices = np.argsort(abulist)
   count = 0
   maxy = np.log10(maxy)
-  nmin = np.min([nmin,np.min(maxy)-limit,nmax-12])
+  nmin = np.min([nmin,np.min(maxy)-limit,nmax-14])
   if (el=='el'): nmin=-30
   for ind in reversed(indices):
     mol = mollist[ind]

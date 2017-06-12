@@ -192,7 +192,7 @@
       write(*,*) '173 = Fe(CO)5[l]'
       write(*,*) '174 = Na2SO4[l]'
       write(*,*) '175 = K2SO4[l]'
-      write(*,*) '176 = Al2O3[s] does not work!'
+      write(*,*) '176 = Al2O3[s]'
       write(*,*) '177 = Al2O3[l]'
       write(*,*) '178 = MgAl2O4[s]'
       write(*,*) '179 = MgAl2O4[l]'
@@ -205,6 +205,7 @@
       write(*,*) '186 = TiO2[l] pvap'
       write(*,*) '187 = H2O[l] pvap'
       write(*,*) '188 = SiH3Cl'
+      write(*,*) '189 = FeCl3'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -1623,6 +1624,13 @@
         stoich(2) = 1.D0
         stoich(3) = 3.D0
         stoich(4) = 1.D0
+      elseif (specie.eq.189) then
+        call READ_DATEI('FeCl3.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Fe.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('Cl.txt'   ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 3.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop
@@ -1763,8 +1771,9 @@
         Bfit(3) = koeff(1)
         e   = 1.E-6
         ee1 = 0.1d0
+        print'("coefficients before:",5(1pE18.10))',Bfit(1:5)
         do it=1,100
-          print'("coefficients before:",5(1pE18.10))',Bfit(1:5)
+          Nit = 0 
           call PARAM_LS(stock,5,Nit,Ndat,dev,e,ee1,Bfit,x,y)
           print'("coefficients after :",5(1pE18.10))',Bfit(1:5)
           print*,Nit,' iterations'
@@ -1794,7 +1803,7 @@
           mode = 5
         endif
       endif
-      if (mode<2.or.mode==4) then
+      if (mode<=2.or.mode==4) then
         write(*,*) 'polynomial degree=? ...'
         read(*,*) grad
         call POLYFIT(N,1,Ndat,x,y,grad,koeff)

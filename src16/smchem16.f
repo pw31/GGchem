@@ -1520,8 +1520,10 @@ c     g(TiC)   : siehe oben!
       use CHEM16,ONLY: a,th1,th2,th3,th4,TT1,TT2,TT3,fit,qp,natom
       implicit none
       real(kind=qp),parameter :: bar=1.Q+6, atm=1.013Q+6, Rcal=1.987Q+0
+      real(kind=qp),parameter :: ln10=LOG(10.Q0)
+      real(kind=qp),parameter :: lnatm=LOG(atm), lnbar=LOG(bar)
       integer,intent(in) :: i    ! index of molecule
-      real(kind=qp) :: gk,dG     ! return kp in [cgs]
+      real(kind=qp) :: gk,dG,lnk ! return kp in [cgs]
       if (i.eq.0) then
         gk = 1.Q-300             ! tiny kp for unassigned molecules
         return
@@ -1530,31 +1532,33 @@ c     g(TiC)   : siehe oben!
         !---------------------
         ! ***  Gail's fit  *** 
         !---------------------
-        gk = EXP(MIN(1.Q+4, a(i,0) + a(i,1)*th1 + a(i,2)*th2
-     &                             + a(i,3)*th3 + a(i,4)*th4 ) )
+        lnk = a(i,0) + a(i,1)*th1 + a(i,2)*th2 
+     &               + a(i,3)*th3 + a(i,4)*th4 
       else if (fit(i).eq.2) then
         !---------------------------
         ! ***  Tsuji (1973) fit  *** 
         !---------------------------
-        gk = 10.Q0**(MIN(5.Q+3, - a(i,0) - a(i,1)*th1 - a(i,2)*th2
-     &                                   - a(i,3)*th3 - a(i,4)*th4 ) )
+        lnk = ln10*( - a(i,0) - a(i,1)*th1 - a(i,2)*th2
+     &                        - a(i,3)*th3 - a(i,4)*th4 ) 
       else if (fit(i).eq.3) then  
         !---------------------------------
         ! ***  Sharp & Huebner (1990)  ***
         !---------------------------------
-        dG = a(i,0)/TT1 + a(i,1) + a(i,2)*TT1 + a(i,3)*TT2 + a(i,4)*TT3
-        gk = EXP(MIN(1.Q+4,-dG/(Rcal*TT1))) / atm**(Natom(i)-1)
+        dG  = a(i,0)/TT1 + a(i,1) + a(i,2)*TT1 + a(i,3)*TT2 + a(i,4)*TT3
+        lnk = -dG/(Rcal*TT1) + (1-Natom(i))*lnatm
 
       else if (fit(i).eq.4) then
         !-----------------------------------
         ! ***  Stock (2008) & Kietzmann  ***
         !-----------------------------------
-        dG = a(i,0)/TT1+a(i,1)*LOG(TT1)+a(i,2)+a(i,3)*TT1+a(i,4)*TT2
-        gk = EXP(MIN(1.Q+4,dG)) / bar**(Natom(i)-1)
+        dG  = a(i,0)/TT1+a(i,1)*LOG(TT1)+a(i,2)+a(i,3)*TT1+a(i,4)*TT2
+        lnk = dG + (1-Natom(i))*lnbar
+
       else
         print*,cmol(i),"i,fit=",i,fit(i)
         stop "???"
       endif  
+      gk = EXP(MIN(1.Q+4,lnk))
       end FUNCTION gk
 
       end SUBROUTINE smchem16
