@@ -160,6 +160,53 @@ if (nmax>-99):
   plt.savefig(pp,format='pdf')
   plt.clf()
 
+#================== phase diagrams ===================
+fig,ax = plt.subplots()
+for isolid in reversed(indices):
+  solid = solids[isolid]
+  ind = np.where(keyword == 'S'+solid)[0]
+  if (np.size(ind) == 0): continue
+  ind = ind[0]
+  S = 10**dat[:,ind]              # S
+  Tphase = np.array(Tg)
+  Pphase = np.array(press)/bar
+  Pphase = np.log10(Pphase)
+  Sphase = np.array(S)
+#  plt.tricontourf(Tphase, Pphase, Sphase, 30)
+  plt.tricontour(Tphase, Pphase, Sphase, [0.9],color='blue')
+  for iliquid in reversed(indices):
+    liquid = solids[iliquid]
+    if (liquid != solid+'[l]'): continue       #include liquid
+    ind = np.where(keyword == 'S'+liquid)[0]
+    if (np.size(ind) == 0): continue
+    ind = ind[0]
+    S = 10**dat[:,ind]              # S
+    Tphase = np.array(Tg)
+    Pphase = np.array(press)/bar
+    Pphase = np.log10(Pphase)
+    Sphase = np.array(S)
+    plt.tricontour(Tphase, Pphase, Sphase, [0.9],color='red')
+  plt.title(solid,fontsize=20)
+  plt.xlabel(r'$T\mathrm{[K]}$',fontsize=20)
+  plt.ylabel(r'$\mathrm{log}_{10}\ P\mathrm{[bar]}$',fontsize=20)
+  xmin = np.amin(Tphase)
+  xmax = np.amax(Tphase)
+  ymin = np.amin(Pphase)
+  ymax = np.amax(Pphase)
+  ax.set_xlim([xmin,xmax])
+  ax.set_ylim([ymin,ymax])
+  plt.tick_params(axis='both', labelsize=14)
+  plt.tick_params('both', length=6, width=1.5, which='major')
+  plt.tick_params('both', length=3, width=1, which='minor')
+  minorLocator = MultipleLocator(sep)
+  ax.xaxis.set_minor_locator(minorLocator)
+#  cbr = plt.colorbar()
+#  cbr.set_label(r'$supersaturation ratio$',fontsize=16)
+#  plt.show()
+  plt.tight_layout()
+  plt.savefig(pp,format='pdf')
+  plt.clf()
+
 #================== some important molecules ====================
 fig,ax = plt.subplots()
 mols  = ['H2','H','N2','H2O','O2','CO','CO2','CH4','NH3','C2H2','O3','He','el']

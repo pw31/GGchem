@@ -33,7 +33,7 @@
       print*,"start and end p [bar] (any)"
       !read*,p1,p2
       p1 = 1000.0*bar
-      p2 = 10.0*bar
+      p2 = 1E-12*bar
       mu = 2.3*amu
 
       !----------------------------
