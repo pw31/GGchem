@@ -192,7 +192,7 @@
       write(*,*) '173 = Fe(CO)5[l]'
       write(*,*) '174 = Na2SO4[l]'
       write(*,*) '175 = K2SO4[l]'
-      write(*,*) '176 = Al2O3[s] does not work!'
+      write(*,*) '176 = Al2O3[s]'
       write(*,*) '177 = Al2O3[l]'
       write(*,*) '178 = MgAl2O4[s]'
       write(*,*) '179 = MgAl2O4[l]'

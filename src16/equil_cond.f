@@ -293,6 +293,7 @@
           if (active(iAl2O3).and.active(iMgAl2O4).and.
      >        active(iMgSiO3).and.active(iMg2SiO4)) then
             changed = .true.
+            eps_save = eps
             !--- decide ---
             if (Sat0(iAl2O3)>Sat0(iMgAl2O4)) then
               active(iMgAl2O4) = .false.
@@ -313,6 +314,9 @@
               call TRANSFORM(iAl2O3,iMg2SiO4,amount,-1.Q0*3.Q0,
      >                       ddust,eps,dscale)
             endif  
+            eps(Al) = eps_save(Al)
+            eps(Mg) = eps_save(Mg)
+            eps(Si) = eps_save(Si)
           endif  
           !if (active(iCaMgSi2O6).and.active(iCaSiO3).and.
      >    !    .not.e_act(Mg).and..not.e_act(Si)) then
