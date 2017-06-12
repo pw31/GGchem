@@ -62,39 +62,73 @@
       integer,save :: iAl2O3,iFe,iFeS,iNa2SiO3,iMgSiO3,iMg2SiO4,iTi4O7
       integer,save :: iCaSiO3,iCaMgSi2O6,iNaAlSi3O8,iMgAl2O4,iCaTiO3
       integer,save :: iSiO,iSiO2,iTiO2,iMgTi2O5,iSiC,iCaS,iFe2SiO4,iFeO
-      integer,save :: iNaCl,iKCl,iKAlSi3O8,iH2O,iH2O_l,iFe_l,iMgAl2O4_l
+      integer,save :: iNaCl,iKCl,iKAlSi3O8,iFe_l,iH2O,iH2O_l,iFeS_l
+      integer,save :: iNaCl_l,iTiO2_l,iSiO2_l,iNa2SiO3_l,iMgAl2O4_l
+      integer,save :: iMg2SiO4_l,iMgSiO3_l,iAl2O3_l,iCaAl2Si2O8,iC
+      integer,save :: iTiC,iFe2O3,iMgO,iNa,iS,iMgS,iLiCl,iSiS2,iFeS2
+      integer,save :: iH2SO4_l,iNa2S,iAlCl3,iNH3,iCaO,iNa_l,iKCl_l
+      integer,save :: iCaCl2_l,iLiCl_l,iTi4O7_l
       integer,save :: it_tot=0, sit_tot=0, fail_tot=0
       real*8 :: time0,time1,qread
 
       if (firstCall) then
         do i=1,NDUST
-          if (dust_nam(i).eq.'Al2O3[s]')     iAl2O3=i 
-          if (dust_nam(i).eq.'SiO[s]')       iSiO=i 
-          if (dust_nam(i).eq.'SiO2[s]')      iSiO2=i 
-          if (dust_nam(i).eq.'Fe[s]')        iFe=i 
-          if (dust_nam(i).eq.'Fe[l]')        iFe_l=i 
-          if (dust_nam(i).eq.'FeS[s]')       iFeS=i 
-          if (dust_nam(i).eq.'Na2SiO3[s]')   iNa2SiO3=i 
-          if (dust_nam(i).eq.'MgSiO3[s]')    iMgSiO3=i 
-          if (dust_nam(i).eq.'Mg2SiO4[s]')   iMg2SiO4=i 
-          if (dust_nam(i).eq.'CaSiO3[s]')    iCaSiO3=i
-          if (dust_nam(i).eq.'CaTiO3[s]')    iCaTiO3=i
-          if (dust_nam(i).eq.'CaMgSi2O6[s]') iCaMgSi2O6=i
-          if (dust_nam(i).eq.'NaAlSi3O8[s]') iNaAlSi3O8=i
-          if (dust_nam(i).eq.'MgAl2O4[s]')   iMgAl2O4=i
-          if (dust_nam(i).eq.'MgAl2O4[l]')   iMgAl2O4_l=i
-          if (dust_nam(i).eq.'Ti4O7[s]')     iTi4O7=i
-          if (dust_nam(i).eq.'TiO2[s]')      iTiO2=i
-          if (dust_nam(i).eq.'MgTi2O5[s]')   iMgTi2O5=i
-          if (dust_nam(i).eq.'SiC[s]')       iSiC=i
-          if (dust_nam(i).eq.'CaS[s]')       iCaS=i
-          if (dust_nam(i).eq.'Fe2SiO4[s]')   iFe2SiO4=i
-          if (dust_nam(i).eq.'FeO[s]')       iFeO=i
-          if (dust_nam(i).eq.'NaCl[s]')      iNaCl=i
-          if (dust_nam(i).eq.'KCl[s]')       iKCl=i
-          if (dust_nam(i).eq.'KAlSi3O8[s]')  iKAlSi3O8=i
-          if (dust_nam(i).eq.'H2O[s]')       iH2O=i
-          if (dust_nam(i).eq.'H2O[l]')       iH2O_l=i
+          if (dust_nam(i).eq.'Al2O3[s]')      iAl2O3=i 
+!          if (dust_nam(i).eq.'Al2O3[l]')      iAl2O3_l=i 
+!          if (dust_nam(i).eq.'Fe2O3[s]')      iFe2O3=i 
+          if (dust_nam(i).eq.'SiO[s]')        iSiO=i 
+          if (dust_nam(i).eq.'SiO2[s]')       iSiO2=i
+!          if (dust_nam(i).eq.'SiO2[l]')       iSiO2_l=i 
+!          if (dust_nam(i).eq.'SiS2[s]')       iSiS2=i
+          if (dust_nam(i).eq.'Fe[s]')         iFe=i 
+          if (dust_nam(i).eq.'Fe[l]')         iFe_l=i 
+          if (dust_nam(i).eq.'FeS[s]')        iFeS=i 
+!          if (dust_nam(i).eq.'FeS[l]')        iFeS_l=i 
+!          if (dust_nam(i).eq.'FeS2[s]')       iFeS2=i 
+          if (dust_nam(i).eq.'Na2SiO3[s]')    iNa2SiO3=i
+!          if (dust_nam(i).eq.'Na2SiO3[l]')    iNa2SiO3_l=i 
+          if (dust_nam(i).eq.'MgSiO3[s]')     iMgSiO3=i 
+!          if (dust_nam(i).eq.'MgSiO3[l]')     iMgSiO3_l=i 
+          if (dust_nam(i).eq.'Mg2SiO4[s]')    iMg2SiO4=i 
+!          if (dust_nam(i).eq.'Mg2SiO4[l]')    iMg2SiO4_l=i 
+          if (dust_nam(i).eq.'CaSiO3[s]')     iCaSiO3=i 
+          if (dust_nam(i).eq.'CaTiO3[s]')     iCaTiO3=i 
+          if (dust_nam(i).eq.'CaMgSi2O6[s]')  iCaMgSi2O6=i
+!          if (dust_nam(i).eq.'CaAl2Si2O8[s]') iCaAl2Si2O8=i
+          if (dust_nam(i).eq.'NaAlSi3O8[s]')  iNaAlSi3O8=i
+          if (dust_nam(i).eq.'MgAl2O4[s]')    iMgAl2O4=i
+          if (dust_nam(i).eq.'MgAl2O4[l]')    iMgAl2O4_l=i
+          if (dust_nam(i).eq.'Ti4O7[s]')      iTi4O7=i
+!          if (dust_nam(i).eq.'Ti4O7[l]')      iTi4O7_l=i
+          if (dust_nam(i).eq.'TiO2[s]')       iTiO2=i
+!          if (dust_nam(i).eq.'TiO2[l]')       iTiO2_l=i
+          if (dust_nam(i).eq.'MgTi2O5[s]')    iMgTi2O5=i
+          if (dust_nam(i).eq.'SiC[s]')        iSiC=i
+          if (dust_nam(i).eq.'CaS[s]')        iCaS=i
+          if (dust_nam(i).eq.'Fe2SiO4[s]')    iFe2SiO4=i
+          if (dust_nam(i).eq.'FeO[s]')        iFeO=i
+          if (dust_nam(i).eq.'NaCl[s]')       iNaCl=i
+!          if (dust_nam(i).eq.'NaCl[l]')       iNaCl_l=i
+!          if (dust_nam(i).eq.'LiCl[s]')       iLiCl=i
+!          if (dust_nam(i).eq.'LiCl[l]')       iLiCl_l=i
+          if (dust_nam(i).eq.'KCl[s]')        iKCl=i
+!          if (dust_nam(i).eq.'KCl[l]')        iKCl_l=i
+          if (dust_nam(i).eq.'KAlSi3O8[s]')   iKAlSi3O8=i
+          if (dust_nam(i).eq.'H2O[s]')        iH2O=i
+          if (dust_nam(i).eq.'H2O[l]')        iH2O_l=i
+!          if (dust_nam(i).eq.'H2SO4[l]')      iH2SO4_l=i
+!          if (dust_nam(i).eq.'C[s]')          iC=i
+!          if (dust_nam(i).eq.'S[s]')          iS=i
+!          if (dust_nam(i).eq.'TiC[s]')        iTiC=i
+!          if (dust_nam(i).eq.'MgO[s]')        iMgO=i
+!          if (dust_nam(i).eq.'CaO[s]')        iCaO=i
+!          if (dust_nam(i).eq.'MgS[s]')        iMgS=i
+!          if (dust_nam(i).eq.'Na[s]')         iNa=i 
+!          if (dust_nam(i).eq.'Na[l]')         iNa_l=i 
+!          if (dust_nam(i).eq.'Na2S[s]')       iNa2S=i
+!          if (dust_nam(i).eq.'AlCl3[s]')      iAlCl3=i 
+!          if (dust_nam(i).eq.'NH3[s]')        iNH3=i
+!          if (dust_nam(i).eq.'CaCl2[l]')      iCaCl2_l=i
         enddo
         firstCall = .false. 
       endif
