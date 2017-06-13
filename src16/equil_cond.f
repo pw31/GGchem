@@ -161,8 +161,8 @@
         enddo
         Nact = Nact_read
         verbose = 0
-        !if (qread>1.Q-3.and.Nact>0) verbose=2
-        !if (iread==187) verbose=2
+!        if (qread>1.Q-3.and.Nact>0) verbose=2
+!        if (iread==187) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -754,6 +754,12 @@
           e_act(Al) = .true.
         endif  
         if (active(iCaMgSi2O6).and.e_act(Ca).and.e_act(Si).and.
+     >      e_num(Ca)==1.and.e_num(Si)==1) then
+          e_act(Iindex(Nact)) = .false.
+          e_act(Iindex(Nact+1)) = .true.
+          Iindex(Nact) = Iindex(Nact+1)
+        endif   
+        if (active(iCaTiO3).and.e_act(Ca).and.e_act(Ti).and.
      >      e_num(Ca)==1.and.e_num(Si)==1) then
           e_act(Iindex(Nact)) = .false.
           e_act(Iindex(Nact+1)) = .true.
