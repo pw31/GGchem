@@ -759,6 +759,12 @@
           e_act(Iindex(Nact+1)) = .true.
           Iindex(Nact) = Iindex(Nact+1)
         endif   
+        if (active(iCaTiO3).and.e_act(Ca).and.e_act(Ti).and.
+     >      e_num(Ca)==1.and.e_num(Ti)==1) then
+          e_act(Iindex(Nact)) = .false.
+          e_act(Iindex(Nact+1)) = .true.
+          Iindex(Nact) = Iindex(Nact+1)
+        endif   
         if (verbose>1) print*,"solving for ... ",
      >                      (elnam(Iindex(i))//" ",i=1,Nind)
         if (verbose>1) print'(99(1pE11.3))',(Iabund(i),i=1,Nind)

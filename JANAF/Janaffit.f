@@ -209,6 +209,7 @@
       write(*,*) '190 = MgSiO3[s]'
       write(*,*) '191 = SiO2[s]'
       write(*,*) '192 = Mg2SiO4[s]'
+      write(*,*) '193 = AlO2'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -1659,6 +1660,13 @@
         stoich(2) = 2.D0
         stoich(3) = 1.D0
         stoich(4) = 4.D0
+      elseif (specie.eq.193) then
+        call READ_DATEI('AlO2.txt' ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Al.txt'  ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('O.txt'  ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 2.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop

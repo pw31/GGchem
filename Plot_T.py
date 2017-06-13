@@ -162,7 +162,7 @@ if (nmax>-99):
 
 #================== some important molecules ====================
 fig,ax = plt.subplots()
-mols  = ['H2','H','N2','H2O','O2','CO','CO2','CH4','NH3','C2H2','O3','He','el']
+mols  = ['H2','H','N2','H2O','O2','CO','CO2','CH4','NH3','C2H2','O3','SIO2','He','el']
 nmax  = np.float(0)
 for mol in range(4,4+NELEM+NMOLE,1):
   yy = dat[:,mol]                # log10 nmol [cm-3]
@@ -200,7 +200,7 @@ ellist = ['H','C','O','N','SI','S','NA','CL','CA','TI','K','AL','MG','FE','LI','
 allist = [' ',' ',' ',' ','Si',' ','Na','Cl','Ca','Ti',' ','Al','Mg','Fe','Li','+']
 exlist = [' He ',' Cl CL Ca CA Cr ',' ',' Na NA Ni ',' ',' Si SI ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
 titels = ['hydrogen','carbon','oxygen','nitrogen','silicon','sulphur','sodium','chlorine','calcium','titanium','potassium','aluminum','magnesium','iron','lithium','charge carriers']
-limits = [2,5,3.5,6,6,5,6,4,7,8,6,6,6,6,7,5]   
+limits = [2,5,3,6,6,5,6,4,7,8,6,6,6,6,7,5]   
 for i in range(0,16):
   fig,ax = plt.subplots()
   el = ellist[i]

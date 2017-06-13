@@ -173,7 +173,7 @@ for isolid in reversed(indices):
   Pphase = np.log10(Pphase)
   Sphase = np.array(S)
 #  plt.tricontourf(Tphase, Pphase, Sphase, 30)
-  plt.tricontour(Tphase, Pphase, Sphase, [0.9],color='blue')
+  plt.tricontour(Tphase, Pphase, Sphase, [1.0],color='blue')
   for iliquid in reversed(indices):
     liquid = solids[iliquid]
     if (liquid != solid+'[l]'): continue       #include liquid
@@ -185,7 +185,7 @@ for isolid in reversed(indices):
     Pphase = np.array(press)/bar
     Pphase = np.log10(Pphase)
     Sphase = np.array(S)
-    plt.tricontour(Tphase, Pphase, Sphase, [0.9],color='red')
+    plt.tricontour(Tphase, Pphase, Sphase, [1.0],color='red')
   plt.title(solid,fontsize=20)
   plt.xlabel(r'$T\mathrm{[K]}$',fontsize=20)
   plt.ylabel(r'$\mathrm{log}_{10}\ P\mathrm{[bar]}$',fontsize=20)
