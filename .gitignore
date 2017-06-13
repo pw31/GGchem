@@ -1,5 +1,7 @@
 *~
 GIT.commands
+EarthCrust.dat
+abundances.pro
 src16/*.o
 src16/*.mod
 src16/makefile
@@ -13,4 +15,4 @@ ggchem*.pdf
 Summer*
 JANAF/a.out
 JANAF/*~
-JANAF/fitout.dat
+JANAF/fitout*
