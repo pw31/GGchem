@@ -9,7 +9,7 @@
       use EXCHANGE,ONLY: nel,nat,nion,nmol,
      &                   HII,CII,NII,OII,NaII,MgII,AlII,KII,TiII,SII,
      &                   SiII,FeII,CaII,LiII,ClII,HeII,
-     &                   H,He,Li,C,N,O,Fl,Ne,Na,Mg,Al,Si,S,Cl,K,Ca,Ti,
+     &                   H,He,Li,C,N,O,F,Ne,Na,Mg,Al,Si,S,Cl,K,Ca,Ti,
      &                   Cr,Mn,Fe,Ni
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )

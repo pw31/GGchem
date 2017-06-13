@@ -4,7 +4,7 @@
       use DUST_DATA,ONLY: NELEM,NMOLE,NDUST,elnam,cmol,eps0,bk,bar,muH,
      >                    amu,dust_nam,dust_mass,dust_Vol
       use EXCHANGE,ONLY: nel,nat,nion,nmol,
-     >                   H,He,Li,C,N,O,Fl,Ne,Na,Mg,Al,Si,S,Cl,K,Ca,Ti,
+     >                   H,He,Li,C,N,O,F,Ne,Na,Mg,Al,Si,S,Cl,K,Ca,Ti,
      >                   Cr,Mn,Fe,Ni
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
@@ -28,7 +28,7 @@
       !---------------------------------
       print*,"start and end temperature [K] (decreasing)"
       !read*,T1,T2
-      T1 = 2500
+      T1 = 6000
       T2 = 100
       print*,"start and end p [bar] (any)"
       !read*,p1,p2
@@ -51,7 +51,7 @@
      &               'N',eps( N), 'O',eps( O)
       write(70,*) NELEM,NMOLE,NDUST,Npoints
       write(70,2000) 'Tg','nHges','pges','el',
-     &               'H','He','Li','C','N','O','Fl','Ne','Na','Mg','Al',
+     &               'H','He','Li','C','N','O','F','Ne','Na','Mg','Al',
      &               'Si','S','Cl','K','Ca','Ti','Cr','Mn','Fe','Ni',
      &               (trim(cmol(i)),i=1,NMOLE),
      &               ('S'//trim(short_name(i)),i=1,NDUST),
@@ -177,7 +177,7 @@
         eldust = 0.0
         do 
           nHges = p*mu/(bk*Tg)/muH
-          call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
+          !call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
           call GGCHEM(nHges,Tg,eps,.false.,0)
           call SUPERSAT(Tg,nat,nmol,Sat)
           kT = bk*Tg
@@ -209,7 +209,7 @@
      &                LOG10(MAX(1.Q-300, nat( C))),
      &                LOG10(MAX(1.Q-300, nat( N))),
      &                LOG10(MAX(1.Q-300, nat( O))),
-     &                LOG10(MAX(1.Q-300, nat(Fl))),
+     &                LOG10(MAX(1.Q-300, nat( F))),
      &                LOG10(MAX(1.Q-300, nat(Ne))),
      &                LOG10(MAX(1.Q-300, nat(Na))),
      &                LOG10(MAX(1.Q-300, nat(Mg))),

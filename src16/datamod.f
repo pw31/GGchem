@@ -1,6 +1,6 @@
       module DUST_DATA
         integer,parameter :: qp = selected_real_kind ( 33, 4931 )
-        integer,parameter :: NELEM=37        ! number of elements
+        integer,parameter :: NELEM=28        ! number of elements
         integer,parameter :: NELM=17         ! no of elements treated in smchem
         integer,parameter :: NMOLE=206       ! number of molecules
         integer,parameter :: NDUST=42        ! number of dust species
@@ -39,7 +39,7 @@
         real(kind=qp) :: nel,nat(NELEM),nion(NELEM),nmol(NMOLE)
         integer :: HII,HeII,CII,NII,OII,NaII,MgII,LiII,ClII
         integer :: AlII,KII,TiII,SII,SiII,FeII,CaII
-        integer,parameter :: H=1,He=2,Li=3,C=6,N=7,O=8,Fl=9,Ne=10,Na=11
+        integer,parameter :: H=1,He=2,Li=3,C=6,N=7,O=8,F=9,Ne=10,Na=11
         integer,parameter :: Mg=12,Al=13,Si=14,S=16,Cl=17,K=19,Ca=20
         integer,parameter :: Ti=22,Cr=24,Mn=25,Fe=26,Ni=28
         integer*8 :: chemcall,chemiter

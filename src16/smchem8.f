@@ -1421,7 +1421,7 @@ c     g(TiC)   : siehe oben!
      >                   "redo rare element patom","dp/patom"
           do piter=1,99
             f  = pat-eps(e)*anHges*kT
-            fs = 0.d0
+            fs = 1.d0
             do l=-1,12
               if (coeff(l)==0.d0) cycle
               f  = f  + coeff(l)*l*pat**l
@@ -1431,7 +1431,7 @@ c     g(TiC)   : siehe oben!
             pat = pat-delta
             if (verbose>1) print'(A2,1pE25.15,1pE10.2)',
      >                            catm(e),pat,delta/pat
-            if (ABS(delta/pat)<finish) exit 
+            if (ABS(delta)<finish*ABS(pat)) exit 
           enddo  
           if (piter>=99) then
             write(*,*) "*** no convergence in post-it "//catm(e)
@@ -1545,6 +1545,7 @@ c     g(TiC)   : siehe oben!
       use CHEM8,ONLY: a,th1,th2,th3,th4,TT1,TT2,TT3,fit,natom
       implicit none
       real*8,parameter :: bar=1.d+6, atm=1.013d+6, Rcal=1.987d+0
+      real*8,parameter :: Rgas=8.3144598d+0
       real*8,parameter :: ln10=DLOG(10.d0)
       real*8,parameter :: lnatm=DLOG(atm), lnbar=DLOG(bar)
       integer,intent(in) :: i    ! index of molecule
@@ -1579,6 +1580,13 @@ c     g(TiC)   : siehe oben!
         dG  = a(i,0)/TT1+a(i,1)*LOG(TT1)+a(i,2)+a(i,3)*TT1+a(i,4)*TT2
         lnk = dG + (1-Natom(i))*lnbar
 
+      else if (fit(i).eq.5) then
+        !-----------------
+        ! ***  dG-fit  ***
+        !-----------------
+        dG  = a(i,0)/TT1 + a(i,1) + a(i,2)*TT1 + a(i,3)*TT2 + a(i,4)*TT3
+        lnk = -dG/(Rgas*TT1) + (1-Natom(i))*lnbar
+         
       else
         print*,cmol(i),"i,fit=",i,fit(i)
         stop "???"

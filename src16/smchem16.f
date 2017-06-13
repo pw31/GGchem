@@ -163,8 +163,8 @@
       real(kind=qp) :: DF0(nel,nel),FF0(nel),scale(nel),conv(0:500,nel)
       real(kind=qp) :: converge(0:500),delp,nold,soll,haben,abw,sum
       real(kind=qp) :: dpp(4),func(4),dfunc(4,4)
-      real(kind=qp) :: pbefore1(4),pbefore2(4),pbefore3(2)
-      real(kind=qp) :: pcorr1(4),pcorr2(4),pcorr3(2)
+      real(kind=qp) :: pbefore1(4),pbefore2(4),pbefore3(2),pbefore4(2)
+      real(kind=qp) :: pcorr1(4),pcorr2(4),pcorr3(2),pcorr4(2)
       real(kind=qp) :: sca(4)
       logical :: from_merk,eact(nel),redo(nel)
       character(len=100) :: txt,line
@@ -316,6 +316,7 @@
         pcorr1(:) = 1.Q0
         pcorr2(:) = 1.Q0
         pcorr3(:) = 1.Q0
+        pcorr4(:) = 1.Q0
       endif
 *-----------------------------------------------------------------------
 *     ! zu niedrige Temperaturen abfangen und
@@ -572,6 +573,9 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
       ppp = cc / (aa + 2.Q0*pO*bb)
       qqq = -pHges / (aa + 2.Q0*pO*bb)
       pH  = VIETA(ppp,qqq)
+      pbefore4(1:2) = (/pO,pH/)
+      pO = pO * pcorr4(1)
+      pH = pH * pcorr4(2)
       piter = 0
       sca(1) = pHges
       sca(2) = pOges
@@ -597,6 +601,7 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
         if ((piter>99).or.(delta<1.Q-3)) exit
       enddo
       if (delta>1.Q-3) print*,"*** no conv. pH/pO",delta
+      pcorr4(1:2) = (/pO,pH/) / pbefore4(1:2)  
 *              
 *     ! Gleichgewicht  O, O+, C, C+, CO, CO2, H2O, C2H2, CH4
 *     ======================================================
@@ -776,8 +781,8 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
       anmol(HCN)  = g(HCN)  * pH * pC * pN / kT
       anmol(NH3)  = g(NH3)  * pN * pH**3 / kT
 *
-*     ! Gleichgewicht Si,S,SiS,SiC,SiO,Si2C,SiC2,SiH,SiH4,SiN,CS,HS,H2S,SO,SO2,H2SO4
-*     ==============================================================================
+*     ! Gleichgewicht Si,S,SiS,SiC,SiO,SiO2,Si2C,SiC2,SiH,SiH4,SiN,CS,HS,H2S,SO,SO2,H2SO4
+*     ===================================================================================
       g(SiII)  = gk( SiII )
       g(SII)   = gk( SII )
       g(SiS)   = gk( SiS )
@@ -1397,7 +1402,7 @@ c     g(TiC)   : siehe oben!
      >                   "redo rare element patom","dp/patom"
           do piter=1,99
             f  = pat-eps(e)*anHges*kT
-            fs = 0.Q0
+            fs = 1.Q0
             do l=-1,12
               if (coeff(l)==0.Q0) cycle
               f  = f  + coeff(l)*l*pat**l
@@ -1430,7 +1435,7 @@ c     g(TiC)   : siehe oben!
      >                               conv(switch,i),badness(i)
             endif  
           enddo
-          !write(99,'(0pF9.3,I4,99(1pE10.3))') Tg,it,anHges,badness
+          write(99,'(0pF9.3,I4,99(1pE10.3))') Tg,it,anHges,badness
         endif  
 *
 *       ! final anmol determination
@@ -1520,6 +1525,7 @@ c     g(TiC)   : siehe oben!
       use CHEM16,ONLY: a,th1,th2,th3,th4,TT1,TT2,TT3,fit,qp,natom
       implicit none
       real(kind=qp),parameter :: bar=1.Q+6, atm=1.013Q+6, Rcal=1.987Q+0
+      real(kind=qp),parameter :: Rgas=8.3144598Q+0
       real(kind=qp),parameter :: ln10=LOG(10.Q0)
       real(kind=qp),parameter :: lnatm=LOG(atm), lnbar=LOG(bar)
       integer,intent(in) :: i    ! index of molecule
@@ -1554,6 +1560,13 @@ c     g(TiC)   : siehe oben!
         dG  = a(i,0)/TT1+a(i,1)*LOG(TT1)+a(i,2)+a(i,3)*TT1+a(i,4)*TT2
         lnk = dG + (1-Natom(i))*lnbar
 
+      else if (fit(i).eq.5) then
+        !--------------------
+        ! ***  dG(T)-fit  ***
+        !--------------------
+        dG  = a(i,0)/TT1 + a(i,1) + a(i,2)*TT1 + a(i,3)*TT2 + a(i,4)*TT3
+        lnk = -dG/(Rgas*TT1) + (1-Natom(i))*lnbar
+         
       else
         print*,cmol(i),"i,fit=",i,fit(i)
         stop "???"

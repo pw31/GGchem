@@ -6,9 +6,9 @@
         call INIT
         call INIT_DUSTCHEM
         !call DEMO_CHEMISTRY
-        !call DEMO_SWEEP
+        call DEMO_SWEEP
         !call DEMO_STRUCTURE
-        call DEMO_PHASEDIAGRAM
+        !call DEMO_PHASEDIAGRAM
 
         print*
         print'("   smchem calls = ",I7)',chemcall
@@ -25,7 +25,7 @@
       use DUST_DATA,ONLY: NELEM,NMOLE,NDUST,elnam,cmol,eps0,bk,
      >                    dust_nam,dust_mass,dust_Vol
       use EXCHANGE,ONLY: nel,nat,nion,nmol,
-     >                   H,He,Li,C,N,O,Fl,Ne,Na,Mg,Al,Si,S,Cl,K,Ca,Ti,
+     >                   H,He,Li,C,N,O,F,Ne,Na,Mg,Al,Si,S,Cl,K,Ca,Ti,
      >                   Cr,Mn,Fe,Ni
       implicit none
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )

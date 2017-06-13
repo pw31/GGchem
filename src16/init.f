@@ -14,26 +14,31 @@
 *****                                                            *****
 **********************************************************************
       use dust_data,ONLY: NELEM,eps=>eps0,mass,muH,elnam,amu
-      use EXCHANGE,ONLY: H,He,Li,C,N,O,Fl,Ne,Na,Mg,Al,Si,S,Cl,K,Ca,Ti,
+      use EXCHANGE,ONLY: H,He,Li,C,N,O,F,Ne,Na,Mg,Al,Si,S,Cl,K,Ca,Ti,
      >                   Cr,Mn,Fe,Ni
-      implicit  none
-      integer :: i
+      implicit none
+      integer :: i,nr,pick
+      real*8 :: m,abund(NELEM,4)
+      character(len=2) :: el
+      character(len=20) :: elname
+      character(len=20) :: source(4)
+      character(len=200) :: line
 
       write(*,*) 
       write(*,*) "elemental abundances ..."
       write(*,*) "========================"
       do i=1,NELEM
-         elnam(i) = '  '
-         eps(i)  = -99.d0
-         mass(i) = 0.d0
+        elnam(i) = '  '
+        eps(i)  = -99.d0
+        mass(i) = 0.d0
       enddo
-      elnam(1)  = 'H'
+      elnam(1)  = 'H '
       elnam(2)  = 'He'
       elnam(3)  = 'Li'
       elnam(6)  = 'C '
       elnam(7)  = 'N '
       elnam(8)  = 'O '
-      elnam(9)  = 'Fl'
+      elnam(9)  = 'F '
       elnam(10) = 'Ne'
       elnam(11) = 'Na'
       elnam(12) = 'Mg'
@@ -82,7 +87,7 @@
       eps(C)  =  8.39 D0  
       eps(N)  =  7.78 D0  
       eps(O)  =  8.66 D0  
-      eps(Fl) =  4.56 D0
+      eps(F)  =  4.56 D0
       eps(Ne) =  7.84 D0
       eps(Na) =  6.17 D0
       eps(Mg) =  7.53 D0
@@ -123,7 +128,7 @@
       !    endif
       !  endif
       !enddo
-  
+
 *     --------------------
 *     ***  Atommassen  ***
 *     --------------------
@@ -133,7 +138,7 @@
       mass(C)  = 12.011 D0 * amu
       mass(N)  = 14.007 D0 * amu
       mass(O)  = 15.999 D0 * amu
-      mass(Fl) = 19.000 D0 * amu      
+      mass(F)  = 19.000 D0 * amu      
       mass(Ne) = 20.18  D0 * amu            
       mass(Na) = 22.990 D0 * amu
       mass(Mg) = 24.312 D0 * amu
@@ -153,17 +158,42 @@
       do i=1,NELEM
         eps(i) = 10.d0 ** (eps(i)-12.d0)
         if (elnam(i).ne.'  ') then
-          write(*,1000) elnam(i),eps(i)
+          write(*,'(1x,a2,1x,0pF8.3,1pE12.4)') 
+     &          elnam(i),12.d0+LOG10(eps(i)),eps(i)
         endif  
         muH = muH + mass(i)*eps(i)
       enddo
       write(*,*) 'rho = n<H> *',muH/amu,' amu'
 
-      eps(Fl) = 1.E-99
-      eps(Cr) = 1.E-99
-      eps(Mn) = 1.E-99
-      eps(Ni) = 1.E-99
+*     -------------------------
+*     ***  read from file?  ***      
+*     -------------------------
+      if (.false.) then
+        source = (/'EarthCrust','Ocean','Solar','Meteorites'/)
+        pick = 4 
+        write(*,*)
+        write(*,*) "replacing from file Abundances.dat ("
+     &             //trim(source(pick))//") ..."
+        open(1,file='Abundances.dat',status='old')
+        do i=1,5
+          read(1,'(A200)') line
+        enddo  
+        do i=1,NELEM
+          read(1,*) nr,elname,el,m,abund(nr,1:4)
+          !print*,nr,el,real(eps(nr)),abund(nr,pick)/abund(1,pick)
+          mass(nr)  = m*amu
+          elnam(nr) = el
+          eps(nr) = MAX(1.e-99,abund(nr,pick)/abund(1,pick))
+        enddo  
+        close(1)
+        muH = 0.d0
+        do i=1,NELEM
+          write(*,'(1x,a2,1x,0pF8.3,1pE12.4)') 
+     &          elnam(i),12.d0+LOG10(eps(i)),eps(i)
+          muH = muH + mass(i)*eps(i)
+        enddo
+        write(*,*) 'rho = n<H> *',muH/amu,' amu'
+      endif  
 
       RETURN
- 1000 format(1x,a2,1x,1pE13.6)
       end

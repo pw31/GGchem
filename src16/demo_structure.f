@@ -5,7 +5,7 @@
       use DUST_DATA,ONLY: NELEM,NMOLE,NDUST,elnam,cmol,eps0,bk,bar,amu,
      >                    dust_nam,dust_mass,dust_Vol,muH
       use EXCHANGE,ONLY: nel,nat,nion,nmol,
-     >                   H,He,Li,C,N,O,Fl,Ne,Na,Mg,Al,Si,S,Cl,K,Ca,Ti,
+     >                   H,He,Li,C,N,O,F,Ne,Na,Mg,Al,Si,S,Cl,K,Ca,Ti,
      >                   Cr,Mn,Fe,Ni
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
@@ -50,7 +50,7 @@
      &               'N',eps( N), 'O',eps( O)
       write(70,*) NELEM,NMOLE,NDUST,Npoints
       write(70,2000) 'Tg','nHges','pges','el',
-     &               'H','He','Li','C','N','O','Fl','Ne','Na','Mg','Al',
+     &               'H','He','Li','C','N','O','F','Ne','Na','Mg','Al',
      &               'Si','S','Cl','K','Ca','Ti','Cr','Mn','Fe','Ni',
      &               (trim(cmol(i)),i=1,NMOLE),
      &               ('S'//trim(short_name(i)),i=1,NDUST),
@@ -92,7 +92,7 @@
      &                LOG10(MAX(1.Q-300, nat( C))),
      &                LOG10(MAX(1.Q-300, nat( N))),
      &                LOG10(MAX(1.Q-300, nat( O))),
-     &                LOG10(MAX(1.Q-300, nat(Fl))),
+     &                LOG10(MAX(1.Q-300, nat( F))),
      &                LOG10(MAX(1.Q-300, nat(Ne))),
      &                LOG10(MAX(1.Q-300, nat(Na))),
      &                LOG10(MAX(1.Q-300, nat(Mg))),
