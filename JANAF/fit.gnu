@@ -84,8 +84,8 @@ h(x) = (c0/x + c1 + c2*x + c3*x**2 + c4*x**3)/1000.0*cal
 #      f(x) title "old"  with lines
 #pause mouse
 
-plot 'fitout.dat' us 1:2  title "Daten"  with points, \
-     'fitout.dat' us 1:3  title "Fit"  with lines
+plot 'fitout.dat'  us 1:2  title "Daten"  with points, \
+     'fitout2.dat' us 1:2  title "Fit"  with lines
      
 
 

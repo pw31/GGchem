@@ -3,7 +3,7 @@
       integer N,S
       parameter (N=200, S=10)
       integer specie,Nmax(S),Ndat,dN,i,j,grad,ed,Edzahl,mode,sumst
-      integer Nit,it
+      integer Nit,it,NB
       real*8 dG(S,N),T(S,N),x(N),y(N),stoich(S),dGform(N),TTform(N)
       real*8 T1,T2,koeff(0:10),xx,yy,yfit,delta1,delta2
       real*8 bk,Rgas,bar,xlow,xhigh,Tdatmin,Tdatmax,Ggrad
@@ -1735,6 +1735,7 @@
      >         /(TTform(3)-TTform(1))
         write(*,*) "linear extrapolation dGform(T) ..."
         dN = (Tdatmin-T1)/20
+        if (dN.eq.0) dN=1
         x(1+dN:Ndat+dN) = x(1:Ndat)
         y(1+dN:Ndat+dN) = y(1:Ndat)
         dGform(1+dN:Ndat+dN) = dGform(1:Ndat)
@@ -1766,6 +1767,7 @@
      >         /(TTform(Ndat)-TTform(Ndat-1))
         write(*,*) "linear extrapolation dGform(T) ..."
         dN = (T2-Tdatmax)/100
+        if (dN.eq.0) dN=1
         do i=1,dN
           xx = Tdatmax + (T2-Tdatmax)*DBLE(i)/DBLE(dN)
           yy = dGform(Ndat) + Ggrad*(xx-TTform(Ndat))
@@ -1776,8 +1778,8 @@
             x(Ndat+i) = 5040.D0/xx
             y(Ndat+i) = sumst*DLOG(bar) - yy*1000.D0/(Rgas*xx)
           else if (mode.eq.3) then
-            x(i) = xx
-            y(i) = -yy*1000.D0/(Rgas*xx)
+            x(Ndat+i) = xx
+            y(Ndat+i) = -yy*1000.D0/(Rgas*xx)
           else if (mode.eq.4) then
             x(Ndat+i) = xx
             y(Ndat+i) = (DLOG(bar) + yy*1000.D0/(Rgas*xx))*xx
@@ -1792,18 +1794,22 @@
 
       if (mode.eq.3) then
         grad = 1 
-        Bfit(:) =  1.d-8
-        Bfit(2) = -1.d+0
+        Bfit(:) = 1.E-6
+        Bfit(2) = -1.d0
         call POLYFIT(N,1,Ndat,x,(y-Bfit(2)*log(x))*x,grad,koeff)
         Bfit(1) = koeff(0)
         Bfit(3) = koeff(1)
         e   = 1.E-6
         ee1 = 0.1d0
-        print'("coefficients before:",5(1pE18.10))',Bfit(1:5)
+        write(*,*) 'polynomial degree=? ...'
+        read(*,*) grad
+        NB=grad+3
+        Bfit(NB+1:5) = 0.d0
+        print'("coefficients before:",5(1pE18.10))',Bfit(1:NB)
         do it=1,100
           Nit = 0 
-          call PARAM_LS(stock,5,Nit,Ndat,dev,e,ee1,Bfit,x,y)
-          print'("coefficients after :",5(1pE18.10))',Bfit(1:5)
+          call PARAM_LS(stock,NB,Nit,Ndat,dev,e,ee1,Bfit,x,y)
+          print'("coefficients after :",5(1pE18.10))',Bfit(1:NB)
           print*,Nit,' iterations'
         enddo
         koeff(0:4) = Bfit(1:5)
@@ -1864,8 +1870,7 @@
       write(*,*)
       delta1 = 0.D0
       delta2 = 0.D0
-      open(unit=12,file='fitout.dat',status='unknown')
-      rewind(12)
+      open(unit=12,file='fitout.dat',status='replace')
       do i=1,Ndat
         xx = x(i)
         yy = y(i)
@@ -1879,7 +1884,7 @@
         else if (mode.eq.2) then
         else if (mode.eq.3) then
           yy   = -yy*(Rgas*xx)/1000.0 
-          yfit = -stock(5,Bfit,xx)*(Rgas*xx)/1000.0 
+          yfit = -stock(NB,Bfit,xx)*(Rgas*xx)/1000.0 
         else if (mode.eq.4) then
           yy   = yy/xx
           yfit = yfit/xx
@@ -1893,6 +1898,30 @@
         write(12,1020) xx,yy,yfit
       enddo
       close(12)
+      open(unit=12,file='fitout2.dat',status='replace')
+      do i=0,1000
+        xx = EXP(LOG(50.d0)+LOG(10000.d0/50.d0)*i/1000.d0)
+        if (mode.eq.2) xx=5040.d0/xx
+        yfit = 0.d0
+        do j=0,grad
+          yfit = yfit + koeff(j)*xx**j
+        enddo
+        if (mode.eq.1) then
+          yfit = yfit/1000.D0/xx
+        else if (mode.eq.2) then
+        else if (mode.eq.3) then
+          yy   = -yy*(Rgas*xx)/1000.0 
+          yfit = -stock(NB,Bfit,xx)*(Rgas*xx)/1000.0 
+        else if (mode.eq.4) then
+          yy   = yy/xx
+          yfit = yfit/xx
+        else if (mode.eq.5) then
+          yy   = yy/xx
+          yfit = pvap(3,Afit,xx)
+        endif
+        write(12,1020) xx,yfit
+      enddo
+      close(12)
       delta2 = DSQRT(delta2/dble(Ndat))
       if (mode.eq.1) then
         write(*,1031) delta1,delta2
@@ -1901,7 +1930,7 @@
       endif
       write(*,*)
       write(*,2000) (koeff(j),j=0,grad)
-      if (mode.ne.3) goto 100
+      goto 100
 *
       STOP
  1000 format(' a_',i1,' = ',1pE12.5)
