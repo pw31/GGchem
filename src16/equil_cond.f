@@ -162,7 +162,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        !if (iread==205) verbose=2
+        !if (iread==60) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -413,8 +413,8 @@
      >                       ddust,eps,dscale)
             endif  
           endif   
-          if (active(iSiO).and.active(iMgSiO3).and.active(iMg2SiO4)
-     >        .and.(.not.e_act(Mg).or..not.e_act(Si))) then
+          if (active(iSiO).and.active(iMgSiO3).and.
+     >        active(iMg2SiO4).and..false.) then
             changed = .true.
             !--- decide ---
             if (Sat0(iMgSiO3).gt.Sat0(iSiO)) then
@@ -434,7 +434,7 @@
             endif  
           endif
           if (active(iSiO2).and.active(iMgSiO3).and.
-     >        active(iMg2SiO4)) then
+     >        active(iMg2SiO4).and..false.) then
             changed = .true.
             !--- decide ---
             if (Sat0(iMgSiO3).gt.Sat0(iSiO2)) then
@@ -456,7 +456,7 @@
             eps(Si) = eps_save(Si)
           endif
           if (active(iTi4O7).and.active(iCaTiO3).and.
-     >        active(iCaMgSi2O6).and..not.e_act(Mg)) then
+     >        active(iCaMgSi2O6).and.(.not.active(iMg2SiO4))) then
             changed = .true.
             !--- decide ---
             if (Sat0(iCaTiO3).gt.Sat0(iTi4O7)) then

@@ -18,7 +18,7 @@ H
 
 dust species
 ============
-42
+43
 Al2O3[s]
 3.97
 2
@@ -241,6 +241,12 @@ Fe[l]
 6.98
 1
  1 Fe
+MgAl2O4[l]
+2.75
+3
+ 1 Mg
+ 2 Al
+ 4 O
 FeS[l]
 3.9
 2
@@ -267,12 +273,6 @@ Na2SiO3[l]
  2 Na
  1 Si
  3 O
-MgAl2O4[l]
-2.75
-3
- 1 Mg
- 2 Al
- 4 O
 Mg2SiO4[l]
 2.6
 3
