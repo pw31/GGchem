@@ -170,7 +170,7 @@
 *     -------------------------
       if (.false.) then
         source = (/'EarthCrust','Ocean','Solar','Meteorites'/)
-        pick = 4 
+        pick = 1 
         write(*,*)
         write(*,*) "replacing from file Abundances.dat ("
      &             //trim(source(pick))//") ..."

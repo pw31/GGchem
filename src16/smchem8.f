@@ -81,7 +81,7 @@
 *     GG-Konstanten fuer TiC von Andreas Gauger gewonnen               *
 *     auf der Grundlage spekrtoskopischer Messungen          11.09.97  *
 ************************************************************************
-      use DUST_DATA,ONLY: cmol,nml=>NMOLE,nel=>NELM
+      use DUST_DATA,ONLY: cmol,nml=>NMOLE,nel=>NELM,NewChemIt,NewBackIt
       use EXCHANGE,ONLY: HII,CII,NII,OII,NaII,MgII,AlII,KII,TiII,SII,
      >                   SiII,FeII,CaII,LiII,ClII,HeII,chemcall,chemiter
       use CHEM8,ONLY: a,th1,th2,th3,th4,fit,TT1,TT2,TT3,natom
@@ -137,10 +137,10 @@
       integer LiCl,Li2Cl2,Li3Cl3,Li2O2H2,KCl,CaCl2,CaCl,NaCl,HCl,NaH
       integer H2SO4,MgCl,MgCl2,FeCl,FeCl2,AlCl,AlCl2,AlCl3,Na2CL2,K2CL2
       integer TIOCL2
-      integer stindex,at,info,ipvt(nel),Nconv,switch,iredo
+      integer stindex,at,info,ipvt(nel),Nconv,switch,ido,iredo
       integer Nact,all_to_act(nel),act_to_all(nel),switchoff(nel)
       integer e,i,j,j1,ii,jj,kk,ilauf,l,it,m1,m2,piter,iraus,itry
-      integer imin,imax
+      integer imin,imax,pot,enew,eseq(nel)
       integer,parameter :: itmax=200
       real*8,parameter :: finish=1.d-12
       real*8 :: ppp,qqq
@@ -163,12 +163,13 @@
       real*8 :: DF(nel,nel),dp(nel),FF(nel),pmol,q0,qq,crit
       real*8 :: DF0(nel,nel),FF0(nel),scale(nel),conv(0:500,nel)
       real*8 :: converge(0:500),delp,nold,soll,haben,abw,sum
-      real*8 :: dpp(4),func(4),dfunc(4,4)
+      real*8 :: dpp(4),func(4),dfunc(4,4),sca(4)
       real*8 :: pbefore1(4),pbefore2(4),pbefore3(2)
       real*8 :: pcorr1(4),pcorr2(4),pcorr3(2)
-      real*8 :: sca(4)
-      logical :: from_merk,eact(nel),redo(nel)
-      logical :: IS_NAN,isOK
+      real*8 :: pbefore(nel),pcorr(nel,nel)
+      real*8 :: emax,pges,pwork
+      logical :: from_merk,eact(nel),done(nel),redo(nel)
+      logical :: IS_NAN,isOK,affect,known
       character(len=100) :: txt,line
       character(len=2) :: catm(nel)
       character(len=1) :: char
@@ -315,9 +316,10 @@
         TiOCL2 = stindex(cmol,nml,'TIOCL2 ')
         SiC4H12= stindex(cmol,nml,'SI(CH3)4')
         badness(:) = 1.d0
-        pcorr1(:) = 1.d0
-        pcorr2(:) = 1.d0
-        pcorr3(:) = 1.d0
+        pcorr1(:)  = 1.d0
+        pcorr2(:)  = 1.d0
+        pcorr3(:)  = 1.d0
+        pcorr(:,:) = 1.d0
       endif
 *-----------------------------------------------------------------------
 *     ! zu niedrige Temperaturen abfangen und
@@ -541,6 +543,9 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
       pel = nelek*kT
 *
 *-----------------------------------------------------------------------
+
+      if (.not.NewChemIt) then
+
 *     ! He: atomar
 *     ============
       anmono(He) = anHges * eps(He) 
@@ -1135,6 +1140,198 @@ c     g(TiC)   : siehe oben!
       anmol(LiO)   = g(LiO)   * pLi * pO / kT
       anmol(LiOH)  = g(LiOH)  * pLi * pO * pH / kT
       anmol(LiCl)  = g(LiCl)  * pLi * pCl / kT
+
+      else 
+*
+*     ! estimate atomic pressures: new method
+*     =======================================
+      do i=1,nml
+        if (i.ne.TiC) g(i)=gk(i)       ! compute all equil.constants
+      enddo  
+      done(:) = .false.                ! all elements to be estimated here
+      done(2) = .true.                 ! ... except for the electrons
+      eseq(:) = 0                      ! hirachical sequence of elements
+      do ido=1,nel-1
+        !---------------------------------------------------------
+        ! search for the most abundant element not yet considered 
+        !---------------------------------------------------------
+        emax = 0.d0 
+        enew = 0
+        do e=1,nel
+          if (done(e)) cycle   
+          if (eps(e)<emax) cycle
+          emax = eps(e)
+          enew = e                     
+        enddo  
+        if (verbose>1) print*,'estimate p'//trim(catm(enew))//' ...'
+        done(enew) = .true.
+        eseq(ido) = enew               ! add to hirachical sequence 
+        pges = eps(enew)*anHges*kT
+        pwork = pges
+        !-------------------------------------------
+        ! store coeff for Sum_l coeff(l) p^l = pges 
+        !-------------------------------------------
+        coeff(:) = 0.d0          
+        do i=1,nml
+          affect = .false. 
+          known  = .true. 
+          pmol = g(i)
+          do j=1,m_kind(0,i)
+            e = m_kind(j,i) 
+            if (.not.done(e)) then
+              known = .false.
+              exit
+            endif  
+            pat = anmono(e)*kT
+            if (e==enew) then
+              l = m_anz(j,i)   
+              affect = .true.
+            else if (m_anz(j,i).gt.0) then
+              do kk=1,m_anz(j,i)
+                pmol = pmol*pat
+              enddo
+            else
+              do kk=1,-m_anz(j,i)
+                pmol = pmol/pat
+              enddo
+            endif  
+          enddo  
+          if (.not.affect) cycle  
+          if (.not.known) cycle
+          coeff(l) = coeff(l) + l*pmol
+          !------------------------------------
+          ! for initial guess, consider this 
+          ! molecule to have all of element e2 
+          !------------------------------------
+          pwork = MIN(pwork,(pges/(l*pmol))**(1.d0/REAL(l)))
+        enddo  
+        !----------------------------------------------
+        ! solve 1d equation above with Newton's method 
+        !----------------------------------------------
+        do piter=1,99                  
+          f  = pwork-pges
+          fs = 1.d0
+          do l=1,12
+            if (coeff(l)==0.d0) cycle
+            f  = f  + coeff(l)*pwork**l
+            fs = fs + coeff(l)*l*pwork**(l-1)
+          enddo
+          delta = f/fs
+          pwork = pwork-delta
+          if (verbose>1) print'(A2,I3,1pE25.15,1pE10.2)',
+     >                   catm(enew),piter,pwork,delta/pwork
+          if (ABS(delta)<1.E-4*ABS(pwork)) exit 
+        enddo  
+        if (piter>=99) then
+          write(*,*) "*** no convergence in pre-it "//catm(enew)
+          write(*,*) coeff
+          stop
+        endif  
+        anmono(enew) = pwork*kT1
+        !-----------------------------------------------------------
+        ! take into account feedback on elements considered before,
+        ! unless they are much more abundant, with Newton-Raphson 
+        !-----------------------------------------------------------
+        eact(:) = .false.
+        Nact = 0
+        do iredo=MAX(1,ido-NewBackIt),ido
+          e = eseq(iredo)
+          if (eps(e)<100*eps(enew)) then
+            eact(e) = .true. 
+            Nact = Nact+1
+            all_to_act(e) = Nact
+            act_to_all(Nact) = e
+            pbefore(e) = anmono(e)
+            anmono(e) = anmono(e)*pcorr(ido,e)  ! use corrections from last call
+          endif
+        enddo
+        if (verbose>1) print*,catm(eseq(1:ido))
+        if (verbose>1) print*,eact(eseq(1:ido))
+        do it=1,99
+          do ii=1,Nact
+            i = act_to_all(ii) 
+            FF(ii) = anHges*eps(i)*kT - anmono(i)*kT
+            scale(i) = anmono(i)  
+            DF(ii,:) = 0.d0
+            DF(ii,ii) = -scale(i)
+            pmono1(i) = scale(i) / (anmono(i)*kT)
+          enddo	
+          do i=1,nml
+            affect = .false. 
+            known  = .true.
+            do j=1,m_kind(0,i)
+              if (.not.done(m_kind(j,i))) then
+                known = .false.
+                exit
+              endif
+              if (eact(m_kind(j,i))) affect=.true.
+            enddo  
+            if (known.and.affect) then
+              pmol = g(i)
+              do j=1,m_kind(0,i)
+                pat = anmono(m_kind(j,i))*kT
+                if (m_anz(j,i).gt.0) then
+                  do kk=1,m_anz(j,i)
+                    pmol = pmol*pat
+                  enddo
+                else
+                  do kk=1,-m_anz(j,i)
+                    pmol = pmol/pat
+                  enddo
+                endif
+              enddo
+              do j=1,m_kind(0,i)
+                m1 = m_kind(j,i)
+                if (.not.eact(m1)) cycle
+                m1 = all_to_act(m1)
+                term   = m_anz(j,i) * pmol
+                FF(m1) = FF(m1) - term
+                do l=1,m_kind(0,i)
+                  m2 = m_kind(l,i)
+                  if (.not.eact(m2)) cycle
+                  jj = all_to_act(m2)
+                  DF(m1,jj) = DF(m1,jj) - m_anz(l,i)*term*pmono1(m2)
+                enddo	    
+              enddo
+              !if (it==1) print'(A12,1pE12.4)',cmol(i),pmol
+            endif  
+          enddo
+          !call GAUSS8(nel,Nact,DF,dp,FF)
+          CALL SGEIR(DF,nel,Nact,FF,1,ind,work,indx)
+          dp = FF
+          do ii=1,Nact
+            i = act_to_all(ii) 
+            dp(ii) = dp(ii)*scale(i)
+          enddo
+          fak = 1.d0+4.d0*EXP(-(MAX(0,it-20))/13.d0)
+          delta = 0.d0
+          do ii=1,Nact
+            i = act_to_all(ii)
+            delp = -dp(ii)/(anmono(i)*kT)
+            delta = MAX(delta,ABS(delp))
+            delp = -dp(ii)*kT1
+            nold = anmono(i)
+            anmono(i) = MAX(nold/fak,MIN(nold*fak,nold+delp))
+          enddo
+          if (verbose>1) print'(I3,99(1pE12.4))',
+     >                   it,anmono(act_to_all(1:Nact))*kT,delta
+          if (delta<1.d-4) exit
+        enddo  
+        if (delta>1.d-4) then
+          write(*,*) "*** no convergence in NR pre-it "
+          print*,"Tg=",Tg
+          print*,catm(eseq(1:ido))
+          print*,eact(eseq(1:ido))
+          stop
+        endif  
+        pcorr(ido,:) = 1.d0
+        do ii=1,Nact
+          i = act_to_all(ii)
+          pcorr(ido,i) = anmono(i)/pbefore(i)    ! save after/before for next run
+        enddo  
+        if (verbose>1) read(*,'(A1)') char
+      enddo  
+      endif
 *
 *     ! redo electron density
 *     =======================
@@ -1162,8 +1359,8 @@ c     g(TiC)   : siehe oben!
       pel = SQRT(coeff(-1)/(1.d0+coeff(+1)))     ! 0 = pel - a/pel + b*pel
       anmono(el) = pel/kT
       
-*     ! use memory of deviations between predicted atom pressures 
-*     ! and converged atom pressures to improve the predictions
+*     ! use memory of deviations between predicted atomic pressures 
+*     ! and converged atomic pressures to improve the predictions
 *     ============================================================
       ansave = anmono
       anmono = anmono*badness
@@ -1454,7 +1651,10 @@ c     g(TiC)   : siehe oben!
      >                               conv(switch,i),badness(i)
             endif  
           enddo
-          !write(99,'(0pF9.3,I4,99(1pE10.3))') Tg,it,anHges,badness
+          if (ilauf==1) write(99,'(A9,A10,A4,99(A10))') 
+     >          'Tg','n<H>','it',catm(1:nel)
+          write(99,'(0pF9.3,1pE10.3,I4,99(1pE10.3))') 
+     >          Tg,anHges,it,badness
         endif  
 *
 *       ! final anmol determination
