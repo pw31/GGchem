@@ -157,15 +157,17 @@
           if (qbest<1.d-3) exit
         endif  
       enddo
-      eps    = dbase(ibest)%eps
-      ddust  = dbase(ibest)%ddust
       active = .false.
-      do i=1,NDUST
-        if (ddust(i)>0.Q0) active(i)=.true.
-      enddo
-  
-      write(*,'(" ... found best dataset (",I6,
+      if (ibest>0) then
+        eps    = dbase(ibest)%eps
+        ddust  = dbase(ibest)%ddust
+        do i=1,NDUST
+          if (ddust(i)>0.Q0) active(i)=.true.
+        enddo
+
+        write(*,'(" ... found best dataset (",I6,
      >          ")  nH,T,qual=",3(1pE13.5))')
      >     ibest,EXP(dbase(ibest)%ln),EXP(dbase(ibest)%lT),qbest
 
+      endif  
       end

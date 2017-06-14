@@ -3,7 +3,7 @@ import numpy as np
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 from matplotlib.backends.backend_pdf import PdfPages
 plt.rcParams['axes.linewidth'] = 1.5
-pp = PdfPages('ggchem.pdf')
+pp = PdfPages('ggchem3.pdf')
 
 file   = 'Static_Conc.dat'
 data   = open(file)
@@ -171,21 +171,22 @@ for isolid in reversed(indices):
   Tphase = np.array(Tg)
   Pphase = np.array(press)/bar
   Pphase = np.log10(Pphase)
-  Sphase = np.array(S)
-#  plt.tricontourf(Tphase, Pphase, Sphase, 30)
-  plt.tricontour(Tphase, Pphase, Sphase, [1.0],color='blue')
-  for iliquid in reversed(indices):
-    liquid = solids[iliquid]
-    if (liquid != solid+'[l]'): continue       #include liquid
-    ind = np.where(keyword == 'S'+liquid)[0]
-    if (np.size(ind) == 0): continue
-    ind = ind[0]
-    S = 10**dat[:,ind]              # S
-    Tphase = np.array(Tg)
-    Pphase = np.array(press)/bar
-    Pphase = np.log10(Pphase)
-    Sphase = np.array(S)
-    plt.tricontour(Tphase, Pphase, Sphase, [1.0],color='red')
+  Sphase = np.array(S).reshape(100,100)
+#  plt.contourf(Tphase, Pphase, Sphase, 30)
+  plt.contourf(Sphase, 30)
+#  plt.contour(Tphase, Pphase, Sphase, [1.0],color='blue')
+#  for iliquid in reversed(indices):
+#    liquid = solids[iliquid]
+#    if (liquid != solid+'[l]'): continue       #include liquid
+#    ind = np.where(keyword == 'S'+liquid)[0]
+#    if (np.size(ind) == 0): continue
+#    ind = ind[0]
+#    S = 10**dat[:,ind]              # S
+#    Tphase = np.array(Tg)
+#    Pphase = np.array(press)/bar
+#    Pphase = np.log10(Pphase)
+#    Sphase = np.array(S).reshape(100,100)
+#    plt.contour(Tphase, Pphase, Sphase, [1.0],color='red')
   plt.title(solid,fontsize=20)
   plt.xlabel(r'$T\mathrm{[K]}$',fontsize=20)
   plt.ylabel(r'$\mathrm{log}_{10}\ P\mathrm{[bar]}$',fontsize=20)
@@ -200,8 +201,8 @@ for isolid in reversed(indices):
   plt.tick_params('both', length=3, width=1, which='minor')
   minorLocator = MultipleLocator(sep)
   ax.xaxis.set_minor_locator(minorLocator)
-#  cbr = plt.colorbar()
-#  cbr.set_label(r'$supersaturation ratio$',fontsize=16)
+  cbr = plt.colorbar()
+  cbr.set_label(r'$supersaturation ratio$',fontsize=16)
 #  plt.show()
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
