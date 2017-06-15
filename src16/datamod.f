@@ -5,6 +5,8 @@
         integer,parameter :: NMOLE=206       ! number of molecules
         integer,parameter :: NDUST=43        ! number of dust species
         integer,parameter :: NEPS=14         ! number of affected elements
+        integer,parameter :: NewBackIt=5
+        logical,parameter :: NewChemIt=.true.
 
         character(len=2)  :: elnam(NELEM)    ! names of elements
         character(len=10) :: cmol(NMOLE)     ! names of molecules

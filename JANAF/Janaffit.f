@@ -210,8 +210,10 @@
       write(*,*) '191 = SiO2[s]'
       write(*,*) '192 = Mg2SiO4[s]'
       write(*,*) '193 = AlO2'
-      write(*,*) '194 = SiO2[s] pvap'
-      write(*,*) '195 = SiO2[l] pvap'
+      write(*,*) '194 = C5'
+      write(*,*) '195 = S2O'
+      write(*,*) '196 = SiO2[s] pvap'
+      write(*,*) '197 = SiO2[l] pvap'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -1670,11 +1672,23 @@
         stoich(2) = 1.D0
         stoich(3) = 2.D0
       elseif (specie.eq.194) then
+        call READ_DATEI('C5.txt' ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('C.txt'  ,dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 5.D0
+      elseif (specie.eq.195) then
+        call READ_DATEI('S2O.txt' ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('S.txt'  ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('O.txt'  ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 2.D0
+        stoich(3) = 1.D0
+      elseif (specie.eq.196) then
         call READ_DATEI('SiO2_cr.txt',dG,T,Nmax,N,S,1) 
         call READ_DATEI('SiO2.txt'   ,dG,T,Nmax,N,S,2) 
         Edzahl = 1
         stoich(2) = 1.D0
-      elseif (specie.eq.195) then
+      elseif (specie.eq.197) then
         call READ_DATEI('SiO2_l.txt'  ,dG,T,Nmax,N,S,1) 
         call READ_DATEI('SiO2.txt'   ,dG,T,Nmax,N,S,2) 
         Edzahl = 1
