@@ -32,7 +32,7 @@
       real(kind=qp),dimension(NELEM) :: eps00,epsread,check,FF,Fsav,dx
       real(kind=qp),dimension(NELEM) :: eps_save,vec,xstep,Iabund,work
       real(kind=qp),dimension(NELEM) :: scale
-      real(kind=qp),dimension(NDUST) :: ddustread,dscale,pot
+      real(kind=qp),dimension(NDUST) :: ddustread,dscale,pot,dust_save
       real(kind=qp),dimension(NDUST) :: Sat0,Sat1,Sat2
       real(kind=qp),dimension(NELEM,NELEM) :: DF,DFsav,emat,vecs
       real(kind=qp),dimension(NDUST,NELEM) :: mat
@@ -44,17 +44,18 @@
       integer,parameter :: itmax=200
       integer,dimension(NELEM) :: elem,Nslot
       integer,dimension(NELEM,NDUST) :: dustkind,stoich
-      integer :: it,i,j,k,el,el2,Nact,Nact_read,Neq,slots,sl,dk,eq
+      integer :: it,i,j,el,el2,Nact,Nact_read,Neq,slots,sl,dk,eq
       integer :: itry,knowns,unknowns,unknown,ii,jj,lastit
       integer :: imaxon,iminoff,info,ipvt(NELEM),e_num(NELEM)
       integer :: Nunsolved,unsolved(NELEM),Nvar1,Nvar2,var(NELEM)
-      integer :: Nsolve,ebest,dbest,nonzero,itrivial,iread
+      integer :: Nsolve,ebest,dbest,nonzero,itrivial,iread,ioff
+      integer :: ifail,Nact_save
       integer :: act_to_elem(NELEM),act_to_dust(NELEM)
       integer :: Nzero,Ntrivial,etrivial(NELEM),dtrivial(NELEM)
       logical,dimension(NELEM) :: e_resolved,e_act,e_taken,is_esolved
       logical,dimension(NDUST) :: active,act_read,act_old,d_resolved
-      logical,dimension(NDUST) :: is_dsolved
-      logical :: action,changed,solved,limited
+      logical,dimension(NDUST) :: is_dsolved,active_save
+      logical :: action,changed,solved,limited,ok,conserved
       character(len=1) :: char1,txt0
       character(len=2) :: rem
       character(len=500) :: txt,txt1,txt2,text,filename
@@ -74,7 +75,7 @@
       if (firstCall) then
         do i=1,NDUST
           if (dust_nam(i).eq.'Al2O3[s]')      iAl2O3=i 
-!          if (dust_nam(i).eq.'Al2O3[l]')      iAl2O3_l=i 
+          if (dust_nam(i).eq.'Al2O3[l]')      iAl2O3_l=i 
 !          if (dust_nam(i).eq.'Fe2O3[s]')      iFe2O3=i 
           if (dust_nam(i).eq.'SiO[s]')        iSiO=i 
           if (dust_nam(i).eq.'SiO2[s]')       iSiO2=i
@@ -162,7 +163,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        !if (iread==60) verbose=2
+        !if (iread==85) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -188,7 +189,7 @@
       enddo
       eps00 = check
       if (verbose>0) then
-        write(*,*) "element conservation error:",worst
+        write(*,*) "element conservation error 1:",worst
         write(*,*) "initial gas fractions ..."
         do i=1,NELEM
           if (eps00(i).gt.1.Q-20) then
@@ -220,6 +221,7 @@
       lastit = -99
       iminoff = 0
       limited = .false.
+      ifail = 0
 
       do it=1,itmax
         
@@ -261,7 +263,9 @@
           enddo  
           if (verbose>0.and.maxon>0.Q0) then
             print'("  maxon =",1pE10.2,2x,A12)',maxon,dust_nam(imaxon)
-          endif  
+          endif 
+          active_save = active 
+          Nact_save = Nact
           Smax = maxval(Sat1)
           if (maxon>0.1*MAX(Smax-1.Q0,0.Q0)) then
             if (imaxon.ne.iminoff) then 
@@ -279,6 +283,8 @@
           ! ***  some explicit help with sudden conversions ***
           !----------------------------------------------------
           eps_save = eps
+          dust_save = ddust
+          ok = .true.
           if (active(iKCl).and.active(iKAlSi3O8).and.
      >        active(iNaCl).and.active(iMgAl2O4).and.
      >        active(iMgSiO3).and.active(iMg2SiO4).and.
@@ -286,35 +292,37 @@
             changed = .true.
             !--- decide ---
             if (Sat0(iKCl)>Sat0(iKAlSi3O8)) then
+              ioff = iKAlSi3O8 
               active(iKAlSi3O8) = .false.
               amount = ddust(iKalSi3O8)/6.Q0
               call TRANSFORM(iKAlSi3O8,iKCl,amount,1.Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iKAlSi3O8,iNaCl,amount,-1.Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iKAlSi3O8,iNa2SiO3,amount,0.5Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iKAlSi3O8,iMgAl2O4,amount,0.5Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iKAlSi3O8,iMgSiO3,amount,5.5Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iKAlSi3O8,iMg2SiO4,amount,-3.Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             else  
+              ioff = iKCl 
               active(iKCl) = .false.
               amount = ddust(iKCl)/6.Q0
               call TRANSFORM(iKCl,iKAlSi3O8,amount,1.Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iKCl,iNaCl,amount,1.Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iKCl,iNa2SiO3,amount,-0.5Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iKCl,iMgAl2O4,amount,-0.5Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iKCl,iMgSiO3,amount,-5.5Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iKCl,iMg2SiO4,amount,3.Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             endif
             eps(Kalium) = eps_save(Kalium)
             eps(Cl) = eps_save(Cl)
@@ -330,35 +338,37 @@
             changed = .true.
             !--- decide ---
             if (Sat0(iKCl)>Sat0(iKAlSi3O8)) then
+              ioff = iKAlSi3O8 
               active(iKAlSi3O8) = .false.
               amount = ddust(iKalSi3O8)/6.Q0
               call TRANSFORM(iKAlSi3O8,iKCl,amount,1.Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iKAlSi3O8,iNaCl,amount,-1.Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iKAlSi3O8,iNa2SiO3,amount,0.5Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iKAlSi3O8,iAl2O3,amount,0.5Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iKAlSi3O8,iMgSiO3,amount,5.Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iKAlSi3O8,iMg2SiO4,amount,-2.5Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             else  
+              ioff = iKCl 
               active(iKCl) = .false.
               amount = ddust(iKCl)/6.Q0
               call TRANSFORM(iKCl,iKAlSi3O8,amount,1.Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iKCl,iNaCl,amount,1.Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iKCl,iNa2SiO3,amount,-0.5Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iKCl,iAl2O3,amount,-0.5Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iKCl,iMgSiO3,amount,-5.0Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iKCl,iMg2SiO4,amount,2.5Q0*6.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             endif
             eps(Kalium) = eps_save(Kalium)
             eps(Cl) = eps_save(Cl)
@@ -372,23 +382,25 @@
             changed = .true.
             !--- decide ---
             if (Sat0(iAl2O3)>Sat0(iMgAl2O4)) then
+              ioff = iMgAl2O4
               active(iMgAl2O4) = .false.
               amount = ddust(iMgAl2O4)/3.Q0
               call TRANSFORM(iMgAl2O4,iAl2O3,amount,1.Q0*3.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iMgAl2O4,iMgSiO3,amount,-1.Q0*3.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iMgAl2O4,iMg2SiO4,amount,1.Q0*3.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             else  
+              ioff = iAl2O3
               active(iAl2O3) = .false.
               amount = ddust(iAl2O3)/3.Q0
               call TRANSFORM(iAl2O3,iMgAl2O4,amount,1.Q0*3.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iAl2O3,iMgSiO3,amount,1.Q0*3.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iAl2O3,iMg2SiO4,amount,-1.Q0*3.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             endif  
             eps(Al) = eps_save(Al)
             eps(Mg) = eps_save(Mg)
@@ -398,19 +410,21 @@
             changed = .true.
             !--- decide ---
             if (Sat0(iFe2SiO4).gt.Sat0(iFeO)) then
+              ioff = iFeO
               active(iFeO) = .false.  
               amount = ddust(iFeO)/2.Q0
               call TRANSFORM(iFeO,iFe2SiO4,amount,0.5Q0*2.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iFeO,iSiO2,amount,-0.5Q0*2.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             else  
+              ioff = iFe2SiO4
               active(iFe2SiO4) = .false.  
               amount = ddust(iFe2SiO4)/2.Q0
               call TRANSFORM(iFe2SiO4,iFeO,amount,2.Q0*2.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iFe2SiO4,iSiO2,amount,1.Q0*2.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             endif  
           endif   
           if (active(iSiO).and.active(iMgSiO3).and.
@@ -418,19 +432,20 @@
             changed = .true.
             !--- decide ---
             if (Sat0(iMgSiO3).gt.Sat0(iSiO)) then
+              ioff = iSiO
               active(iSiO) = .false.  
               amount = ddust(iSiO)/2.Q0
               call TRANSFORM(iSiO,iMgSiO3,amount,2.Q0*2.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iSiO,iMg2SiO4,amount,-1.Q0*2.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             else  
               active(iMgSiO3) = .false.  
               amount = ddust(iMgSiO3)/2.Q0
               call TRANSFORM(iMgSiO3,iSiO,amount,0.5Q0*2.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iMgSiO3,iMg2SiO4,amount,0.5Q0*2.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             endif  
           endif
           if (active(iSiO2).and.active(iMgSiO3).and.
@@ -438,19 +453,21 @@
             changed = .true.
             !--- decide ---
             if (Sat0(iMgSiO3).gt.Sat0(iSiO2)) then
+              ioff = iSiO2
               active(iSiO2) = .false.  
               amount = ddust(iSiO2)/2.Q0
               call TRANSFORM(iSiO2,iMgSiO3,amount,2.Q0*2.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iSiO2,iMg2SiO4,amount,-1.Q0*2.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             else  
+              ioff = iMgSiO3
               active(iMgSiO3) = .false.  
               amount = ddust(iMgSiO3)/2.Q0
               call TRANSFORM(iMgSiO3,iSiO2,amount,0.5Q0*2.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iMgSiO3,iMg2SiO4,amount,0.5Q0*2.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             endif  
             eps(Mg) = eps_save(Mg)
             eps(Si) = eps_save(Si)
@@ -460,34 +477,38 @@
             changed = .true.
             !--- decide ---
             if (Sat0(iCaTiO3).gt.Sat0(iTi4O7)) then
+              ioff = iTi4O7
               active(iTi4O7) = .false.  
               amount = ddust(iTi4O7)/2.Q0
               call TRANSFORM(iTi4O7,iCaTiO3,amount,4.Q0*2.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iTi4O7,iCaMgSi2O6,amount,-4.Q0*4.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             else  
+              ioff = iCaTiO3
               active(iCaTiO3) = .false.  
               amount = ddust(iCaTiO3)/2.Q0
               call TRANSFORM(iCaTiO3,iTi4O7,amount,0.25Q0*2.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iCaTiO3,iCaMgSi2O6,amount,1.Q0*2.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             endif  
           endif  
           if (active(iTi4O7).and.active(iTiO2)) then
             changed = .true.
             !--- decide ---
             if (Sat0(iTi4O7).gt.Sat0(iTiO2)) then
+              ioff = iTiO2
               active(iTiO2) = .false.  
               amount = ddust(iTiO2)
               call TRANSFORM(iTiO2,iTi4O7,amount,0.25Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             else  
+              ioff = iTi4O7
               active(iTi4O7) = .false.  
               amount = ddust(iTi4O7)
               call TRANSFORM(iTi4O7,iTiO2,amount,4.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             endif  
           endif   
           if (active(iMgTi2O5).and.active(iTiO2).and.
@@ -495,23 +516,25 @@
             changed = .true.
             !--- decide ---
             if (Sat0(iMgTi2O5).gt.Sat0(iTiO2)) then
+              ioff = iTiO2
               active(iTiO2) = .false.  
               amount = ddust(iTiO2)/3.Q0
               call TRANSFORM(iTiO2,iMgTi2O5,amount,0.5Q0*3.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iTiO2,iMgSiO3,amount,0.5Q0*3.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iTiO2,iMg2SiO4,amount,-0.5Q0*3.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             else  
+              ioff = iMgTi2O5
               active(iMgTi2O5) = .false.  
               amount = ddust(iMgTi2O5)/3.Q0
               call TRANSFORM(iMgTi2O5,iTiO2,amount,2.Q0*3.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iMgTi2O5,iMgSiO3,amount,-1.Q0*3.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iMgTi2O5,iMg2SiO4,amount,1.Q0*3.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             endif  
           endif   
           if (active(iMgTi2O5).and.active(iTiO2).and.
@@ -519,23 +542,25 @@
             changed = .true.
             !--- decide ---
             if (Sat0(iMgTi2O5).gt.Sat0(iTiO2)) then
+              ioff = iTiO2
               active(iTiO2) = .false.  
               amount = ddust(iTiO2)/3.Q0
               call TRANSFORM(iTiO2,iMgTi2O5,amount,0.5Q0*3.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iTiO2,iSiO2,amount,0.25Q0*3.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iTiO2,iMg2SiO4,amount,-0.25Q0*3.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             else  
+              ioff = iMgTi2O5
               active(iMgTi2O5) = .false.  
               amount = ddust(iMgTi2O5)/3.Q0
               call TRANSFORM(iMgTi2O5,iTiO2,amount,2.Q0*3.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iMgTi2O5,iSiO2,amount,-0.5Q0*3.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iMgTi2O5,iMg2SiO4,amount,0.5Q0*3.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             endif  
           endif   
           if (active(iNa2SiO3).and.active(iNaAlSi3O8).and.
@@ -544,32 +569,29 @@
             changed = .true.
             !--- decide ---
             if (Sat0(iNa2SiO3).gt.Sat0(iNaAlSi3O8)) then
+              ioff = iNaAlSi3O8
               active(iNaAlSi3O8) = .false.  
               amount = ddust(iNaAlSi3O8)/4.Q0
-              ddust(iNa2SiO3) = MAX(ddust(iNa2SiO3),0.Q0)
-              !print*,eps(Na),eps(Al),eps(Mg),eps(Si)
               call TRANSFORM(iNaAlSi3O8,iNa2SiO3,amount,0.5Q0*4.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iNaAlSi3O8,iMgAl2O4,amount,0.5Q0*4.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iNaAlSi3O8,iMgSiO3,amount,5.5Q0*4.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iNaAlSi3O8,iMg2SiO4,amount,-3.Q0*4.Q0,
-     >                       ddust,eps,dscale)
-              !print*,eps(Na),eps(Al),eps(Mg),eps(Si)
+     >                       ddust,eps,dscale,active,ok)
             else  
+              ioff = iNa2SiO3
               active(iNa2SiO3) = .false.  
               amount = ddust(iNa2SiO3)/4.Q0
-              !print*,eps(Na),eps(Al),eps(Mg),eps(Si)
-              call TRANSFORM(iNa2SiO3,iNaAlSi3O8,amount,2.0Q0*4.Q0,
-     >                       ddust,eps,dscale)
-              call TRANSFORM(iNa2SiO3,iMgAl2O4,amount,-1.0Q0*4.Q0,
-     >                       ddust,eps,dscale)
-              call TRANSFORM(iNa2SiO3,iMgSiO3,amount,-11.0Q0*4.Q0,
-     >                       ddust,eps,dscale)
+              call TRANSFORM(iNa2SiO3,iNaAlSi3O8,amount,2.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iNa2SiO3,iMgAl2O4,amount,-1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iNa2SiO3,iMgSiO3,amount,-11.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iNa2SiO3,iMg2SiO4,amount,6.Q0*4.Q0,
-     >                       ddust,eps,dscale)
-              !print*,eps(Na),eps(Al),eps(Mg),eps(Si)
+     >                       ddust,eps,dscale,active,ok)
             endif  
             eps(Na) = eps_save(Na)
             eps(Al) = eps_save(Al)
@@ -580,15 +602,17 @@
             changed = .true.
             !--- decide ---
             if (Sat0(iH2O).gt.Sat0(iH2O_l)) then
+              ioff = iH2O_l
               active(iH2O_l) = .false.  
               amount = ddust(iH2O_l)
               call TRANSFORM(iH2O_l,iH2O,amount,1.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             else  
+              ioff = iH2O
               active(iH2O) = .false.  
               amount = ddust(iH2O)
               call TRANSFORM(iH2O,iH2O_l,amount,1.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             endif  
             eps(O) = eps_save(O)
             eps(H) = eps_save(H)
@@ -597,15 +621,17 @@
             changed = .true.
             !--- decide ---
             if (Sat0(iFe).gt.Sat0(iFe_l)) then
+              ioff = iFe_l
               active(iFe_l) = .false.  
               amount = ddust(iFe_l)
               call TRANSFORM(iFe_l,iFe,amount,1.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             else  
+              ioff = iFe
               active(iFe) = .false.  
               amount = ddust(iFe)
               call TRANSFORM(iFe,iFe_l,amount,1.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             endif  
             eps(Fe) = eps_save(Fe)
           endif   
@@ -613,20 +639,36 @@
             changed = .true.
             !--- decide ---
             if (Sat0(iMgAl2O4).gt.Sat0(iMgAl2O4_l)) then
+              ioff = iMgAl2O4_l
               active(iMgAl2O4_l) = .false.  
               amount = ddust(iMgAl2O4_l)
               call TRANSFORM(iMgAl2O4_l,iMgAl2O4,amount,1.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             else  
+              ioff = iMgAl2O4
               active(iMgAl2O4) = .false.  
               amount = ddust(iMgAl2O4)
               call TRANSFORM(iMgAl2O4,iMgAl2O4_l,amount,1.Q0,
-     >                       ddust,eps,dscale)
+     >                       ddust,eps,dscale,active,ok)
             endif  
             eps(Mg) = eps_save(Mg)
             eps(Al) = eps_save(Al)
             eps(O)  = eps_save(O)
           endif   
+          if (.not.ok) then
+            print*,"TRANSFORM resulted in negative dust abundance"
+            ifail = ifail+1
+            if (ifail>4) stop "*** too many fails."
+            print*,"try to carry on without ..."
+            call SLEEP(1)
+            eps = eps_save 
+            ddust = dust_save 
+            !active(ioff) = .true.
+            active = active_save 
+            Nact = Nact_save
+            changed = .false.
+            lastit = it
+          endif  
         endif  
 
         if (changed) then
@@ -686,13 +728,13 @@
             el = dust_el(i,j)
             if (e_act(el)) cycle
             e_act(el) = .true.
-            do k=1,Nind                  
-              if (eps(el)<Iabund(k)) exit   ! sort by element abundance 
+            do ii=1,Nind                  
+              if (eps(el)<Iabund(ii)) exit   ! sort by element abundance 
             enddo
-            Iindex(k+1:Nind+1) = Iindex(k:Nind)
-            Iabund(k+1:Nind+1) = Iabund(k:Nind)
-            Iindex(k) = el
-            Iabund(k) = eps(el) 
+            Iindex(ii+1:Nind+1) = Iindex(ii:Nind)
+            Iabund(ii+1:Nind+1) = Iabund(ii:Nind)
+            Iindex(ii) = el
+            Iabund(ii) = eps(el) 
             !print*,2,elnam(Iindex(1:Nind))
             Nind = Nind+1
           enddo  
@@ -726,17 +768,27 @@
           Iindex(Nact) = Mg
           e_act(Mg) = .true.
         endif
+        if (active(iSiO).and..not.e_act(Si)) then
+          print*,"... exchanging "//elnam(Iindex(Nact))//" for Si"
+          e_act(Iindex(Nact)) = .false.
+          Iindex(Nact) = Si
+          e_act(Si) = .true.
+        endif   
         if (active(iCaS).and.e_act(Ca).and.e_act(S).and.
      >      (e_num(Ca)==1).and.(e_num(S)==1)) then
           do i=1,Nind
             if (Iindex(i)==S) exit
           enddo  
+          e_act(Iindex(i)) = .false.
           if ((e_num(Si)>0).and.(.not.e_act(Si))) then
             Iindex(i) = Si 
+            e_act(Si) = .true.
           else if ((e_num(Mg)>0).and.(.not.e_act(Mg))) then
             Iindex(i) = Mg
+            e_act(Mg) = .true.
           else if ((e_num(O)>0).and.(.not.e_act(O))) then
             Iindex(i) = O
+            e_act(O) = .true.
           else
             stop "CaS" 
           endif
@@ -755,15 +807,25 @@
         endif  
         if (active(iCaMgSi2O6).and.e_act(Ca).and.e_act(Si).and.
      >      e_num(Ca)==1.and.e_num(Si)==1) then
+          print*,"... exchanging "//elnam(Iindex(Nact))//
+     >                     " for "//elnam(Iindex(Nact+1))
           e_act(Iindex(Nact)) = .false.
           e_act(Iindex(Nact+1)) = .true.
           Iindex(Nact) = Iindex(Nact+1)
         endif   
         if (active(iCaTiO3).and.e_act(Ca).and.e_act(Ti).and.
      >      e_num(Ca)==1.and.e_num(Ti)==1) then
+          print*,"... exchanging "//elnam(Iindex(Nact))//
+     >                     " for "//elnam(Iindex(Nact+1))
           e_act(Iindex(Nact)) = .false.
           e_act(Iindex(Nact+1)) = .true.
           Iindex(Nact) = Iindex(Nact+1)
+        endif   
+        if (active(iFeS).and..not.e_act(S)) then
+          print*,"... exchanging "//elnam(Iindex(Nact))//" for S"
+          e_act(Iindex(Nact)) = .false.
+          e_act(S) = .true.
+          Iindex(Nact) = S
         endif   
         if (verbose>1) print*,"solving for ... ",
      >                      (elnam(Iindex(i))//" ",i=1,Nind)
@@ -950,6 +1012,10 @@
               DFsav = DF
               call QGEFA ( DF, NELEM, Nunsolved, ipvt, info )
               call QGEDI ( DF, NELEM, Nunsolved, ipvt, det, work, 1 )
+              if (info.ne.0) then
+                print*,"*** singular matrix in QGEFA: info=",info
+                stop
+              endif   
               !do i=1,Nunsolved
               !  print'(99(1pE12.3))',(DF(i,j),j=1,Nunsolved)
               !enddo
@@ -1239,7 +1305,7 @@
         do i=1,NELEM
           worst = MAX(worst,ABS(1.Q0-check(i)/eps00(i)))
         enddo
-        if (verbose>1) write(*,*) "element conservation error:",worst
+        if (verbose>1) write(*,*) "element conservation error 2:",worst
         if (worst>1.Q-8) stop
 
         xstep(:) = 0.Q0
@@ -1347,19 +1413,18 @@
       end
 
 !-------------------------------------------------------------------------
-      subroutine VAPORIZE(i,ddust,eps,dscale)
+      subroutine VAPORIZE(i,ddust,eps)
 !-------------------------------------------------------------------------
       use DUST_DATA,ONLY: NELEM,NDUST,dust_nel,dust_nu,dust_el,dust_nam
       implicit none
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
       integer,intent(in) :: i
       real(kind=qp),intent(inout) :: ddust(NDUST),eps(NELEM)
-      real(kind=qp),intent(in) :: dscale(NDUST)
       real(kind=qp) :: del
       integer :: j,el
       
       del = ddust(i)
-      print*," ==>  vaporize "//trim(dust_nam(i)),REAL(del/dscale(i))
+      print*," ==>  vaporize "//trim(dust_nam(i)),REAL(del)
       ddust(i) = 0.Q0
       do j=1,dust_nel(i)
         el = dust_el(i,j)
@@ -1368,16 +1433,19 @@
       end
 
 !-------------------------------------------------------------------------
-      subroutine TRANSFORM(i1,i2,del,fac,ddust,eps,dscale)
+      subroutine TRANSFORM(i1,i2,del,fac,ddust,eps,dscale,active,ok)
 !-------------------------------------------------------------------------
       use DUST_DATA,ONLY: NELEM,NDUST,dust_nel,dust_nu,dust_el,dust_nam,
      >                    eps0
       implicit none
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
       integer,intent(in) :: i1,i2
+      real(kind=qp),parameter :: dsmall=1.Q-30
       real(kind=qp),intent(inout) :: ddust(NDUST),eps(NELEM)
       real(kind=qp),intent(in) :: del,fac,dscale(NDUST)
       real(kind=qp) :: check(NELEM),worst
+      logical,intent(inout) :: active(NDUST)
+      logical,intent(inout) :: ok
       integer :: i,j,el
       
       print*," ==>  transform "//trim(dust_nam(i1))//" -> "
@@ -1393,6 +1461,18 @@
         eps(el) = eps(el) - fac*del*dust_nu(i2,j)    
       enddo
 
+      if (ddust(i1)<-dsmall.or.ddust(i2)<-dsmall) ok=.false.
+      !if (ddust(i1)<-dsmall) then
+      !  call VAPORIZE(i1,ddust,eps)
+      !  active(i1) = .false.
+      !  vap = .true.
+      !endif  
+      !if (ddust(i2)<-dsmall) then
+      !  call VAPORIZE(i2,ddust,eps)
+      !  active(i2) = .false.
+      !  vap = .true.
+      !endif
+  
       !-------------------------------------
       ! ***  check element conservation  ***
       !-------------------------------------
@@ -1407,7 +1487,7 @@
       do i=1,NELEM
         worst = MAX(worst,ABS(1.Q0-check(i)/eps0(i)))
       enddo
-      write(*,*) "element conservation error:",worst
+      write(*,*) "element conservation error 3:",worst
       if (worst>1.Q-8) stop
 
       end

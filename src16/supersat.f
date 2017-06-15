@@ -360,23 +360,6 @@
           enddo
           Sat(i) = EXP(lbruch-dG)
 
-        else if (dust_nam(i).eq.'FeO[s]') then 
-          !------------------------------
-          !***  Sharp & Huebner 1990  ***
-          !------------------------------
-          pst = atm
-          dG  =-6.05591Q+4/TT
-     &         -2.22156Q+5
-     &         +6.78769Q+1*TT 
-     &         -1.52287Q-3*TT**2
-          dG = dG/(rgas/cal*TT)
-          lbruch = 0.Q0
-          do j=1,dust_nel(i)
-            el     = dust_el(i,j)
-            lbruch = lbruch + dust_nu(i,j)*LOG(nat(el)*kT/pst)
-          enddo
-          Sat(i) = EXP(lbruch-dG)
-
         else if (dust_nam(i).eq.'FeS[s]') then 
           !----------------------------------------
           !***  FeS[s] own fit JANA 100-1900 K  ***
@@ -980,23 +963,22 @@
           Sat(i) = EXP(lbruch-dG)
 
 	else if (dust_nam(i).eq.'SiO2[l]') then
-          !-----------------------------------------------
-          !*** SiO2[l]: George's JANAF-fit T=100-4500K ***
-          !-----------------------------------------------
+          !------------------------------------------
+          !*** SiO2[l]: own JANAF-fit T=100-4500K ***
+          !------------------------------------------
           pst = bar
-          dG = 1.78605Q+06/TT 
-     &        -1.86359Q+06  
-     &        +4.65018Q+02*TT 
-     &        -8.00259Q-03*TT**2
-     &        +4.71304Q-07*TT**3
-          dG = dG/(rgas*TT)
-          lbruch = 0.Q0
+          dG = 2.21501E+05/TT 
+     &        -4.23355E+00*LOG(TT) 
+     &        -2.62826E+01  
+     &        +3.19502E-03*TT 
+     &        -2.32039E-07*TT**2
+           lbruch = 0.Q0
           do j=1,dust_nel(i)
             el     = dust_el(i,j)
             term   = nat(el)*kT/pst
             lbruch = lbruch + LOG(term)*dust_nu(i,j)
           enddo
-          Sat(i) = EXP(lbruch-dG)
+          Sat(i) = EXP(lbruch+dG)
 
 	else if (dust_nam(i).eq.'Na2SiO3[l]') then
           !----------------------------------------------------
@@ -1187,6 +1169,55 @@
             lbruch = lbruch + LOG(term)*dust_nu(i,j)
           enddo
           Sat(i) = EXP(lbruch-dG)
+
+        else if (dust_nam(i).eq.'FeO[s]') then 
+          !------------------------------
+          !***  Sharp & Huebner 1990  ***
+          !------------------------------
+          !pst = atm
+          !dG  =-6.05591Q+4/TT
+     &    !     -2.22156Q+5
+     &    !     +6.78769Q+1*TT 
+     &    !     -1.52287Q-3*TT**2
+          !dG = dG/(rgas/cal*TT)
+          !lbruch = 0.Q0
+          !do j=1,dust_nel(i)
+          !  el     = dust_el(i,j)
+          !  lbruch = lbruch + dust_nu(i,j)*LOG(nat(el)*kT/pst)
+          !enddo
+          !Sat(i) = EXP(lbruch-dG)
+          !S2 = Sat(i)
+          pst = bar
+          dG = 1.12768E+05/TT 
+     &        -1.99329E-02*LOG(TT) 
+     &        -3.43301E+01  
+     &        +1.03401E-03*TT 
+     &        -3.64152E-08*TT**2
+          lbruch = 0.Q0
+          do j=1,dust_nel(i)
+            el     = dust_el(i,j)
+            term   = nat(el)*kT/pst
+            lbruch = lbruch + LOG(term)*dust_nu(i,j)
+          enddo
+          Sat(i) = EXP(lbruch+dG)
+
+	else if (dust_nam(i).eq.'FeO[l]') then
+          !-----------------------------------------
+          !*** FeO[l]: own JANAF-fit T=298-5000K ***
+          !-----------------------------------------
+          pst = bar
+          dG = 1.09737E+05/TT 
+     &        -1.19870E+00*LOG(TT) 
+     &        -2.50563E+01  
+     &        +2.00349E-03*TT 
+     &        -1.48543E-07*TT**2
+          lbruch = 0.Q0
+          do j=1,dust_nel(i)
+            el     = dust_el(i,j)
+            term   = nat(el)*kT/pst
+            lbruch = lbruch + LOG(term)*dust_nu(i,j)
+          enddo
+          Sat(i) = EXP(lbruch+dG)
 
         else
           print*,dust_nam(i) 

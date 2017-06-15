@@ -212,6 +212,8 @@
       write(*,*) '193 = AlO2'
       write(*,*) '194 = C5'
       write(*,*) '195 = S2O'
+      write(*,*) '196 = FeO[l]'
+      write(*,*) '197 = FeO[cr]'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -1680,6 +1682,20 @@
         call READ_DATEI('O.txt'  ,dG,T,Nmax,N,S,3) 
         Edzahl = 2
         stoich(2) = 2.D0
+        stoich(3) = 1.D0
+      elseif (specie.eq.196) then
+        call READ_DATEI('FeO_l.txt' ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Fe.txt'  ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('O.txt'  ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 1.D0
+      elseif (specie.eq.197) then
+        call READ_DATEI('FeO_cr.txt' ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Fe.txt'  ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('O.txt'  ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 1.D0
         stoich(3) = 1.D0
       else
         write(*,*) 'Specie=',specie,' ???'

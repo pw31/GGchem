@@ -3,6 +3,7 @@ fort.*
 GIT.commands
 EarthCrust.dat
 abundances.pro
+Abundances.dat.ps
 src16/*.o
 src16/*.mod
 src16/makefile
