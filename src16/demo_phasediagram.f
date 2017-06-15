@@ -8,7 +8,7 @@
      >                   Cr,Mn,Fe,Ni
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
-      integer,parameter :: Npoints=100
+      integer,parameter :: Npoints=300
       real,dimension(Npoints) :: nHtot,Tgas
       real :: T1,T2,p1,p2,p,pe,Tg,rho,nHges,nges,kT,pges,mu,muold
       real :: nTEA,pTEA
