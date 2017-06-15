@@ -26,8 +26,8 @@ lognH = np.log10(nHtot)
 press = dat[:,2]                 # p [dyn/cm2]
 pmin  = np.min(press)/bar
 pmax  = np.max(press)/bar
-pmin  = pmin/1.2
-pmax  = pmax*1.2
+pmin  = pmin*0.9
+pmax  = pmax*1.1
 Tmin  = np.min(Tg)
 Tmax  = np.max(Tg)
 #if (Tmax>4*Tmin): Tmax=4*Tmin
@@ -47,7 +47,7 @@ plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
 plt.ylabel(r'$p\ \mathrm{[bar]}$',fontsize=20)
 plt.xlim(Tmin,Tmax)
 plt.ylim(pmin,pmax)
-plt.yscale('log')
+#plt.yscale('log')
 plt.tick_params(axis='both', labelsize=15)
 plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
