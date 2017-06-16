@@ -209,10 +209,10 @@
           enddo
           Sat(i) = EXP(lbruch-dG)
 
-        else if (dust_nam(i).eq.'SiO2[s]   ') then
-          !-----------------------------------------------------
-          !***  SiO2[s] own fit to JANAF (Quarz) 100-2200 K  ***
-          !-----------------------------------------------------
+        else if (dust_nam(i).eq.'SiO2[s]') then
+          !----------------------------------------------------
+          !***  SiO2[s] own fit to JANAF (Quarz) 50-2200 K  ***
+          !----------------------------------------------------
           ! Sharp & Huebner 1990 
           !pst = atm
           !dG =  -4.44364Q+5 
@@ -231,6 +231,24 @@
      &        -2.55904E+01  
      &        +3.67389E-03*TT 
      &        -2.68971E-07*TT**2
+          lbruch = 0.Q0
+          do j=1,dust_nel(i)
+            el     = dust_el(i,j)
+            term   = nat(el)*kT/pst
+            lbruch = lbruch + LOG(term)*dust_nu(i,j)
+          enddo
+          Sat(i) = EXP(lbruch+dG)
+
+	else if (dust_nam(i).eq.'SiO2[l]') then
+          !------------------------------------------
+          !*** SiO2[l]: own JANAF-fit T=100-4500K ***
+          !------------------------------------------
+          pst = bar
+          dG = 2.21501E+05/TT 
+     &        -4.23355E+00*LOG(TT) 
+     &        -2.62826E+01  
+     &        +3.19502E-03*TT 
+     &        -2.32039E-07*TT**2
           lbruch = 0.Q0
           do j=1,dust_nel(i)
             el     = dust_el(i,j)
@@ -279,7 +297,7 @@
 
         else if (dust_nam(i).eq.'Al2O3[s]') then 
           !---------------------------------------------
-          !***  Al2O3[s] own fit to JANAF 100-3000K  ***
+          !***  Al2O3[s] own fit to JANAF 50-3000K  ***
           !---------------------------------------------
           ! Sharp & Huebner 1990 
           !pst = atm
@@ -293,20 +311,52 @@
           !  lbruch = lbruch + dust_nu(i,j)*LOG(nat(el)*kT/pst)
           !enddo
           !Sat(i) = EXP(lbruch-dG)
+          !pst = bar
+          !dG  = 1.29765Q+06/TT 
+     &    !     -3.09312Q+06  
+     &    !     +7.86027Q+02*TT 
+     &    !     -1.36327Q-02*TT**2
+     &    !     +8.59619Q-07*TT**3
+          !dG = dG/(rgas*TT)
+          !lbruch = 0.Q0
+          !do j=1,dust_nel(i)
+          !  el     = dust_el(i,j)
+          !  term   = nat(el)*kT/pst
+          !  lbruch = lbruch + LOG(term)*dust_nu(i,j)
+          !enddo
+          !Sat(i) = EXP(lbruch-dG)
+          !S2 = Sat(i)
           pst = bar
-          dG  = 1.29765Q+06/TT 
-     &         -3.09312Q+06  
-     &         +7.86027Q+02*TT 
-     &         -1.36327Q-02*TT**2
-     &         +8.59619Q-07*TT**3
-          dG = dG/(rgas*TT)
+          dG  = 3.69509E+05/TT 
+     &         -3.62577E+00*LOG(TT) 
+     &         -6.78774E+01  
+     &         +2.43831E-03*TT  
           lbruch = 0.Q0
           do j=1,dust_nel(i)
             el     = dust_el(i,j)
             term   = nat(el)*kT/pst
             lbruch = lbruch + LOG(term)*dust_nu(i,j)
           enddo
-          Sat(i) = EXP(lbruch-dG)
+          Sat(i) = EXP(lbruch+dG)
+          !print*,'Al2O3[s]: ',real(S2),real(Sat(i))
+          
+	else if (dust_nam(i).eq.'Al2O3[l]') then
+          !----------------------------------------
+          !*** Al2O3[l]: own fit T=298.15-4000K ***
+          !----------------------------------------
+          pst = bar
+          dG = 3.64249E+05/TT 
+     &        -1.75586E+00*LOG(TT) 
+     &        -8.06995E+01  
+     &        +2.72010E-03*TT
+          lbruch = 0.Q0
+          do j=1,dust_nel(i)
+            el     = dust_el(i,j)
+            term   = nat(el)*kT/pst
+            lbruch = lbruch + LOG(term)*dust_nu(i,j)
+          enddo
+          Sat(i) = EXP(lbruch+dG)
+          !print*,'Al2O3[l]: ',real(Sat(i))
 
         else if (dust_nam(i).eq.'CaTiO3[s]') then 
           !------------------------------
@@ -568,7 +618,7 @@
 
         else if (dust_nam(i).eq.'MgAl2O4[s]') then      ! Spinel 
           !-----------------------------------------------
-          !***  MgAl2O4[s] own fit to JANAF 100-2800K  ***
+          !***  MgAl2O4[s] own fit to JANAF 50-2800K  ***
           !-----------------------------------------------
           ! Sharp & Huebner
           !pst = atm
@@ -584,34 +634,33 @@
           !enddo
           !Sat(i) = EXP(lbruch-dG)
           !S2 = Sat(i)
-          pst = bar
-          dG  = 1.85854Q+06/TT 
-     &         -4.11695Q+06  
-     &         +1.06653Q+03*TT 
-     &         -1.81276Q-02*TT**2  
-     &         +1.26020Q-08*TT**3 
-          dG = dG/(rgas*TT)
-          lbruch = 0.Q0
-          do j=1,dust_nel(i)
-            el     = dust_el(i,j)
-            term   = nat(el)*kT/pst
-            lbruch = lbruch + LOG(term)*dust_nu(i,j)
-          enddo
-          Sat(i) = EXP(lbruch-dG)
-          !S2 = Sat(i)
           !pst = bar
-          !dG  = 4.90909E+05/TT 
-     &    !     -1.02336E+01*LOG(TT) 
-     &    !     -6.06357E+01  
-     &    !     +1.01631E-02*TT
-     &    !     -9.35114E-07*TT**2
+          !dG  = 1.85854Q+06/TT 
+     &    !     -4.11695Q+06  
+     &    !     +1.06653Q+03*TT 
+     &    !     -1.81276Q-02*TT**2  
+     &    !     +1.26020Q-08*TT**3 
+          !dG = dG/(rgas*TT)
           !lbruch = 0.Q0
           !do j=1,dust_nel(i)
           !  el     = dust_el(i,j)
           !  term   = nat(el)*kT/pst
           !  lbruch = lbruch + LOG(term)*dust_nu(i,j)
           !enddo
-          !Sat(i) = EXP(lbruch+dG)
+          !Sat(i) = EXP(lbruch-dG)
+          !S2 = Sat(i)
+          pst = bar
+          dG  = 4.91776E+05/TT 
+     &         -5.07402E+00*LOG(TT)  
+     &         -9.16247E+01  
+     &         +3.91488E-03*TT
+          lbruch = 0.Q0
+          do j=1,dust_nel(i)
+            el     = dust_el(i,j)
+            term   = nat(el)*kT/pst
+            lbruch = lbruch + LOG(term)*dust_nu(i,j)
+          enddo
+          Sat(i) = EXP(lbruch+dG)
           !print*,"MgAl2O4_cr",SNGL(S2),SNGL(Sat(i))
 
         else if (dust_nam(i).eq.'CaMgSi2O6[s]') then    ! Diopside 
@@ -962,24 +1011,6 @@
           enddo
           Sat(i) = EXP(lbruch-dG)
 
-	else if (dust_nam(i).eq.'SiO2[l]') then
-          !------------------------------------------
-          !*** SiO2[l]: own JANAF-fit T=100-4500K ***
-          !------------------------------------------
-          pst = bar
-          dG = 2.21501E+05/TT 
-     &        -4.23355E+00*LOG(TT) 
-     &        -2.62826E+01  
-     &        +3.19502E-03*TT 
-     &        -2.32039E-07*TT**2
-           lbruch = 0.Q0
-          do j=1,dust_nel(i)
-            el     = dust_el(i,j)
-            term   = nat(el)*kT/pst
-            lbruch = lbruch + LOG(term)*dust_nu(i,j)
-          enddo
-          Sat(i) = EXP(lbruch+dG)
-
 	else if (dust_nam(i).eq.'Na2SiO3[l]') then
           !----------------------------------------------------
           !*** Na2SiO3[l]: George's JANAF-fit T=298.15-2500 ***
@@ -1000,23 +1031,38 @@
           Sat(i) = EXP(lbruch-dG)
 
 	else if (dust_nam(i).eq.'MgAl2O4[l]') then
-          !----------------------------------------------------
-          !*** MgAl2O4[l]: George's JANAF-fit T=298.15-4000 ***
-          !----------------------------------------------------
+          !-----------------------------------------------
+          !*** MgAl2O4[l]: own JANAF-fit T=298.15-4000 ***
+          !-----------------------------------------------
+          !pst = bar
+          !dG = 4.87016Q+06/TT      !linear extrapolation poor
+     &    !    -3.93827Q+06  
+     &    !    +1.00592Q+03*TT 
+     &    !    -2.80659Q-02*TT**2
+     &    !    +1.70265Q-06*TT**3
+          !dG = dG/(rgas*TT)
+          !lbruch = 0.Q0
+          !do j=1,dust_nel(i)
+          !  el     = dust_el(i,j)
+          !  term   = nat(el)*kT/pst
+          !  lbruch = lbruch + LOG(term)*dust_nu(i,j)
+          !enddo
+          !Sat(i) = EXP(lbruch-dG)
+          !S2 = Sat(i)
           pst = bar
-          dG = 4.87016Q+06/TT      !linear extrapolation poor
-     &        -3.93827Q+06  
-     &        +1.00592Q+03*TT 
-     &        -2.80659Q-02*TT**2
-     &        +1.70265Q-06*TT**3
-          dG = dG/(rgas*TT)
+          dG  = 4.70478E+05/TT 
+     &         -1.35143E+00*LOG(TT) 
+     &         -1.08539E+02  
+     &         +2.76930E-03*TT 
+     &         -7.78980E-08*TT**2
           lbruch = 0.Q0
           do j=1,dust_nel(i)
             el     = dust_el(i,j)
             term   = nat(el)*kT/pst
             lbruch = lbruch + LOG(term)*dust_nu(i,j)
           enddo
-          Sat(i) = EXP(lbruch-dG)
+          Sat(i) = EXP(lbruch+dG)
+          !print*,"MgAl2O4_l",SNGL(S2),SNGL(Sat(i))
 
 	else if (dust_nam(i).eq.'Mg2SiO4[l]') then
           !----------------------------------------------------
@@ -1047,25 +1093,6 @@
      &        +7.52974Q+02*TT 
      &        -2.55722Q-02*TT**2
      &        +2.36166Q-06*TT**3
-          dG = dG/(rgas*TT)
-          lbruch = 0.Q0
-          do j=1,dust_nel(i)
-            el     = dust_el(i,j)
-            term   = nat(el)*kT/pst
-            lbruch = lbruch + LOG(term)*dust_nu(i,j)
-          enddo
-          Sat(i) = EXP(lbruch-dG)
-
-	else if (dust_nam(i).eq.'Al2O3[l]') then
-          !---------------------------------------------------
-          !*** Al2O3[l]: George's JANAF-fit T=298.15-4000K ***
-          !---------------------------------------------------
-          pst = bar
-          dG = 9.69640Q+06/TT 
-     &        -3.07785Q+06  
-     &        +8.23186Q+02*TT 
-     &        -3.65211Q-02*TT**2
-     &        +2.33258Q-06*TT**3
           dG = dG/(rgas*TT)
           lbruch = 0.Q0
           do j=1,dust_nel(i)

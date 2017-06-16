@@ -47,7 +47,22 @@ plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
 plt.ylabel(r'$p\ \mathrm{[bar]}$',fontsize=20)
 plt.xlim(Tmin,Tmax)
 plt.ylim(pmin,pmax)
+plt.tick_params(axis='both', labelsize=15)
+plt.tick_params('both', length=6, width=1.5, which='major')
+plt.tick_params('both', length=3, width=1, which='minor')
+minorLocator = MultipleLocator(sep)
+ax.xaxis.set_minor_locator(minorLocator)
+plt.tight_layout()
+plt.savefig(pp,format='pdf')
+plt.clf()
+
+#================== temperature-density structure ====================
+fig,ax = plt.subplots()
+plt.plot(Tg,nHtot,lw=4)
+plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
+plt.ylabel(r'$n_\mathrm{\langle H\rangle}\ \mathrm{[cm^{-3}]}$',fontsize=20)
 plt.yscale('log')
+plt.xlim(Tmin,Tmax)
 plt.tick_params(axis='both', labelsize=15)
 plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
@@ -141,7 +156,7 @@ if (nmax>-99):
     ind = ind[0]
     #print solid,ind
     S = 10**dat[:,ind]              # S
-    if (np.max(S[iii])>0.2):
+    if (np.max(S[iii])>0.7):
       plt.plot(Tg,S,ls=styl[count],lw=widt[count],label=solid)
       count = count + 1
   plt.title('supersaturation ratios',fontsize=20)
