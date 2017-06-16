@@ -10,8 +10,8 @@
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       integer,parameter :: Npoints=300
       real,dimension(Npoints) :: nHtot,Tgas
-      real :: T1,T2,p1,p2,p,pe,Tg,rho,nHges,nges,kT,pges,mu,muold
-      real :: nTEA,pTEA
+      real :: T1,T2,p1,p2,nH1,nH2,p,pe,Tg,rho,nHges,nges,kT,pges
+      real :: nTEA,pTEA,mu,muold
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST)
       integer :: i,j,jj,l,iz,stindex
       character(len=5000) :: species,NISTspecies,elnames
@@ -21,7 +21,7 @@
       character(len=2) :: test3
       character(len=1) :: char
       integer :: verbose=0
-      logical :: isOK
+      logical :: isOK,pconst=.false.
 
       !---------------------------------
       ! ***  setup sweep parameters  ***
@@ -30,11 +30,18 @@
       !read*,T1,T2
       T1 = 2500
       T2 = 100
-      print*,"start and end p [bar] (any)"
-      !read*,p1,p2
-      p1 = bar  !1.E+11*bk*T1  !1.e-16*bar
-      p2 = bar  !1.E+11*bk*T2  !1.e-16*bar
-      mu = 2.3*amu
+      if (pconst) then
+        print*,"start and end p [bar] (any)"
+        !read*,p1,p2
+        p1 = bar  !1.E+11*bk*T1  !1.e-16*bar
+        p2 = bar  !1.E+11*bk*T2  !1.e-16*bar
+        mu = 2.3*amu
+      else
+        print*,"start and end n<H> [cm-3] (any)"
+        !read*,nH1,nH2
+        nH1 = 1.E+19
+        nH2 = 1.E+19
+      endif  
 
       !----------------------------
       ! ***  open output files  ***
@@ -173,10 +180,14 @@
       !-------------------------------------
       do i=1,Npoints
         Tg = EXP(LOG(T1)+LOG(T2/T1)*REAL(i-1)/REAL(Npoints-1))        
-        p  = EXP(LOG(p1)+LOG(p2/p1)*REAL(i-1)/REAL(Npoints-1)) 
+        if (pconst) then
+          p = EXP(LOG(p1)+LOG(p2/p1)*REAL(i-1)/REAL(Npoints-1)) 
+        else  
+          nHges = EXP(LOG(nH1)+LOG(nH2/nH1)*REAL(i-1)/REAL(Npoints-1)) 
+        endif  
         eldust = 0.0
         do 
-          nHges = p*mu/(bk*Tg)/muH
+          if (pconst) nHges = p*mu/(bk*Tg)/muH
           call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
           call GGCHEM(nHges,Tg,eps,.false.,0)
           call SUPERSAT(Tg,nat,nmol,Sat)
@@ -191,6 +202,7 @@
           pges = nges*kT
           muold = mu
           mu = nHges/pges*(bk*Tg)*muH
+          if (.not.pconst) exit
           print '("mu=",2(1pE12.5))',muold/amu,mu/amu
           if (ABS(mu/muold-1.0)<1.E-6) exit
         enddo  
