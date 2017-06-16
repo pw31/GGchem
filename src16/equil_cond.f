@@ -76,33 +76,33 @@
         do i=1,NDUST
           if (dust_nam(i).eq.'Al2O3[s]')      iAl2O3=i 
           if (dust_nam(i).eq.'Al2O3[l]')      iAl2O3_l=i 
-!          if (dust_nam(i).eq.'Fe2O3[s]')      iFe2O3=i 
+          if (dust_nam(i).eq.'Fe2O3[s]')      iFe2O3=i 
           if (dust_nam(i).eq.'SiO[s]')        iSiO=i 
           if (dust_nam(i).eq.'SiO2[s]')       iSiO2=i
           if (dust_nam(i).eq.'SiO2[l]')       iSiO2_l=i 
-!          if (dust_nam(i).eq.'SiS2[s]')       iSiS2=i
+          if (dust_nam(i).eq.'SiS2[s]')       iSiS2=i
           if (dust_nam(i).eq.'Fe[s]')         iFe=i 
           if (dust_nam(i).eq.'Fe[l]')         iFe_l=i 
           if (dust_nam(i).eq.'FeS[s]')        iFeS=i 
           if (dust_nam(i).eq.'FeS[l]')        iFeS_l=i 
-!          if (dust_nam(i).eq.'FeS2[s]')       iFeS2=i 
+          if (dust_nam(i).eq.'FeS2[s]')       iFeS2=i 
           if (dust_nam(i).eq.'Na2SiO3[s]')    iNa2SiO3=i
           if (dust_nam(i).eq.'Na2SiO3[l]')    iNa2SiO3_l=i 
           if (dust_nam(i).eq.'MgSiO3[s]')     iMgSiO3=i 
           if (dust_nam(i).eq.'MgSiO3[l]')     iMgSiO3_l=i 
           if (dust_nam(i).eq.'Mg2SiO4[s]')    iMg2SiO4=i 
-!          if (dust_nam(i).eq.'Mg2SiO4[l]')    iMg2SiO4_l=i 
+          if (dust_nam(i).eq.'Mg2SiO4[l]')    iMg2SiO4_l=i 
           if (dust_nam(i).eq.'CaSiO3[s]')     iCaSiO3=i 
           if (dust_nam(i).eq.'CaTiO3[s]')     iCaTiO3=i 
           if (dust_nam(i).eq.'CaMgSi2O6[s]')  iCaMgSi2O6=i
-!          if (dust_nam(i).eq.'CaAl2Si2O8[s]') iCaAl2Si2O8=i
+          if (dust_nam(i).eq.'CaAl2Si2O8[s]') iCaAl2Si2O8=i
           if (dust_nam(i).eq.'NaAlSi3O8[s]')  iNaAlSi3O8=i
           if (dust_nam(i).eq.'MgAl2O4[s]')    iMgAl2O4=i
           if (dust_nam(i).eq.'MgAl2O4[l]')    iMgAl2O4_l=i
           if (dust_nam(i).eq.'Ti4O7[s]')      iTi4O7=i
           if (dust_nam(i).eq.'Ti4O7[l]')      iTi4O7_l=i
           if (dust_nam(i).eq.'TiO2[s]')       iTiO2=i
-!          if (dust_nam(i).eq.'TiO2[l]')       iTiO2_l=i
+          if (dust_nam(i).eq.'TiO2[l]')       iTiO2_l=i
           if (dust_nam(i).eq.'MgTi2O5[s]')    iMgTi2O5=i
           if (dust_nam(i).eq.'SiC[s]')        iSiC=i
           if (dust_nam(i).eq.'CaS[s]')        iCaS=i
@@ -110,27 +110,27 @@
           if (dust_nam(i).eq.'FeO[s]')        iFeO=i
           if (dust_nam(i).eq.'FeO[l]')        iFeO_l=i
           if (dust_nam(i).eq.'NaCl[s]')       iNaCl=i
-!          if (dust_nam(i).eq.'NaCl[l]')       iNaCl_l=i
+          if (dust_nam(i).eq.'NaCl[l]')       iNaCl_l=i
           if (dust_nam(i).eq.'LiCl[s]')       iLiCl=i
           if (dust_nam(i).eq.'LiCl[l]')       iLiCl_l=i
           if (dust_nam(i).eq.'KCl[s]')        iKCl=i
-!          if (dust_nam(i).eq.'KCl[l]')        iKCl_l=i
+          if (dust_nam(i).eq.'KCl[l]')        iKCl_l=i
           if (dust_nam(i).eq.'KAlSi3O8[s]')   iKAlSi3O8=i
           if (dust_nam(i).eq.'H2O[s]')        iH2O=i
           if (dust_nam(i).eq.'H2O[l]')        iH2O_l=i
-!          if (dust_nam(i).eq.'H2SO4[l]')      iH2SO4_l=i
-!          if (dust_nam(i).eq.'C[s]')          iC=i
-!          if (dust_nam(i).eq.'S[s]')          iS=i
-!          if (dust_nam(i).eq.'TiC[s]')        iTiC=i
-!          if (dust_nam(i).eq.'MgO[s]')        iMgO=i
-!          if (dust_nam(i).eq.'CaO[s]')        iCaO=i
-!          if (dust_nam(i).eq.'MgS[s]')        iMgS=i
-!          if (dust_nam(i).eq.'Na[s]')         iNa=i 
-!          if (dust_nam(i).eq.'Na[l]')         iNa_l=i 
-!          if (dust_nam(i).eq.'Na2S[s]')       iNa2S=i
-!          if (dust_nam(i).eq.'AlCl3[s]')      iAlCl3=i 
-!          if (dust_nam(i).eq.'NH3[s]')        iNH3=i
-!          if (dust_nam(i).eq.'CaCl2[l]')      iCaCl2_l=i
+          if (dust_nam(i).eq.'H2SO4[l]')      iH2SO4_l=i
+          if (dust_nam(i).eq.'C[s]')          iC=i
+          if (dust_nam(i).eq.'S[s]')          iS=i
+          if (dust_nam(i).eq.'TiC[s]')        iTiC=i
+          if (dust_nam(i).eq.'MgO[s]')        iMgO=i
+          if (dust_nam(i).eq.'CaO[s]')        iCaO=i
+          if (dust_nam(i).eq.'MgS[s]')        iMgS=i
+          if (dust_nam(i).eq.'Na[s]')         iNa=i 
+          if (dust_nam(i).eq.'Na[l]')         iNa_l=i 
+          if (dust_nam(i).eq.'Na2S[s]')       iNa2S=i
+          if (dust_nam(i).eq.'AlCl3[s]')      iAlCl3=i 
+          if (dust_nam(i).eq.'NH3[s]')        iNH3=i
+          if (dust_nam(i).eq.'CaCl2[l]')      iCaCl2_l=i
         enddo
         firstCall = .false. 
       endif
@@ -164,7 +164,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        !if (qread>1.Q-3.and.iread==141) verbose=2
+        if (qread>1.Q-3.and.iread==311) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -946,13 +946,13 @@
         !do i=1,NDUST 
         !  if (active(i)) print*,dust_nam(i)
         !enddo  
-        !print*,elnam(Iindex(1:Nind-1)) 
-        !print*,e_num(Iindex(1:Nind-1)) 
-        !print*,e_act(Iindex(1:Nind-1))
+        print*,elnam(Iindex(1:Nind-1)) 
+        print*,e_num(Iindex(1:Nind-1)) 
         Nind = Nact                         ! truncate at number of condensates
         !-------------------------------------
         ! ***  some explict special cases  ***
         !-------------------------------------
+        print*,"proposing ... ",(elnam(Iindex(i))//" ",i=1,Nind)
         if (active(iAl2O3).and.active(iMgAl2O4).and..not.e_act(Mg)) then
           print*,"... exchanging "//elnam(Iindex(Nact))//" for Mg"
           e_act(Iindex(Nact)) = .false.
@@ -968,22 +968,23 @@
         if (active(iCaS).and.e_act(Ca).and.e_act(S).and.
      >      (e_num(Ca)==1).and.(e_num(S)==1)) then
           do i=1,Nind
-            if (Iindex(i)==S) exit
+            if (Iindex(i)==Ca) exit
           enddo  
-          e_act(Iindex(i)) = .false.
-          if ((e_num(Si)>0).and.(.not.e_act(Si))) then
-            Iindex(i) = Si 
-            e_act(Si) = .true.
-          else if ((e_num(Mg)>0).and.(.not.e_act(Mg))) then
-            Iindex(i) = Mg
-            e_act(Mg) = .true.
-          else if ((e_num(O)>0).and.(.not.e_act(O))) then
-            Iindex(i) = O
-            e_act(O) = .true.
+          do j=1,Nind
+            if (Iindex(j)==S) exit
+          enddo  
+          if (i>j) then
+            e_act(Iindex(i)) = .false.
+            j=i
           else
-            stop "CaS" 
+            e_act(Iindex(j)) = .false.
+            i=j
           endif
-        endif 
+          print*,"... exchanging "//elnam(Iindex(i))//
+     >                     " for "//elnam(Iindex(Nact+1))
+          Iindex(i) = Iindex(Nact+1) 
+          e_act(Iindex(i)) = .true.
+        endif
         if (active(iAl2O3).and..not.e_act(Al)) then
           print*,"... exchanging "//elnam(Iindex(Nact))//" for Al"
           e_act(Iindex(Nact)) = .false.
@@ -998,19 +999,43 @@
         endif  
         if (active(iCaMgSi2O6).and.e_act(Ca).and.e_act(Si).and.
      >      e_num(Ca)==1.and.e_num(Si)==1) then
-          print*,"... exchanging "//elnam(Iindex(Nact))//
+          do i=1,Nind
+            if (Iindex(i)==Ca) exit
+          enddo  
+          do j=1,Nind
+            if (Iindex(j)==Si) exit
+          enddo  
+          if (i>j) then
+            e_act(Iindex(i)) = .false.
+            j=i
+          else
+            e_act(Iindex(j)) = .false.
+            i=j
+          endif
+          print*,"... exchanging "//elnam(Iindex(i))//
      >                     " for "//elnam(Iindex(Nact+1))
-          e_act(Iindex(Nact)) = .false.
-          e_act(Iindex(Nact+1)) = .true.
-          Iindex(Nact) = Iindex(Nact+1)
+          Iindex(i) = Iindex(Nact+1) 
+          e_act(Iindex(i)) = .true.
         endif   
         if (active(iCaTiO3).and.e_act(Ca).and.e_act(Ti).and.
      >      e_num(Ca)==1.and.e_num(Ti)==1) then
-          print*,"... exchanging "//elnam(Iindex(Nact))//
+          do i=1,Nind
+            if (Iindex(i)==Ca) exit
+          enddo  
+          do j=1,Nind
+            if (Iindex(j)==Ti) exit
+          enddo  
+          if (i>j) then
+            e_act(Iindex(i)) = .false.
+            j=i
+          else
+            e_act(Iindex(j)) = .false.
+            i=j
+          endif
+          print*,"... exchanging "//elnam(Iindex(i))//
      >                     " for "//elnam(Iindex(Nact+1))
-          e_act(Iindex(Nact)) = .false.
-          e_act(Iindex(Nact+1)) = .true.
-          Iindex(Nact) = Iindex(Nact+1)
+          Iindex(i) = Iindex(Nact+1) 
+          e_act(Iindex(i)) = .true.
         endif   
         if (active(iFeS).and..not.e_act(S)) then
           print*,"... exchanging "//elnam(Iindex(Nact))//" for S"
