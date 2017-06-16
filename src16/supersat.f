@@ -238,6 +238,13 @@
             lbruch = lbruch + LOG(term)*dust_nu(i,j)
           enddo
           Sat(i) = EXP(lbruch+dG)
+          !George's poly fit 100-2000K
+          psat = EXP( -7.28086Q+04/TT
+     &                +3.65312Q+01
+     &                -2.56109Q-04*TT 
+     &                -5.24980Q-07*TT**2  
+     &                +1.53343Q-10*TT**3 )
+          Sat(i) = nmol(TiO2)*kT/psat
 
 	else if (dust_nam(i).eq.'SiO2[l]') then
           !------------------------------------------
@@ -256,6 +263,13 @@
             lbruch = lbruch + LOG(term)*dust_nu(i,j)
           enddo
           Sat(i) = EXP(lbruch+dG)
+          !George's poly fit 100-4500K
+          psat = EXP( -7.18591Q+04/TT
+     &                +3.59570Q+01
+     &                -6.57765Q-04*TT 
+     &                -3.78705Q-08*TT**2  
+     &                +8.78339Q-12*TT**3 )
+          Sat(i) = nmol(TiO2)*kT/psat
 
         else if (dust_nam(i).eq.'SiO[s]   ') then
           !psat = EXP(17.56Q0 - 40760.0Q0/TT) * atm   !(Nuth 200x)

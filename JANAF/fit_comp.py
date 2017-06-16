@@ -31,30 +31,51 @@ def stock(T,A,B,C,D,E):
 tmin = 100
 tmax = 4000
 temp = np.arange(tmin,tmax,1)
-for line1 in lines:
-    data1 = line1.split()
-    for line2 in lines:
-        data2 = line2.split()
-        if (data1[0:2] == data2[0:2]):
-            for i in range(3,8):
-                data2[i] = float(data2[i])
-            if (data2[2] == 'Yaws'):
-                plt.plot(temp,yaws(temp,*data2[3:8])*1.3328E-03,label = data2[2])
-            elif (data2[2] == 'S&H'):
-                plt.plot(temp,poly(temp,*data2[3:8])/0.0041868,label = data2[2])
-            elif (data2[2] == 'poly'):
-                plt.plot(temp,poly(temp,*data2[3:8]),label = data2[2])
-            elif (data2[2] == 'Woitke?'):
-                plt.plot(temp,newf(temp,*data2[3:6]),label = data2[2])
-            elif (data2[2] == 'Stock'):
-                plt.plot(temp,stock(temp,*data2[3:8]),label = data2[2])
-    specie = data1[0]
-    value = data1[1]
-    if (value == 'pvap'): unit = '[bar]'
-    if (value == 'dg'): unit = '[kJ/mol]'
-    plt.title(specie)
-    plt.xlabel('T [K]')
-    plt.ylabel(value +' '+ unit)
-    plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-    plt.legend(frameon=False)
-    plt.show()
+
+line1 = lines[10]
+line2 = lines[15]
+data1 = line1.split()
+data2 = line2.split()
+for i in range(3,8):
+    data1[i] = float(data1[i])
+    data2[i] = float(data2[i])
+plt.plot(temp,poly(temp,*data1[3:8]),label = data1[0])
+plt.plot(temp,poly(temp,*data2[3:8]),label = data2[0])
+specie = data1[0][:-3]
+value = data1[1]
+if (value == 'pvap'): unit = '[bar]'
+if (value == 'dg'): unit = '[kJ/mol]'
+plt.title(specie)
+plt.xlabel('T [K]')
+plt.ylabel(value +' '+ unit)
+plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+plt.legend(frameon=False)
+plt.show()
+
+#for line1 in lines:
+#    data1 = line1.split()
+#    for line2 in lines:
+#        data2 = line2.split()
+#        if (data1[0:2] == data2[0:2]):
+#            for i in range(3,8):
+#                data2[i] = float(data2[i])
+#            if (data2[2] == 'Yaws'):
+#                plt.plot(temp,yaws(temp,*data2[3:8])*1.3328E-03,label = data2[2])
+#            elif (data2[2] == 'S&H'):
+#                plt.plot(temp,poly(temp,*data2[3:8])/0.0041868,label = data2[2])
+#            elif (data2[2] == 'poly'):
+#                plt.plot(temp,poly(temp,*data2[3:8]),label = data2[2])
+#            elif (data2[2] == 'Woitke?'):
+#                plt.plot(temp,newf(temp,*data2[3:6]),label = data2[2])
+#            elif (data2[2] == 'Stock'):
+#                plt.plot(temp,stock(temp,*data2[3:8]),label = data2[2])
+#    specie = data1[0]
+#    value = data1[1]
+#    if (value == 'pvap'): unit = '[bar]'
+#    if (value == 'dg'): unit = '[kJ/mol]'
+#    plt.title(specie)
+#    plt.xlabel('T [K]')
+#    plt.ylabel(value +' '+ unit)
+#    plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+#    plt.legend(frameon=False)
+#    plt.show()
