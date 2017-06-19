@@ -8,7 +8,7 @@
      >                   Cr,Mn,Fe,Ni
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
-      integer,parameter :: Npoints=300
+      integer,parameter :: Npoints=100
       real,dimension(Npoints) :: nHtot,Tgas
       real :: T1,T2,p1,p2,p,pe,Tg,rho,nHges,nges,kT,pges,mu,muold
       real :: nTEA,pTEA
@@ -28,12 +28,12 @@
       !---------------------------------
       print*,"start and end temperature [K] (decreasing)"
       !read*,T1,T2
-      T1 = 2500
+      T1 = 4000
       T2 = 100
       print*,"start and end p [bar] (any)"
       !read*,p1,p2
-      p1 = 1000.0*bar
-      p2 = 1E-12*bar
+      p1 = 1E+09*bar
+      p2 = 0.1*bar
       mu = 2.3*amu
 
       !----------------------------

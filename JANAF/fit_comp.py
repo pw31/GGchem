@@ -14,14 +14,13 @@ lines = f.readlines()[0:]
 f.close()
 
 Rgas = 8.1344598   # J/mol/K
-cal  = 4.184       # 1 cal in erg
-bar  = 1.E+6       # 1 bar in dyn/cm2
+cal  = 4.184       # 1 cal in J
 mmHg = 1.3328E+3   # 1 mmHg in dyn/cm2
 
 
 #Define functions used by each fit
 def poly(T,A,B,C,D,E):
-    val = np.exp(A/T + B + C*T + D*T**2 + E*T**3)
+    val = A/T + B + C*T + D*T**2 + E*T**3
     return val
 
 def yaws(T,A,B,C,D,E):
@@ -40,8 +39,8 @@ tmin = 100
 tmax = 5000
 temp = np.arange(tmin,tmax,0.1)
 
-line1 = lines[10]
-line2 = lines[15]
+line1 = lines[25]
+line2 = lines[31]
 print line1
 print line2
 data1 = line1.split()
@@ -49,8 +48,8 @@ data2 = line2.split()
 for i in range(3,8):
     data1[i] = float(data1[i])
     data2[i] = float(data2[i])
-fit1 = poly(temp,*data1[3:8])/bar       #pvap [bar]
-fit2 = poly(temp,*data2[3:8])/bar       #pvap [bar]
+fit1 = np.exp(poly(temp,*data1[3:8]))
+fit2 = np.exp(poly(temp,*data2[3:8]))
 pmax = np.max([fit1,fit2])
 pmin = np.min([fit1,fit2])
 pmin = np.max([pmin,pmax*1.E-25])
@@ -61,8 +60,8 @@ plt.plot(temp,fit1,label = data1[0])
 plt.plot(temp,fit2,label = data2[0])
 specie = data1[0][:-3]
 value = data1[1]
-if (value == 'pvap'): unit = '[bar]'
-if (value == 'dg'): unit = '[kJ/mol]'
+if (value == 'pvap'): unit = '[dyn/cm2]'
+if (value == 'dg'): unit = '[J/mol]'
 plt.title(specie)
 plt.xlabel('T [K]')
 plt.ylabel(value +' '+ unit)
@@ -99,35 +98,41 @@ print "boiling temperature: ",tboil,"K"
 print "pvap(boiling temp.): ",fit1[ibest],"bar"
 plt.plot([tboil,tboil],[0,1],c='black',ls='--')
 plt.savefig(pp,format='pdf')
+plt.clf()
+
+
+for line1 in lines:
+    data1 = line1.split()
+    for line2 in lines:
+        data2 = line2.split()
+        if (data1[0:2] == data2[0:2]):
+            for i in range(3,8):
+                data2[i] = float(data2[i])
+            if (data2[2] == 'Yaws'):
+                fit = yaws(temp,*data2[3:8])
+            elif (data2[2] == 'S&H'):
+                fit = poly(temp,*data2[3:8])*cal
+            elif (data2[2] == 'poly'):
+                if (data2[1] == 'dg'):
+                    fit = poly(temp,*data2[3:8])
+                else:
+                    fit = np.exp(poly(temp,*data2[3:8]))
+            elif (data2[2] == 'Woitke?'):
+                fit = newf(temp,*data2[3:6])
+            elif (data2[2] == 'Stock'):
+                fit = stock(temp,*data2[3:8])
+            plt.plot(temp,fit,label = data2[2])
+    specie = data1[0]
+    value = data1[1]
+    if (value == 'pvap'): unit = '[dyn/cm2]'
+    if (value == 'dg'): unit = '[J/mol]'
+    plt.title(specie)
+    plt.xlabel('T [K]')
+    plt.ylabel(value +' '+ unit)
+    plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
+    plt.legend(frameon=False)
+    #plt.show()
+    plt.savefig(pp,format='pdf')
+    plt.clf()
 pp.close()
 print '... written output to fit_comp.pdf.'
-
-
-
-#for line1 in lines:
-#    data1 = line1.split()
-#    for line2 in lines:
-#        data2 = line2.split()
-#        if (data1[0:2] == data2[0:2]):
-#            for i in range(3,8):
-#                data2[i] = float(data2[i])
-#            if (data2[2] == 'Yaws'):
-#                plt.plot(temp,yaws(temp,*data2[3:8])*1.3328E-03,label = data2[2])
-#            elif (data2[2] == 'S&H'):
-#                plt.plot(temp,poly(temp,*data2[3:8])/0.0041868,label = data2[2])
-#            elif (data2[2] == 'poly'):
-#                plt.plot(temp,poly(temp,*data2[3:8]),label = data2[2])
-#            elif (data2[2] == 'Woitke?'):
-#                plt.plot(temp,newf(temp,*data2[3:6]),label = data2[2])
-#            elif (data2[2] == 'Stock'):
-#                plt.plot(temp,stock(temp,*data2[3:8]),label = data2[2])
-#    specie = data1[0]
-#    value = data1[1]
-#    if (value == 'pvap'): unit = '[bar]'
-#    if (value == 'dg'): unit = '[kJ/mol]'
-#    plt.title(specie)
-#    plt.xlabel('T [K]')
-#    plt.ylabel(value +' '+ unit)
-#    plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-#    plt.legend(frameon=False)
-#    plt.show()

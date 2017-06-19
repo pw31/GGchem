@@ -1,21 +1,23 @@
+***********************************************************************
       PROGRAM EQ_CHEMISTRY
-        use EXCHANGE,ONLY: chemcall,chemiter
-        chemcall = 0
-        chemiter = 0
+***********************************************************************
+      use EXCHANGE,ONLY: chemcall,chemiter
+      chemcall = 0
+      chemiter = 0
 
-        call INIT
-        call INIT_DUSTCHEM
-        !call DEMO_CHEMISTRY
-        call DEMO_SWEEP
-        !call DEMO_STRUCTURE
-        !call DEMO_PHASEDIAGRAM
+      call INIT
+      call INIT_DUSTCHEM
+      !call DEMO_CHEMISTRY
+      call DEMO_SWEEP
+      !call DEMO_STRUCTURE
+      !call DEMO_PHASEDIAGRAM
+      
+      print*
+      print'("   smchem calls = ",I7)',chemcall
+      print'("iterations/call = ",0pF7.2)',
+     >     REAL(chemiter)/REAL(chemcall)
 
-        print*
-        print'("   smchem calls = ",I7)',chemcall
-        print'("iterations/call = ",0pF7.2)',
-     >              REAL(chemiter)/REAL(chemcall)
-        call SAVE_DBASE
-
+      call SAVE_DBASE
       end
 
 
