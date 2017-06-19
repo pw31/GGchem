@@ -112,9 +112,12 @@
       !eps(O)  = eps(O)+0.5d0          ! O-rich
       !eps(C)  = eps(C)-1.0d0          ! C-poor
 
-      !eps(:) = eps(:)-30.0
-      !eps(H) = eps(H)+30.0
-      !eps(O) = eps(H) - LOG10(2.0)     ! H:O = 2:1
+      !eps(Si) = eps(H)+20.0
+      !eps(O)  = eps(Si)+LOG10(2.0)     ! Si:O = 1:2
+
+      eps(:) = eps(:)-40.0
+      eps(H) = 12.0
+      eps(O) = eps(H)-LOG10(2.0)
 
       !do i=1,NELEM
       !  if (elnam(i).ne.'  ') then
@@ -170,7 +173,7 @@
 *     -------------------------
       if (.false.) then
         source = (/'EarthCrust','Ocean','Solar','Meteorites'/)
-        pick = 3 
+        pick = 1 
         write(*,*)
         write(*,*) "replacing from file Abundances.dat ("
      &             //trim(source(pick))//") ..."

@@ -164,7 +164,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        if (qread>1.Q-3.and.iread==311) verbose=2
+        !if (qread>1.Q-3.and.iread==128) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -393,15 +393,27 @@
               call TRANSFORM(iMgAl2O4,iMg2SiO4,amount,1.Q0*3.Q0,
      >                       ddust,eps,dscale,active,ok)
             else  
-              ioff = iAl2O3
-              active(iAl2O3) = .false.
-              amount = ddust(iAl2O3)/3.Q0
-              call TRANSFORM(iAl2O3,iMgAl2O4,amount,1.Q0*3.Q0,
-     >                       ddust,eps,dscale,active,ok)
-              call TRANSFORM(iAl2O3,iMgSiO3,amount,1.Q0*3.Q0,
-     >                       ddust,eps,dscale,active,ok)
-              call TRANSFORM(iAl2O3,iMg2SiO4,amount,-1.Q0*3.Q0,
-     >                       ddust,eps,dscale,active,ok)
+              if (ddust(iAl2O3)<ddust(iMg2SiO4)) then 
+                ioff = iAl2O3
+                active(iAl2O3) = .false.
+                amount = ddust(iAl2O3)/3.Q0
+                call TRANSFORM(iAl2O3,iMgAl2O4,amount,1.Q0*3.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iAl2O3,iMgSiO3,amount,1.Q0*3.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iAl2O3,iMg2SiO4,amount,-1.Q0*3.Q0,
+     >                         ddust,eps,dscale,active,ok)
+              else  
+                ioff = iMg2SiO4
+                active(iMg2SiO4) = .false.
+                amount = ddust(iMg2SiO4)/3.Q0
+                call TRANSFORM(iMg2SiO4,iMgAl2O4,amount,1.Q0*3.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iMg2SiO4,iAl2O3,amount,-1.Q0*3.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iMg2SiO4,iMgSiO3,amount,1.Q0*3.Q0,
+     >                         ddust,eps,dscale,active,ok)
+              endif  
             endif  
             eps(Al) = eps_save(Al)
             eps(Mg) = eps_save(Mg)
@@ -920,7 +932,7 @@
             if (e_act(el)) cycle
             e_act(el) = .true.
             do ii=1,Nind                  
-              if (eps(el)<Iabund(ii)) exit   ! sort by element abundance 
+              if (eps(el)<Iabund(ii)) exit  ! sort by element abundance 
             enddo
             Iindex(ii+1:Nind+1) = Iindex(ii:Nind)
             Iabund(ii+1:Nind+1) = Iabund(ii:Nind)
@@ -946,13 +958,13 @@
         !do i=1,NDUST 
         !  if (active(i)) print*,dust_nam(i)
         !enddo  
-        print*,elnam(Iindex(1:Nind-1)) 
-        print*,e_num(Iindex(1:Nind-1)) 
+        !print*,elnam(Iindex(1:Nind-1)) 
+        !print*,e_num(Iindex(1:Nind-1)) 
         Nind = Nact                         ! truncate at number of condensates
+
         !-------------------------------------
         ! ***  some explict special cases  ***
         !-------------------------------------
-        print*,"proposing ... ",(elnam(Iindex(i))//" ",i=1,Nind)
         if (active(iAl2O3).and.active(iMgAl2O4).and..not.e_act(Mg)) then
           print*,"... exchanging "//elnam(Iindex(Nact))//" for Mg"
           e_act(Iindex(Nact)) = .false.
@@ -1042,6 +1054,21 @@
           e_act(Iindex(Nact)) = .false.
           e_act(S) = .true.
           Iindex(Nact) = S
+        endif   
+        if (active(iLiCl).and.e_act(Li).and.e_act(Cl)) then
+          print*,"... exchanging Cl for "//elnam(Iindex(Nact+1))
+          do i=1,Nind
+            if (Iindex(i)==Cl) exit
+          enddo  
+          e_act(Cl) = .false.
+          e_act(Iindex(Nact+1)) = .true.
+          Iindex(i) = Iindex(Nact+1)
+        endif   
+        if (active(iH2O_l).and..not.e_act(O).and..not.e_act(H)) then
+          print*,"... exchanging "//elnam(Iindex(Nact))//" for O"
+          e_act(Iindex(Nact)) = .false.
+          Iindex(Nact) = O
+          e_act(O) = .true.
         endif   
         if (verbose>1) print*,"solving for ... ",
      >                      (elnam(Iindex(i))//" ",i=1,Nind)

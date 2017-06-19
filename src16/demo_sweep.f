@@ -28,7 +28,7 @@
       !---------------------------------
       print*,"start and end temperature [K] (decreasing)"
       !read*,T1,T2
-      T1 = 2500
+      T1 = 700
       T2 = 100
       if (pconst) then
         print*,"start and end p [bar] (any)"
@@ -39,8 +39,8 @@
       else
         print*,"start and end n<H> [cm-3] (any)"
         !read*,nH1,nH2
-        nH1 = 1.E+19
-        nH2 = 1.E+19
+        nH1 = 4.E+19
+        nH2 = 4.E+19
       endif  
 
       !----------------------------

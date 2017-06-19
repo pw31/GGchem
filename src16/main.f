@@ -6,9 +6,9 @@
         call INIT
         call INIT_DUSTCHEM
         !call DEMO_CHEMISTRY
-        !call DEMO_SWEEP
+        call DEMO_SWEEP
         !call DEMO_STRUCTURE
-        call DEMO_PHASEDIAGRAM
+        !call DEMO_PHASEDIAGRAM
 
         print*
         print'("   smchem calls = ",I7)',chemcall
