@@ -12,12 +12,13 @@
       real(kind=qp),parameter :: mmHg=1.333Q+3 ! mmHg --> dyn/cm2
       real(kind=qp) :: TT,kT,dG,lbruch,lresult,pst,psat,term,ex,TC,S2
       integer :: i,j,STINDEX,el,C=6,Na=11
-      integer,save :: TiO2,SiO,H2O,NH3,CH4
+      integer,save :: TiO2,SiO,H2O,NH3,CH4,SiO2
       logical,save :: firstCall=.true.
 *
       if (firstCall) then
         TiO2 = STINDEX(cmol,NMOLE,'TIO2     ')
         SiO  = STINDEX(cmol,NMOLE,'SIO      ')
+        SiO2 = STINDEX(cmol,NMOLE,'SIO2     ')
         H2O  = STINDEX(cmol,NMOLE,'H2O      ')
         NH3  = STINDEX(cmol,NMOLE,'NH3      ')
         CH4  = STINDEX(cmol,NMOLE,'CH4      ')
@@ -238,13 +239,15 @@
             lbruch = lbruch + LOG(term)*dust_nu(i,j)
           enddo
           Sat(i) = EXP(lbruch+dG)
+          S2 = Sat(i)
           !George's poly fit 100-2000K
           psat = EXP( -7.28086Q+04/TT
      &                +3.65312Q+01
      &                -2.56109Q-04*TT 
      &                -5.24980Q-07*TT**2  
      &                +1.53343Q-10*TT**3 )
-          Sat(i) = nmol(TiO2)*kT/psat
+          Sat(i) = nmol(SiO2)*kT/psat
+          !print*,"SiO2[s]:",TT,S2,Sat(i)
 
 	else if (dust_nam(i).eq.'SiO2[l]') then
           !------------------------------------------
@@ -263,13 +266,15 @@
             lbruch = lbruch + LOG(term)*dust_nu(i,j)
           enddo
           Sat(i) = EXP(lbruch+dG)
+          S2 = Sat(i)
           !George's poly fit 100-4500K
           psat = EXP( -7.18591Q+04/TT
      &                +3.59570Q+01
      &                -6.57765Q-04*TT 
      &                -3.78705Q-08*TT**2  
      &                +8.78339Q-12*TT**3 )
-          Sat(i) = nmol(TiO2)*kT/psat
+          Sat(i) = nmol(SiO2)*kT/psat
+          !print*,"SiO2[l]:",TT,S2,Sat(i)
 
         else if (dust_nam(i).eq.'SiO[s]   ') then
           !psat = EXP(17.56Q0 - 40760.0Q0/TT) * atm   !(Nuth 200x)
