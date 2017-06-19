@@ -112,9 +112,12 @@
       !eps(O)  = eps(O)+0.5d0          ! O-rich
       !eps(C)  = eps(C)-1.0d0          ! C-poor
 
-      !eps(:) = eps(:)-30.0
-      !eps(H) = eps(H)+30.0
-      !eps(O) = eps(H) - LOG10(2.0)     ! H:O = 2:1
+      eps(:) = eps(:)-30.0
+      eps(H) = eps(H)+30.0
+      eps(O) = eps(H) - LOG10(2.0)     ! H:O = 2:1
+
+      !eps(:)  = eps(:)-30.0
+      !eps(Fe) = eps(Fe)+30.0
 
       !do i=1,NELEM
       !  if (elnam(i).ne.'  ') then
