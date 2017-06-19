@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.ticker import MultipleLocator, FormatStrFormatter
+from matplotlib.ticker import MultipleLocator, FormatStrFormatter, ScalarFormatter
 from matplotlib.backends.backend_pdf import PdfPages
 plt.rcParams['axes.linewidth'] = 1.5
 pp = PdfPages('ggchem.pdf')
@@ -57,6 +57,9 @@ plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
 minorLocator = MultipleLocator(sep)
 ax.xaxis.set_minor_locator(minorLocator)
+#fmt=ScalarFormatter(useOffset=False)
+#fmt.set_scientific(False)
+#ax.yaxis.set_major_formatter(fmt)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
 plt.clf()
@@ -74,6 +77,9 @@ plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
 minorLocator = MultipleLocator(sep)
 ax.xaxis.set_minor_locator(minorLocator)
+#fmt=ScalarFormatter(useOffset=False)
+#fmt.set_scientific(False)
+#ax.yaxis.set_major_formatter(fmt)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
 plt.clf()
@@ -183,29 +189,29 @@ if (nmax>-99):
 
 #================== some important molecules ====================
 fig,ax = plt.subplots()
-mols  = ['H2','H','N2','H2O','O2','CO','CO2','CH4','NH3','C2H2','O3','SIO2','He','el']
-nmax  = np.float(0)
-for mol in range(4,4+NELEM+NMOLE,1):
-  yy = dat[:,mol]                # log10 nmol [cm-3]
-  yy = yy - lognH                # log10 nmol/n<H>
-  nmax = np.max([nmax,np.max(yy[iii])])
+mols  = ['H2','H','N2','H2O','O2','CO','CO2','CH4','NH3','C2H2','el']
+mols  = np.array(mols)
+ntot  = 0.0*nHtot
+for i in range(3,4+NELEM+NMOLE): # electrons, all atoms, ions and cations
+  ntot = ntot + 10**dat[:,i]
+lntot = np.log10(ntot)
 count = 0
-for mol in mols:
-  ind = np.where(keyword == mol)[0]
-  if (np.size(ind) == 0): continue
-  ind = ind[0]
-  print mol,ind
-  yy = dat[:,ind]                # log10 nmol [cm-3]
-  yy = yy - lognH                # log10 nmol/n<H>
-  if (np.max(yy)>nmax-6):
+for i in range(3,4+NELEM+NMOLE): 
+  mol = keyword[i]
+  yy = dat[:,i]-lntot            # log10 nmol/ntot
+  crit = -2
+  ind = np.where(mols == mol)[0]
+  if (np.size(ind)>0): crit=-5
+  #print i,mol,ind,np.size(ind)
+  if (np.max(yy[iii])>crit):
     plt.plot(Tg,yy,ls=styl[count],lw=widt[count],label=mol)
     count = count + 1
 plt.title('important molecules',fontsize=20)
 plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
-plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{\langle H\rangle}$',fontsize=20)
+plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{tot}$',fontsize=20)
 plt.xscale('log')
 plt.xlim(Tmin,Tmax)
-plt.ylim(nmax-8,nmax+0.5)
+plt.ylim(-6,0)
 plt.tick_params(axis='both', labelsize=14)
 plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
