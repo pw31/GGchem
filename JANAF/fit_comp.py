@@ -1,5 +1,6 @@
 import matplotlib.pylab as plt
 import numpy as np
+from matplotlib.ticker import MultipleLocator
 from matplotlib.backends.backend_pdf import PdfPages
 plt.rcParams['axes.linewidth'] = 1.5
 pp = PdfPages('fit_comp.pdf')
@@ -36,8 +37,8 @@ def stock(T,A,B,C,D,E):
     return val
 
 tmin = 100
-tmax = 6000
-temp = np.arange(tmin,tmax,1)
+tmax = 5000
+temp = np.arange(tmin,tmax,0.1)
 
 line1 = lines[10]
 line2 = lines[15]
@@ -50,6 +51,12 @@ for i in range(3,8):
     data2[i] = float(data2[i])
 fit1 = poly(temp,*data1[3:8])/bar       #pvap [bar]
 fit2 = poly(temp,*data2[3:8])/bar       #pvap [bar]
+pmax = np.max([fit1,fit2])
+pmin = np.min([fit1,fit2])
+pmin = np.max([pmin,pmax*1.E-25])
+fig,ax = plt.subplots()
+minorLocator = MultipleLocator(100)
+ax.xaxis.set_minor_locator(minorLocator)
 plt.plot(temp,fit1,label = data1[0])
 plt.plot(temp,fit2,label = data2[0])
 specie = data1[0][:-3]
@@ -60,7 +67,8 @@ plt.title(specie)
 plt.xlabel('T [K]')
 plt.ylabel(value +' '+ unit)
 plt.xlim(tmin,tmax)
-plt.xscale('log')
+plt.ylim(pmin,pmax)
+#plt.xscale('log')
 plt.yscale('log')
 #plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
 plt.legend(frameon=False)
@@ -68,6 +76,9 @@ plt.legend(frameon=False)
 plt.savefig(pp,format='pdf')
 plt.clf()
 
+fig,ax = plt.subplots()
+minorLocator = MultipleLocator(100)
+ax.xaxis.set_minor_locator(minorLocator)
 plt.plot(temp,fit1/fit2)
 plt.plot(temp,0*temp+1,c='black',ls='--')
 plt.title(specie)
@@ -75,11 +86,23 @@ plt.xlabel('T [K]')
 plt.ylabel(data1[0]+' / '+data2[0])
 plt.xlim(tmin,tmax)
 plt.ylim(0,2)
-plt.xscale('log')
-plt.legend(frameon=False)
+Nt = temp.size
+ibest = 0
+qbest = 1.e+99
+for i in range(0,Nt):
+  q = fit1[i]/fit2[i]
+  if (abs(q-1)<qbest):
+    ibest=i
+    qbest=abs(q-1)
+tboil = temp[ibest]
+print "boiling temperature: ",tboil,"K"
+print "pvap(boiling temp.): ",fit1[ibest],"bar"
+plt.plot([tboil,tboil],[0,1],c='black',ls='--')
 plt.savefig(pp,format='pdf')
 pp.close()
 print '... written output to fit_comp.pdf.'
+
+
 
 #for line1 in lines:
 #    data1 = line1.split()
