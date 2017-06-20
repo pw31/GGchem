@@ -28,11 +28,11 @@
       !---------------------------------
       print*,"start and end temperature [K] (decreasing)"
       !read*,T1,T2
-      T1 = 4000
+      T1 = 2500
       T2 = 100
       print*,"start and end p [bar] (any)"
       !read*,p1,p2
-      p1 = 1E+09*bar
+      p1 = 1E+08*bar
       p2 = 0.1*bar
       mu = 2.3*amu
 

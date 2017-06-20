@@ -164,7 +164,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        if (qread>1.Q-3.and.iread==139) verbose=2
+        if (qread>1.Q-3.and.iread==4378) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -1084,6 +1084,12 @@
           Iindex(Nact) = O
           e_act(O) = .true.
         endif   
+        if (active(iH2O).and..not.e_act(O).and..not.e_act(H)) then
+          print*,"... exchanging "//elnam(Iindex(Nact))//" for O"
+          e_act(Iindex(Nact)) = .false.
+          Iindex(Nact) = O
+          e_act(O) = .true.
+        endif
         if (verbose>1) print*,"solving for ... ",
      >                      (elnam(Iindex(i))//" ",i=1,Nind)
         if (verbose>1) print'(99(1pE11.3))',(Iabund(i),i=1,Nind)
