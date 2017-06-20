@@ -21,14 +21,14 @@
       character(len=2) :: test3
       character(len=1) :: char
       integer :: verbose=0
-      logical :: isOK,pconst=.false.
+      logical :: isOK,pconst=.true.
 
       !---------------------------------
       ! ***  setup sweep parameters  ***
       !---------------------------------
       print*,"start and end temperature [K] (decreasing)"
       !read*,T1,T2
-      T1 = 700
+      T1 = 2500
       T2 = 100
       if (pconst) then
         print*,"start and end p [bar] (any)"

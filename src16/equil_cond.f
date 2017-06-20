@@ -164,7 +164,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        !if (qread>1.Q-3.and.iread==128) verbose=2
+        if (qread>1.Q-3.and.iread==139) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -198,7 +198,7 @@
           endif  
         enddo
       endif  
-      if (worst>1.Q-8) stop
+      if (worst>1.Q-8) stop "*** worst>1.Q-8 in equil_cond"
 
       !----------------------------------------------------------
       ! ***  compute maximum possible dust abundances dscale  ***
@@ -686,17 +686,31 @@
             changed = .true.
             !--- decide ---
             if (Sat0(iNa2SiO3).gt.Sat0(iNaAlSi3O8)) then
-              ioff = iNaAlSi3O8
-              active(iNaAlSi3O8) = .false.  
-              amount = ddust(iNaAlSi3O8)/4.Q0
-              call TRANSFORM(iNaAlSi3O8,iNa2SiO3,amount,0.5Q0*4.Q0,
-     >                       ddust,eps,dscale,active,ok)
-              call TRANSFORM(iNaAlSi3O8,iMgAl2O4,amount,0.5Q0*4.Q0,
-     >                       ddust,eps,dscale,active,ok)
-              call TRANSFORM(iNaAlSi3O8,iMgSiO3,amount,5.5Q0*4.Q0,
-     >                       ddust,eps,dscale,active,ok)
-              call TRANSFORM(iNaAlSi3O8,iMg2SiO4,amount,-3.Q0*4.Q0,
-     >                       ddust,eps,dscale,active,ok)
+              if (ddust(iNaAlSi3O8)>3*ddust(iMg2SiO4)) then 
+                ioff = iNaAlSi3O8
+                active(iNaAlSi3O8) = .false.  
+                amount = ddust(iNaAlSi3O8)/4.Q0
+                call TRANSFORM(iNaAlSi3O8,iNa2SiO3,amount,0.5Q0*4.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iNaAlSi3O8,iMgAl2O4,amount,0.5Q0*4.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iNaAlSi3O8,iMgSiO3,amount,5.5Q0*4.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iNaAlSi3O8,iMg2SiO4,amount,-3.Q0*4.Q0,
+     >                         ddust,eps,dscale,active,ok)
+              else
+                ioff = iMg2SiO4
+                active(iMg2SiO4) = .false.  
+                amount = ddust(iMg2SiO4)/4.Q0
+                call TRANSFORM(iMg2SiO4,iNaAlSi3O8,amount,-1.Q0/3.Q0
+     >                         *4.Q0,ddust,eps,dscale,active,ok)
+                call TRANSFORM(iMg2SiO4,iNa2SiO3,amount,1.Q0/6.Q0
+     >                         *4.Q0,ddust,eps,dscale,active,ok)
+                call TRANSFORM(iMg2SiO4,iMgAl2O4,amount,1.Q0/6.Q0
+     >                         *4.Q0,ddust,eps,dscale,active,ok)
+                call TRANSFORM(iMg2SiO4,iMgSiO3,amount,11.Q0/6.Q0
+     >                         *4.Q0,ddust,eps,dscale,active,ok)
+              endif   
             else  
               ioff = iNa2SiO3
               active(iNa2SiO3) = .false.  
@@ -714,7 +728,6 @@
             eps(Al) = eps_save(Al)
             eps(Mg) = eps_save(Mg)
             eps(Si) = eps_save(Si)
-            ok = .true.
           endif   
           if (active(iNa2SiO3_l).and.active(iNaAlSi3O8).and.
      >        active(iAl2O3_l).and.active(iSiO2)) then
@@ -1055,7 +1068,8 @@
           e_act(S) = .true.
           Iindex(Nact) = S
         endif   
-        if (active(iLiCl).and.e_act(Li).and.e_act(Cl)) then
+        if (active(iLiCl).and.e_act(Li).and.e_act(Cl).and.
+     >      e_num(Li)==1.and.e_num(Cl)==1) then
           print*,"... exchanging Cl for "//elnam(Iindex(Nact+1))
           do i=1,Nind
             if (Iindex(i)==Cl) exit

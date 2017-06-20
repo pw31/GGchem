@@ -115,9 +115,9 @@
       !eps(Si) = eps(H)+20.0           ! pure SiO2 modelling ...
       !eps(O)  = eps(Si)+LOG10(2.0)    ! Si:O = 1:2
 
-      eps(:) = eps(:)-40.0             ! pure H2O modelling ...
-      eps(H) = 12.0
-      eps(O) = eps(H)-LOG10(2.0)       ! H:O = 2:1
+      !eps(:) = eps(:)-40.0            ! pure H2O modelling ...
+      !eps(H) = 12.0
+      !eps(O) = eps(H)-LOG10(2.0)      ! H:O = 2:1
 
       !do i=1,NELEM
       !  if (elnam(i).ne.'  ') then
@@ -171,9 +171,9 @@
 *     -------------------------
 *     ***  read from file?  ***      
 *     -------------------------
-      if (.false.) then
+      if (.true.) then
         source = (/'EarthCrust','Ocean','Solar','Meteorites'/)
-        pick = 1 
+        pick = 3 
         write(*,*)
         write(*,*) "replacing from file Abundances.dat ("
      &             //trim(source(pick))//") ..."
