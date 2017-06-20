@@ -37,10 +37,10 @@ def stock(T,A,B,C,D,E):
 
 tmin = 100
 tmax = 5000
-temp = np.arange(tmin,tmax,0.1)
+temp = np.arange(tmin,tmax,1)
 
-line1 = lines[25]
-line2 = lines[31]
+line1 = lines[41]
+line2 = lines[46]
 print line1
 print line2
 data1 = line1.split()
@@ -48,8 +48,24 @@ data2 = line2.split()
 for i in range(3,8):
     data1[i] = float(data1[i])
     data2[i] = float(data2[i])
-fit1 = np.exp(poly(temp,*data1[3:8]))
-fit2 = np.exp(poly(temp,*data2[3:8]))
+if (data1[2] == 'poly'):
+    if (data1[1] == 'dg'):
+        fit1 = poly(temp,*data1[3:8])
+    else:
+        fit1 = np.exp(poly(temp,*data1[3:8]))
+elif (data1[2] == 'Woitke?'):
+    fit1 = np.exp(newf(temp,*data1[3:6]))
+elif (data1[2] == 'Yaws'):
+    fit1 = yaws(temp,*data1[3:8])
+if (data2[2] == 'poly'):
+    if (data2[1] == 'dg'):
+        fit2 = poly(temp,*data2[3:8])
+    else:
+        fit2 = np.exp(poly(temp,*data2[3:8]))
+elif (data2[2] == 'Woitke?'):
+    fit2 = np.exp(newf(temp,*data2[3:6]))
+elif (data2[2] == 'Yaws'):
+    fit2 = yaws(temp,*data2[3:8])
 pmax = np.max([fit1,fit2])
 pmin = np.min([fit1,fit2])
 pmin = np.max([pmin,pmax*1.E-25])
@@ -93,10 +109,11 @@ for i in range(0,Nt):
   if (abs(q-1)<qbest):
     ibest=i
     qbest=abs(q-1)
-tboil = temp[ibest]
-print "boiling temperature: ",tboil,"K"
-print "pvap(boiling temp.): ",fit1[ibest],"bar"
-plt.plot([tboil,tboil],[0,1],c='black',ls='--')
+tmelt = temp[ibest]
+print "melting temperature: ",tmelt,"K"
+print "pvap(melting temp.): ",fit1[ibest],"bar"
+plt.plot([tmelt,tmelt],[0,1],c='black',ls='--')
+#plt.show()
 plt.savefig(pp,format='pdf')
 plt.clf()
 
@@ -118,7 +135,7 @@ for line1 in lines:
                 else:
                     fit = np.exp(poly(temp,*data2[3:8]))
             elif (data2[2] == 'Woitke?'):
-                fit = newf(temp,*data2[3:6])
+                fit = np.exp(newf(temp,*data2[3:6]))
             elif (data2[2] == 'Stock'):
                 fit = stock(temp,*data2[3:8])
             plt.plot(temp,fit,label = data2[2])
