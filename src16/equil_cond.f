@@ -164,7 +164,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        if (qread>1.Q-3.and.iread==139) verbose=2
+        !if (qread>1.Q-3.and.iread==119) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -498,6 +498,23 @@
               call TRANSFORM(iFe2SiO4,iFeO_l,amount,2.Q0*2.Q0,
      >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iFe2SiO4,iSiO2,amount,1.Q0*2.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif  
+          endif   
+          if (active(iFeO_l).and.active(iFe_l).and..false.) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iFe_l).gt.Sat0(iFeO_l)) then
+              ioff = iFeO_l
+              active(iFeO_l) = .false.  
+              amount = ddust(iFeO_l)
+              call TRANSFORM(iFeO_l,iFe_l,amount,1.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iFe_l
+              active(iFe_l) = .false.  
+              amount = ddust(iFe_l)
+              call TRANSFORM(iFe_l,iFeO_l,amount,1.Q0,
      >                       ddust,eps,dscale,active,ok)
             endif  
           endif   
@@ -871,6 +888,25 @@
             eps(Li) = eps_save(Li)
             eps(Cl) = eps_save(Cl)
           endif   
+          if (active(iMg2SiO4).and.active(iMg2SiO4_l)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iMg2SiO4).gt.Sat0(iMg2SiO4_l)) then
+              ioff = iMg2SiO4_l
+              active(iMg2SiO4_l) = .false.  
+              amount = ddust(iMg2SiO4_l)
+              call TRANSFORM(iMg2SiO4_l,iMg2SiO4,amount,1.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iMg2SiO4
+              active(iMg2SiO4) = .false.  
+              amount = ddust(iMg2SiO4)
+              call TRANSFORM(iMg2SiO4,iMg2SiO4_l,amount,1.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif  
+            eps(Li) = eps_save(Li)
+            eps(Cl) = eps_save(Cl)
+          endif   
           if (.not.ok) then
             print*,"TRANSFORM resulted in negative dust abundance"
             ifail = ifail+1
@@ -971,8 +1007,9 @@
         !do i=1,NDUST 
         !  if (active(i)) print*,dust_nam(i)
         !enddo  
-        !print*,elnam(Iindex(1:Nind-1)) 
-        !print*,e_num(Iindex(1:Nind-1)) 
+        if (verbose>1) print'(99(A3))',elnam(Iindex(1:Nind-1)) 
+        if (verbose>1) print'(99(I3))',e_num(Iindex(1:Nind-1)) 
+        if (Nind-1<Nact) stop "*** Nind<Nact in equil_cond."
         Nind = Nact                         ! truncate at number of condensates
 
         !-------------------------------------
@@ -1083,6 +1120,12 @@
           e_act(Iindex(Nact)) = .false.
           Iindex(Nact) = O
           e_act(O) = .true.
+        endif   
+        if (active(iFeO_l).and..not.e_act(Fe).and..not.e_act(O)) then
+          print*,"... exchanging "//elnam(Iindex(Nact))//" for Fe"
+          e_act(Iindex(Nact)) = .false.
+          Iindex(Nact) = Fe
+          e_act(Fe) = .true.
         endif   
         if (verbose>1) print*,"solving for ... ",
      >                      (elnam(Iindex(i))//" ",i=1,Nind)
