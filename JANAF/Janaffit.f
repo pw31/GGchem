@@ -218,6 +218,8 @@
       write(*,*) '199 = SiO2[l] pvap'
       write(*,*) '200 = FeS[s] pvap'
       write(*,*) '201 = FeS[l] pvap'
+      write(*,*) '202 = NaCl[s] pvap'
+      write(*,*) '203 = NaCl[l] pvap'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -1719,6 +1721,16 @@
       elseif (specie.eq.201) then
         call READ_DATEI('FeS_l.txt'  ,dG,T,Nmax,N,S,1) 
         call READ_DATEI('FeS.txt'   ,dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.202) then
+        call READ_DATEI('NaCl_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('NaCl.txt'   ,dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.203) then
+        call READ_DATEI('NaCl_l.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('NaCl.txt'   ,dG,T,Nmax,N,S,2) 
         Edzahl = 1
         stoich(2) = 1.D0
       else

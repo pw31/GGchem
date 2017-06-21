@@ -164,7 +164,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        if (qread>1.Q-3.and.iread==4378) verbose=2
+        !if (qread>1.Q-3.and.iread==4377) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -907,6 +907,37 @@
             eps(Li) = eps_save(Li)
             eps(Cl) = eps_save(Cl)
           endif   
+          if (active(iMg2SiO4).and.active(iMgSiO3).and.
+     >        active(iFe).and.active(iFe2SiO4)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iFe)>Sat0(iFe2SiO4)) then
+              ioff = iFe2SiO4
+              active(iFe2SiO4) = .false.
+              amount = ddust(iFe2SiO4)/3.Q0
+              call TRANSFORM(iFe2SiO4,iFe,amount,2.Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iFe2SiO4,iMgSiO3,amount,2.Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iFe2SiO4,iMg2SiO4,amount,-1.Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iFe
+              active(iFe) = .false.
+              amount = ddust(iFe)/3.Q0
+              call TRANSFORM(iFe,iFe2SiO4,amount,0.5Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iFe,iMgSiO3,amount,-1.Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iFe,iMg2SiO4,amount,0.5Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif  
+            print*,eps(Fe),eps(Mg),eps(Si)
+            print*,eps_save(Fe),eps_save(Mg),eps_save(Si)
+            eps(Al) = eps_save(Fe)
+            eps(Mg) = eps_save(Mg)
+            eps(Si) = eps_save(Si)
+          endif 
           if (.not.ok) then
             print*,"TRANSFORM resulted in negative dust abundance"
             ifail = ifail+1
