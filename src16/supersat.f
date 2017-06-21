@@ -1,7 +1,8 @@
 *********************************************************************
       SUBROUTINE SUPERSAT(T,nat,nmol,Sat)
 *********************************************************************
-      use dust_data,ONLY: NELEM,NDUST,NMOLE,cmol,bk,atm,rgas,bar,
+      use CHEMISTRY,ONLY: NMOLE,cmol
+      use dust_data,ONLY: NELEM,NDUST,bk,atm,rgas,bar,
      &                    dust_nam,dust_nel,dust_el,dust_nu,elnam
       implicit none
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )

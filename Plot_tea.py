@@ -10,7 +10,7 @@ data   = open(file)
 dummy  = data.readline()
 dimens = data.readline()
 dimens = np.array(dimens.split())
-NELEM  = 21
+NELEM  = int(dimens[0])
 NMOLE  = int(dimens[1])
 NDUST  = int(dimens[2])
 NPOINT = int(dimens[3])
@@ -43,7 +43,7 @@ if (Tmax-Tmin>1500): sep=100
 Tmin  = Tmin*0.85
 Tmax  = Tmax*1.05
 
-file   = 'TEAoutOrich/results/TEAoutOrich.tea'
+file   = 'TEAoutOrich_old/results/TEAoutOrich.tea'
 #file   = 'TEAoutCrich/results/TEAoutCrich.tea'
 data   = open(file)
 dum    = data.readline()

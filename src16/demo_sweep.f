@@ -1,7 +1,8 @@
 ***********************************************************************
       SUBROUTINE DEMO_SWEEP
 ***********************************************************************
-      use DUST_DATA,ONLY: NELEM,NMOLE,NDUST,elnam,cmol,eps0,bk,bar,muH,
+      use CHEMISTRY,ONLY: NELM,NMOLE,elnum,cmol,el,charge
+      use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,muH,
      >                    amu,dust_nam,dust_mass,dust_Vol
       use EXCHANGE,ONLY: nel,nat,nion,nmol,
      >                   H,He,Li,C,N,O,F,Ne,Na,Mg,Al,Si,S,Cl,K,Ca,Ti,
@@ -13,7 +14,7 @@
       real :: T1,T2,p1,p2,nH1,nH2,p,pe,Tg,rho,nHges,nges,kT,pges
       real :: nTEA,pTEA,mu,muold
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST)
-      integer :: i,j,jj,l,iz,stindex
+      integer :: i,j,jj,l,iel,NOUT
       character(len=5000) :: species,NISTspecies,elnames
       character(len=200) :: line
       character(len=20) :: frmt,name,short_name(NDUST),test1,test2
@@ -52,14 +53,16 @@
         short_name(i) = name
         if (j>0) short_name(i)=name(1:j-1)
       enddo
-      eps = eps0
+      eps  = eps0
+      NOUT = NELM
+      if (charge) NOUT=NOUT-1
       open(unit=70,file='Static_Conc.dat',status='replace')
       write(70,1000) 'H',eps( H), 'C',eps( C),
      &               'N',eps( N), 'O',eps( O)
-      write(70,*) NELEM,NMOLE,NDUST,Npoints
+      write(70,*) NOUT,NMOLE,NDUST,Npoints
       write(70,2000) 'Tg','nHges','pges','el',
-     &               'H','He','Li','C','N','O','F','Ne','Na','Mg','Al',
-     &               'Si','S','Cl','K','Ca','Ti','Cr','Mn','Fe','Ni',
+     &               (trim(elnam(elnum(j))),j=1,el-1),
+     &               (trim(elnam(elnum(j))),j=el+1,NELM),
      &               (trim(cmol(i)),i=1,NMOLE),
      &               ('S'//trim(short_name(i)),i=1,NDUST),
      &               ('n'//trim(short_name(i)),i=1,NDUST)
@@ -214,29 +217,10 @@
         write(*,1010) ' Tg=',Tg,' pe=',nel*kT,' n<H>=',nHges,
      &                ' p=',pges/bar,' mu=',mu/amu
         write(70,2010) Tg,nHges,pges,
-     &                LOG10(MAX(1.Q-300, nel)),
-     &                LOG10(MAX(1.Q-300, nat( H))),
-     &                LOG10(MAX(1.Q-300, nat(He))),
-     &                LOG10(MAX(1.Q-300, nat(Li))),
-     &                LOG10(MAX(1.Q-300, nat( C))),
-     &                LOG10(MAX(1.Q-300, nat( N))),
-     &                LOG10(MAX(1.Q-300, nat( O))),
-     &                LOG10(MAX(1.Q-300, nat( F))),
-     &                LOG10(MAX(1.Q-300, nat(Ne))),
-     &                LOG10(MAX(1.Q-300, nat(Na))),
-     &                LOG10(MAX(1.Q-300, nat(Mg))),
-     &                LOG10(MAX(1.Q-300, nat(Al))),
-     &                LOG10(MAX(1.Q-300, nat(Si))),
-     &                LOG10(MAX(1.Q-300, nat( S))),
-     &                LOG10(MAX(1.Q-300, nat(Cl))),
-     &                LOG10(MAX(1.Q-300, nat( K))),
-     &                LOG10(MAX(1.Q-300, nat(Ca))),
-     &                LOG10(MAX(1.Q-300, nat(Ti))),
-     &                LOG10(MAX(1.Q-300, nat(Cr))),
-     &                LOG10(MAX(1.Q-300, nat(Mn))),
-     &                LOG10(MAX(1.Q-300, nat(Fe))),
-     &                LOG10(MAX(1.Q-300, nat(Ni))),
-     &               (LOG10(MAX(1.Q-300, nmol(jj))),jj=1,NMOLE),
+     &       LOG10(MAX(1.Q-300, nel)),
+     &      (LOG10(MAX(1.Q-300, nat(elnum(jj)))),jj=1,el-1),
+     &      (LOG10(MAX(1.Q-300, nat(elnum(jj)))),jj=el+1,NELM),
+     &      (LOG10(MAX(1.Q-300, nmol(jj))),jj=1,NMOLE),
      &    (LOG10(MIN(1.Q+300,MAX(1.Q-300,Sat(jj)))),jj=1,NDUST),
      &             (LOG10(MAX(1.Q-300, eldust(jj))),jj=1,NDUST)
 

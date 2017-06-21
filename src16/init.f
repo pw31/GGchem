@@ -3,9 +3,6 @@
 **********************************************************************
 *****                                                            *****
 *****   Initialisiert Elementhaeufigkeiten                       *****
-*****   - Lambert + Rao (1994):                                  *****
-*****     (JAA 15, 47, solare Werte); He/H=0.1; Ne,Mg,K,Cr,Ti    *****
-*****     und Mn nach nach Allen (1973)                          *****
 *****   - Anders + Grevesse (1989):                              *****
 *****     Geochimica et Cosmochemica Acta Vol 53, pp 197--214    *****
 *****     ("Photosphere")                                        *****
@@ -13,7 +10,7 @@
 *****   - wie in Tsuji-Chemie                                    *****
 *****                                                            *****
 **********************************************************************
-      use dust_data,ONLY: NELEM,eps=>eps0,mass,muH,elnam,amu
+      use DUST_DATA,ONLY: NELEM,eps=>eps0,mass,muH,elnam,amu
       use EXCHANGE,ONLY: H,He,Li,C,N,O,F,Ne,Na,Mg,Al,Si,S,Cl,K,Ca,Ti,
      >                   Cr,Mn,Fe,Ni
       implicit none
@@ -105,19 +102,12 @@
 
       !eps(C)  = eps(O) + LOG10(2.0)   ! try C/O=2
 
-      !eps(:)  = eps(:)+4.d0           ! try H-poor
-      !eps(H)  = eps(H)-4.d0
-      !eps(He) = eps(He)-4.d0
-      !eps(N)  = eps(N)+1.5d0          ! N-rich
-      !eps(O)  = eps(O)+0.5d0          ! O-rich
-      !eps(C)  = eps(C)-1.0d0          ! C-poor
-
       !eps(Si) = eps(H)+20.0           ! pure SiO2 modelling ...
       !eps(O)  = eps(Si)+LOG10(2.0)    ! Si:O = 1:2
 
-      eps(:) = eps(:)-40.0            ! pure H2O modelling ...
-      eps(H) = 12.0
-      eps(O) = eps(H)-LOG10(2.0)      ! H:O = 2:1
+      !eps(:) = eps(:)-40.0            ! pure H2O modelling ...
+      !eps(H) = 12.0
+      !eps(O) = eps(H)-LOG10(2.0)      ! H:O = 2:1
 
       !do i=1,NELEM
       !  if (elnam(i).ne.'  ') then
@@ -168,12 +158,12 @@
       enddo
       write(*,*) 'rho = n<H> *',muH/amu,' amu'
 
-*     -------------------------
-*     ***  read from file?  ***      
-*     -------------------------
+*     ------------------------------------
+*     ***  read abundances from file?  ***      
+*     ------------------------------------
       if (.false.) then
         source = (/'EarthCrust','Ocean','Solar','Meteorites'/)
-        pick = 3 
+        pick = 1
         write(*,*)
         write(*,*) "replacing from file Abundances.dat ("
      &             //trim(source(pick))//") ..."

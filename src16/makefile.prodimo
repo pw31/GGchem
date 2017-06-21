@@ -4,8 +4,8 @@ F90LINKER    = ifort
 # for IFORT-Compiler
 #===================
 DEFS      = -D IFORT -diag-disable 8290,8291 
-#FFLAGS   = -r8 -g -traceback -fpe0 -check all,noarg_temp_created
-FFLAGS    = -r8 -g -traceback -O3 -xHOST -prec-div -fp-model source
+FFLAGS   = -r8 -g -traceback -fpe0 -check all,noarg_temp_created
+#FFLAGS    = -r8 -g -traceback -O3 -xHOST -prec-div -fp-model source
 INCLUDES  = 
 LFLAGS    = $(FFLAGS)
 
@@ -27,6 +27,7 @@ OBJECTS  = datamod.o \
 	   equil_cond.o \
 	   is_nan.o \
 	   init.o \
+           init_chemistry.o \
 	   init_dustchem.o \
 	   ggchem.o \
            gauss16.o \

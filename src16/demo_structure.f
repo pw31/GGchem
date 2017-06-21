@@ -1,9 +1,10 @@
 ***********************************************************************
       SUBROUTINE DEMO_STRUCTURE
 ***********************************************************************
-      use STRUCTURE,ONLY: Npmax,Npoints,Tgas,press,pelec,dens,nHtot
-      use DUST_DATA,ONLY: NELEM,NMOLE,NDUST,elnam,cmol,eps0,bk,bar,amu,
+      use CHEMISTRY,ONLY: NMOLE,cmol
+      use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,amu,
      >                    dust_nam,dust_mass,dust_Vol,muH
+      use STRUCTURE,ONLY: Npmax,Npoints,Tgas,press,pelec,dens,nHtot
       use EXCHANGE,ONLY: nel,nat,nion,nmol,
      >                   H,He,Li,C,N,O,F,Ne,Na,Mg,Al,Si,S,Cl,K,Ca,Ti,
      >                   Cr,Mn,Fe,Ni
