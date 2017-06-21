@@ -1,13 +1,4 @@
 ************************************************************************
-      module CHEM16
-************************************************************************
-      use DUST_DATA,ONLY: NMOLE
-      integer,parameter :: qp = selected_real_kind ( 33, 4931 )
-      real(kind=qp) :: a(NMOLE,0:4),th1,th2,th3,th4,TT1,TT2,TT3
-      integer :: fit(NMOLE),natom(NMOLE)
-      end
-
-************************************************************************
       SUBROUTINE smchem16 (anHges,Tg,eps,anmono,anmol,merk,verbose)
 ************************************************************************
 *                                                                      *
@@ -82,10 +73,13 @@
 *     GG-Konstanten fuer TiC von Andreas Gauger gewonnen               *
 *     auf der Grundlage spekrtoskopischer Messungen          11.09.97  *
 ************************************************************************
-      use DUST_DATA,ONLY: cmol,nml=>NMOLE,nel=>NELM,NewChemIt,NewBackIt
+      use DUST_DATA,ONLY: NewChemIt,NewBackIt
+      use CHEMISTRY,ONLY: nml=>NMOLE,nel=>NELM,cmol,catm,
+     >                    m_kind,m_anz,a,natom,charge,elion,
+     >                    He,el,H,C,N,O,Si,Mg,Al,Fe,S,Na,K,Ti,Ca,Li,Cl,
+     >                    th1,th2,th3,th4,fit,TT1,TT2,TT3
       use EXCHANGE,ONLY: HII,CII,NII,OII,NaII,MgII,AlII,KII,TiII,SII,
      >                   SiII,FeII,CaII,LiII,ClII,HeII,chemcall,chemiter
-      use CHEM16,ONLY: a,th1,th2,th3,th4,fit,TT1,TT2,TT3,natom
       implicit none
 *-----------------------------------------------------------------------
 *  Dimensionierung fuer die Molekuel- und Atom Felder. Hier ist auf
@@ -96,6 +90,7 @@
       real(kind=qp),intent(in)  :: eps(nel)
       real(kind=qp),intent(out) :: anmono(nel),anmol(nml)
       integer,intent(inout) :: verbose
+      real(kind=qp),parameter :: bk=1.380662d-16
 *-----------------------------------------------------------------------
 *  Die Variable "alle" entscheidet, ob die nicht unmittelbar 
 *  beruecksichtigten Molekuele dennoch inkonsistent mitgerechnet werden. 
@@ -121,36 +116,17 @@
 *  ist, die in die Dissoziationspolynome eingesetzt werden darf.
       real(kind=qp),parameter :: tdispol=100.Q0
 *-----------------------------------------------------------------------
-*  Um das Program lesbarer zu machen werden fuer jedes Molekuel und 
-*  jedes Atom Integer-Variablen definiert, die den Index der Groesse 
-*  im entsprechenden Feld beinhalten.
-      integer He,el,H,C,N,O,Si,Mg,Al,Fe,S,Na,K,Ti,Ca,Li,Fl,Cl
-      parameter(He=1,el=2,H=3,C=4,N=5,O=6,Si=7,Mg=8,Al=9,Fe=10,S=11,
-     &          Na=12,K=13,Ti=14,Ca=15,Li=16,Cl=17,Fl=18)
-      integer elind(nel)
-      data elind/2,0,1,6,7,8,14,12,13,26,16,11,19,22,20,3,17/
-*-----------------------------------------------------------------------
-      integer m_kind(0:4,nml),m_anz(4,nml)
-      integer Al2O,AlH,AlO2H,AlOH,C2,C3,C2H,C3H,C2H2,CH4,CN,CO,CO2,CS,NO
-      integer FeS,H2,H2O,H2S,HCN,HS,MgH,MgO,MgOH,MgS,N2,NH3,O2,OH,SO,SO2
-      integer Si2C,SiC,SiC2,SiH,SiH4,SiN,SiO,SiO2,SiS,SiC4H12,FeO,FeO2H2
-      integer TiO,TiO2,TiS,TiC,TiC2,TiCl,TiCl2,TiCl4,MGO2H2,NAOH,NA2O2H2
-      integer CaOH,CaO2H2,KOH,K2O2H2,CKN,C2K2N2,FeH,CaH,TiH,LiH,LiO,LiOH
-      integer LiCl,Li2Cl2,Li3Cl3,Li2O2H2,KCl,CaCl2,CaCl,NaCl,HCl,NaH
-      integer H2SO4,MgCl,MgCl2,FeCl,FeCl2,AlCl,AlCl2,AlCl3,Na2CL2,K2CL2
-      integer TIOCL2
       integer stindex,at,info,ipvt(nel),Nconv,switch,iredo,ido
       integer Nact,all_to_act(nel),act_to_all(nel),switchoff(nel)
-      integer e,i,j,j1,ii,jj,kk,ilauf,l,it,m1,m2,piter,iraus,itry
-      integer imin,imax,enew,e2,eseq(nel)
+      integer e,i,j,j1,ii,jj,kk,l,it,m1,m2,piter,iraus,itry
+      integer Nseq,imin,imax,enew,e2,eseq(nel)
       integer,parameter :: itmax=200
       real(kind=qp),parameter :: finish=1.Q-25
       real(kind=qp) :: ppp,qqq
-      real(kind=qp) :: g(0:nml),amerk(nel),limit,condnum1,work(nel)
-      real(kind=qp) :: bk,kT,kT1,nelek,ng,Sa,Nenner,fak,lth,arg,term
+      real(kind=qp) :: g(0:nml),limit,condnum1,work(nel)
+      real(kind=qp) :: kT,kT1,nelek,ng,Sa,Nenner,fak,lth,arg,term
       real(kind=qp) :: f0,f1,f2,f3,ff1,ff2,ff3,f,fs
       real(kind=qp) :: VIETA,VIETA2
-      real(kind=qp) :: badness(nel),ansave(nel),antest(nel)
       real(kind=qp) :: pH,pHe,pC,pN,pO,pSi,pMg,pAl,pFe,pS,pNa,pK,pTi,pCa
       real(kind=qp) :: pLi,pCl,pel,worst
       real(kind=qp) :: pHges,pHeges,pCges,pNges,pOges,pSiges,pMgges,
@@ -164,18 +140,24 @@
       real(kind=qp) :: converge(0:500),delp,nold,soll,haben,abw,sum
       real(kind=qp) :: dpp(4),func(4),dfunc(4,4),sca(4)
       real(kind=qp) :: pbefore1(4),pbefore2(4),pbefore3(2),pbefore4(2)
-      real(kind=qp) :: pcorr1(4),pcorr2(4),pcorr3(2),pcorr4(2)
-      real(kind=qp) :: pbefore(nel),pcorr(nel,nel)
+      real(kind=qp) :: pbefore(nel)
       real(kind=qp) :: emax,pges,pwork
       logical :: from_merk,eact(nel),redo(nel),done(nel),affect,known
       character(len=100) :: txt,line
-      character(len=2) :: catm(nel)
       character(len=1) :: char
-      data catm/'He','e-','H','C','N','O','Si','Mg','Al','Fe','S','Na',
-     &          'K','Ti','Ca','Li','Cl'/
-      data ilauf/0/
-      data bk/1.380662Q-16/
-      save
+      integer,save :: ilauf=0 
+      integer,save :: Al2O,AlH,AlO2H,AlOH,C2,C3,C2H,C3H,C2H2,CH4,CN,CO
+      integer,save :: CO2,CS,NO,FeS,H2,H2O,H2S,HCN,HS,MgH,MgO,MgOH,MgS
+      integer,save :: N2,NH3,O2,OH,SO,SO2,Si2C,SiC,SiC2,SiH,SiH4,SiN
+      integer,save :: SiO,SiO2,SiS,SiC4H12,FeO,FeO2H2,TiO,TiO2,TiS,TiC
+      integer,save :: TiC2,TiCl,TiCl2,TiCl4,MGO2H2,NAOH,NA2O2H2,CaOH
+      integer,save :: CaO2H2,KOH,K2O2H2,CKN,C2K2N2,FeH,CaH,TiH,LiH
+      integer,save :: LiO,LiOH,LiCl,Li2Cl2,Li3Cl3,Li2O2H2,KCl,CaCl2
+      integer,save :: CaCl,NaCl,HCl,NaH,H2SO4,MgCl,MgCl2,FeCl,FeCl2
+      integer,save :: AlCl,AlCl2,AlCl3,Na2CL2,K2CL2,TiOCl2
+      real(kind=qp),allocatable,save :: amerk(:),ansave(:)
+      real(kind=qp),allocatable,save :: badness(:),pcorr(:,:) 
+      real(kind=qp),save :: pcorr1(4),pcorr2(4),pcorr3(2),pcorr4(2)
 *-----------------------------------------------------------------------
 *  Die Formelfunktion zur Loesung quadratische Gleichungen mit Vieta
       VIETA(ppp,qqq)  = qqq/(-ppp/2.Q0-SQRT(ppp**2/4.Q0-qqq))
@@ -184,29 +166,6 @@
 
       ilauf = ilauf + 1
       if ( ilauf .eq. 1 ) then
-        
-        ! Einlesen der Koeffizienten der Dissoziationspolynome
-        !=====================================================
-        open (unit=12, file='dispol_large.dat', status='old')
-        write(*,*)
-	write(*,*) 'Lese Dissoziationspolynome von dispol_large.dat'
-        rewind(12)
-        do i=1,nml
-          read(12,'(A100)') line
-          read(line,'(A10)') cmol(i)
-          line = line(11:)
-          read(line,*) m_kind(0,i),
-     &                 (m_kind(j,i),j=1,m_kind(0,i)),
-     &                 (m_anz(j,i),j=1,m_kind(0,i))
-          read(12,*) fit(i),(a(i,j),j=0,4)
-          natom(i) = 0
-          do j=1,m_kind(0,i)
-            natom(i) = natom(i)+m_anz(j,i)
-          enddo  
-        enddo  
-        write(*,*) nml,' Species'
-        close(12)
-*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 *
 *     Heraussuchen der Namen aus cmol mit Hilfe von stindex
 *     
@@ -313,12 +272,13 @@
         K2Cl2  = stindex(cmol,nml,'K2CL2  ')
         TiOCL2 = stindex(cmol,nml,'TIOCL2 ')
         SiC4H12= stindex(cmol,nml,'SI(CH3)4')
-        badness(:) = 1.Q0
-        pcorr1(:)  = 1.Q0
-        pcorr2(:)  = 1.Q0
-        pcorr3(:)  = 1.Q0
-        pcorr4(:)  = 1.Q0
-        pcorr(:,:) = 1.Q0
+        allocate(badness(nel),pcorr(nel,nel),amerk(nel),ansave(nel))
+        badness = 1.d0
+        pcorr1  = 1.d0
+        pcorr2  = 1.d0
+        pcorr3  = 1.d0
+        pcorr4  = 1.d0
+        pcorr   = 1.d0
       endif
 *-----------------------------------------------------------------------
 *     ! zu niedrige Temperaturen abfangen und
@@ -486,60 +446,17 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
 *     ================== 
  100  continue
       from_merk = .false.
-      ng = anHges * eps(H)
-      Sa = gk(HII)*kT1
-      nelek = ng/(0.5Q0 + SQRT(0.25Q0 + ng/Sa))
-
-      ng = anHges * eps(C)
-      Sa = gk(CII)*kT1
-      nelek = nelek + ng/(0.5Q0 + SQRT(0.25Q0 + ng/Sa))
-
-      ng = anHges * eps(N)
-      Sa = gk(NII)*kT1
-      nelek = nelek + ng/(0.5Q0 + SQRT(0.25Q0 + ng/Sa))
-
-      ng = anHges * eps(O)
-      Sa = gk(OII)*kT1
-      nelek = nelek + ng/(0.5Q0 + SQRT(0.25Q0 + ng/Sa))
-
-      ng = anHges * eps(S)
-      Sa = gk(SII)*kT1
-      nelek = nelek + ng/(0.5Q0 + SQRT(0.25Q0 + ng/Sa))
-
-      ng = anHges * eps(Si)
-      Sa = gk(SiII)*kT1
-      nelek = nelek + ng/(0.5Q0 + SQRT(0.25Q0 + ng/Sa))
-
-      ng = anHges * eps(Fe)
-      Sa = gk(FeII)*kT1
-      nelek = nelek + ng/(0.5Q0 + SQRT(0.25Q0 + ng/Sa))
-
-      ng = anHges * eps(Mg)
-      Sa = gk(MgII)*kT1
-      nelek = nelek + ng/(0.5Q0 + SQRT(0.25Q0 + ng/Sa))
-
-      ng = anHges * eps(Al)
-      Sa = gk(AlII)*kT1
-      nelek = nelek + ng/(0.5Q0 + SQRT(0.25Q0 + ng/Sa))
-
-      ng = anHges * eps(Ti)
-      Sa = gk(TiII)*kT1
-      nelek = nelek + ng/(0.5Q0 + SQRT(0.25Q0 + ng/Sa))
-
-      ng = anHges * eps(Na)
-      Sa = gk(NaII)*kT1
-      nelek = nelek + ng/(0.5Q0 + SQRT(0.25Q0 + ng/Sa))
-
-      ng = anHges * eps(K)
-      Sa = gk(KII)*kT1
-      nelek = nelek + ng/(0.5Q0 + SQRT(0.25Q0 + ng/Sa))
-
-      ng = anHges * eps(Ca)
-      Sa = gk(CaII)*kT1
-      nelek = nelek + ng/(0.5Q0 + SQRT(0.25Q0 + ng/Sa))
-
-      anmono(el) = nelek
-      pel = nelek*kT
+      if (charge) then
+        nelek = 0.Q0 
+        do i=1,nel
+          if (i==el) cycle 
+          ng = anHges * eps(i)
+          Sa = gk(elion(i))*kT1
+          nelek = nelek + ng/(0.5Q0 + SQRT(0.25Q0 + ng/Sa))
+        enddo
+        anmono(el) = nelek
+        pel = nelek*kT
+      endif  
 
       if (.not.NewChemIt) then
 *
@@ -1149,10 +1066,12 @@ c     g(TiC)   : siehe oben!
       do i=1,nml
         if (i.ne.TiC) g(i)=gk(i)       ! compute all equil.constants
       enddo  
+      Nseq = nel
       done(:) = .false.                ! all elements to be estimated here
-      done(2) = .true.                 ! ... except for the electrons
+      if (charge) done(el)=.true.      ! ... except for the electrons      
+      if (charge) Nseq=nel-1
       eseq(:) = 0                      ! hirachical sequence of elements
-      do ido=1,nel-1
+      do ido=1,Nseq
         !---------------------------------------------------------
         ! search for the most abundant element not yet considered 
         !---------------------------------------------------------
@@ -1339,30 +1258,32 @@ c     g(TiC)   : siehe oben!
 *
 *     ! redo electron density
 *     =======================
-      coeff(:) = 0.Q0
-      do i=1,nml
-        if (i.ne.TiC) g(i)=gk(i)
-        pmol = g(i)
-        l=0
-        do j=1,m_kind(0,i)
-          pat = anmono(m_kind(j,i))*kT
-          if (m_kind(j,i)==el) then
-            l = m_anz(j,i)   
-          else if (m_anz(j,i).gt.0) then
-            do kk=1,m_anz(j,i)
-              pmol = pmol*pat
-            enddo
-          else
-            do kk=1,-m_anz(j,i)
-              pmol = pmol/pat
-            enddo
-          endif  
+      if (charge) then
+        coeff(:) = 0.Q0
+        do i=1,nml
+          if (i.ne.TiC) g(i)=gk(i)
+          pmol = g(i)
+          l=0
+          do j=1,m_kind(0,i)
+            pat = anmono(m_kind(j,i))*kT
+            if (m_kind(j,i)==el) then
+              l = m_anz(j,i)   
+            else if (m_anz(j,i).gt.0) then
+              do kk=1,m_anz(j,i)
+                pmol = pmol*pat
+              enddo
+            else
+              do kk=1,-m_anz(j,i)
+                pmol = pmol/pat
+              enddo
+            endif  
+          enddo
+          if (l.ne.0) coeff(l)=coeff(l)+pmol
         enddo
-        if (l.ne.0) coeff(l)=coeff(l)+pmol
-      enddo
-      pel = SQRT(coeff(-1)/(1.Q0+coeff(+1)))     ! 0 = pel - a/pel + b*pel
-      anmono(el) = pel/kT
-      
+        pel = SQRT(coeff(-1)/(1.Q0+coeff(+1)))     ! 0 = pel - a/pel + b*pel
+        anmono(el) = pel/kT
+      endif  
+
 *     ! use memory of deviations between predicted atom pressures 
 *     ! and converged atom pressures to improve the predictions
 *     ============================================================
@@ -1660,7 +1581,7 @@ c     g(TiC)   : siehe oben!
           enddo
           anmol(i) = pmol*kT1
         enddo
-        pel = anmono(el)*kT
+        if (charge) pel=anmono(el)*kT
 
       endif      ! nachit
 
@@ -1724,9 +1645,9 @@ c     g(TiC)   : siehe oben!
 *****  fit=1  :  Gail's polynom                                    *****
 *****  fit=2  :  Tsuji's polynom                                   *****
 ************************************************************************
-      use DUST_DATA,ONLY: cmol
-      use CHEM16,ONLY: a,th1,th2,th3,th4,TT1,TT2,TT3,fit,qp,natom
+      use CHEMISTRY,ONLY: a,th1,th2,th3,th4,TT1,TT2,TT3,fit,natom,cmol
       implicit none
+      integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       real(kind=qp),parameter :: bar=1.Q+6, atm=1.013Q+6, Rcal=1.987Q+0
       real(kind=qp),parameter :: Rgas=8.3144598Q+0
       real(kind=qp),parameter :: ln10=LOG(10.Q0)

@@ -1,7 +1,8 @@
 **********************************************************************
       SUBROUTINE INIT_DUSTCHEM
 **********************************************************************
-      use dust_data,ONLY: NEPS,NELEM,NDUST,NMOLE,eps0,
+      use CHEMISTRY,ONLY: NMOLE
+      use DUST_DATA,ONLY: NEPS,NELEM,NDUST,eps0,
      &                    dust_nam,dust_rho,dust_vol,dust_mass,
      &                    dust_nel,dust_nu,dust_el,
      &                    elnr,elcode,elnam,mass
@@ -12,8 +13,6 @@
       character(len=2)  :: name2
       logical :: is_atom,found
 
-      call GGCHEM(1.d+15,2000.d0,eps0,.false.,0)   ! damit cmol vorliegt
- 
       write(*,*) 
       write(*,*) "reading DustChem.dat ..."
       write(*,*) "========================"
@@ -65,7 +64,7 @@
         dust_mass(i) = dmass
         dust_vol(i) = dmass/dust_rho(i)
         write(*,1060) dust_nam(i), dust_rho(i), dust_vol(i), 
-     &      (dust_nu(i,j),elcode(dust_el(i,j)),j=1,dust_nel(i))
+     &      (dust_nu(i,j),elnam(dust_el(i,j)),j=1,dust_nel(i))
       enddo
 
       RETURN 
@@ -75,7 +74,7 @@
  1030 format(i2,1x,a2)
  1040 format(i2,1x,a10)
  1050 format(1x,a10,i4,' mass=',0pf7.3," amu")
- 1060 format(1x,a10," rhod=",0pf6.3," V0=",1pe11.3,2x,99(i1,"x",i2,1x))
+ 1060 format(1x,a10," rhod=",0pf6.3," V0=",1pe11.3,2x,99(i1,"x",A2,1x))
  1070 format(1x,a10,99(i1,"x",i2,1x))
  2011 format(1(I2,1x,a8),22x,'->',I2,1x,a10,99(I2,1x,a8))
  2021 format(2(I2,1x,a8),11x,'->',I2,1x,a10,99(I2,1x,a8))

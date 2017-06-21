@@ -164,7 +164,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        if (qread>1.Q-3.and.iread==4378) verbose=2
+        !if (qread>1.Q-3.and.iread==139) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -703,7 +703,8 @@
             changed = .true.
             !--- decide ---
             if (Sat0(iNa2SiO3).gt.Sat0(iNaAlSi3O8)) then
-              if (ddust(iNaAlSi3O8)>3*ddust(iMg2SiO4)) then 
+              print*,ddust(iNaAlSi3O8),ddust(iMg2SiO4)
+              if (3.Q0*ddust(iNaAlSi3O8)<ddust(iMg2SiO4)) then 
                 ioff = iNaAlSi3O8
                 active(iNaAlSi3O8) = .false.  
                 amount = ddust(iNaAlSi3O8)/4.Q0
