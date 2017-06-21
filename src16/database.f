@@ -1,7 +1,7 @@
 **********************************************************************
       MODULE DATABASE
 **********************************************************************
-      use dust_data,ONLY: NELEM,NDUST,eps0,dust_nam
+      use dust_data,ONLY: NELEM,NDUSTmax,eps0,dust_nam
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       integer,parameter :: DMAX = 10**5
@@ -10,7 +10,7 @@
         real*8 :: ln
         real*8 :: lT
         real(kind=qp) :: eps(NELEM)
-        real(kind=qp) :: ddust(NDUST)
+        real(kind=qp) :: ddust(NDUSTmax)
       END TYPE ENTRY
       TYPE(ENTRY) :: dbase(DMAX)
       end MODULE DATABASE
@@ -31,7 +31,7 @@
         write(11) dbase(i)%ln 
         write(11) dbase(i)%lT
         write(11) dbase(i)%eps
-        write(11) dbase(i)%ddust
+        write(11) dbase(i)%ddust(1:NDUST)
       enddo 
       close(11)
       end
@@ -67,7 +67,7 @@
         read(11) dbase(i)%ln 
         read(11) dbase(i)%lT
         read(11) dbase(i)%eps
-        read(11) dbase(i)%ddust
+        read(11) dbase(i)%ddust(1:NDUST)
         !print*,i,EXP(dbase(i)%ln),EXP(dbase(i)%lT)
       enddo 
       close(11)
@@ -160,7 +160,7 @@
       active = .false.
       if (ibest>0) then
         eps    = dbase(ibest)%eps
-        ddust  = dbase(ibest)%ddust
+        ddust  = dbase(ibest)%ddust(1:NDUST)
         do i=1,NDUST
           if (ddust(i)>0.Q0) active(i)=.true.
         enddo

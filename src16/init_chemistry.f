@@ -1,42 +1,54 @@
 ************************************************************************
       subroutine INIT_CHEMISTRY
 ************************************************************************
-      use CHEMISTRY,ONLY: NMOLE,NELM,catm,cmol,fit,natom,a,
+      use CHEMISTRY,ONLY: NMOLdim,NMOLE,NELM,catm,cmol,fit,natom,a,
      &    m_kind,m_anz,elnum,elion,charge,
      &    el,H,He,Li,Be,B,C,N,O,F,Ne,Na,Mg,Al,Si,P,S,Cl,Ar,K,Ca,
      &    Sc,Ti,V,Cr,Mn,Fe,Co,Ni,Cu,Zn,Ga,Ge,As,Se,Br,Kr,Rb,Sr,Y,Zr
       use EXCHANGE,ONLY: nmol
       implicit none
-      integer :: i,j,iel,e
+      integer :: i,ii,j,iel,e
       character(len=2) :: cel(8),elnam
-      character(len=100) :: line
-      logical :: found
+      character(len=100) :: line,elements
+      logical :: found,allfound
 
       open(unit=12, file='dispol_new.dat', status='old')
       write(*,*)
       write(*,*) 'reading molecules and kp-data from dispol_new.dat'
-      read(12,*) NMOLE
-      allocate(nmol(NMOLE))
-      allocate(cmol(NMOLE),fit(NMOLE),natom(NMOLE),a(NMOLE,0:4))
-      allocate(m_kind(0:8,NMOLE),m_anz(8,NMOLE))
+      read(12,'(A100)') elements
+      elements = ' '//trim(elements)//' '
+      read(12,*) NMOLdim
+      allocate(cmol(NMOLdim),fit(NMOLdim),natom(NMOLdim),a(NMOLdim,0:4))
+      allocate(m_kind(0:6,NMOLdim),m_anz(6,NMOLdim))
       charge=.false.
       NELM = 0
-      !catm(1:3)  = (/'He','el','H'/)
-      !elnum(1:3) = (/  2 ,  0 , 1 /) 
-      !He = 1
-      !el = 2
-      !H  = 3
-      do i=1,NMOLE
-        read(12,'(A100)') line
+      if (index(elements,' He ')>0) then
+        NELM = 1
+        catm(NELM) = 'He'
+        He = NELM 
+        elnum(NELM) = 2 
+      endif  
+      if (index(elements,' Ne ')>0) then
+        NELM = NELM+1
+        catm(NELM) = 'Ne'
+        He = NELM 
+        elnum(NELM) = 10
+      endif  
+      i=1
+      do ii=1,NMOLdim
+        read(12,'(A100)',end=100) line
         read(line,'(A10)') cmol(i)
         line = line(11:)
         read(line,*) iel,cel(1:iel),m_anz(1:iel,i)
         read(12,*) fit(i),(a(i,j),j=0,4)
         m_kind(0,i) = iel
         natom(i) = 0
+        found = .true.
         do j=1,m_kind(0,i)
           natom(i) = natom(i)+m_anz(j,i)
+          if (index(elements,cel(j))<=0) found=.false. 
         enddo  
+        if (.not.found) cycle
         print'(I4,A10,1x,99(I3,1x,A2,1x))',
      &        i,trim(cmol(i)),(m_anz(j,i),cel(j),j=1,iel)
         do j=1,m_kind(0,i)
@@ -106,9 +118,12 @@
           e = m_kind(1,i)
           if (e==el) e=m_kind(2,i)
           elion(e) = i
-        endif    
+        endif
+        i = i + 1
       enddo
-      close(12)
+ 100  close(12)
+      NMOLE = i-1
+      allocate(nmol(NMOLdim))
   
       print*,NMOLE,' species'
       print*,NELM,' elements'
@@ -119,5 +134,6 @@
         print'(1x,99(A3))',(trim(cmol(elion(j))),j=1,el-1),'  ',
      >                     (trim(cmol(elion(j))),j=el+1,NELM)
       endif  
+
       end
 

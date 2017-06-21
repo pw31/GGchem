@@ -1,9 +1,9 @@
       module CONVERSION
-      use DUST_DATA,ONLY: NELEM,NDUST
+      use DUST_DATA,ONLY: NELEM,NDUSTmax
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
-      integer :: Nind,Ndep,Iindex(NELEM),Dindex(NDUST+NELEM)
-      logical :: is_dust(NDUST+NELEM)
-      real(kind=qp) :: conv(NDUST+NELEM,NELEM)
+      integer :: Nind,Ndep,Iindex(NELEM),Dindex(NDUSTmax+NELEM)
+      logical :: is_dust(NDUSTmax+NELEM)
+      real(kind=qp) :: conv(NDUSTmax+NELEM,NELEM)
       end
 
 !-------------------------------------------------------------------------
@@ -150,6 +150,7 @@
       ! ***  load initial state from database?  ***
       !--------------------------------------------
       call GET_DATA(nHtot,T,epsread,ddustread,qread,iread,act_read)
+      Nact = 0
       if (qread.lt.0.5) then
         eps    = epsread
         ddust  = ddustread
@@ -164,7 +165,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        !if (qread>1.Q-3.and.iread==139) verbose=2
+        if (qread>1.Q-3.and.iread==104) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -909,7 +910,8 @@
             eps(Cl) = eps_save(Cl)
           endif   
           if (active(iMg2SiO4).and.active(iMgSiO3).and.
-     >        active(iFe).and.active(iFe2SiO4)) then
+     >        active(iFe).and.active(iFe2SiO4).and.
+     >        .not.active(iFeS)) then
             changed = .true.
             !--- decide ---
             if (Sat0(iFe)>Sat0(iFe2SiO4)) then
@@ -933,9 +935,9 @@
               call TRANSFORM(iFe,iMg2SiO4,amount,0.5Q0*3.Q0,
      >                       ddust,eps,dscale,active,ok)
             endif  
-            print*,eps(Fe),eps(Mg),eps(Si)
-            print*,eps_save(Fe),eps_save(Mg),eps_save(Si)
-            eps(Al) = eps_save(Fe)
+            !print*,eps(Fe),eps(Mg),eps(Si)
+            !print*,eps_save(Fe),eps_save(Mg),eps_save(Si)
+            eps(Fe) = eps_save(Fe)
             eps(Mg) = eps_save(Mg)
             eps(Si) = eps_save(Si)
           endif 

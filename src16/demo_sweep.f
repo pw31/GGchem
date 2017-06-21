@@ -9,7 +9,7 @@
      >                   Cr,Mn,Fe,Ni
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
-      integer,parameter :: Npoints=300
+      integer,parameter :: Npoints=200
       real,dimension(Npoints) :: nHtot,Tgas
       real :: T1,T2,p1,p2,nH1,nH2,p,pe,Tg,rho,nHges,nges,kT,pges
       real :: nTEA,pTEA,mu,muold
@@ -207,15 +207,15 @@
           mu = nHges/pges*(bk*Tg)*muH
           if (.not.pconst) exit
           print '("mu=",2(1pE12.5))',muold/amu,mu/amu
-          if (ABS(mu/muold-1.0)<1.E-6) exit
+          if (ABS(mu/muold-1.0)<1.E-5) exit
         enddo  
 
-        print*
-        print '(i4," Tg[K] =",0pF8.2,"  n<H>[cm-3] =",1pE10.3)',
+        print'(i4," Tg[K] =",0pF8.2,"  n<H>[cm-3] =",1pE10.3)',
      >        i,Tg,nHges
 
         write(*,1010) ' Tg=',Tg,' pe=',nel*kT,' n<H>=',nHges,
      &                ' p=',pges/bar,' mu=',mu/amu
+        print*
         write(70,2010) Tg,nHges,pges,
      &       LOG10(MAX(1.Q-300, nel)),
      &      (LOG10(MAX(1.Q-300, nat(elnum(jj)))),jj=1,el-1),

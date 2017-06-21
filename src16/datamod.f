@@ -3,35 +3,37 @@
 ************************************************************************
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       integer,parameter :: NELEM=40        ! number of elements (up to Zr)
-      integer,parameter :: NDUST=58        ! number of dust species
-      integer,parameter :: NEPS=14         ! number of affected elements
+      integer,parameter :: NDUSTmax=200    ! max number of condensed species
+      integer :: NDUST                     ! number of condensed species
+      integer :: NEPS                      ! number of affected elements
       logical,parameter :: NewChemIt=.true.
       integer,parameter :: NewBackIt=5
       
-      character(len=2)  :: elnam(NELEM)    ! names of elements
-      character(len=15) :: dust_nam(NDUST) ! names of dust species
-      integer :: elnr(NEPS),elcode(NELEM)  ! element cross-indices
-      real(kind=qp) :: eps0(NELEM)         ! element abundances
-      real*8  :: mass(NELEM)               ! element masses
-      real*8  :: dust_rho(NDUST)           ! dust material densities
-      real*8  :: dust_mass(NDUST)          ! dust monomer volume
-      real*8  :: dust_vol(NDUST)           ! dust monomer volume
-      integer :: dust_nel(NDUST)           ! no of elements in dust
-      integer :: dust_el(NDUST,5)          ! indices of elements
-      integer :: dust_nu(NDUST,5)          ! stoichiometric coeffs
+      character(len=2)  :: elnam(NELEM)       ! names of elements
+      character(len=15) :: dust_nam(NDUSTmax) ! names of dust species
+      integer :: elnr(NELEM),elcode(NELEM)    ! element cross-indices
+      real(kind=qp) :: eps0(NELEM)            ! element abundances
+      real*8  :: mass(NELEM)                  ! element masses
+      real*8  :: dust_rho(NDUSTmax)           ! dust material densities
+      real*8  :: dust_mass(NDUSTmax)          ! dust monomer volume
+      real*8  :: dust_vol(NDUSTmax)           ! dust monomer volume
+      integer :: dust_nel(NDUSTmax)           ! no of elements in dust
+      integer :: dust_el(NDUSTmax,5)          ! indices of elements
+      integer :: dust_nu(NDUSTmax,5)          ! stoichiometric coeffs
       
-      real(kind=qp) :: bk=1.380662Q-16     ! Boltzman constant
-      real(kind=qp) :: bar=1.Q+6           ! 1 bar in dyn/cm2
-      real(kind=qp) :: amu=1.66055Q-24     ! atomar mass unit
-      real(kind=qp) :: atm=1.013Q+6        ! standard atmosphere pressure
-      real(kind=qp) :: rgas=8.31434Q+0     ! gas constant 
-      real(kind=qp) :: muH                 ! rho/n<H>
+      real(kind=qp) :: bk=1.380662Q-16    ! Boltzman constant
+      real(kind=qp) :: bar=1.Q+6          ! 1 bar in dyn/cm2
+      real(kind=qp) :: amu=1.66055Q-24    ! atomar mass unit
+      real(kind=qp) :: atm=1.013Q+6       ! standard atmosphere pressure
+      real(kind=qp) :: rgas=8.31434Q+0    ! gas constant 
+      real(kind=qp) :: muH                ! rho/n<H>
       end
 
 ************************************************************************
       module CHEMISTRY
 ************************************************************************
       use DUST_DATA,ONLY: NELEM
+      integer :: NMOLdim         ! max number of molecules
       integer :: NMOLE           ! number of molecules found
       integer :: NELM            ! number of elements found
       integer :: el=0,H=0,He=0,Li=0,Be=0,B=0,C=0,N=0,O=0,F=0,Ne=0
