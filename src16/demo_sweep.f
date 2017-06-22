@@ -9,7 +9,7 @@
      >                   Cr,Mn,Fe,Ni
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
-      integer,parameter :: Npoints=200
+      integer,parameter :: Npoints=300
       real,dimension(Npoints) :: nHtot,Tgas
       real :: T1,T2,p1,p2,nH1,nH2,p,pe,Tg,rho,nHges,nges,kT,pges
       real :: nTEA,pTEA,mu,muold
@@ -29,7 +29,7 @@
       !---------------------------------
       print*,"start and end temperature [K] (decreasing)"
       !read*,T1,T2
-      T1 = 4500
+      T1 = 6000
       T2 = 100
       if (pconst) then
         print*,"start and end p [bar] (any)"
@@ -191,7 +191,7 @@
         eldust = 0.0
         do 
           if (pconst) nHges = p*mu/(bk*Tg)/muH
-          call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
+          !call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
           call GGCHEM(nHges,Tg,eps,.false.,0)
           call SUPERSAT(Tg,nat,nmol,Sat)
           kT = bk*Tg
