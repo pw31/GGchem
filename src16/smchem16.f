@@ -166,6 +166,7 @@
 
       ilauf = ilauf + 1
       if ( ilauf .eq. 1 ) then
+        TiC = stindex(cmol,nml,'TIC    ')
         if (.not.NewChemIt) then
           Al2O   = stindex(cmol,nml,'AL2O   ')
           AlH    = stindex(cmol,nml,'ALH    ')
@@ -213,7 +214,6 @@
           TiO    = stindex(cmol,nml,'TIO    ')
           TiO2   = stindex(cmol,nml,'TIO2   ')
           TiS    = stindex(cmol,nml,'TIS    ')
-          TiC    = stindex(cmol,nml,'TIC    ')
           TiC2   = stindex(cmol,nml,'TIC2   ')
           TiCl   = stindex(cmol,nml,'TICL   ')
           TiCl2  = stindex(cmol,nml,'TICL2  ')

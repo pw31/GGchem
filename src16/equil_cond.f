@@ -18,7 +18,7 @@
 ! ***  to avoid numerical problems close to complete condensation      ***
 !-------------------------------------------------------------------------
       use DUST_DATA,ONLY: NELEM,NDUST,dust_nam,dust_nel,dust_nu,dust_el,
-     >                    eps0,elnam 
+     >                    eps0,elnam,elcode
       use CONVERSION,ONLY: Nind,Ndep,Iindex,Dindex,is_dust,conv
       use EXCHANGE,ONLY: Fe,Mg,Si,Al,Ca,Ti,O,S,Na,Kalium=>K,Cl,H,Li
       implicit none
@@ -165,7 +165,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        if (qread>1.Q-3.and.iread==96) verbose=2
+        !if (qread>1.Q-3.and.iread==96) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -194,9 +194,8 @@
         write(*,*) "element conservation error 1:",worst
         write(*,*) "initial gas fractions ..."
         do i=1,NELEM
-          if (eps00(i).gt.1.Q-20) then
-            print'(3x,A2,2(1pE15.6))',elnam(i),eps(i),eps(i)/eps00(i)
-          endif  
+          if (elcode(i)==0) cycle
+          print'(3x,A2,2(1pE15.6))',elnam(i),eps(i),eps(i)/eps00(i)
         enddo
       endif  
       if (worst>1.Q-8) stop "*** worst>1.Q-8 in equil_cond"

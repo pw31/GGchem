@@ -62,6 +62,7 @@
 
       write(*,*) '--- involved elements ---'
       NEPS=0
+      elcode(:)=0
       do i=1,NDUST
         do j=1,dust_nel(i)
           name = elnam(dust_el(i,j)) 
