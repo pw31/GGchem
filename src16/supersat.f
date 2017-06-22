@@ -34,29 +34,29 @@
           !***  TiO2[s]: own fit to JANAF T=100-4000 K  ***
           !------------------------------------------------
           !psat = EXP(35.8027Q0 - 74734.7Q0/TT)
-          !psat = EXP( -7.65465Q+04/TT  
-     &    !            +3.72148Q+01
-     &    !            +1.76288Q-03*TT 
-     &    !            -1.35859Q-06*TT**2  
-     &    !            +1.66681Q-10*TT**3 )
-          !Sat(i) = nmol(TiO2)*kT/psat
-          pst = bar
-          dG = 2.29666E+05/TT 
-     &        -3.20926E+00*LOG(TT) 
-     &        -3.40061E+01  
-     &        +2.59309E-03*TT 
-     &        -2.28208E-08*TT**2
-          lbruch = 0.Q0
-          do j=1,dust_nel(i)
-            el     = dust_el(i,j)
-            term   = nat(el)*kT/pst
-            lbruch = lbruch + LOG(term)*dust_nu(i,j)
-          enddo
-          Sat(i) = EXP(lbruch+dG)           
+          psat = EXP( -7.65465Q+04/TT  
+     &                +3.72148Q+01
+     &                +1.76288Q-03*TT 
+     &                -1.35859Q-06*TT**2  
+     &                +1.66681Q-10*TT**3 )
+          Sat(i) = nmol(TiO2)*kT/psat
+          !pst = bar
+          !dG = 2.29666E+05/TT 
+     &    !    -3.20926E+00*LOG(TT) 
+     &    !    -3.40061E+01  
+     &    !    +2.59309E-03*TT 
+     &    !    -2.28208E-08*TT**2
+          !lbruch = 0.Q0
+          !do j=1,dust_nel(i)
+          !  el     = dust_el(i,j)
+          !  term   = nat(el)*kT/pst
+          !  lbruch = lbruch + LOG(term)*dust_nu(i,j)
+          !enddo
+          !Sat(i) = EXP(lbruch+dG)           
 
         else if (dust_nam(i).eq.'TiO2[l]') then
           !-------------------------------------------------
-          !***  TiO2[l]: George's JANAF-fit T=100-4000K  ***
+          !***  TiO2[l]: George's JANAF-fit T=298-4000K  ***
           !-------------------------------------------------
           !pst = bar
           !dG = 3.31189Q+06/TT    !linear extrapolation poor
@@ -72,11 +72,11 @@
           !  lbruch = lbruch + LOG(term)*dust_nu(i,j)
           !enddo
           !Sat(i) = EXP(lbruch-dG)
-          psat = EXP( -7.07949Q+04/TT  
-     &                +3.68267Q+01  
-     &                -1.30776Q-03*TT 
-     &                -6.46807Q-08*TT**2  
-     &                +1.85599Q-11*TT**3 )
+          psat = EXP( -7.07819Q+04/TT  
+     &                +3.68021Q+01 
+     &                -1.29214Q-03*TT 
+     &                -6.87776Q-08*TT**2  
+     &                +1.89408Q-11*TT**3 )
           Sat(i) = nmol(TiO2)*kT/psat
 
         else if (dust_nam(i).eq.'Ti4O7[s]') then

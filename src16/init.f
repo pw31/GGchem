@@ -161,7 +161,7 @@
 *     ------------------------------------
 *     ***  read abundances from file?  ***      
 *     ------------------------------------
-      if (.false.) then
+      if (.true.) then
         source = (/'EarthCrust','Ocean','Solar','Meteorites'/)
         pick = 1
         write(*,*)
