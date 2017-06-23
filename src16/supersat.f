@@ -13,7 +13,7 @@
       real(kind=qp),parameter :: mmHg=1.333Q+3 ! mmHg --> dyn/cm2
       real(kind=qp) :: TT,kT,dG,lbruch,lresult,pst,psat,term,ex,TC,S2
       integer :: i,j,STINDEX,el,C=6,Na=11
-      integer,save :: TiO2,SiO,H2O,NH3,CH4,SiO2
+      integer,save :: TiO2,SiO,H2O,NH3,CH4,SiO2,Fe
       logical,save :: firstCall=.true.
 *
       if (firstCall) then
@@ -23,6 +23,7 @@
         H2O  = STINDEX(cmol,NMOLE,'H2O      ')
         NH3  = STINDEX(cmol,NMOLE,'NH3      ')
         CH4  = STINDEX(cmol,NMOLE,'CH4      ')
+        Fe   = STINDEX(cmol,NMOLE,'FE       ')
         firstCall=.false.
       endif    
       TT  = MAX(T,100.Q0)
@@ -302,18 +303,24 @@
           !lbruch = LOG(nat(el)*kT/pst)
           !Sat(i) = EXP(lbruch-dG)
           pst = bar
-          dG  = 4.97746E+04/TT 
-     &         -1.39320E+00*LOG(TT) 
-     &         -1.05676E+01  
-     &         +2.51817E-03*TT 
-     &         -2.38673E-07*TT**2
-          lbruch = 0.Q0
-          do j=1,dust_nel(i)
-            el     = dust_el(i,j)
-            term   = nat(el)*kT/pst
-            lbruch = lbruch + LOG(term)*dust_nu(i,j)
-          enddo
-          Sat(i) = EXP(lbruch+dG)
+          !dG  = 4.97746E+04/TT 
+     &    !     -1.39320E+00*LOG(TT) 
+     &    !     -1.05676E+01  
+     &    !     +2.51817E-03*TT 
+     &    !     -2.38673E-07*TT**2
+          !lbruch = 0.Q0
+          !do j=1,dust_nel(i)
+          !  el     = dust_el(i,j)
+          !  term   = nat(el)*kT/pst
+          !  lbruch = lbruch + LOG(term)*dust_nu(i,j)
+          !enddo
+          !Sat(i) = EXP(lbruch+dG)
+          psat = EXP( -4.99622Q+04/TT    !from fit_set
+     &                +3.21370Q+01
+     &                +6.68363Q-04*TT 
+     &                -1.13811Q-06*TT**2  
+     &                +2.57277Q-10*TT**3 )
+          Sat(i) = nmol(Fe)*kT/psat
 
         else if (dust_nam(i).eq.'Al2O3[s]') then 
           !---------------------------------------------
@@ -978,20 +985,26 @@
           !---------------------------------------------
           !*** Fe[l]: George's JANAF-fit T=100-4000K ***
           !---------------------------------------------
-          pst = bar
-          dG =-2.10749Q+04/TT 
-     &        -4.04879Q+05  
-     &        +1.55545Q+02*TT 
-     &        -1.10965Q-02*TT**2
-     &        +8.59559Q-07*TT**3
-          dG = dG/(rgas*TT)
-          lbruch = 0.Q0
-          do j=1,dust_nel(i)
-            el     = dust_el(i,j)
-            term   = nat(el)*kT/pst
-            lbruch = lbruch + LOG(term)*dust_nu(i,j)
-          enddo
-          Sat(i) = EXP(lbruch-dG)
+          !pst = bar
+          !dG =-2.10749Q+04/TT 
+     &    !    -4.04879Q+05  
+     &    !    +1.55545Q+02*TT 
+     &    !    -1.10965Q-02*TT**2
+     &    !    +8.59559Q-07*TT**3
+          !dG = dG/(rgas*TT)
+          !lbruch = 0.Q0
+          !do j=1,dust_nel(i)
+          !  el     = dust_el(i,j)
+          !  term   = nat(el)*kT/pst
+          !  lbruch = lbruch + LOG(term)*dust_nu(i,j)
+          !enddo
+          !Sat(i) = EXP(lbruch-dG)
+          psat = EXP( -4.86102Q+04/TT    !from fit_set
+     &                +3.21706Q+01
+     &                -9.92112Q-04*TT 
+     &                -1.64248Q-08*TT**2  
+     &                +1.38179Q-11*TT**3 )
+          Sat(i) = nmol(Fe)*kT/psat
 
 	else if (dust_nam(i).eq.'FeS[l]') then
           !-------------------------------------------------

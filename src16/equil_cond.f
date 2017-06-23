@@ -164,8 +164,8 @@
         enddo
         Nact = Nact_read
         verbose = 0
-        !if (qread>1.Q-3.and.Nact>0) verbose=2
-        if (qread>1.Q-3.and.iread==96) verbose=2
+        if (qread>1.Q-3.and.Nact>0) verbose=2
+        !if (qread>1.Q-3.and.iread>=) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -870,6 +870,25 @@
             endif  
             eps(Fe) = eps_save(Fe)
             eps(S)  = eps_save(S)
+          endif   
+          if (active(iFeO).and.active(iFeO_l)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iFeO).gt.Sat0(iFeO_l)) then
+              ioff = iFeO_l
+              active(iFeO_l) = .false.  
+              amount = ddust(iFeO_l)
+              call TRANSFORM(iFeO_l,iFeO,amount,1.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iFeO
+              active(iFeO) = .false.  
+              amount = ddust(iFeO)
+              call TRANSFORM(iFeO,iFeO_l,amount,1.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif  
+            eps(Fe) = eps_save(Fe)
+            eps(O)  = eps_save(O)
           endif   
           if (active(iLiCl).and.active(iLiCl_l)) then
             changed = .true.

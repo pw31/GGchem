@@ -167,7 +167,7 @@
 
       !eps(:) = eps(:)-40.0            ! pure H2O modelling ...
       !eps(H) = 12.0
-      !eps(O) = eps(H)-LOG10(2.0)      ! H:O = 2:1
+      !eps(O) = eps(H)-LOG10(2.0)    ! H:O = 2:1
 
       !do i=1,NELEM
       !  if (elnam(i).ne.'  ') then

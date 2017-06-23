@@ -49,7 +49,7 @@
       verbose = 0
 
 *     ------------------------------------------------
-      !call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
+      call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
       call GGCHEM(nHges,Tg,eps,.false.,verbose)
 *     ------------------------------------------------
 
