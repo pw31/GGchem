@@ -43,6 +43,7 @@
         nH1 = 4.E+19
         nH2 = 4.E+19
       endif  
+      mu = muH
 
       !----------------------------
       ! ***  open output files  ***
@@ -130,7 +131,7 @@
      &  //"OH_g CH_g CN_g HCO_g HCN_g NH_g NO_g NH2_g C2_g CH2_g CH3_g " 
      &  //"C2H_g HNO_g (CN)2_g C2H4_g C3_g C2N_g C2O_g "
      &  //"SiO_g SiH4_g SiS_g SiO2_g SiH_g SiN_g SiC_g Si2C_g SiC2_g "
-     &  //"Si2N_g Si2_g Si3_g Si(CH3)4_g SiH3Cl_g SiH2Cl2_g "
+     &  //"Si2N_g Si2_g Si3_g Si(CH3)4_g SiH3Cl_g SiH2Cl2_g "            ! Si(CH3)4_g not working
      &  //"H2S_g HS_g S2_g COS_g SO_g SO2_g SSO_g NS_g CS_g CS2_g "
      &  //"O2S(OH)2_g "
      &  //"Na2_g NaO_g NaOH_g (NaOH)2_g NaH_g NaCN_g Na2SO4_g "
@@ -155,7 +156,7 @@
      &  //"Al2_g "                                                       ! new Al
      &  //"(NaCN)2_g "                                                   ! new Na
      &  //"(KCN)2_g "                                                    ! new K
-     &  //"SiCH3Cl3_g SiCl2_g SiCl3_g SiCl4_g "                          ! new Si
+     &  //"SiCH3Cl3_g SiCl2_g SiCl3_g SiCl4_g Si(CH3)4_g "               ! new Si
      &  //"ClSSCl_g S2Cl_g S3_g S4_g S5_g S6_g S7_g S8_g SCl2_g SCl_g "  ! new S
      &  //"SO2Cl2_g SO3_g SSO_g "
      &  //"C2Cl2_g C2Cl4_g C2Cl6_g C2HCl_g CCl2_g CCl3_g CCl4_g CCl_g "  ! new Cl

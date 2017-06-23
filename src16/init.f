@@ -65,7 +65,53 @@
       elnam(38) = 'Sr'
       elnam(39) = 'Y '
       elnam(40) = 'Zr'
+
+*     --------------------
+*     ***  Atommassen  ***
+*     --------------------
+      mass(1)  = 1.008  * amu  
+      mass(2)  = 4.0026 * amu
+      mass(3)  = 6.94   * amu  
+      mass(4)  = 9.0122 * amu
+      mass(5)  = 10.81  * amu  
+      mass(6)  = 12.011 * amu  
+      mass(7)  = 14.007 * amu  
+      mass(8)  = 15.999 * amu  
+      mass(9)  = 18.998 * amu
+      mass(10) = 20.180 * amu 
+      mass(11) = 22.990 * amu
+      mass(12) = 24.305 * amu 
+      mass(13) = 26.982 * amu
+      mass(14) = 28.085 * amu  
+      mass(15) = 30.974 * amu
+      mass(16) = 32.06  * amu  
+      mass(17) = 35.45  * amu  
+      mass(18) = 39.948 * amu  
+      mass(19) = 39.098 * amu 
+      mass(20) = 40.078 * amu  
+      mass(21) = 44.956 * amu
+      mass(22) = 47.867 * amu  
+      mass(23) = 50.942 * amu 
+      mass(24) = 51.996 * amu 
+      mass(25) = 54.938 * amu
+      mass(26) = 55.845 * amu  
+      mass(27) = 58.933 * amu
+      mass(28) = 58.693 * amu 
+      mass(29) = 63.546 * amu  
+      mass(30) = 65.38  * amu  
+      mass(31) = 69.723 * amu  
+      mass(32) = 72.63  * amu  
+      mass(33) = 74.922 * amu
+      mass(34) = 78.96  * amu  
+      mass(35) = 79.904 * amu  
+      mass(36) = 83.798 * amu  
+      mass(37) = 85.468 * amu 
+      mass(38) = 87.62  * amu  
+      mass(39) = 88.906 * amu
+      mass(40) = 91.224 * amu  
        
+*     ---------------------------------------
+*     ***      element abundancies        ***
 *     ---------------------------------------
 *     Grevesse + Noels (1996, "photosphere"):
 *     ---------------------------------------
@@ -181,50 +227,6 @@
       !    endif
       !  endif
       !enddo
-
-*     --------------------
-*     ***  Atommassen  ***
-*     --------------------
-      mass(1)  = 1.008  * amu  
-      mass(2)  = 4.0026 * amu
-      mass(3)  = 6.94   * amu  
-      mass(4)  = 9.0122 * amu
-      mass(5)  = 10.81  * amu  
-      mass(6)  = 12.011 * amu  
-      mass(7)  = 14.007 * amu  
-      mass(8)  = 15.999 * amu  
-      mass(9)  = 18.998 * amu
-      mass(10) = 20.180 * amu 
-      mass(11) = 22.990 * amu
-      mass(12) = 24.305 * amu 
-      mass(13) = 26.982 * amu
-      mass(14) = 28.085 * amu  
-      mass(15) = 30.974 * amu
-      mass(16) = 32.06  * amu  
-      mass(17) = 35.45  * amu  
-      mass(18) = 39.948 * amu  
-      mass(19) = 39.098 * amu 
-      mass(20) = 40.078 * amu  
-      mass(21) = 44.956 * amu
-      mass(22) = 47.867 * amu  
-      mass(23) = 50.942 * amu 
-      mass(24) = 51.996 * amu 
-      mass(25) = 54.938 * amu
-      mass(26) = 55.845 * amu  
-      mass(27) = 58.933 * amu
-      mass(28) = 58.693 * amu 
-      mass(29) = 63.546 * amu  
-      mass(30) = 65.38  * amu  
-      mass(31) = 69.723 * amu  
-      mass(32) = 72.63  * amu  
-      mass(33) = 74.922 * amu
-      mass(34) = 78.96  * amu  
-      mass(35) = 79.904 * amu  
-      mass(36) = 83.798 * amu  
-      mass(37) = 85.468 * amu 
-      mass(38) = 87.62  * amu  
-      mass(39) = 88.906 * amu
-      mass(40) = 91.224 * amu  
 
       muH = 0.d0
       do i=1,NELEM
