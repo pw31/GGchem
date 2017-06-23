@@ -1429,6 +1429,7 @@ c     g(TiC)   : siehe oben!
 *       ! apply limited NR step
 *       =======================
         fak = 5.Q0
+        !fak = 1.Q0+4.Q0*EXP(-(MAX(0,it-20))/13.Q0)
         do ii=1,nact
           i = act_to_all(ii)
           delp = -dp(ii)*kT1
@@ -1444,6 +1445,8 @@ c     g(TiC)   : siehe oben!
           enddo  
         endif  
         crit = MAXVAL(converge(MAX(0,it-1):it))
+        !if (verbose>1) print'(99(1pE36.28E3))',
+     >  !                  anmono(act_to_all(1:nact))
         if (verbose>1) print'(i3,i3,2(1pE9.1)," converged(",i2,"):",
      >                    A50)',it,Nact,converge(it),limit,Nconv,txt
         if (it==itmax) then 

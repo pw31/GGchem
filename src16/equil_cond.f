@@ -53,22 +53,24 @@
       integer :: act_to_elem(NELEM),act_to_dust(NELEM)
       integer :: Nzero,Ntrivial,etrivial(NELEM),dtrivial(NELEM)
       logical,dimension(NELEM) :: e_resolved,e_act,e_taken,is_esolved
-      logical,dimension(NDUST) :: active,act_read,act_old,d_resolved
-      logical,dimension(NDUST) :: is_dsolved,active_save
+      logical,dimension(0:NDUST) :: active,act_read,act_old,active_save
+      logical,dimension(NDUST) :: is_dsolved,d_resolved
       logical :: action,changed,solved,limited,ok,conserved
       character(len=1) :: char1,txt0
       character(len=2) :: rem
       character(len=500) :: txt,txt1,txt2,text,filename
       logical,save :: firstCall=.true.
-      integer,save :: iAl2O3,iFe,iFeS,iNa2SiO3,iMgSiO3,iMg2SiO4,iTi4O7
-      integer,save :: iCaSiO3,iCaMgSi2O6,iNaAlSi3O8,iMgAl2O4,iCaTiO3
-      integer,save :: iSiO,iSiO2,iTiO2,iMgTi2O5,iSiC,iCaS,iFe2SiO4,iFeO
-      integer,save :: iNaCl,iKCl,iKAlSi3O8,iFe_l,iH2O,iH2O_l,iFeS_l
-      integer,save :: iNaCl_l,iTiO2_l,iSiO2_l,iNa2SiO3_l,iMgAl2O4_l
-      integer,save :: iMg2SiO4_l,iMgSiO3_l,iAl2O3_l,iCaAl2Si2O8,iC
-      integer,save :: iTiC,iFe2O3,iMgO,iNa,iS,iMgS,iLiCl,iSiS2,iFeS2
-      integer,save :: iH2SO4_l,iNa2S,iAlCl3,iNH3,iCaO,iNa_l,iKCl_l
-      integer,save :: iCaCl2_l,iLiCl_l,iTi4O7_l,iFeO_l
+      integer,save :: iAl2O3=0,iFe=0,iFeS=0,iNa2SiO3=0,iMgSiO3=0
+      integer,save :: iMg2SiO4=0,iTi4O7=0,iCaSiO3=0,iCaMgSi2O6=0
+      integer,save :: iNaAlSi3O8=0,iMgAl2O4=0,iCaTiO3=0,iSiO=0,iSiO2=0
+      integer,save :: iTiO2=0,iMgTi2O5=0,iSiC=0,iCaS=0,iFe2SiO4=0,iFeO=0
+      integer,save :: iNaCl=0,iKCl=0,iKAlSi3O8=0,iFe_l=0,iH2O=0,iH2O_l=0
+      integer,save :: iFeS_l=0,iNaCl_l=0,iTiO2_l=0,iSiO2_l=0
+      integer,save :: iNa2SiO3_l=0,iMgAl2O4_l=0,iMg2SiO4_l=0,iMgSiO3_l=0
+      integer,save :: iAl2O3_l=0,iCaAl2Si2O8=0,iC=0,iTiC=0,iFe2O3=0
+      integer,save :: iMgO=0,iNa=0,iS=0,iMgS=0,iLiCl=0,iSiS2=0,iFeS2=0
+      integer,save :: iH2SO4_l=0,iNa2S=0,iAlCl3=0,iNH3=0,iCaO=0,iNa_l=0
+      integer,save :: iKCl_l=0,iCaCl2_l=0,iLiCl_l=0,iTi4O7_l=0,iFeO_l=0
       integer,save :: it_tot=0, sit_tot=0, fail_tot=0
       real*8 :: time0,time1,qread
 
@@ -165,7 +167,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        !if (qread>1.Q-3.and.iread==96) verbose=2
+        if (qread>1.Q-3.and.iread==475) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -213,7 +215,7 @@
         dscale(i) = xmin                        ! max dust abundances
       enddo   
 
-      call GGCHEM(nHtot,T,eps,.false.,0)        ! one call from scratch
+      call GGCHEM(nHtot,T,eps,.false.,verbose)        ! one call from scratch
       xstep(:) = 0.Q0             
       call SUPER(nHtot,T,xstep,eps,Sat0)
       qual = SQUAL(Sat0,active)
@@ -1737,7 +1739,7 @@
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
       real(kind=qp),intent(in) :: Sat(NDUST)
       real(kind=qp) :: SQUAL,qual
-      logical,intent(in) :: active(NDUST)
+      logical,intent(in) :: active(0:NDUST)
       integer :: i
 
       qual = 0.d0
@@ -1783,7 +1785,7 @@
       real(kind=qp),intent(inout) :: ddust(NDUST),eps(NELEM)
       real(kind=qp),intent(in) :: del,fac,dscale(NDUST)
       real(kind=qp) :: check(NELEM),worst
-      logical,intent(inout) :: active(NDUST)
+      logical,intent(inout) :: active(0:NDUST)
       logical,intent(inout) :: ok
       integer :: i,j,el
       

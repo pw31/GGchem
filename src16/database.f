@@ -60,7 +60,7 @@
         if (eps0(i).ne.eps0_read(i)) goto 100
       enddo
       read(11) dust_nam_read
-      do i=1,NELEM
+      do i=1,NDUST
         if (dust_nam(i).ne.dust_nam_read(i)) goto 100
       enddo
       do i=1,NDAT
@@ -87,7 +87,7 @@
       real*8,intent(in) :: nH,T,qbest
       integer,intent(in) :: ibest
       real(kind=qp),intent(in) :: eps(NELEM),ddust(NDUST)
-      logical,intent(in) :: active(NDUST)
+      logical,intent(in) :: active(0:NDUST)
       integer,save :: Nlast=0
       integer :: i,j
       
@@ -133,7 +133,7 @@
       integer,intent(out) :: ibest
       real(kind=qp),intent(inout) :: eps(NELEM),ddust(NDUST)
       real*8 :: ln,lT,lnread,lTread,qual,pot
-      logical,intent(out) :: active(NDUST)
+      logical,intent(out) :: active(0:NDUST)
       integer :: i
       logical,save :: firstCall=.true.
       

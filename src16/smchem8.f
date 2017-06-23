@@ -1443,6 +1443,8 @@ c     g(TiC)   : siehe oben!
         
 *       ! apply limited NR step
 *       =======================
+        !fak = REAL(MAX(0,it-20))/REAL(itmax-20)
+        !fak = 1.d0+4.d0*exp(fak*LOG(finish)-2.d0)
         fak = 5.d0
         do ii=1,nact
           i = act_to_all(ii)
@@ -1454,13 +1456,13 @@ c     g(TiC)   : siehe oben!
           verbose=2
           do ii=1,nact
             i = act_to_all(ii) 
-            print'(A3,2(1pE12.3))',catm(i),
+            print'(A3,1pE20.14,1pE12.3)',catm(i),
      >           anmono(i),-dp(ii)/(anmono(i)*kT) 
           enddo  
         endif  
         crit = MAXVAL(converge(MAX(0,it-1):it))
         if (verbose>0) print'(i3,i3,2(1pE9.1)," converged(",i2,"):",
-     >                    A50)',it,Nact,converge(it),limit,Nconv,txt
+     >                    A50)',it,Nact,converge(it),fak-1.d0,Nconv,txt
         if (it==itmax) then 
           write(*,*) '*** keine Konvergenz in SMCHEM!'
           write(*,*) 'it, converge, ind =',it,converge(it),limit

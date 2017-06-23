@@ -36,13 +36,13 @@
         !read*,p1,p2
         p1 = bar  !1.E+11*bk*T1  !1.e-16*bar
         p2 = bar  !1.E+11*bk*T2  !1.e-16*bar
-        mu = 2.3*amu
       else
         print*,"start and end n<H> [cm-3] (any)"
         !read*,nH1,nH2
         nH1 = 4.E+19
         nH2 = 4.E+19
       endif  
+      mu = muH
 
       !----------------------------
       ! ***  open output files  ***
