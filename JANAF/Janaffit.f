@@ -220,6 +220,11 @@
       write(*,*) '201 = FeS[l] pvap'
       write(*,*) '202 = NaCl[s] pvap'
       write(*,*) '203 = NaCl[l] pvap'
+      write(*,*) '204 = KCl[s] pvap'
+      write(*,*) '205 = KCl[l] pvap'
+      write(*,*) '206 = LiH[s] pvap'
+      write(*,*) '207 = LiH[l] pvap'
+      write(*,*) '208 = LiH[s]'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -1733,6 +1738,33 @@
         call READ_DATEI('NaCl.txt'   ,dG,T,Nmax,N,S,2) 
         Edzahl = 1
         stoich(2) = 1.D0
+      elseif (specie.eq.204) then
+        call READ_DATEI('KCl_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('KCl.txt'   ,dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.205) then
+        call READ_DATEI('KCl_l.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('KCl.txt'   ,dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.206) then
+        call READ_DATEI('LiH_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('LiH.txt'   ,dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.207) then
+        call READ_DATEI('LiH_l.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('LiH.txt'   ,dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.208) then
+        call READ_DATEI('LiH_cr.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Li.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('H.txt'   ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 1.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop
