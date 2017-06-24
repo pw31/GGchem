@@ -3,14 +3,14 @@ import numpy as np
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 from matplotlib.backends.backend_pdf import PdfPages
 plt.rcParams['axes.linewidth'] = 1.5
-pp = PdfPages('ggchem4.pdf')
+pp = PdfPages('ggchem.pdf')
 
 file   = 'Static_Conc.dat'
 data   = open(file)
 dummy  = data.readline()
 dimens = data.readline()
 dimens = np.array(dimens.split())
-NELEM  = 21
+NELEM  = int(dimens[0])
 NMOLE  = int(dimens[1])
 NDUST  = int(dimens[2])
 NPOINT = int(dimens[3])
@@ -26,8 +26,12 @@ lognH = np.log10(nHtot)
 press = dat[:,2]                 # p [dyn/cm2]
 pmin  = np.min(press)/bar
 pmax  = np.max(press)/bar
-pmin  = pmin/1.2
-pmax  = pmax*1.2
+pmin  = pmin*0.9
+pmax  = pmax*1.1
+nHmin = np.min(nHtot)
+nHmax = np.max(nHtot)
+nHmin = nHmin*0.9
+nHmax = nHmax*1.1
 Tmin  = np.min(Tg)
 Tmax  = np.max(Tg)
 #if (Tmax>4*Tmin): Tmax=4*Tmin
