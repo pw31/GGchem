@@ -1,9 +1,7 @@
 ***********************************************************************
       PROGRAM EQ_CHEMISTRY
 ***********************************************************************
-      use EXCHANGE,ONLY: chemcall,chemiter
-      chemcall = 0
-      chemiter = 0
+      use EXCHANGE,ONLY: chemcall,chemiter,itransform
 
       call INIT
       call INIT_CHEMISTRY
@@ -15,8 +13,8 @@
       
       print*
       print'("   smchem calls = ",I7)',chemcall
-      print'("iterations/call = ",0pF7.2)',
-     >     REAL(chemiter)/REAL(chemcall)
+      print'("iterations/call = ",0pF7.2)',REAL(chemiter)/REAL(chemcall)
+      print'("transform calls = ",I7)',itransform
 
       call SAVE_DBASE
       end

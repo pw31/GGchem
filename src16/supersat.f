@@ -13,16 +13,17 @@
       real(kind=qp),parameter :: mmHg=1.333Q+3 ! mmHg --> dyn/cm2
       real(kind=qp) :: TT,kT,dG,lbruch,lresult,pst,psat,term,ex,TC,S2
       integer :: i,j,STINDEX,el,C=6,Na=11
-      integer,save :: TiO2,SiO,H2O,NH3,CH4,SiO2
+      integer,save :: TiO2,SiO,H2O,NH3,CH4,SiO2,CaCl2
       logical,save :: firstCall=.true.
 *
       if (firstCall) then
-        TiO2 = STINDEX(cmol,NMOLE,'TIO2     ')
-        SiO  = STINDEX(cmol,NMOLE,'SIO      ')
-        SiO2 = STINDEX(cmol,NMOLE,'SIO2     ')
-        H2O  = STINDEX(cmol,NMOLE,'H2O      ')
-        NH3  = STINDEX(cmol,NMOLE,'NH3      ')
-        CH4  = STINDEX(cmol,NMOLE,'CH4      ')
+        TiO2  = STINDEX(cmol,NMOLE,'TIO2     ')
+        SiO   = STINDEX(cmol,NMOLE,'SIO      ')
+        SiO2  = STINDEX(cmol,NMOLE,'SIO2     ')
+        H2O   = STINDEX(cmol,NMOLE,'H2O      ')
+        NH3   = STINDEX(cmol,NMOLE,'NH3      ')
+        CH4   = STINDEX(cmol,NMOLE,'CH4      ')
+        CaCl2 = STINDEX(cmol,NMOLE,'CACL2    ')
         firstCall=.false.
       endif    
       TT  = MAX(T,100.Q0)
@@ -1179,24 +1180,43 @@
           enddo
           Sat(i) = EXP(lbruch-dG)
 
+	else if (dust_nam(i).eq.'CaCl2[s]') then
+          !-------------------------------------
+          !*** CaCl2[l]: own fit T=100-2000K ***
+          !-------------------------------------
+          psat = EXP(-3.91597Q+04/TT  
+     &               +3.71795Q+01 
+     &               -1.93815Q-03*TT  
+     &               +1.18087Q-07*TT**2)
+          Sat(i) = nmol(CaCl2)*kT/psat
+
 	else if (dust_nam(i).eq.'CaCl2[l]') then
-          !------------------------------------------------
-          !*** CaCl2[l]: George's JANAF-fit T=100-3000K ***
-          !------------------------------------------------
-          pst = bar
-          dG = 1.84571Q+05/TT 
-     &        -1.19801Q+06  
-     &        +3.78293Q+02*TT 
-     &        -2.25537Q-02*TT**2
-     &        +2.04881Q-06*TT**3
-          dG = dG/(rgas*TT)
-          lbruch = 0.Q0
-          do j=1,dust_nel(i)
-            el     = dust_el(i,j)
-            term   = nat(el)*kT/pst
-            lbruch = lbruch + LOG(term)*dust_nu(i,j)
-          enddo
-          Sat(i) = EXP(lbruch-dG)
+          !-------------------------------------
+          !*** CaCl2[l]: own fit T=298-3000K ***
+          !-------------------------------------
+          ! --- George's JANAF-fit T=100-3000K ---
+          !pst = bar
+          !dG = 1.84571Q+05/TT 
+     &    !    -1.19801Q+06  
+     &    !    +3.78293Q+02*TT 
+     &    !    -2.25537Q-02*TT**2
+     &    !    +2.04881Q-06*TT**3
+          !dG = dG/(rgas*TT)
+          !lbruch = 0.Q0
+          !do j=1,dust_nel(i)
+          !  el     = dust_el(i,j)
+          !  term   = nat(el)*kT/pst
+          !  lbruch = lbruch + LOG(term)*dust_nu(i,j)
+          !enddo
+          !Sat(i) = EXP(lbruch-dG)
+          !S2 = Sat(i)
+          psat = EXP(-3.68100Q+04/TT  
+     &               +3.61822Q+01 
+     &               -3.53647Q-03*TT  
+     &               +5.03350Q-07*TT**2 
+     &               -3.05198Q-11*TT**3)
+          Sat(i) = nmol(CaCl2)*kT/psat
+          !print*,'CaCl2[l]:',TT,S2,Sat(i)
 
 	else if (dust_nam(i).eq.'LiCl[l]') then
           !-----------------------------------------------

@@ -20,7 +20,8 @@
       use DUST_DATA,ONLY: NELEM,NDUST,dust_nam,dust_nel,dust_nu,dust_el,
      >                    eps0,elnam,elcode
       use CONVERSION,ONLY: Nind,Ndep,Iindex,Dindex,is_dust,conv
-      use EXCHANGE,ONLY: Fe,Mg,Si,Al,Ca,Ti,O,S,Na,Kalium=>K,Cl,H,Li
+      use EXCHANGE,ONLY: Fe,Mg,Si,Al,Ca,Ti,O,S,Na,Kalium=>K,Cl,H,Li,
+     >                   itransform
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       real*8,intent(in) :: nHtot                ! H nuclei density [cm-3]
@@ -167,7 +168,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        if (qread>1.Q-3.and.iread==475) verbose=2
+        !if (qread>1.Q-3.and.iread==307) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -215,7 +216,7 @@
         dscale(i) = xmin                        ! max dust abundances
       enddo   
 
-      call GGCHEM(nHtot,T,eps,.false.,verbose)        ! one call from scratch
+      call GGCHEM(nHtot,T,eps,.false.,0)        ! one call from scratch
       xstep(:) = 0.Q0             
       call SUPER(nHtot,T,xstep,eps,Sat0)
       qual = SQUAL(Sat0,active)
@@ -287,6 +288,7 @@
           !----------------------------------------------------
           eps_save = eps
           dust_save = ddust
+          ioff = 0
           ok = .true.
           if (active(iKCl).and.active(iKAlSi3O8).and.
      >        active(iNaCl).and.active(iMgAl2O4).and.
@@ -295,21 +297,39 @@
             changed = .true.
             !--- decide ---
             if (Sat0(iKCl)>Sat0(iKAlSi3O8)) then
-              ioff = iKAlSi3O8 
-              active(iKAlSi3O8) = .false.
-              amount = ddust(iKalSi3O8)/6.Q0
-              call TRANSFORM(iKAlSi3O8,iKCl,amount,1.Q0*6.Q0,
-     >                       ddust,eps,dscale,active,ok)
-              call TRANSFORM(iKAlSi3O8,iNaCl,amount,-1.Q0*6.Q0,
-     >                       ddust,eps,dscale,active,ok)
-              call TRANSFORM(iKAlSi3O8,iNa2SiO3,amount,0.5Q0*6.Q0,
-     >                       ddust,eps,dscale,active,ok)
-              call TRANSFORM(iKAlSi3O8,iMgAl2O4,amount,0.5Q0*6.Q0,
-     >                       ddust,eps,dscale,active,ok)
-              call TRANSFORM(iKAlSi3O8,iMgSiO3,amount,5.5Q0*6.Q0,
-     >                       ddust,eps,dscale,active,ok)
-              call TRANSFORM(iKAlSi3O8,iMg2SiO4,amount,-3.Q0*6.Q0,
-     >                       ddust,eps,dscale,active,ok)
+              if (ddust(iKAlSi3O8)<ddust(iNaCl)) then 
+                ioff = iKAlSi3O8 
+                active(iKAlSi3O8) = .false.
+                amount = ddust(iKAlSi3O8)/6.Q0
+                call TRANSFORM(iKAlSi3O8,iKCl,amount,1.Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iKAlSi3O8,iNaCl,amount,-1.Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iKAlSi3O8,iNa2SiO3,amount,0.5Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iKAlSi3O8,iMgAl2O4,amount,0.5Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iKAlSi3O8,iMgSiO3,amount,5.5Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iKAlSi3O8,iMg2SiO4,amount,-3.Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+              else
+                ioff = iNaCl 
+                active(iNaCl) = .false.
+                amount = ddust(iNaCl)/6.Q0
+                call TRANSFORM(iNaCl,iKCl,amount,1.Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iNaCl,iKAlSi3O8,amount,-1.Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iNaCl,iNa2SiO3,amount,0.5Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iNaCl,iMgAl2O4,amount,0.5Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iNaCl,iMgSiO3,amount,5.5Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iNaCl,iMg2SiO4,amount,-3.Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+              endif   
             else  
               ioff = iKCl 
               active(iKCl) = .false.
@@ -341,21 +361,39 @@
             changed = .true.
             !--- decide ---
             if (Sat0(iKCl)>Sat0(iKAlSi3O8)) then
-              ioff = iKAlSi3O8 
-              active(iKAlSi3O8) = .false.
-              amount = ddust(iKalSi3O8)/6.Q0
-              call TRANSFORM(iKAlSi3O8,iKCl,amount,1.Q0*6.Q0,
-     >                       ddust,eps,dscale,active,ok)
-              call TRANSFORM(iKAlSi3O8,iNaCl,amount,-1.Q0*6.Q0,
-     >                       ddust,eps,dscale,active,ok)
-              call TRANSFORM(iKAlSi3O8,iNa2SiO3,amount,0.5Q0*6.Q0,
-     >                       ddust,eps,dscale,active,ok)
-              call TRANSFORM(iKAlSi3O8,iAl2O3,amount,0.5Q0*6.Q0,
-     >                       ddust,eps,dscale,active,ok)
-              call TRANSFORM(iKAlSi3O8,iMgSiO3,amount,5.Q0*6.Q0,
-     >                       ddust,eps,dscale,active,ok)
-              call TRANSFORM(iKAlSi3O8,iMg2SiO4,amount,-2.5Q0*6.Q0,
-     >                       ddust,eps,dscale,active,ok)
+              if (ddust(iKAlSi3O8)<ddust(iNaCl)) then 
+                ioff = iKAlSi3O8 
+                active(iKAlSi3O8) = .false.
+                amount = ddust(iKAlSi3O8)/6.Q0
+                call TRANSFORM(iKAlSi3O8,iKCl,amount,1.Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iKAlSi3O8,iNaCl,amount,-1.Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iKAlSi3O8,iNa2SiO3,amount,0.5Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iKAlSi3O8,iAl2O3,amount,0.5Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iKAlSi3O8,iMgSiO3,amount,5.Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iKAlSi3O8,iMg2SiO4,amount,-2.5Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+              else
+                ioff = iNaCl 
+                active(iNaCl) = .false.
+                amount = ddust(iNaCl)/6.Q0
+                call TRANSFORM(iNaCl,iKCl,amount,1.Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iNaCl,iKAlSi3O8,amount,-1.Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iNaCl,iNa2SiO3,amount,0.5Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iNaCl,iAl2O3,amount,0.5Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iNaCl,iMgSiO3,amount,5.Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iNaCl,iMg2SiO4,amount,-2.5Q0*6.Q0,
+     >                         ddust,eps,dscale,active,ok)
+              endif   
             else  
               ioff = iKCl 
               active(iKCl) = .false.
@@ -503,6 +541,28 @@
      >                       ddust,eps,dscale,active,ok)
             endif  
           endif   
+          if (active(iFeO_l).and.active(iFe2SiO4).and.
+     >        active(iSiO2_l)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iFe2SiO4).gt.Sat0(iFeO_l)) then
+              ioff = iFeO_l
+              active(iFeO_l) = .false.  
+              amount = ddust(iFeO_l)/2.Q0
+              call TRANSFORM(iFeO_l,iFe2SiO4,amount,0.5Q0*2.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iFeO_l,iSiO2_l,amount,-0.5Q0*2.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iFe2SiO4
+              active(iFe2SiO4) = .false.  
+              amount = ddust(iFe2SiO4)/2.Q0
+              call TRANSFORM(iFe2SiO4,iFeO_l,amount,2.Q0*2.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iFe2SiO4,iSiO2_l,amount,1.Q0*2.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif  
+          endif   
           if (active(iFeO_l).and.active(iFe_l).and..false.) then
             changed = .true.
             !--- decide ---
@@ -565,6 +625,58 @@
             eps(Mg) = eps_save(Mg)
             eps(Si) = eps_save(Si)
           endif
+          if (active(iSiO2_l).and.active(iMgSiO3_l).and.
+     >        active(iMg2SiO4)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iSiO2_l)<Sat0(iMgSiO3_l)) then
+              ioff = iSiO2_l
+              active(iSiO2_l) = .false.  
+              amount = ddust(iSiO2_l)/2.Q0
+              call TRANSFORM(iSiO2_l,iMgSiO3_l,amount,2.Q0*2.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iSiO2_l,iMg2SiO4,amount,-1.Q0*2.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iMgSiO3_l
+              active(iMgSiO3_l) = .false.  
+              amount = ddust(iMgSiO3_l)/2.Q0
+              call TRANSFORM(iMgSiO3_l,iSiO2_l,amount,0.5Q0*2.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iMgSiO3_l,iMg2SiO4,amount,0.5Q0*2.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif  
+            !print*,eps(Mg),eps(Si)
+            !print*,eps_save(Mg),eps_save(Si)
+            eps(Mg) = eps_save(Mg)
+            eps(Si) = eps_save(Si)
+          endif
+          if (active(iSiO2_l).and.active(iMgSiO3).and.
+     >        active(iMg2SiO4)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iSiO2_l)<Sat0(iMgSiO3)) then
+              ioff = iSiO2_l
+              active(iSiO2_l) = .false.  
+              amount = ddust(iSiO2_l)/2.Q0
+              call TRANSFORM(iSiO2_l,iMgSiO3,amount,2.Q0*2.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iSiO2_l,iMg2SiO4,amount,-1.Q0*2.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iMgSiO3
+              active(iMgSiO3) = .false.  
+              amount = ddust(iMgSiO3)/2.Q0
+              call TRANSFORM(iMgSiO3,iSiO2_l,amount,0.5Q0*2.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iMgSiO3,iMg2SiO4,amount,0.5Q0*2.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif  
+            !print*,eps(Mg),eps(Si)
+            !print*,eps_save(Mg),eps_save(Si)
+            eps(Mg) = eps_save(Mg)
+            eps(Si) = eps_save(Si)
+          endif
           if (active(iTi4O7).and.active(iCaTiO3).and.
      >        active(iCaMgSi2O6).and.(.not.active(iMg2SiO4))) then
             changed = .true.
@@ -592,13 +704,23 @@
             changed = .true.
             !--- decide ---
             if (Sat0(iCaMgSi2O6).gt.Sat0(iMgSiO3_l)) then
-              ioff = iMgSiO3_l
-              active(iMgSiO3_l) = .false.  
-              amount = ddust(iMgSiO3_l)/2.Q0
-              call TRANSFORM(iMgSiO3_l,iCaMgSi2O6,amount,1.Q0*2.Q0,
-     >                       ddust,eps,dscale,active,ok)
-              call TRANSFORM(iMgSiO3_l,iCaSiO3,amount,-1.Q0*2.Q0,
-     >                       ddust,eps,dscale,active,ok)
+              if (ddust(iMgSiO3_l)<ddust(iCaSiO3)) then 
+                ioff = iMgSiO3_l
+                active(iMgSiO3_l) = .false.  
+                amount = ddust(iMgSiO3_l)/2.Q0
+                call TRANSFORM(iMgSiO3_l,iCaMgSi2O6,amount,1.Q0*2.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iMgSiO3_l,iCaSiO3,amount,-1.Q0*2.Q0,
+     >                         ddust,eps,dscale,active,ok)
+              else  
+                ioff = iCaSiO3
+                active(iCaSiO3) = .false.  
+                amount = ddust(iCaSiO3)/2.Q0
+                call TRANSFORM(iCaSiO3,iCaMgSi2O6,amount,1.Q0*2.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iCaSiO3,iMgSiO3_l,amount,-1.Q0*2.Q0,
+     >                         ddust,eps,dscale,active,ok)
+              endif  
             else  
               ioff = iCaMgSi2O6
               active(iCaMgSi2O6) = .false.  
@@ -705,7 +827,6 @@
             changed = .true.
             !--- decide ---
             if (Sat0(iNa2SiO3).gt.Sat0(iNaAlSi3O8)) then
-              print*,ddust(iNaAlSi3O8),ddust(iMg2SiO4)
               if (3.Q0*ddust(iNaAlSi3O8)<ddust(iMg2SiO4)) then 
                 ioff = iNaAlSi3O8
                 active(iNaAlSi3O8) = .false.  
@@ -777,6 +898,34 @@
             !print*,eps(Na),eps(Al),eps(Si)
             !print*,eps_save(Na),eps_save(Al),eps_save(Si)
           endif  
+          if (active(iNa2SiO3_l).and.active(iNaAlSi3O8).and.
+     >        active(iAl2O3_l).and.active(iSiO2_l)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iNa2SiO3_l).gt.Sat0(iNaAlSi3O8)) then
+              ioff = iNaAlSi3O8
+              active(iNaAlSi3O8) = .false.  
+              amount = ddust(iNaAlSi3O8)/3.Q0
+              call TRANSFORM(iNaAlSi3O8,iNa2SiO3_l,amount,0.5Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iNaAlSi3O8,iAl2O3_l,amount,0.5Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iNaAlSi3O8,iSiO2_l,amount,2.5Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iNa2SiO3_l
+              active(iNa2SiO3_l) = .false.  
+              amount = ddust(iNa2SiO3_l)/3.Q0
+              call TRANSFORM(iNa2SiO3_l,iNaAlSi3O8,amount,2.Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iNa2SiO3_l,iAl2O3_l,amount,-1.Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iNa2SiO3_l,iSiO2_l,amount,-5.Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif
+            !print*,eps(Na),eps(Al),eps(Si),eps(O)
+            !print*,eps_save(Na),eps_save(Al),eps_save(Si),eps_save(O)
+          endif  
           if (active(iH2O).and.active(iH2O_l)) then
             changed = .true.
             !--- decide ---
@@ -810,6 +959,24 @@
               active(iFe) = .false.  
               amount = ddust(iFe)
               call TRANSFORM(iFe,iFe_l,amount,1.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif  
+            eps(Fe) = eps_save(Fe)
+          endif   
+          if (active(iFeO).and.active(iFeO_l)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iFeO).gt.Sat0(iFeO_l)) then
+              ioff = iFeO_l
+              active(iFeO_l) = .false.  
+              amount = ddust(iFeO_l)
+              call TRANSFORM(iFeO_l,iFeO,amount,1.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iFeO
+              active(iFeO) = .false.  
+              amount = ddust(iFeO)
+              call TRANSFORM(iFeO,iFeO_l,amount,1.Q0,
      >                       ddust,eps,dscale,active,ok)
             endif  
             eps(Fe) = eps_save(Fe)
@@ -891,6 +1058,25 @@
             eps(Li) = eps_save(Li)
             eps(Cl) = eps_save(Cl)
           endif   
+          if (active(iNaCl).and.active(iNaCl_l)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iNaCl).gt.Sat0(iNaCl_l)) then
+              ioff = iNaCl_l
+              active(iNaCl_l) = .false.  
+              amount = ddust(iNaCl_l)
+              call TRANSFORM(iNaCl_l,iNaCl,amount,1.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iNaCl
+              active(iNaCl) = .false.  
+              amount = ddust(iNaCl)
+              call TRANSFORM(iNaCl,iNaCl_l,amount,1.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif  
+            eps(Li) = eps_save(Li)
+            eps(Cl) = eps_save(Cl)
+          endif   
           if (active(iMg2SiO4).and.active(iMg2SiO4_l)) then
             changed = .true.
             !--- decide ---
@@ -942,10 +1128,181 @@
             eps(Mg) = eps_save(Mg)
             eps(Si) = eps_save(Si)
           endif 
+          if (active(iMg2SiO4).and.active(iMgSiO3).and.
+     >        active(iFeO).and.active(iFe2SiO4)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iFeO)>Sat0(iFe2SiO4)) then
+              ioff = iFe2SiO4
+              active(iFe2SiO4) = .false.
+              amount = ddust(iFe2SiO4)/3.Q0
+              call TRANSFORM(iFe2SiO4,iFeO,amount,2.Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iFe2SiO4,iMgSiO3,amount,2.Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iFe2SiO4,iMg2SiO4,amount,-1.Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              if (ddust(iFeO)<ddust(iMgSiO3)) then 
+                ioff = iFeO
+                active(iFeO) = .false.
+                amount = ddust(iFeO)/3.Q0
+                call TRANSFORM(iFeO,iFe2SiO4,amount,0.5Q0*3.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iFeO,iMgSiO3,amount,-1.Q0*3.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iFeO,iMg2SiO4,amount,0.5Q0*3.Q0,
+     >                         ddust,eps,dscale,active,ok)
+              else
+                ioff = iMgSiO3
+                active(iMgSiO3) = .false.
+                amount = ddust(iMgSiO3)/3.Q0
+                call TRANSFORM(iMgSiO3,iFe2SiO4,amount,0.5Q0*3.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iMgSiO3,iFeO,amount,-1.Q0*3.Q0,
+     >                         ddust,eps,dscale,active,ok)
+                call TRANSFORM(iMgSiO3,iMg2SiO4,amount,0.5Q0*3.Q0,
+     >                         ddust,eps,dscale,active,ok)
+              endif   
+            endif  
+            !print*,eps(Fe),eps(Mg),eps(Si),eps(O)
+            !print*,eps_save(Fe),eps_save(Mg),eps_save(Si),eps_save(O)
+            eps(Fe) = eps_save(Fe)
+            eps(Mg) = eps_save(Mg)
+            eps(Si) = eps_save(Si)
+            eps(O)  = eps_save(O)
+          endif 
+          if (active(iMgTi2O5).and.active(iTiO2).and.
+     >        active(iMgSiO3_l).and.active(iSiO2_l)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iMgTi2O5)<Sat0(iTiO2)) then
+              ioff = iMgTi2O5
+              active(iMgTi2O5) = .false.
+              amount = ddust(iMgTi2O5)/3.Q0
+              call TRANSFORM(iMgTi2O5,iTiO2,amount,2.Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iMgTi2O5,iMgSiO3_l,amount,1.Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iMgTi2O5,iSiO2_l,amount,-1.Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iTiO2
+              active(iTiO2) = .false.
+              amount = ddust(iTiO2)/3.Q0
+              call TRANSFORM(iTiO2,iMgTi2O5,amount,0.5Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iTiO2,iMgSiO3_l,amount,-0.5Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iTiO2,iSiO2_l,amount,0.5Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif  
+            !print*,eps(Ti),eps(Mg),eps(Si)
+            !print*,eps_save(Ti),eps_save(Mg),eps_save(Si)
+          endif 
+          if (active(iMgTi2O5).and.active(iTiO2).and.
+     >        active(iCaMgSi2O6).and.active(iCaSiO3).and.
+     >        active(iSiO2_l)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iMgTi2O5)<Sat0(iTiO2)) then
+              ioff = iMgTi2O5
+              active(iMgTi2O5) = .false.
+              amount = ddust(iMgTi2O5)/4.Q0
+              call TRANSFORM(iMgTi2O5,iTiO2,amount,2.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iMgTi2O5,iCaMgSi2O6,amount,1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iMgTi2O5,iCaSiO3,amount,-1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iMgTi2O5,iSiO2_l,amount,-1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iTiO2
+              active(iTiO2) = .false.
+              amount = ddust(iTiO2)/4.Q0
+              call TRANSFORM(iTiO2,iMgTi2O5,amount,0.5Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iTiO2,iCaMgSi2O6,amount,-0.5Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iTiO2,iCaSiO3,amount,0.5Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iTiO2,iSiO2_l,amount,0.5Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif  
+            !print*,eps(Ti),eps(Mg),eps(Si),eps(Ca)
+            !print*,eps_save(Ti),eps_save(Mg),eps_save(Si),eps_save(Ca)
+          endif 
+          if (active(iMgTi2O5).and.active(iCaTiO3).and.
+     >        active(iCaSiO3).and.active(iMgSiO3_l).and.
+     >        active(iMg2SiO4)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iMgTi2O5)<Sat0(iCaTiO3)) then
+              ioff = iMgTi2O5
+              active(iMgTi2O5) = .false.
+              amount = ddust(iMgTi2O5)/4.Q0
+              call TRANSFORM(iMgTi2O5,iCaTiO3,amount,2.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iMgTi2O5,iCaSiO3,amount,-2.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iMgTi2O5,iMgSiO3_l,amount,3.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iMgTi2O5,iMg2SiO4,amount,-1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iCaTiO3
+              active(iCaTiO3) = .false.
+              amount = ddust(iCaTiO3)/4.Q0
+              call TRANSFORM(iCaTiO3,iMgTi2O5,amount,0.5Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iCaTiO3,iCaSiO3,amount,1.0Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iCaTiO3,iMgSiO3_l,amount,-1.5Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iCaTiO3,iMg2SiO4,amount,0.5Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif  
+            !print*,eps(Ti),eps(Mg),eps(Si),eps(Ca)
+            !print*,eps_save(Ti),eps_save(Mg),eps_save(Si),eps_save(Ca)
+          endif 
+          if (active(iAl2O3).and.active(iMgAl2O4).and.
+     >        active(iCaMgSi2O6).and.active(iCaSiO3).and.
+     >        active(iSiO2_l)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iAl2O3)<Sat0(iMgAl2O4)) then
+              ioff = iAl2O3
+              active(iAl2O3) = .false.
+              amount = ddust(iAl2O3)/4.Q0
+              call TRANSFORM(iAl2O3,iMgAl2O4,amount,1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iAl2O3,iCaMgSi2O6,amount,-1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iAl2O3,iCaSiO3,amount,1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iAl2O3,iSiO2_l,amount,1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iMgAl2O4
+              active(iMgAl2O4) = .false.
+              amount = ddust(iMgAl2O4)/4.Q0
+              call TRANSFORM(iMgAl2O4,iAl2O3,amount,1.0Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iMgAl2O4,iCaMgSi2O6,amount,1.0Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iMgAl2O4,iCaSiO3,amount,-1.0Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iMgAl2O4,iSiO2_l,amount,-1.0Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif  
+            !print*,eps(Al),eps(Mg),eps(Si),eps(Ca)
+            !print*,eps_save(Al),eps_save(Mg),eps_save(Si),eps_save(Ca)
+          endif 
           if (.not.ok) then
             print*,"TRANSFORM resulted in negative dust abundance"
             ifail = ifail+1
-            if (ifail>4) stop "*** too many fails."
+            if (ifail>=3) stop "*** too many fails."
             print*,"try to carry on without ..."
             call SLEEP(1)
             eps = eps_save 
@@ -957,6 +1314,7 @@
             lastit = it
           endif  
         endif  
+        if (ioff>0) itransform=itransform+1
 
         if (changed) then
           Nact = 0 
@@ -973,9 +1331,9 @@
           do i=1,NDUST
             rem = "  "
             if (active(i)) rem=" *"
-            if (active(i).or.Sat0(i)>0.01) then
-              write(*,'(3x,A12,2(1pE19.10),A2)') 
-     >          dust_nam(i),ddust(i)/dscale(i),Sat0(i),rem
+            if (active(i).or.Sat0(i)>0.1) then
+              write(*,'(3x,A12,2(1pE11.3)1pE19.10,A2)') 
+     >          dust_nam(i),ddust(i),ddust(i)/dscale(i),Sat0(i),rem
             endif  
           enddo
           do i=1,NDUST
@@ -1042,7 +1400,8 @@
         !do i=1,NDUST 
         !  if (active(i)) print*,dust_nam(i)
         !enddo  
-        if (verbose>1) print'(99(A3))',elnam(Iindex(1:Nind-1)) 
+        if (verbose>1) print'(99(A3))',
+     >                    (trim(elnam(Iindex(j))),j=1,Nind-1)
         if (verbose>1) print'(99(I3))',e_num(Iindex(1:Nind-1)) 
         if (Nind-1<Nact) stop "*** Nind<Nact in equil_cond."
         Nind = Nact                         ! truncate at number of condensates
@@ -1134,11 +1493,21 @@
           Iindex(i) = Iindex(Nact+1) 
           e_act(Iindex(i)) = .true.
         endif   
-        if (active(iFeS).and..not.e_act(S)) then
+        if (active(iFeS).and..not.e_act(S).and.e_num(Fe)>1) then
           print*,"... exchanging "//elnam(Iindex(Nact))//" for S"
           e_act(Iindex(Nact)) = .false.
           e_act(S) = .true.
           Iindex(Nact) = S
+        endif   
+        if (active(iFeS).and.e_act(Fe).and.e_act(S).and.
+     >      e_num(Fe)==1.and.e_num(S)==1) then
+          print*,"... exchanging S for "//elnam(Iindex(Nact+1))
+          do i=1,Nind
+            if (Iindex(i)==S) exit
+          enddo  
+          e_act(S) = .false.
+          e_act(Iindex(Nact+1)) = .true.
+          Iindex(i) = Iindex(Nact+1)
         endif   
         if (active(iLiCl).and.e_act(Li).and.e_act(Cl).and.
      >      e_num(Li)==1.and.e_num(Cl)==1) then
@@ -1167,6 +1536,12 @@
           e_act(Iindex(Nact)) = .false.
           Iindex(Nact) = Fe
           e_act(Fe) = .true.
+        endif   
+        if (active(iMgO).and..not.e_act(Mg).and..not.e_act(O)) then
+          print*,"... exchanging "//elnam(Iindex(Nact))//" for Mg"
+          e_act(Iindex(Nact)) = .false.
+          Iindex(Nact) = Mg
+          e_act(Mg) = .true.
         endif   
         if (verbose>1) print*,"solving for ... ",
      >                      (elnam(Iindex(i))//" ",i=1,Nind)
@@ -1674,7 +2049,6 @@
       ! ***  save result to database  ***
       !----------------------------------
       if (qual<1.Q-10) then
-        !if (ddust(iTiO2)>0.Q0.and.ddust(iMgTi2O5)>0.Q0) stop
         call PUT_DATA(nHtot,T,eps,ddust,qread,iread,active)
       endif  
       it_tot = it_tot + it

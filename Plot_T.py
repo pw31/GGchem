@@ -199,7 +199,7 @@ count = 0
 for i in range(3,4+NELEM+NMOLE): 
   mol = keyword[i]
   yy = dat[:,i]-lntot            # log10 nmol/ntot
-  crit = -2
+  crit = -1.5
   ind = np.where(mols == mol)[0]
   if (np.size(ind)>0): crit=-5
   #print i,mol,ind,np.size(ind)
