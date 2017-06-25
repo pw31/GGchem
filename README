@@ -45,9 +45,9 @@ parameter space.
 
 Change init.f to use different element abundances. The 
 default are solar abundances from Asplund et al.(2009). 
-There are additional pre-installed options to use data from 
+There are additional pre-installed options to use data for 
 "Abundances.dat", including "EarthCrust", "Ocean" and 
-"Meteorites".
+"Meteorites" as listed in "Abundances.dat".
 
 ---------------------------------------------------------
 Select or deselect elements by modifying the first line 
@@ -70,13 +70,17 @@ in the (p,T)-plane with many points, the results will be
 faster and more reliable.
 
 ---------------------------------------------------------
-The pure gas phase chemistry needs about 0.2 ms per call
-for T > 700 K (real*8 version) and about 2 ms per call 
-for T < 700 K (real*16 version). 
+The pure gas phase chemistry needs about 0.4 ms per call
+for T > 700 K (real*8 version) and about 3 ms per call 
+for T < 700 K (real*16 version). These time measurements
+are for 16 elements + charge. Time requirement roughly
+scale as N^3, if N is the number of elements.
 
 The equilibrium condensation code requires many calls 
 of the gas-phase equilibrium chemistry routine, and 
-takes about 0.1 sec per point. 
+takes about 0.02-0.09 sec per call, depending on how
+much useful information is found in database.dat.
+ 
 
 
 

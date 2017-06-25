@@ -1,7 +1,7 @@
 ***********************************************************************
       PROGRAM EQ_CHEMISTRY
 ***********************************************************************
-      use EXCHANGE,ONLY: chemcall,chemiter,itransform
+      use EXCHANGE,ONLY: chemcall,chemiter,ieqcond,itransform
 
       call INIT
       call INIT_CHEMISTRY
@@ -12,9 +12,11 @@
       !call DEMO_PHASEDIAGRAM
       
       print*
-      print'("   smchem calls = ",I7)',chemcall
-      print'("iterations/call = ",0pF7.2)',REAL(chemiter)/REAL(chemcall)
-      print'("transform calls = ",I7)',itransform
+      print'("         smchem calls = ",I7)',chemcall
+      print'("      iterations/call = ",0pF7.2)',
+     >                     REAL(chemiter)/REAL(chemcall)
+      print'("eq condensation calls = ",I7)',ieqcond
+      print'("      transform calls = ",I7)',itransform
 
       call SAVE_DBASE
       end

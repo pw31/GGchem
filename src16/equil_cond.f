@@ -21,7 +21,7 @@
      >                    eps0,elnam,elcode
       use CONVERSION,ONLY: Nind,Ndep,Iindex,Dindex,is_dust,conv
       use EXCHANGE,ONLY: Fe,Mg,Si,Al,Ca,Ti,O,S,Na,Kalium=>K,Cl,H,Li,
-     >                   itransform
+     >                   itransform,ieqcond
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       real*8,intent(in) :: nHtot                ! H nuclei density [cm-3]
@@ -2070,7 +2070,8 @@
       if (qual<1.Q-10) then
         call PUT_DATA(nHtot,T,eps,ddust,qread,iread,active)
       endif  
-      it_tot = it_tot + it
+      it_tot  = it_tot + it
+      ieqcond = ieqcond+1
 
       end
             
