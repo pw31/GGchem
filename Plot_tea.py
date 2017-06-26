@@ -33,6 +33,10 @@ pmin  = np.min(press)
 pmax  = np.max(press)
 pmin  = pmin/1.2
 pmax  = pmax*1.2
+nHmin = np.min(nHtot)
+nHmax = np.max(nHtot)
+nHmin = nHmin*0.9
+nHmax = nHmax*1.1
 Tmin  = np.min(Tg)
 Tmax  = np.max(Tg)
 #Tmax  = 4000.0
@@ -94,6 +98,26 @@ plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
 minorLocator = MultipleLocator(sep)
 ax.xaxis.set_minor_locator(minorLocator)
+plt.tight_layout()
+plt.savefig(pp,format='pdf')
+plt.clf()
+
+#================== temperature-density structure ====================
+fig,ax = plt.subplots()
+plt.plot(Tg,nHtot,lw=4)
+plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
+plt.ylabel(r'$n_\mathrm{\langle H\rangle}\ \mathrm{[cm^{-3}]}$',fontsize=20)
+plt.xlim(Tmin,Tmax)
+plt.ylim(nHmin,nHmax)
+if (nHmax>nHmin*5): plt.yscale('log')
+plt.tick_params(axis='both', labelsize=15)
+plt.tick_params('both', length=6, width=1.5, which='major')
+plt.tick_params('both', length=3, width=1, which='minor')
+minorLocator = MultipleLocator(sep)
+ax.xaxis.set_minor_locator(minorLocator)
+#fmt=ScalarFormatter(useOffset=False)
+#fmt.set_scientific(False)
+#ax.yaxis.set_major_formatter(fmt)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
 plt.clf()

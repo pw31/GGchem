@@ -227,7 +227,7 @@ ellist = ['H','C','O','N','SI','S','NA','CL','CA','TI','K','AL','MG','FE','LI','
 allist = [' ',' ',' ',' ','Si',' ','Na','Cl','Ca','Ti',' ','Al','Mg','Fe','Li','+']
 exlist = [' He ',' Cl CL Ca CA Cr ',' ',' Na NA Ni ',' ',' Si SI ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
 titels = ['hydrogen','carbon','oxygen','nitrogen','silicon','sulphur','sodium','chlorine','calcium','titanium','potassium','aluminum','magnesium','iron','lithium','charge carriers']
-limits = [2,5,3,6,6,5,6,4,7,8,6,6,6,6,7,5]   
+limits = [2,5,2.5,6,6,5,6,4,7,8,6,6,6,6,7,5]   
 for i in range(0,16):
   fig,ax = plt.subplots()
   el = ellist[i]
