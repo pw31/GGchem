@@ -1520,33 +1520,63 @@
         endif   
         if (active(iFeS).and.e_act(Fe).and.e_act(S).and.
      >      e_num(Fe)==1.and.e_num(S)==1) then
-          print*,"... exchanging S for "//elnam(Iindex(Nact+1))
           do i=1,Nind
-            if (Iindex(i)==S) exit
+            if (Iindex(i)==Fe) exit
           enddo  
-          e_act(S) = .false.
-          e_act(Iindex(Nact+1)) = .true.
-          Iindex(i) = Iindex(Nact+1)
+          do j=1,Nind
+            if (Iindex(j)==S) exit
+          enddo  
+          if (i>j) then
+            e_act(Iindex(i)) = .false.
+            j=i
+          else
+            e_act(Iindex(j)) = .false.
+            i=j
+          endif
+          print*,"... exchanging "//elnam(Iindex(i))//
+     >                     " for "//elnam(Iindex(Nact+1))
+          Iindex(i) = Iindex(Nact+1) 
+          e_act(Iindex(i)) = .true.
         endif
         if (active(iFeS_l).and.e_act(Fe).and.e_act(S).and.
      >      e_num(Fe)==1.and.e_num(S)==1) then
-          print*,"... exchanging S for "//elnam(Iindex(Nact+1))
           do i=1,Nind
-            if (Iindex(i)==S) exit
+            if (Iindex(i)==Fe) exit
           enddo  
-          e_act(S) = .false.
-          e_act(Iindex(Nact+1)) = .true.
-          Iindex(i) = Iindex(Nact+1)
+          do j=1,Nind
+            if (Iindex(j)==S) exit
+          enddo  
+          if (i>j) then
+            e_act(Iindex(i)) = .false.
+            j=i
+          else
+            e_act(Iindex(j)) = .false.
+            i=j
+          endif
+          print*,"... exchanging "//elnam(Iindex(i))//
+     >                     " for "//elnam(Iindex(Nact+1))
+          Iindex(i) = Iindex(Nact+1) 
+          e_act(Iindex(i)) = .true.
         endif   
         if (active(iLiCl).and.e_act(Li).and.e_act(Cl).and.
      >      e_num(Li)==1.and.e_num(Cl)==1) then
-          print*,"... exchanging Cl for "//elnam(Iindex(Nact+1))
           do i=1,Nind
-            if (Iindex(i)==Cl) exit
+            if (Iindex(i)==Li) exit
           enddo  
-          e_act(Cl) = .false.
-          e_act(Iindex(Nact+1)) = .true.
-          Iindex(i) = Iindex(Nact+1)
+          do j=1,Nind
+            if (Iindex(j)==Cl) exit
+          enddo  
+          if (i>j) then
+            e_act(Iindex(i)) = .false.
+            j=i
+          else
+            e_act(Iindex(j)) = .false.
+            i=j
+          endif
+          print*,"... exchanging "//elnam(Iindex(i))//
+     >                     " for "//elnam(Iindex(Nact+1))
+          Iindex(i) = Iindex(Nact+1) 
+          e_act(Iindex(i)) = .true.
         endif   
         if (active(iH2O_l).and..not.e_act(O).and..not.e_act(H)) then
           print*,"... exchanging "//elnam(Iindex(Nact))//" for O"

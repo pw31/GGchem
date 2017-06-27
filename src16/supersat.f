@@ -4,6 +4,7 @@
       use CHEMISTRY,ONLY: NMOLE,cmol
       use dust_data,ONLY: NELEM,NDUST,bk,atm,rgas,bar,
      &                    dust_nam,dust_nel,dust_el,dust_nu,elnam
+      use EXCHANGE,ONLY: C,Na,Fe
       implicit none
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
       real*8,intent(in) :: T
@@ -12,8 +13,8 @@
       real(kind=qp),parameter :: cal=4.184Q+0 
       real(kind=qp),parameter :: mmHg=1.333Q+3 ! mmHg --> dyn/cm2
       real(kind=qp) :: TT,kT,dG,lbruch,lresult,pst,psat,term,ex,TC,S2
-      integer :: i,j,STINDEX,el,C=6,Na=11
-      integer,save :: TiO2,SiO,H2O,NH3,CH4,SiO2,CaCl2,Fe
+      integer :: i,j,STINDEX,el
+      integer,save :: TiO2,SiO,H2O,NH3,CH4,SiO2,CaCl2
       logical,save :: firstCall=.true.
 *
       if (firstCall) then
@@ -24,7 +25,6 @@
         NH3   = STINDEX(cmol,NMOLE,'NH3      ')
         CH4   = STINDEX(cmol,NMOLE,'CH4      ')
         CaCl2 = STINDEX(cmol,NMOLE,'CACL2    ')
-        Fe    = STINDEX(cmol,NMOLE,'FE       ')
         firstCall=.false.
       endif    
       TT  = MAX(T,100.Q0)
@@ -321,7 +321,7 @@
      &                +6.68363Q-04*TT 
      &                -1.13811Q-06*TT**2  
      &                +2.57277Q-10*TT**3 )
-          Sat(i) = nmol(Fe)*kT/psat
+          Sat(i) = nat(Fe)*kT/psat
 
         else if (dust_nam(i).eq.'Al2O3[s]') then 
           !---------------------------------------------
@@ -1005,7 +1005,7 @@
      &                -9.92112Q-04*TT 
      &                -1.64248Q-08*TT**2  
      &                +1.38179Q-11*TT**3 )
-          Sat(i) = nmol(Fe)*kT/psat
+          Sat(i) = nat(Fe)*kT/psat
 
 	else if (dust_nam(i).eq.'FeS[l]') then
           !-------------------------------------------------
