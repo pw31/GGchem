@@ -35,12 +35,12 @@ def stock(T,A,B,C,D,E):
     val = - Rgas*T*(A/T + B*np.log(T) + C + D*T + E*T**2)
     return val
 
-tmin = 100
-tmax = 5000
+tmin = 50
+tmax = 12000
 temp = np.arange(tmin,tmax,1)
 
-line1 = lines[76]
-line2 = lines[77]
+line1 = lines[77]
+line2 = lines[81]
 print line1
 print line2
 data1 = line1.split()
@@ -57,6 +57,10 @@ elif (data1[2] == 'Woitke?'):
     fit1 = np.exp(newf(temp,*data1[3:6]))
 elif (data1[2] == 'Yaws'):
     fit1 = yaws(temp,*data1[3:8])
+elif (data1[2] == 'S&H'):
+    fit1 = poly(temp,*data1[3:8])*cal
+elif (data1[2] == 'Stock'):
+    fit1 = stock(temp,*data1[3:8])
 if (data2[2] == 'poly'):
     if (data2[1] == 'dg'):
         fit2 = poly(temp,*data2[3:8])
@@ -66,10 +70,16 @@ elif (data2[2] == 'Woitke?'):
     fit2 = np.exp(newf(temp,*data2[3:6]))
 elif (data2[2] == 'Yaws'):
     fit2 = yaws(temp,*data2[3:8])
+elif (data2[2] == 'S&H'):
+    fit2 = poly(temp,*data2[3:8])*cal
+elif (data2[2] == 'Stock'):
+    fit2 = stock(temp,*data2[3:8])
+fig,ax = plt.subplots()
 pmax = np.max([fit1,fit2])
 pmin = np.min([fit1,fit2])
-pmin = np.max([pmin,pmax*1.E-25])
-fig,ax = plt.subplots()
+if (data1[1] == 'pvap'):
+    plt.yscale('log')
+    pmin = np.max([pmin,pmax*1.E-25])
 minorLocator = MultipleLocator(100)
 ax.xaxis.set_minor_locator(minorLocator)
 plt.plot(temp,fit1,label = data1[0])
@@ -84,12 +94,10 @@ plt.ylabel(value +' '+ unit)
 plt.xlim(tmin,tmax)
 plt.ylim(pmin,pmax)
 #plt.xscale('log')
-plt.yscale('log')
-#plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
 plt.legend(frameon=False)
-#plt.show()
-plt.savefig(pp,format='pdf')
-plt.clf()
+plt.show()
+#plt.savefig(pp,format='pdf')
+#plt.clf()
 
 fig,ax = plt.subplots()
 minorLocator = MultipleLocator(100)
@@ -113,43 +121,45 @@ tmelt = temp[ibest]
 print "melting temperature: ",tmelt,"K"
 print "pvap(melting temp.): ",fit1[ibest],"bar"
 plt.plot([tmelt,tmelt],[0,1],c='black',ls='--')
-#plt.show()
-plt.savefig(pp,format='pdf')
-plt.clf()
+plt.show()
+#plt.savefig(pp,format='pdf')
+#plt.clf()
 
 
-for line1 in lines:
-    data1 = line1.split()
-    for line2 in lines:
-        data2 = line2.split()
-        if (data1[0:2] == data2[0:2]):
-            for i in range(3,8):
-                data2[i] = float(data2[i])
-            if (data2[2] == 'Yaws'):
-                fit = yaws(temp,*data2[3:8])
-            elif (data2[2] == 'S&H'):
-                fit = poly(temp,*data2[3:8])*cal
-            elif (data2[2] == 'poly'):
-                if (data2[1] == 'dg'):
-                    fit = poly(temp,*data2[3:8])
-                else:
-                    fit = np.exp(poly(temp,*data2[3:8]))
-            elif (data2[2] == 'Woitke?'):
-                fit = np.exp(newf(temp,*data2[3:6]))
-            elif (data2[2] == 'Stock'):
-                fit = stock(temp,*data2[3:8])
-            plt.plot(temp,fit,label = data2[2])
-    specie = data1[0]
-    value = data1[1]
-    if (value == 'pvap'): unit = '[dyn/cm2]'
-    if (value == 'dg'): unit = '[J/mol]'
-    plt.title(specie)
-    plt.xlabel('T [K]')
-    plt.ylabel(value +' '+ unit)
-    plt.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
-    plt.legend(frameon=False)
-    #plt.show()
-    plt.savefig(pp,format='pdf')
-    plt.clf()
-pp.close()
-print '... written output to fit_comp.pdf.'
+#for line1 in lines:
+#    data1 = line1.split()
+#    for line2 in lines:
+#        data2 = line2.split()
+#        if (data1[0:2] == data2[0:2]):
+#            for i in range(3,8):
+#                data2[i] = float(data2[i])
+#            if (data2[2] == 'Yaws'):
+#                fit = yaws(temp,*data2[3:8])
+#                #plt.yscale('log')
+#            elif (data2[2] == 'S&H'):
+#                fit = poly(temp,*data2[3:8])*cal
+#            elif (data2[2] == 'poly'):
+#                if (data2[1] == 'dg'):
+#                    fit = poly(temp,*data2[3:8])
+#                else:
+#                    fit = np.exp(poly(temp,*data2[3:8]))
+#                    #plt.yscale('log')
+#            elif (data2[2] == 'Woitke?'):
+#                fit = np.exp(newf(temp,*data2[3:6]))
+#                #plt.yscale('log')
+#            elif (data2[2] == 'Stock'):
+#                fit = stock(temp,*data2[3:8])
+#            plt.plot(temp,fit,label = data2[2])
+#    specie = data1[0]
+#    value = data1[1]
+#    if (value == 'pvap'): unit = '[dyn/cm2]'
+#    if (value == 'dg'): unit = '[J/mol]'
+#    plt.title(specie)
+#    plt.xlabel('T [K]')
+#    plt.ylabel(value +' '+ unit)
+#    plt.legend(frameon=False)
+#    #plt.show()
+#    plt.savefig(pp,format='pdf')
+#    plt.clf()
+#pp.close()
+#print '... written output to fit_comp.pdf.'

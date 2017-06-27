@@ -227,6 +227,7 @@
       write(*,*) '208 = LiH[s]'
       write(*,*) '209 = CaCl2[s] pvap'
       write(*,*) '210 = CaCl2[l] pvap'
+      write(*,*) '211 = CaCl2[s]'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -1777,6 +1778,13 @@
         call READ_DATEI('CaCl2.txt'   ,dG,T,Nmax,N,S,2) 
         Edzahl = 1
         stoich(2) = 1.D0
+      elseif (specie.eq.211) then
+        call READ_DATEI('CaCl2_cr.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Ca.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('Cl.txt'   ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 2.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop
