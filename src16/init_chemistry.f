@@ -9,16 +9,16 @@
       implicit none
       integer :: i,ii,j,iel,e
       character(len=2) :: cel(40),elnam
-      character(len=100) :: line,elements
+      character(len=200) :: line,elements
       logical :: found,allfound
 
       open(unit=12, file='dispol_new.dat', status='old')
       write(*,*)
       write(*,*) 'reading molecules and kp-data from dispol_new.dat'
-      read(12,'(A100)') elements
+      read(12,'(A200)') elements
       elements = ' '//trim(elements)//' '
       read(12,*) NMOLdim
-      allocate(cmol(NMOLdim),fit(NMOLdim),natom(NMOLdim),a(NMOLdim,0:4))
+      allocate(cmol(NMOLdim),fit(NMOLdim),natom(NMOLdim),a(NMOLdim,0:7))
       allocate(m_kind(0:6,NMOLdim),m_anz(6,NMOLdim))
       cel(:) = '.'
       read(elements,*,end=100) cel
@@ -84,11 +84,18 @@
       enddo
       i=1
       do ii=1,NMOLdim
-        read(12,'(A100)',end=200) line
-        read(line,'(A10)') cmol(i)
-        line = line(11:)
-        read(line,*) iel,cel(1:iel),m_anz(1:iel,i)
-        read(12,*) fit(i),(a(i,j),j=0,4)
+        !read(12,'(A200)',end=200) line
+        !read(line,'(A10)') cmol(i)
+        !line = line(11:)
+        read(12,*) cmol(i),iel,cel(1:iel),m_anz(1:iel,i)
+        read(12,'(A200)') line
+        read(line,*) fit(i)
+        print*,trim(line),fit(i)
+        if (fit(i)==6) then
+          read(line,*) fit(i),(a(i,j),j=0,7)
+        else   
+          read(line,*) fit(i),(a(i,j),j=0,4)
+        endif  
         m_kind(0,i) = iel
         natom(i) = 0
         found = .true.
