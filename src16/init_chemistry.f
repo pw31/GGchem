@@ -84,10 +84,10 @@
       enddo
       i=1
       do ii=1,NMOLdim
-        read(12,'(A200)',end=200) line
-        read(line,'(A10)') cmol(i)
-        line = line(11:)
-        read(line,*) iel,cel(1:iel),m_anz(1:iel,i)
+        !read(12,'(A200)',end=200) line
+        !read(line,'(A10)') cmol(i)
+        !line = line(11:)
+        read(12,*) cmol(i),iel,cel(1:iel),m_anz(1:iel,i)
         read(12,'(A200)') line
         read(line,*) fit(i)
         print*,trim(line),fit(i)
