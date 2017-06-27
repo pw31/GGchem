@@ -33,7 +33,7 @@
       T2 = 100
       print*,"start and end p [bar] (any)"
       !read*,p1,p2
-      p1 = 1000*bar
+      p1 = 10000*bar
       p2 = 1E-12*bar
       mu = 2.3*amu
 

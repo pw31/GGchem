@@ -168,7 +168,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        !if (qread>1.Q-3.and.iread==307) verbose=2
+        !if (qread>1.Q-3.and.iread==6315) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -1519,6 +1519,16 @@
           Iindex(Nact) = S
         endif   
         if (active(iFeS).and.e_act(Fe).and.e_act(S).and.
+     >      e_num(Fe)==1.and.e_num(S)==1) then
+          print*,"... exchanging S for "//elnam(Iindex(Nact+1))
+          do i=1,Nind
+            if (Iindex(i)==S) exit
+          enddo  
+          e_act(S) = .false.
+          e_act(Iindex(Nact+1)) = .true.
+          Iindex(i) = Iindex(Nact+1)
+        endif
+        if (active(iFeS_l).and.e_act(Fe).and.e_act(S).and.
      >      e_num(Fe)==1.and.e_num(S)==1) then
           print*,"... exchanging S for "//elnam(Iindex(Nact+1))
           do i=1,Nind
