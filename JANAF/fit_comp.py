@@ -36,11 +36,11 @@ def stock(T,A,B,C,D,E):
     return val
 
 tmin = 50
-tmax = 12000
+tmax = 6000
 temp = np.arange(tmin,tmax,1)
 
-line1 = lines[77]
-line2 = lines[81]
+line1 = lines[143]
+line2 = lines[148]
 print line1
 print line2
 data1 = line1.split()
