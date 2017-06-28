@@ -223,12 +223,12 @@ plt.savefig(pp,format='pdf')
 plt.clf()
 
 #================== where are the elements? ================
-ellist = ['H','C','O','N','SI','S','NA','CL','CA','TI','K','AL','MG','FE','LI','el']
-allist = [' ',' ',' ',' ','Si',' ','Na','Cl','Ca','Ti',' ','Al','Mg','Fe','Li','+']
-exlist = [' He ',' Cl CL Ca CA Cr ',' ',' Na NA Ni ',' ',' Si SI ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']
-titels = ['hydrogen','carbon','oxygen','nitrogen','silicon','sulphur','sodium','chlorine','calcium','titanium','potassium','aluminum','magnesium','iron','lithium','charge carriers']
-limits = [2,5,2.5,6,6,5,6,4,7,8,6,6,6,6,7,5]   
-for i in range(0,16):
+ellist = ['H','C','O','N','SI','S','NA','CL','CA','TI','K','AL','MG','FE','LI','F','P','NI','el']
+allist = [' ',' ',' ',' ','Si',' ','Na','Cl','Ca','Ti',' ','Al','Mg','Fe','Li',' ',' ','Ni','+']
+exlist = [' He ',' Cl CL Ca CA Cr ',' ',' Na NA Ni NI ',' ',' Si SI ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' Fe FE ',' ',' ',' ']
+titels = ['hydrogen','carbon','oxygen','nitrogen','silicon','sulphur','sodium','chlorine','calcium','titanium','potassium','aluminum','magnesium','iron','lithium','fluorine','phosphorus','nickel','charge carriers']
+limits = [2,5,2.5,6,6,5,6,4,7,8,6,6,6,6,7,6,6,6,5]   
+for i in range(0,19):
   fig,ax = plt.subplots()
   el = ellist[i]
   al = allist[i]
@@ -259,6 +259,7 @@ for i in range(0,16):
         if (molname=='el'): nmin = np.min([nmin,np.min(yy[iii])])
         mollist.append(mol)   
         abulist.append(np.mean(yy))
+  if (nmax==-100): continue
   indices = np.argsort(abulist)
   count = 0
   maxy = np.log10(maxy)
