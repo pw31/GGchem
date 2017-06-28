@@ -1693,6 +1693,13 @@ c     g(TiC)   : siehe oben!
         dG  = a(i,0)/TT1 + a(i,1) + a(i,2)*TT1 + a(i,3)*TT2 + a(i,4)*TT3
         lnk = -dG/(Rgas*TT1) + (1-Natom(i))*lnbar
          
+      else if (fit(i).eq.6) then
+        !-------------------------------
+        ! ***  Barklem & Collet fit  ***
+        !-------------------------------
+        lnk = a(i,0)/TT3 + a(i,1)/TT2 + a(i,2)/TT1 + a(i,3)/TT1**0.05d0
+     &      + a(i,4)*LOG(TT1) + a(i,5) + a(i,6)*TT1 + a(i,7)*TT2
+         
       else
         print*,cmol(i),"i,fit=",i,fit(i)
         stop "???"
