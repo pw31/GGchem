@@ -39,7 +39,7 @@ nHmin = nHmin*0.9
 nHmax = nHmax*1.1
 Tmin  = np.min(Tg)
 Tmax  = np.max(Tg)
-#Tmax  = 4000.0
+#Tmin  = 800.0
 #if (Tmax>4*Tmin): Tmax=4*Tmin
 #if (Tmin<Tmax/3): Tmin=Tmax/3
 sep = 20
@@ -49,6 +49,9 @@ Tmax  = Tmax*1.05
 
 file   = 'TEAoutOrich/results/TEAoutOrich.tea'
 #file   = 'TEAoutCrich/results/TEAoutCrich.tea'
+#file   = 'TEAoutEarthCrust/results/TEAoutEarthCrust.tea'
+#file   = 'TEAoutOcean/results/TEAoutOcean.tea'
+#file   = 'TEAoutMeteorites/results/TEAoutMeteorites.tea'
 data   = open(file)
 dum    = data.readline()
 dum    = data.readline()
@@ -146,6 +149,8 @@ plt.plot(T_tea,np.log10(nH2_tea)  ,c='lightgray',lw=1)
 plt.plot(T_tea,np.log10(nHe_tea)  ,c='lightgray',lw=1)
 plt.plot(T_tea,np.log10(nCO_tea)  ,c='lightgray',lw=1)
 plt.plot(T_tea,np.log10(nH2O_tea) ,c='lightgray',lw=1)
+plt.plot(T_tea,np.log10(nO2_tea)  ,c='lightgray',lw=1)
+plt.plot(T_tea,np.log10(nCO2_tea) ,c='lightgray',lw=1)
 plt.plot(T_tea,np.log10(nCH4_tea) ,c='lightgray',lw=1)
 plt.plot(T_tea,np.log10(nN2_tea)  ,c='lightgray',lw=1)
 plt.plot(T_tea,np.log10(nNH3_tea) ,c='lightgray',lw=1)

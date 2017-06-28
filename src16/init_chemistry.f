@@ -1,6 +1,7 @@
 ************************************************************************
       subroutine INIT_CHEMISTRY
 ************************************************************************
+      use PARAMETERS,ONLY: elements
       use CHEMISTRY,ONLY: NMOLdim,NMOLE,NELM,catm,cmol,fit,natom,a,
      &    m_kind,m_anz,elnum,elion,charge,
      &    el,H,He,Li,Be,B,C,N,O,F,Ne,Na,Mg,Al,Si,P,S,Cl,Ar,K,Ca,
@@ -9,14 +10,12 @@
       implicit none
       integer :: i,ii,j,iel,e
       character(len=2) :: cel(40),elnam
-      character(len=200) :: line,elements
+      character(len=200) :: line
       logical :: found,allfound
 
       open(unit=12, file='dispol_new.dat', status='old')
       write(*,*)
       write(*,*) 'reading molecules and kp-data from dispol_new.dat'
-      read(12,'(A200)') elements
-      elements = ' '//trim(elements)//' '
       read(12,*) NMOLdim
       allocate(cmol(NMOLdim),fit(NMOLdim),natom(NMOLdim),a(NMOLdim,0:7))
       allocate(m_kind(0:6,NMOLdim),m_anz(6,NMOLdim))
@@ -90,7 +89,7 @@
         read(12,*) cmol(i),iel,cel(1:iel),m_anz(1:iel,i)
         read(12,'(A200)') line
         read(line,*) fit(i)
-        print*,trim(line),fit(i)
+        !print*,trim(line),fit(i)
         if (fit(i)==6) then
           read(line,*) fit(i),(a(i,j),j=0,7)
         else   

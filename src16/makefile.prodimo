@@ -21,6 +21,7 @@ EXECS     = ggchem16
 
 OBJECTS  = datamod.o \
            database.o \
+           read_parameter.o \
            demo_sweep.o \
            demo_structure.o \
 	   demo_phasediagram.o \

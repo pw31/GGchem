@@ -27,7 +27,7 @@
       verb = verbose
       mk = merk
 
-      if (Tg<700.d0) then
+      if (Tg<750.0) then
         call SMCHEM16(nHges, Tg, epsi, anmono, nmol, mk, verb)
       else
         epsi8 = epsi

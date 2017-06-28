@@ -1,15 +1,27 @@
 ***********************************************************************
       PROGRAM EQ_CHEMISTRY
 ***********************************************************************
+      use PARAMETERS,ONLY: model_dim,model_struc
       use EXCHANGE,ONLY: chemcall,chemiter,ieqcond,itransform
 
+      call READ_PARAMETER
       call INIT
       call INIT_CHEMISTRY
       call INIT_DUSTCHEM
-      !call DEMO_CHEMISTRY
-      call DEMO_SWEEP
-      !call DEMO_STRUCTURE
-      !call DEMO_PHASEDIAGRAM
+      if (model_dim==0) then
+        call DEMO_CHEMISTRY
+      else if (model_dim==1) then  
+        if (.not.model_struc) then 
+          call DEMO_SWEEP
+        else  
+          call DEMO_STRUCTURE
+        endif 
+      else if (model_dim==2) then  
+        call DEMO_PHASEDIAGRAM
+      else
+        print*,'*** model_dim=',model_dim,' ???'
+        stop
+      endif   
       
       print*
       print'("         smchem calls = ",I7)',chemcall
@@ -25,6 +37,7 @@
 ***********************************************************************
       SUBROUTINE DEMO_CHEMISTRY
 ***********************************************************************
+      use PARAMETERS,ONLY: nHmax,Tmax,model_eqcond
       use CHEMISTRY,ONLY: NMOLE,NELM,m_kind,elnum,cmol,el
       use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,
      >                    dust_nam,dust_mass,dust_Vol
@@ -40,18 +53,15 @@
       character(len=10) :: sp
       character(len=2),external :: upper
 
-   10 continue
-      write(*,*)
-      write(*,*)
-      write(*,*) 'Eingabe von Tgas [K], nHtot [cm^-3]'
-      read (*,*) Tg, nHges
-      eps = eps0
+      Tg    = Tmax
+      nHges = nHmax
+      eps   = eps0
       verbose = 0
 
-*     ------------------------------------------------
-      call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
+*     ------------------------------------------------------------------
+      if (model_eqcond) call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
       call GGCHEM(nHges,Tg,eps,.false.,verbose)
-*     ------------------------------------------------
+*     ------------------------------------------------------------------
 
       write(*,*) '----- total particle densities -----'
       do e=1,NELM
@@ -146,8 +156,6 @@
       do i=1,NDUST
         write(*,5000) dust_nam(i),Sat(i) 
       enddo  
-
-      if (.true.) goto 10
 
  1000 format(a6,1pE9.3)
  1010 format(a6,1pE9.3,a8,1pE9.3)
