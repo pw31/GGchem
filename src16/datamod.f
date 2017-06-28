@@ -1,4 +1,13 @@
 ************************************************************************
+      module PARAMETERS
+************************************************************************
+      character(len=200) :: elements
+      integer :: abund_pick,model_dim,Npoints
+      logical :: model_eqcond,model_pconst,model_struc
+      real*8  :: Tmin,Tmax,pmin,pmax,nHmin,nHmax 
+      end
+
+************************************************************************
       module DUST_DATA
 ************************************************************************
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )

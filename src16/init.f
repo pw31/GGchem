@@ -10,12 +10,13 @@
 *****   - wie in Tsuji-Chemie                                    *****
 *****                                                            *****
 **********************************************************************
+      use PARAMETERS,ONLY: abund_pick
       use DUST_DATA,ONLY: NELEM,eps=>eps0,mass,muH,elnam,amu
       use EXCHANGE,ONLY: H,He,Li,Be,B,C,N,O,F,Ne,Na,Mg,Al,Si,P,S,Cl,
      >                   Ar,K,Ca,Sc,Ti,V,Cr,Mn,Fe,Co,Ni,Cu,Zn,Ga,Ge,
      >                   As,Se,Br,Kr,Rb,Sr,Y,Zr
       implicit none
-      integer :: i,nr,pick
+      integer :: i,nr
       real*8 :: m,abund(NELEM,4)
       character(len=2) :: el
       character(len=20) :: elname
@@ -228,46 +229,38 @@
       !  endif
       !enddo
 
-      muH = 0.d0
       do i=1,NELEM
         eps(i) = 10.d0 ** (eps(i)-12.d0)
-        if (elnam(i).ne.'  ') then
-          write(*,'(1x,a2,1x,0pF8.3,1pE12.4,0pF8.3)') 
-     &          elnam(i),12.d0+LOG10(eps(i)),eps(i),mass(i)/amu
-        endif  
-        muH = muH + mass(i)*eps(i)
       enddo
-      write(*,'("rho = n<H> *",0pF12.4," amu")') muH/amu
-
+  
 *     ------------------------------------
 *     ***  read abundances from file?  ***      
 *     ------------------------------------
-      if (.false.) then
+      if (abund_pick.ne.3) then
         source = (/'EarthCrust','Ocean','Solar','Meteorites'/)
-        pick = 1
         write(*,*)
         write(*,*) "replacing from file Abundances.dat ("
-     &             //trim(source(pick))//") ..."
+     &             //trim(source(abund_pick))//") ..."
         open(1,file='Abundances.dat',status='old')
         do i=1,5
           read(1,'(A200)') line
         enddo  
         do i=1,NELEM
           read(1,*) nr,elname,el,m,abund(nr,1:4)
-          !print*,nr,el,real(eps(nr)),abund(nr,pick)/abund(1,pick)
           mass(nr)  = m*amu
           elnam(nr) = el
-          eps(nr) = MAX(1.e-99,abund(nr,pick)/abund(1,pick))
+          eps(nr) = MAX(1.e-99,abund(nr,abund_pick)/abund(1,abund_pick))
         enddo  
         close(1)
-        muH = 0.d0
-        do i=1,NELEM
-          write(*,'(1x,a2,1x,0pF8.3,1pE12.4,0pF8.3)') 
-     &          elnam(i),12.d0+LOG10(eps(i)),eps(i),mass(i)/amu
-          muH = muH + mass(i)*eps(i)
-        enddo
-        write(*,'("rho = n<H> *",0pF12.4," amu")') muH/amu
       endif  
+
+      muH = 0.d0
+      do i=1,NELEM
+        write(*,'(1x,a2,1x,0pF8.3,1pE12.4,0pF8.3)') 
+     &          elnam(i),12.d0+LOG10(eps(i)),eps(i),mass(i)/amu
+        muH = muH + mass(i)*eps(i)
+      enddo
+      write(*,'("rho = n<H> *",0pF12.4," amu")') muH/amu
 
       RETURN
       end

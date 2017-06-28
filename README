@@ -3,13 +3,13 @@
 =====================
 (c) Peter Woitke & Christiane Helling 2017
 
-Fast thermo-chemical equilibrium code with or without 
-equilibrium condensation down to 100K. 
+Fast thermo-chemical equilibrium code with or without equilibrium
+condensation down to 100K.
 
 Many thanks to the following St Andrews' students:
 George Turner, Glen Hunter, Megan Worters, Drew Millard.
 
----------------------------------------------------------
+----------------------------------------------------------------------
 To checkout the git repository and compile the code, use 
 
 > git clone https://github.com/pw31/GGchem
@@ -17,69 +17,76 @@ To checkout the git repository and compile the code, use
 > cp makefile.prodimo makefile
 > make
 
-The makefile.prodimo is for ifort compiler, adjust your
-own makfile if you want to compile e.g. with gfortran.
+The makefile.prodimo is for ifort compiler, adjust your own makfile if
+you want to compile e.g. with gfortran.
 
----------------------------------------------------------
+----------------------------------------------------------------------
 To run the code, type
 
 > cd ..
-> ./ggchem16
+> cp default.in MyModel.in
+> ./ggchem MyModel.in
 
-It will create the output file "Static_Conc.dat", which
-contains all computed molecular, atom and ion particle 
-densities, the electron density, solid and liquid 
-particle densities, and supersaturation ratios.
+It will create the output file "Static_Conc.dat", which contains all
+computed molecular, atom and ion particle densities, the electron
+density, solid and liquid particle densities, and supersaturation
+ratios.
 
----------------------------------------------------------
+----------------------------------------------------------------------
 To visualise the results, use e.g.
 
 > python Plot_T.py
-> evince ggchem.pdf
+> evince ggchem.pdf &
 
----------------------------------------------------------
-Customize main.f and e.g. demo_sweep.f in folder src16 
-to tell GGchem what it should do, e.g. set pressure and 
-temperature range for a linear track in (logp, logT) 
-parameter space.
+----------------------------------------------------------------------
+Customize MyModel.in to tell GGchem what it should do.  Select or
+deselect elements by modifying the first line, default choice is
 
-Change init.f to use different element abundances. The 
-default are solar abundances from Asplund et al.(2009). 
-There are additional pre-installed options to use data for 
-"Abundances.dat", including "EarthCrust", "Ocean" and 
-"Meteorites" as listed in "Abundances.dat".
+ H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li el
 
----------------------------------------------------------
-Select or deselect elements by modifying the first line 
-of "dispol_new.dat", default choice is 
-"H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li el",
-where "el" means to include atomic and molecular ions,
-and the electron density as well, assuming charge equilibrium. 
-Molecules listed below are included if they are made 
-of the selected elements, otherwise they will be ignored. 
+where "el" means to include atomic and molecular ions, and the
+electron density as well, assuming charge equilibrium.  Molecules
+listed below are included if they are made of the selected elements,
+otherwise they will be ignored.
 
----------------------------------------------------------
-If you want to switch on equilibrium condensation,
-call EQUIL_COND() before GGCHEM(), see e.g. demo_sweep.f.
-In that mode, the code will be much slower, and also
-possibly unstable. Always start from large T and then 
-lower T SLOWLY with successive calls. The code will create 
-and expand "database.dat" automatically from the results 
-of every successful call, such that once you have filled 
-in the (p,T)-plane with many points, the results will be 
-faster and more reliable.
+----------------------------------------------------------------------
+Choose element abundances with parameter abund_pick. The default
+choice is abund_pick=3 for solar abundances from Asplund et
+al.(2009). There are additional pre-installed options to use data from
+"Abundances.dat", including "EarthCrust" (abund_pick=1), "Ocean"
+(abund_pick=2) and "Meteorites" (abund_pick=4) as listed in
+"Abundances.dat".  If you want any other element abundances, change
+src16/init.f.
 
----------------------------------------------------------
-The pure gas phase chemistry needs about 0.4 ms per call
-for T > 700 K (real*8 version) and about 3 ms per call 
-for T < 700 K (real*16 version). These time measurements
-are for 16 elements + charge. Time requirement roughly
-scale as N^3, if N is the number of elements.
+----------------------------------------------------------------------
+Choose whether you want to contrain the pressure (model_pconst=.true.)
+or the mass density (model_pconst=.false.).
 
-The equilibrium condensation code requires many calls 
-of the gas-phase equilibrium chemistry routine, and 
-takes about 0.02-0.09 sec per call, depending on how
-much useful information is found in database.dat.
+----------------------------------------------------------------------
+You can run single point model (model_dim=0), linear track
+(model_dim=1) or 2D coverage (model_dim=2). Set parameters Tmin, Tmax
+and then pmax, pmin or nHmax, nHmin for model_pconst=.true. or
+.false., respectively. In the default model_dim=1 mode, ggchem will
+make a linear track in (logp, logT) parameter space with Npoints
+points.
+
+----------------------------------------------------------------------
+If you want to switch on equilibrium condensation, set
+model_eqcond=.true. In that mode, the code will be much slower, and
+also possibly unstable. Always start from large T and then lower T
+SLOWLY with successive calls. The code will create and expand
+"database.dat" automatically from the results of every successful
+call, such that once you have filled in the (p,T)-plane with many
+points, the results will be faster and more reliable.
+
+----------------------------------------------------------------------
+The pure gas phase chemistry needs about 0.4 ms per call for T > 750 K
+(real*8 version) and about 3 ms per call for T < 750 K (real*16
+version). These time measurements are for 16 elements + charge. Time
+requirement roughly scale as N^3, if N is the number of elements.
+The equilibrium condensation code requires many calls of the gas-phase
+equilibrium chemistry routine, and takes about 0.02-0.09 sec per call,
+depending on how much useful information is found in database.dat.
  
 
 
