@@ -65,7 +65,7 @@
       write(*,*) '46 = SiCl3'
       write(*,*) '47 = SiCl4'
       write(*,*) '48 = N+'
-      write(*,*) '49 = AlCl3_cr'
+      write(*,*) '49 = AlCl3[s]'
       write(*,*) '50 = HCO'
       write(*,*) '51 = NH2'
       write(*,*) '52 = NH'
@@ -213,7 +213,7 @@
       write(*,*) '194 = C5'
       write(*,*) '195 = S2O'
       write(*,*) '196 = FeO[l]'
-      write(*,*) '197 = FeO[cr]'
+      write(*,*) '197 = FeO[s]'
       write(*,*) '198 = SiO2[s] pvap'
       write(*,*) '199 = SiO2[l] pvap'
       write(*,*) '200 = FeS[s] pvap'
@@ -228,6 +228,15 @@
       write(*,*) '209 = CaCl2[s] pvap'
       write(*,*) '210 = CaCl2[l] pvap'
       write(*,*) '211 = CaCl2[s]'
+      write(*,*) '212 = FeO'
+      write(*,*) '213 = FeO[s] pvap'
+      write(*,*) '214 = FeO[l] pvap'
+      write(*,*) '215 = MgTi2O5[s]'
+      write(*,*) '216 = MgTi2O5[l]'
+      write(*,*) '217 = MgO[s] pvap'
+      write(*,*) '218 = MgO[l] pvap'
+      write(*,*) '219 = AlCl3[s] pvap'
+      write(*,*) '220 = AlCl3[l] pvap'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -1785,6 +1794,61 @@
         Edzahl = 2
         stoich(2) = 1.D0
         stoich(3) = 2.D0
+      elseif (specie.eq.212) then
+        call READ_DATEI('FeO.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Fe.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('O.txt'   ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 1.D0
+      elseif (specie.eq.213) then
+        call READ_DATEI('FeO_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('FeO.txt'   ,dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.214) then
+        call READ_DATEI('FeO_l.txt' ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('FeO.txt'   ,dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.215) then
+        call READ_DATEI('MgTi2O5_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Mg.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('Ti.txt'    ,dG,T,Nmax,N,S,3) 
+        call READ_DATEI('O.txt'   ,dG,T,Nmax,N,S,4) 
+        Edzahl = 3
+        stoich(2) = 1.D0
+        stoich(3) = 2.D0
+        stoich(4) = 5.D0
+      elseif (specie.eq.216) then
+        call READ_DATEI('MgTi2O5_l.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Mg.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('Ti.txt'    ,dG,T,Nmax,N,S,3) 
+        call READ_DATEI('O.txt'   ,dG,T,Nmax,N,S,4) 
+        Edzahl = 3
+        stoich(2) = 1.D0
+        stoich(3) = 2.D0
+        stoich(4) = 5.D0
+      elseif (specie.eq.217) then
+        call READ_DATEI('MgO_cr.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('MgO.txt'   ,dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.218) then
+        call READ_DATEI('MgO_l.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('MgO.txt'   ,dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.219) then
+        call READ_DATEI('AlCl3_cr.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('AlCl3.txt'   ,dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.220) then
+        call READ_DATEI('AlCl3_l.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('AlCl3.txt'   ,dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop
