@@ -39,8 +39,8 @@ tmin = 50
 tmax = 6000
 temp = np.arange(tmin,tmax,1)
 
-line1 = lines[143]
-line2 = lines[148]
+line1 = lines[176]
+line2 = lines[181]
 print line1
 print line2
 data1 = line1.split()

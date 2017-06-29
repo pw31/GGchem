@@ -41,7 +41,7 @@ if (Tmax-Tmin>1500): sep=100
 if (Tmax-Tmin<500): sep=10
 Tmin  = Tmin*0.95
 Tmax  = Tmax*1.1
-styl  = ['-','-','-','-','-','-','-','--','--','--','--','--','--','--',':',':',':',':',':',':',':','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.']
+styl  = ['-','-','-','-','-','-','-','-','-','-','--','--','--','--','--','--','--','--','--','--',':',':',':',':',':',':',':',':',':',':','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.']
 widt  = [ 2 , 2 , 2 , 2 , 2 , 2 , 2 ,  2 ,  2 ,  2 ,  2 ,  2 ,  2 ,  2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  ]
 
 #================== temperature-pressure structure ====================
@@ -125,7 +125,7 @@ if (nmax>-99):
   plt.tick_params('both', length=3, width=1, which='minor')
   minorLocator = MultipleLocator(sep)
   ax.xaxis.set_minor_locator(minorLocator)
-  plt.legend(loc='lower right',fontsize=9,fancybox=True)
+  plt.legend(loc='lower right',fontsize=9,fancybox=True,prop={'size':4})
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
   plt.clf()
@@ -154,7 +154,7 @@ if (nmax>-99):
   plt.tick_params('both', length=3, width=1, which='minor')
   minorLocator = MultipleLocator(sep)
   ax.xaxis.set_minor_locator(minorLocator)
-  plt.legend(loc='lower right',fontsize=6,fancybox=True)
+  plt.legend(loc='lower right',fontsize=6,fancybox=True,prop={'size':4})
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
   plt.clf()
@@ -180,7 +180,7 @@ if (nmax>-99):
   plt.tick_params(axis='both', labelsize=14)
   plt.tick_params('both', length=6, width=1.5, which='major')
   plt.tick_params('both', length=3, width=1, which='minor')
-  plt.legend(loc='lower right',fontsize=7,fancybox=True)
+  plt.legend(loc='lower right',fontsize=7,fancybox=True,prop={'size':4})
   minorLocator = MultipleLocator(sep)
   ax.xaxis.set_minor_locator(minorLocator)
   plt.tight_layout()
