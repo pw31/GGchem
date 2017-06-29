@@ -225,7 +225,7 @@ plt.clf()
 #================== where are the elements? ================
 ellist = ['H','C','O','N','SI','S','NA','CL','CA','TI','K','AL','MG','FE','LI','F','P','NI','MN','el']
 allist = [' ',' ',' ',' ','Si',' ','Na','Cl','Ca','Ti',' ','Al','Mg','Fe','Li',' ',' ','Ni','Mn','+']
-exlist = [' He ',' Cl CL Ca CA Cr ',' ',' Na NA Ni NI ',' ',' Si SI ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' Fe FE ',' ',' ',' ',' ']
+exlist = [' He ',' Cl CL Ca CA Cr ',' ',' Na NA Ni NI Mn MN ',' ',' Si SI ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' Fe FE ',' ',' ',' ',' ']
 titels = ['hydrogen','carbon','oxygen','nitrogen','silicon','sulphur','sodium','chlorine','calcium','titanium','potassium','aluminum','magnesium','iron','lithium','fluorine','phosphorus','nickel','manganese','charge carriers']
 limits = [2,5,2.5,6,6,5,6,4,7,8,6,6,6,6,7,6,6,6,6,5]   
 for i in range(0,20):
@@ -285,7 +285,7 @@ for i in range(0,20):
   plt.tick_params('both', length=3, width=1, which='minor')
   #minorLocator = MultipleLocator(sep)
   #ax.xaxis.set_minor_locator(minorLocator)
-  plt.legend(loc='lower left',fontsize=10,fancybox=True)
+  plt.legend(loc='lower left',fontsize=10,fancybox=True,prop={'size':6})
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
   plt.clf()
