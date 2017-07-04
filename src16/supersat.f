@@ -15,7 +15,7 @@
       real(kind=qp) :: TT,kT,dG,lbruch,lresult,pst,psat,term,ex,TC,S2
       integer :: i,j,STINDEX,el
       integer,save :: TiO2,SiO,H2O,NH3,CH4,SiO2,CaCl2,H2SO4,FeS,NaCl
-      integer,save :: KCl,FeO,MgO,AlCl3,LiCl
+      integer,save :: KCl,FeO,MgO,AlCl3,LiCl,TiO,LiOH,LiH
       logical,save :: firstCall=.true.
 *
       if (firstCall) then
@@ -32,8 +32,11 @@
         KCl   = STINDEX(cmol,NMOLE,'KCL      ')
         FeO   = STINDEX(cmol,NMOLE,'FEO      ')
         MgO   = STINDEX(cmol,NMOLE,'MGO      ')
-        AlCl3 = STINDEX(cmol,NMOLE,'ALCL3    ')
+        !AlCl3 = STINDEX(cmol,NMOLE,'ALCL3    ')
         LiCl  = STINDEX(cmol,NMOLE,'LICL     ')
+        TiO   = STINDEX(cmol,NMOLE,'TIO      ')
+        LiOH  = STINDEX(cmol,NMOLE,'LIOH     ')
+        LiH   = STINDEX(cmol,NMOLE,'LIH      ')
         firstCall=.false.
       endif    
       TT  = MAX(T,100.Q0)
@@ -596,7 +599,7 @@
 
         else if (dust_nam(i).eq.'S[l]') then 
           !--------------------------------------
-          !***  S[s]: eigener Fit nach JANAF  ***
+          !***  S[l]: eigener Fit nach JANAF  ***
           !--------------------------------------
           pst = bar
           psat = EXP(-3.32601Q+04/TT     !fit_set
@@ -932,19 +935,50 @@
           !-----------------------------------------
           !***  SiS2[s]: eigener Fit nach JANAF  ***
           !-----------------------------------------
+          !pst = bar
+          !dG  =-3.51195Q+05/TT
+     &    !     -1.21550Q+06
+     &    !     +4.25005Q+02*TT
+     &    !     -9.59678Q-03*TT**2
+          !dG = dG/(rgas*TT)
+          !lbruch = 0.Q0
+          !do j=1,dust_nel(i)
+          !  el     = dust_el(i,j)
+          !  term   = nat(el)*kT/pst
+          !  lbruch = lbruch + LOG(term)*dust_nu(i,j)
+          !enddo
+          !Sat(i) = EXP(lbruch-dG)
           pst = bar
-          dG  =-3.51195Q+05/TT
-     &         -1.21550Q+06
-     &         +4.25005Q+02*TT
-     &         -9.59678Q-03*TT**2
-          dG = dG/(rgas*TT)
+          dG  = 1.46212Q+05/TT      !fit_set
+     &         -1.46678Q+00*LOG(TT) 
+     &         -4.28998Q+01
+     &         +3.52621Q-03*TT 
+     &         -4.57648Q-07*TT**2
           lbruch = 0.Q0
           do j=1,dust_nel(i)
             el     = dust_el(i,j)
             term   = nat(el)*kT/pst
             lbruch = lbruch + LOG(term)*dust_nu(i,j)
           enddo
-          Sat(i) = EXP(lbruch-dG)
+          Sat(i) = EXP(lbruch+dG)
+
+        else if (dust_nam(i).eq.'SiS2[l]') then
+          !------------------------------------------
+          !***  SiS2[l]: George's Fit nach JANAF  ***
+          !------------------------------------------
+          pst = bar
+          dG  = 1.45449Q+05/TT      !fit_set
+     &         -1.48849Q+00*LOG(TT) 
+     &         -4.23224Q+01
+     &         +3.61598Q-03*TT 
+     &         -4.50338Q-07*TT**2
+          lbruch = 0.Q0
+          do j=1,dust_nel(i)
+            el     = dust_el(i,j)
+            term   = nat(el)*kT/pst
+            lbruch = lbruch + LOG(term)*dust_nu(i,j)
+          enddo
+          Sat(i) = EXP(lbruch+dG)
 
         else if (dust_nam(i).eq.'SiC[s]') then
           !----------------------------------------
@@ -969,20 +1003,51 @@
           !----------------------------------------
           !***  TiC[s]: eigener Fit nach JANAF  ***
           !----------------------------------------
+          !pst = bar
+          !dG =  +1.11878Q+5/TT
+     &    !      -1.37612Q+6
+     &    !      +3.20666Q+2*TT
+     &    !      -4.63379Q-3*TT**2
+     &    !      +1.85306Q-7*TT**3
+          !dG = dG/(rgas*TT)
+          !lbruch = 0.Q0
+          !do j=1,dust_nel(i)
+          !  el     = dust_el(i,j)
+          !  term   = nat(el)*kT/pst
+          !  lbruch = lbruch + LOG(term)*dust_nu(i,j)
+          !enddo
+          !Sat(i) = EXP(lbruch-dG)
           pst = bar
-          dG =  +1.11878Q+5/TT
-     &          -1.37612Q+6
-     &          +3.20666Q+2*TT
-     &          -4.63379Q-3*TT**2
-     &          +1.85306Q-7*TT**3
-          dG = dG/(rgas*TT)
+          dG  = 7.89175Q+04/TT      !fit_set
+     &         -7.59983Q-01*LOG(TT) 
+     &         -1.48812Q+01
+     &         +1.35371Q-03*TT 
+     &         -1.31930Q-07*TT**2
           lbruch = 0.Q0
           do j=1,dust_nel(i)
             el     = dust_el(i,j)
             term   = nat(el)*kT/pst
             lbruch = lbruch + LOG(term)*dust_nu(i,j)
           enddo
-          Sat(i) = EXP(lbruch-dG)
+          Sat(i) = EXP(lbruch+dG)
+
+        else if (dust_nam(i).eq.'TiC[l]') then
+          !----------------------------------------
+          !***  TiC[l]: eigener Fit nach JANAF  ***
+          !----------------------------------------
+          pst = bar
+          dG  = 6.96978Q+04/TT      !fit_set
+     &         -9.44221Q-01*LOG(TT) 
+     &         -1.07615Q+01
+     &         +1.41626Q-03*TT 
+     &         -1.34707Q-07*TT**2
+          lbruch = 0.Q0
+          do j=1,dust_nel(i)
+            el     = dust_el(i,j)
+            term   = nat(el)*kT/pst
+            lbruch = lbruch + LOG(term)*dust_nu(i,j)
+          enddo
+          Sat(i) = EXP(lbruch+dG)
 
         else if (dust_nam(i).eq.'H2O[l]') then
           !----------------------------------------
@@ -1103,37 +1168,50 @@
           !*** AlCl3[s]: eigener Fit nach JANAF ***
           !----------------------------------------
           pst = bar
-          !dG = 4.17188Q+05/TT 
-     &    !    -1.40425Q+06  
-     &    !    +5.68472Q+02*TT 
-     &    !    -1.79150Q-02*TT**2
-     &    !    -4.81449Q-06*TT**3
-          !dG = dG/(rgas*TT)
-          !lbruch = 0.Q0
-          !do j=1,dust_nel(i)
-          !  el     = dust_el(i,j)
-          !  term   = nat(el)*kT/pst
-          !  lbruch = lbruch + LOG(term)*dust_nu(i,j)
-          !enddo
-          !Sat(i) = EXP(lbruch-dG)
-          psat = EXP( -1.49010Q+04/TT    !fit_set
-     &                +4.07301Q+01
-     &                -3.64958Q-03*TT 
-     &                -2.95869Q-08*TT**2  
-     &                -7.88175Q-11*TT**3 )
-          Sat(i) = nmol(AlCl3)*kT/psat
+          dG = 4.17188Q+05/TT 
+     &        -1.40425Q+06  
+     &        +5.68472Q+02*TT 
+     &        -1.79150Q-02*TT**2
+     &        -4.81449Q-06*TT**3
+          dG = dG/(rgas*TT)
+          lbruch = 0.Q0
+          do j=1,dust_nel(i)
+            el     = dust_el(i,j)
+            term   = nat(el)*kT/pst
+            lbruch = lbruch + LOG(term)*dust_nu(i,j)
+          enddo
+          Sat(i) = EXP(lbruch-dG)
+          !psat = EXP( -1.49010Q+04/TT    !fit_set
+     &    !            +4.07301Q+01
+     &    !            -3.64958Q-03*TT 
+     &    !            -2.95869Q-08*TT**2  
+     &    !            -7.88175Q-11*TT**3 )
+          !Sat(i) = nmol(AlCl3)*kT/psat
 
         else if (dust_nam(i).eq.'AlCl3[l]') then
           !----------------------------------------
           !*** AlCl3[s]: eigener Fit nach JANAF ***
           !----------------------------------------
           pst = bar
-          psat = EXP( -1.15857Q+04/TT    !fit_set
-     &                +3.65148Q+01
-     &                -1.22410Q-02*TT 
-     &                +5.42405Q-06*TT**2  
-     &                -1.08780Q-09*TT**3 )
-          Sat(i) = nmol(AlCl3)*kT/psat
+          dG =-1.51097Q+06/TT 
+     &        -1.36116Q+06 
+     &        +4.88316Q+02*TT 
+     &        -2.96109Q-02*TT**2
+     &        +3.95859Q-06*TT**3
+          dG = dG/(rgas*TT)
+          lbruch = 0.Q0
+          do j=1,dust_nel(i)
+            el     = dust_el(i,j)
+            term   = nat(el)*kT/pst
+            lbruch = lbruch + LOG(term)*dust_nu(i,j)
+          enddo
+          Sat(i) = EXP(lbruch-dG)
+          !psat = EXP( -1.15857Q+04/TT    !fit_set
+     &    !            +3.65148Q+01
+     &    !            -1.22410Q-02*TT 
+     &    !            +5.42405Q-06*TT**2  
+     &    !            -1.08780Q-09*TT**3 )
+          !Sat(i) = nmol(AlCl3)*kT/psat
 
 	else if (dust_nam(i).eq.'Fe[l]') then
           !---------------------------------------------
@@ -1165,6 +1243,42 @@
      &         -1.15904Q+01
      &         +2.10205Q-03*TT 
      &         -1.76458Q-07*TT**2
+          lbruch = 0.Q0
+          do j=1,dust_nel(i)
+            el     = dust_el(i,j)
+            term   = nat(el)*kT/pst
+            lbruch = lbruch + LOG(term)*dust_nu(i,j)
+          enddo
+          Sat(i) = EXP(lbruch+dG)
+
+	else if (dust_nam(i).eq.'Ti[s]') then
+          !---------------------------------------------
+          !*** Ti[s]: George's JANAF-fit T=suggested ***
+          !---------------------------------------------
+          pst = bar
+          dG  = 5.58782Q+04/TT      !fit_set
+     &         -1.19082Q+00*LOG(TT) 
+     &         -9.91435Q+00
+     &         +1.60781Q-03*TT 
+     &         -1.73583Q-07*TT**2
+          lbruch = 0.Q0
+          do j=1,dust_nel(i)
+            el     = dust_el(i,j)
+            term   = nat(el)*kT/pst
+            lbruch = lbruch + LOG(term)*dust_nu(i,j)
+          enddo
+          Sat(i) = EXP(lbruch+dG)
+
+	else if (dust_nam(i).eq.'Ti[l]') then
+          !---------------------------------------------
+          !*** Ti[l]: George's JANAF-fit T=suggested ***
+          !---------------------------------------------
+          pst = bar
+          dG  = 5.49459Q+04/TT      !fit_set
+     &         -1.35128Q+00*LOG(TT) 
+     &         -8.52925Q+00
+     &         +1.66027Q-03*TT 
+     &         -1.17802Q-07*TT**2
           lbruch = 0.Q0
           do j=1,dust_nel(i)
             el     = dust_el(i,j)
@@ -1351,6 +1465,42 @@
             lbruch = lbruch + LOG(term)*dust_nu(i,j)
           enddo
           Sat(i) = EXP(lbruch-dG)
+
+        else if (dust_nam(i).eq.'K2SiO3[s]') then 
+          !------------------------------------------------------
+          !***  K2SiO3[s] George's Janaf fit suggested range  ***
+          !------------------------------------------------------
+          pst = bar
+          dG  = 3.50428Q+05/TT      !fit_set
+     &         -5.89694Q+00*LOG(TT) 
+     &         -6.42502Q+01
+     &         +8.63613Q-03*TT 
+     &         -7.95470Q-07*TT**2
+          lbruch = 0.Q0
+          do j=1,dust_nel(i)
+            el     = dust_el(i,j)
+            term   = nat(el)*kT/pst
+            lbruch = lbruch + LOG(term)*dust_nu(i,j)
+          enddo
+          Sat(i) = EXP(lbruch+dG)
+
+        else if (dust_nam(i).eq.'K2SiO3[l]') then 
+          !------------------------------------------------------
+          !***  K2SiO3[l] George's Janaf fit suggested range  ***
+          !------------------------------------------------------
+          pst = bar
+          dG  = 3.45975Q+05/TT      !fit_set
+     &         -1.59224Q+00*LOG(TT) 
+     &         -8.80046Q+01
+     &         +5.73444Q-03*TT 
+     &         -6.12490Q-07*TT**2
+          lbruch = 0.Q0
+          do j=1,dust_nel(i)
+            el     = dust_el(i,j)
+            term   = nat(el)*kT/pst
+            lbruch = lbruch + LOG(term)*dust_nu(i,j)
+          enddo
+          Sat(i) = EXP(lbruch+dG)
 
 	else if (dust_nam(i).eq.'CaO[s]') then
           !----------------------------------------------
@@ -1588,6 +1738,77 @@
      &               +2.77859Q-07*TT**2 
      &               -1.56828Q-11*TT**3)
           Sat(i) = nmol(FeO)*kT/psat
+
+        else if (dust_nam(i).eq.'TiO[s]') then 
+          !--------------------------------------------
+          !***  George's Janaf fit suggested range  ***
+          !--------------------------------------------
+          pst = bar
+          psat = EXP(-7.14013Q+04/TT     !fit_set
+     &               +3.80934Q+01
+     &               -1.49104Q-03*TT  
+     &               +6.06190Q-08*TT**2)
+          Sat(i) = nmol(TiO)*kT/psat
+
+	else if (dust_nam(i).eq.'TiO[l]') then
+          !----------------------------------------------
+          !*** TiO[l]: George's JANAF-fit T=suggested ***
+          !----------------------------------------------
+          pst = bar
+          psat = EXP(-6.61504Q+04/TT     !fit_set
+     &               +3.58743Q+01
+     &               -1.97510Q-03*TT  
+     &               +2.33017Q-07*TT**2 
+     &               -1.21467Q-11*TT**3)
+          Sat(i) = nmol(TiO)*kT/psat
+
+        else if (dust_nam(i).eq.'LiOH[s]') then 
+          !--------------------------------------------
+          !***  George's Janaf fit suggested range  ***
+          !--------------------------------------------
+          pst = bar
+          psat = EXP(-3.01062Q+04/TT     !fit_set
+     &               +3.37718Q+01
+     &               +9.66853Q-04*TT  
+     &               -2.02320Q-06*TT**2
+     &               +5.34064Q-10*TT**3)
+          Sat(i) = nmol(LiOH)*kT/psat
+
+	else if (dust_nam(i).eq.'LiOH[l]') then
+          !----------------------------------------------
+          !*** LiOH[l]: George's JANAF-fit T=suggested ***
+          !----------------------------------------------
+          pst = bar
+          psat = EXP(-2.91612Q+04/TT     !fit_set
+     &               +3.61117Q+01
+     &               -6.37469Q-03*TT  
+     &               +1.91155Q-06*TT**2 
+     &               -2.47977Q-10*TT**3)
+          Sat(i) = nmol(LiOH)*kT/psat
+
+        else if (dust_nam(i).eq.'LiH[s]') then 
+          !--------------------------------------------
+          !***  George's Janaf fit suggested range  ***
+          !--------------------------------------------
+          pst = bar
+          psat = EXP(-2.76405Q+04/TT     !fit_set
+     &               +3.07600Q+01
+     &               +3.06028Q-03*TT  
+     &               -3.26876Q-06*TT**2
+     &               +7.70757Q-10*TT**3)
+          Sat(i) = nmol(LiH)*kT/psat
+
+	else if (dust_nam(i).eq.'LiH[l]') then
+          !----------------------------------------------
+          !*** LiH[l]: George's JANAF-fit T=suggested ***
+          !----------------------------------------------
+          pst = bar
+          psat = EXP(-2.66115Q+04/TT     !fit_set
+     &               +3.45915Q+01
+     &               -6.34712Q-03*TT  
+     &               +2.30270Q-06*TT**2 
+     &               -3.65328Q-10*TT**3)
+          Sat(i) = nmol(LiH)*kT/psat
 
         else
           print*,dust_nam(i) 
