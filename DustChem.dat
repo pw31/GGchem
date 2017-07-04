@@ -1,6 +1,6 @@
 dust species
 ============
-59
+78
 Al2O3[s]
 3.97
 2
@@ -311,3 +311,102 @@ FeO[l]
 2
  1 Fe
  1 O
+LiH[s]
+0.78
+2
+ 1 Li
+ 1 H
+LiH[l]
+0.62
+2
+ 1 Li
+ 1 H
+MgTi2O5[l]
+3.7
+3
+ 1 Mg
+ 2 Ti
+ 5 O
+MgO[l]
+2.9
+2
+ 1 Mg
+ 1 O
+AlCl3[l]
+2.0
+2
+ 1 Al
+ 3 Cl
+MgTiO3[s]
+3.88
+3
+ 1 Mg
+ 1 Ti
+ 3 O
+MgTiO3[l]
+3.1
+3
+ 1 Mg
+ 1 Ti
+ 3 O
+CaO[l]
+2.7
+2
+ 1 Ca
+ 1 O
+S[l]
+1.7
+1
+ 1 S
+K2SiO3[s]
+2.4
+3
+ 2 K
+ 1 Si
+ 3 O
+K2SiO3[l]
+1.9
+3
+ 2 K
+ 1 Si
+ 3 O
+TiC[l]
+3.9
+2
+ 1 Ti
+ 1 C
+Ti[s]
+4.51
+1
+ 1 Ti
+Ti[l]
+4.14
+1
+ 1 Ti
+TiO[s]
+4.95
+2
+ 1 Ti
+ 1 O
+TiO[l]
+4.0
+2
+ 1 Ti
+ 1 O
+SiS2[l]
+1.5
+2
+ 1 Si
+ 2 S
+LiOH[s]
+1.46
+3
+ 1 Li
+ 1 O
+ 1 H
+LiOH[l]
+1.2
+3
+ 1 Li
+ 1 O
+ 1 H
