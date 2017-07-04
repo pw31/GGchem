@@ -73,8 +73,8 @@
 *     GG-Konstanten fuer TiC von Andreas Gauger gewonnen               *
 *     auf der Grundlage spekrtoskopischer Messungen          11.09.97  *
 ************************************************************************
-      use DUST_DATA,ONLY: NewChemIt,NewBackIt
-      use CHEMISTRY,ONLY: nml=>NMOLE,nel=>NELM,cmol,catm,
+      use CHEMISTRY,ONLY: NewChemIt,NewBackIt,
+     >                    nml=>NMOLE,nel=>NELM,cmol,catm,
      >                    m_kind,m_anz,a,natom,charge,elion,
      >                    He,el,H,C,N,O,Si,Mg,Al,Fe,S,Na,K,Ti,Ca,Li,Cl,
      >                    th1,th2,th3,th4,fit,TT1,TT2,TT3

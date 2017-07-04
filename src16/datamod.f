@@ -15,8 +15,6 @@
       integer,parameter :: NDUSTmax=200    ! max number of condensed species
       integer :: NDUST                     ! number of condensed species
       integer :: NEPS                      ! number of affected elements
-      logical,parameter :: NewChemIt=.true.
-      integer,parameter :: NewBackIt=5
       
       character(len=2)  :: elnam(NELEM)       ! names of elements
       character(len=15) :: dust_nam(NDUSTmax) ! names of dust species
@@ -42,6 +40,9 @@
       module CHEMISTRY
 ************************************************************************
       use DUST_DATA,ONLY: NELEM
+      character(len=200) :: dispol_file
+      logical :: NewChemIt
+      integer :: NewBackIt
       integer :: NMOLdim         ! max number of molecules
       integer :: NMOLE           ! number of molecules found
       integer :: NELM            ! number of elements found
@@ -52,7 +53,7 @@
       integer :: Y=0,Zr=0
       logical :: charge
       character(len=2) :: catm(NELEM)           ! names of elements
-      character(len=10),allocatable :: cmol(:)  ! names of molecules
+      character(len=20),allocatable :: cmol(:)  ! names of molecules
       integer :: elnum(NELEM)                   ! indices of found elements
       integer :: elion(NELEM)                   ! indices of ions
       integer,allocatable :: fit(:)             ! fit-formular identifier

@@ -1,6 +1,9 @@
 # selected elements
 H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li el
 
+# name of file with molecular kp-data
+dispol_new.dat        ! dispol_file
+
 # abundance options 1=EarthCrust, 2=Ocean, 3=Solar, 4=Meteorites
 3                     ! abund_pick
 
@@ -18,4 +21,6 @@ H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li el
 4.E+19                ! nHmax [cm-3]  (if pconst=.false.)
 4.E+19                ! nHmin [cm-3]
 200                   ! Npoints       (if not model_struc)
+.true.                ! NewChemIt
+5                     ! NewBackIt  
 

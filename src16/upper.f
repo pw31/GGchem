@@ -1,6 +1,6 @@
       function upper(strIn) result(strOut)
       implicit none
-      character(len=*), intent(in) :: strIn
+      character(len=*),intent(in) :: strIn
       character(len=len(strIn)) :: strOut
       integer :: i,j
 

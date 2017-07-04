@@ -51,7 +51,6 @@
       logical :: included,haeufig,raus(NMOLE)
       character(len=2) :: search 
       character(len=10) :: sp
-      character(len=2),external :: upper
 
       Tg    = Tmax
       nHges = nHmax

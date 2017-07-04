@@ -41,7 +41,7 @@ if (Tmax-Tmin>1500): sep=100
 if (Tmax-Tmin<500): sep=10
 Tmin  = Tmin*0.95
 Tmax  = Tmax*1.1
-styl  = ['-','-','-','-','-','-','-','--','--','--','--','--','--','--',':',':',':',':',':',':',':','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.']
+styl  = ['-','-','-','-','-','-','-','-','-','-','--','--','--','--','--','--','--','--','--','--',':',':',':',':',':',':',':',':',':',':','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.']
 widt  = [ 2 , 2 , 2 , 2 , 2 , 2 , 2 ,  2 ,  2 ,  2 ,  2 ,  2 ,  2 ,  2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  ]
 
 #================== temperature-pressure structure ====================
@@ -125,7 +125,7 @@ if (nmax>-99):
   plt.tick_params('both', length=3, width=1, which='minor')
   minorLocator = MultipleLocator(sep)
   ax.xaxis.set_minor_locator(minorLocator)
-  plt.legend(loc='lower right',fontsize=9,fancybox=True)
+  plt.legend(loc='lower right',fontsize=9,fancybox=True,prop={'size':4})
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
   plt.clf()
@@ -154,7 +154,7 @@ if (nmax>-99):
   plt.tick_params('both', length=3, width=1, which='minor')
   minorLocator = MultipleLocator(sep)
   ax.xaxis.set_minor_locator(minorLocator)
-  plt.legend(loc='lower right',fontsize=6,fancybox=True)
+  plt.legend(loc='lower right',fontsize=6,fancybox=True,prop={'size':4})
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
   plt.clf()
@@ -180,7 +180,7 @@ if (nmax>-99):
   plt.tick_params(axis='both', labelsize=14)
   plt.tick_params('both', length=6, width=1.5, which='major')
   plt.tick_params('both', length=3, width=1, which='minor')
-  plt.legend(loc='lower right',fontsize=7,fancybox=True)
+  plt.legend(loc='lower right',fontsize=7,fancybox=True,prop={'size':4})
   minorLocator = MultipleLocator(sep)
   ax.xaxis.set_minor_locator(minorLocator)
   plt.tight_layout()
@@ -223,12 +223,12 @@ plt.savefig(pp,format='pdf')
 plt.clf()
 
 #================== where are the elements? ================
-ellist = ['H','C','O','N','SI','S','NA','CL','CA','TI','K','AL','MG','FE','LI','F','P','NI','MN','el']
-allist = [' ',' ',' ',' ','Si',' ','Na','Cl','Ca','Ti',' ','Al','Mg','Fe','Li',' ',' ','Ni','Mn','+']
-exlist = [' He ',' Cl CL Ca CA Cr ',' ',' Na NA Ni NI ',' ',' Si SI ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' Fe FE ',' ',' ',' ',' ']
-titels = ['hydrogen','carbon','oxygen','nitrogen','silicon','sulphur','sodium','chlorine','calcium','titanium','potassium','aluminum','magnesium','iron','lithium','fluorine','phosphorus','nickel','manganese','charge carriers']
-limits = [2,5,2.5,6,6,5,6,4,7,8,6,6,6,6,7,6,6,6,6,5]   
-for i in range(0,20):
+ellist = ['H','C','O','N','SI','S','NA','CL','CA','TI','K','AL','MG','FE','LI','F','P','NI','MN','CR','ZN','ZR','RB','CU','B','BR','V','SR','el']
+allist = [' ',' ',' ',' ','Si',' ','Na','Cl','Ca','Ti',' ','Al','Mg','Fe','Li',' ',' ','Ni','Mn','Cr','Zn','Zr','Rb','Cu',' ','Br',' ','Sr','+']
+exlist = [' He ',' Cl CL Ca CA Cr CR Co CO Cu CU ',' ',' Na NA Ni NI Mn MN ',' ',' Si SI Sr SR ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' Fe FE ',' ',' ',' ',' ',' ',' ',' ',' ',' Br BR ',' ',' ',' ',' ']
+titels = ['hydrogen','carbon','oxygen','nitrogen','silicon','sulphur','sodium','chlorine','calcium','titanium','potassium','aluminum','magnesium','iron','lithium','fluorine','phosphorus','nickel','manganese','chromium','zinc','zirconium','rubidium','copper','boron','bromine','vanadium','strontium','charge carriers']
+limits = [2,5,2.5,6,6,5,6,4,7,8,6,6,6,6,7,6,6,6,6,6,6,6,6,6,6,6,6,6,5]   
+for i in range(0,29):
   fig,ax = plt.subplots()
   el = ellist[i]
   al = allist[i]
@@ -285,7 +285,7 @@ for i in range(0,20):
   plt.tick_params('both', length=3, width=1, which='minor')
   #minorLocator = MultipleLocator(sep)
   #ax.xaxis.set_minor_locator(minorLocator)
-  plt.legend(loc='lower left',fontsize=10,fancybox=True)
+  plt.legend(loc='lower left',fontsize=10,fancybox=True,prop={'size':5})
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
   plt.clf()

@@ -3,17 +3,18 @@
 ************************************************************************
       use PARAMETERS,ONLY: elements
       use CHEMISTRY,ONLY: NMOLdim,NMOLE,NELM,catm,cmol,fit,natom,a,
-     &    m_kind,m_anz,elnum,elion,charge,
+     &    dispol_file,m_kind,m_anz,elnum,elion,charge,
      &    el,H,He,Li,Be,B,C,N,O,F,Ne,Na,Mg,Al,Si,P,S,Cl,Ar,K,Ca,
      &    Sc,Ti,V,Cr,Mn,Fe,Co,Ni,Cu,Zn,Ga,Ge,As,Se,Br,Kr,Rb,Sr,Y,Zr
       use EXCHANGE,ONLY: nmol
       implicit none
       integer :: i,ii,j,iel,e
       character(len=2) :: cel(40),elnam
+      character(len=20) :: molname,upper,leer='                    '
       character(len=200) :: line
       logical :: found,allfound
 
-      open(unit=12, file='dispol_new.dat', status='old')
+      open(unit=12, file=dispol_file, status='old')
       write(*,*)
       write(*,*) 'reading molecules and kp-data from dispol_new.dat'
       read(12,*) NMOLdim
@@ -86,7 +87,9 @@
         !read(12,'(A200)',end=200) line
         !read(line,'(A10)') cmol(i)
         !line = line(11:)
-        read(12,*) cmol(i),iel,cel(1:iel),m_anz(1:iel,i)
+        read(12,*) molname,iel,cel(1:iel),m_anz(1:iel,i)
+        molname=trim(molname)
+        !print*,molname,iel
         read(12,'(A200)') line
         read(line,*) fit(i)
         !print*,trim(line),fit(i)
@@ -102,8 +105,22 @@
           natom(i) = natom(i)+m_anz(j,i)
           if (index(elements,cel(j))<=0) found=.false. 
         enddo  
-        if (.not.found) cycle
-        print'(I4,A10,1x,99(I3,1x,A2,1x))',
+        if (.not.found) cycle    ! molecule has non-selected element 
+        if (m_kind(0,i)==1.and.natom(i)==1) cycle  ! pure atom
+        j = index(molname,"_")
+        if (j>1) then
+          cmol(i) = upper(molname(j+1:)//leer(1:j))
+        else
+          cmol(i) = upper(molname)
+        endif   
+        do j=1,i-1
+          if (cmol(i)==cmol(j)) then
+            print*,"*** double molecule "//trim(cmol(i))
+     &             //" in "//dispol_file//"."
+            stop
+          endif
+        enddo
+        print'(I4,A20,1x,99(I3,1x,A2,1x))',
      &        i,trim(cmol(i)),(m_anz(j,i),cel(j),j=1,iel)
         do j=1,m_kind(0,i)
           elnam = cel(j)

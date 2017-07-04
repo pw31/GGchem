@@ -4,16 +4,39 @@
       use PARAMETERS,ONLY: elements,abund_pick,model_dim,model_pconst,
      >                     model_struc,model_eqcond,Npoints,
      >                     Tmin,Tmax,pmin,pmax,nHmin,nHmax
+      use CHEMISTRY,ONLY: NewChemIt,NewBackIt,dispol_file
       use DUST_DATA,ONLY: bar
       implicit none
-      integer :: iarg,iline
+      integer :: iarg,iline,i
       character(len=200) :: ParamFile,line
 
+      !-------------------------
+      ! ***  default values  ***
+      !-------------------------
+      dispol_file  = 'dispol_new.dat'
+      elements     = 'H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li el'
+      abund_pick   = 3
+      model_eqcond = .false.
+      model_dim    = 1
+      model_pconst = .true.
+      model_struc  = .false.
+      Npoints      = 200
+      Tmin         = 100.d0
+      Tmax         = 6000.d0
+      pmin         = 1.d0*bar
+      pmax         = 1.d0*bar
+      nHmin        = 4.d+19
+      nHmax        = 4.d+19
+      NewChemIt    = .true.
+      NewBackIt    = 5
+
+      !-------------------------------------------
+      ! ***  change parameters via input file  ***
+      !-------------------------------------------
       iarg = iargc()
       if (iarg==0) then
-        print*,"*** syntax error."
-        print*,"expected syntax is, for example, ./ggchem default.in"
-        stop
+        print*,"using default parameters"
+        return
       endif  
       call getarg(1,ParamFile)
       open(unit=1,file=ParamFile,status='old')
@@ -52,6 +75,13 @@
           read(line,*) nHmin
         else if (index(line,"! Npoints")>0) then 
           read(line,*) Npoints
+        else if (index(line,"! NewChemIt")>0) then 
+          read(line,*) NewChemIt
+        else if (index(line,"! NewBackIt")>0) then 
+          read(line,*) NewBackIt
+        else if (index(line,"! dispol_file")>0) then 
+          i = index(line,"!")
+          read(line(1:i-1),*) dispol_file
         else
           print*,"*** syntax error in "//trim(ParamFile)//":"
           print*,trim(line)
