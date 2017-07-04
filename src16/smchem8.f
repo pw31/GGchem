@@ -119,7 +119,7 @@
       integer Nact,all_to_act(nel),act_to_all(nel),switchoff(nel)
       integer e,i,j,j1,ii,jj,kk,l,it,m1,m2,piter,iraus,itry
       integer Nseq,imin,imax,pot,enew,eseq(nel)
-      integer,parameter :: itmax=200
+      integer,parameter :: itmax=200,Ncmax=16
       real*8,parameter :: finish=1.d-12
       real*8 :: ppp,qqq
       real*8 :: g(0:nml),limit
@@ -136,7 +136,7 @@
      &          pLiges,pClges,pHalt,pCalt,pOalt,pNalt,
      &          pNaalt,pCaalt,pClalt,pKalt,pTialt,pSialt,pSalt
       real*8 :: aa,bb,cc,dd,ee,gg,hh,a2,a3,delta,pat,dpat
-      real*8 :: nges(nel),pmono1(nel),coeff(-1:12),atmax,atfrac
+      real*8 :: nges(nel),pmono1(nel),coeff(-1:Ncmax),atmax,atfrac
       real*8 :: DF(nel,nel),dp(nel),FF(nel),pmol,q0,qq,crit
       real*8 :: DF0(nel,nel),FF0(nel),scale(nel),conv(0:500,nel)
       real*8 :: converge(0:500),delp,nold,soll,haben,abw,sum
@@ -1123,6 +1123,7 @@ c     g(TiC)   : siehe oben!
           ! for initial guess, consider this 
           ! molecule to have all of element e2 
           !------------------------------------
+          !print*,trim(cmol(i)),l,g(i),pmol
           pwork = MIN(pwork,(pges/(l*pmol))**(1.d0/REAL(l)))
         enddo  
         !----------------------------------------------
@@ -1131,7 +1132,7 @@ c     g(TiC)   : siehe oben!
         do piter=1,99                  
           f  = pwork-pges
           fs = 1.d0
-          do l=1,12
+          do l=1,Ncmax
             if (coeff(l)==0.d0) cycle
             f  = f  + coeff(l)*pwork**l
             fs = fs + coeff(l)*l*pwork**(l-1)
@@ -1540,7 +1541,7 @@ c     g(TiC)   : siehe oben!
           do piter=1,99
             f  = pat-eps(e)*anHges*kT
             fs = 1.d0
-            do l=-1,12
+            do l=-1,Ncmax
               if (coeff(l)==0.d0) cycle
               f  = f  + coeff(l)*l*pat**l
               fs = fs + coeff(l)*l**2*pat**(l-1)
@@ -1681,12 +1682,14 @@ c     g(TiC)   : siehe oben!
         !---------------------
         lnk = a(i,0) + a(i,1)*th1 + a(i,2)*th2 
      &               + a(i,3)*th3 + a(i,4)*th4 
+
       else if (fit(i).eq.2) then
         !---------------------------
         ! ***  Tsuji (1973) fit  *** 
         !---------------------------
         lnk = ln10*( - a(i,0) - a(i,1)*th1 - a(i,2)*th2
      &                        - a(i,3)*th3 - a(i,4)*th4 ) 
+
       else if (fit(i).eq.3) then  
         !---------------------------------
         ! ***  Sharp & Huebner (1990)  ***

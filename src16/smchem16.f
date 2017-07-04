@@ -120,7 +120,7 @@
       integer Nact,all_to_act(nel),act_to_all(nel),switchoff(nel)
       integer e,i,j,j1,ii,jj,kk,l,it,m1,m2,piter,iraus,itry
       integer Nseq,imin,imax,enew,e2,eseq(nel)
-      integer,parameter :: itmax=200
+      integer,parameter :: itmax=200,Ncmax=16
       real(kind=qp),parameter :: finish=1.Q-25
       real(kind=qp) :: ppp,qqq
       real(kind=qp) :: g(0:nml),limit,condnum1,work(nel)
@@ -133,8 +133,8 @@
      &                 pAlges,pFeges,pSges,pNages,pKges,pTiges,pCages,
      &                 pLiges,pClges,pHalt,pCalt,pOalt,pNalt,
      &                 pNaalt,pCaalt,pClalt,pKalt,pTialt,pSialt,pSalt
-      real(kind=qp) :: aa,bb,cc,dd,ee,gg,hh,a2,a3,delta,pat,dpat
-      real(kind=qp) :: nges(nel),pmono1(nel),coeff(-1:12),atmax,atfrac
+      real(kind=qp) :: aa,bb,cc,dd,ee,gg,hh,a2,a3,delta,pat,dpat,atfrac
+      real(kind=qp) :: nges(nel),pmono1(nel),coeff(-1:Ncmax),atmax
       real(kind=qp) :: DF(nel,nel),dp(nel),FF(nel),pmol,q0,qq,crit
       real(kind=qp) :: DF0(nel,nel),FF0(nel),scale(nel),conv(0:500,nel)
       real(kind=qp) :: converge(0:500),delp,nold,soll,haben,abw,sum
@@ -1131,7 +1131,7 @@ c     g(TiC)   : siehe oben!
         do piter=1,99                  
           f  = pwork-pges
           fs = 1.Q0
-          do l=1,12
+          do l=1,Ncmax
             if (coeff(l)==0.d0) cycle
             f  = f  + coeff(l)*pwork**l
             fs = fs + coeff(l)*l*pwork**(l-1)
@@ -1526,7 +1526,7 @@ c     g(TiC)   : siehe oben!
           do piter=1,99
             f  = pat-eps(e)*anHges*kT
             fs = 1.Q0
-            do l=-1,12
+            do l=-1,Ncmax
               if (coeff(l)==0.Q0) cycle
               f  = f  + coeff(l)*l*pat**l
               fs = fs + coeff(l)*l**2*pat**(l-1)

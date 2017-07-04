@@ -8,7 +8,7 @@
      &    Sc,Ti,V,Cr,Mn,Fe,Co,Ni,Cu,Zn,Ga,Ge,As,Se,Br,Kr,Rb,Sr,Y,Zr
       use EXCHANGE,ONLY: nmol
       implicit none
-      integer :: i,ii,j,iel,e
+      integer :: i,ii,j,iel,e,smax
       character(len=2) :: cel(40),elnam
       character(len=20) :: molname,upper,leer='                    '
       character(len=200) :: line
@@ -101,12 +101,15 @@
         m_kind(0,i) = iel
         natom(i) = 0
         found = .true.
+        smax  = 0
         do j=1,m_kind(0,i)
           natom(i) = natom(i)+m_anz(j,i)
           if (index(elements,cel(j))<=0) found=.false. 
+          smax = MAX(smax,ABS(m_anz(j,i)))
         enddo  
         if (.not.found) cycle    ! molecule has non-selected element 
         if (m_kind(0,i)==1.and.natom(i)==1) cycle  ! pure atom
+        if (smax>16) cycle       ! stoichiometric coefficient > 16
         j = index(molname,"_")
         if (j>1) then
           cmol(i) = upper(molname(j+1:)//leer(1:j))
