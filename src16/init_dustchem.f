@@ -93,7 +93,7 @@
  1030 format(i2,1x,a2)
  1040 format(i2,1x,a10)
  1050 format(1x,a10,i4,' mass=',0pf7.3," amu")
- 1060 format(1x,a10," rhod=",0pf6.3," V0=",1pe11.3,2x,99(i1,"x",A2,1x))
+ 1060 format(1x,a14," rhod=",0pf6.3," V0=",1pe11.3,2x,99(i1,"x",A2,1x))
  1070 format(1x,a10,99(i1,"x",i2,1x))
  2011 format(1(I2,1x,a8),22x,'->',I2,1x,a10,99(I2,1x,a8))
  2021 format(2(I2,1x,a8),11x,'->',I2,1x,a10,99(I2,1x,a8))

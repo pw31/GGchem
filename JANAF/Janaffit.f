@@ -257,6 +257,7 @@
       write(*,*) '238 = LiOH[s]'
       write(*,*) '239 = LiOH[s] pvap'
       write(*,*) '240 = LiOH[l] pvap'
+      write(*,*) '241 = TiCl3'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -1995,6 +1996,13 @@
         call READ_DATEI('LiOH.txt'   ,dG,T,Nmax,N,S,2) 
         Edzahl = 1
         stoich(2) = 1.D0
+      elseif (specie.eq.241) then
+        call READ_DATEI('TiCl3.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Ti.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('Cl.txt'   ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 3.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop

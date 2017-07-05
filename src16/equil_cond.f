@@ -260,6 +260,7 @@
         !---------------------------------------
         changed = .false.
         Smax = maxval(Sat0)
+        ioff = 0
         if ((qread<0.5).and.(it<=3).and.(Nact_read>0)) then
           active = act_read
           Nact = Nact_read
@@ -1006,6 +1007,25 @@
      >                       ddust,eps,dscale,active,ok)
             endif  
             eps(Fe) = eps_save(Fe)
+          endif   
+          if (active(iAl2O3).and.active(iAl2O3_l)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iAl2O3).gt.Sat0(iAl2O3_l)) then
+              ioff = iAl2O3_l
+              active(iAl2O3_l) = .false.  
+              amount = ddust(iAl2O3_l)
+              call TRANSFORM(iAl2O3_l,iAl2O3,amount,1.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iAl2O3
+              active(iAl2O3) = .false.  
+              amount = ddust(iAl2O3)
+              call TRANSFORM(iAl2O3,iAl2O3_l,amount,1.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif  
+            eps(Al) = eps_save(Al)
+            eps(O) = eps_save(O)
           endif   
           if (active(iMgAl2O4).and.active(iMgAl2O4_l)) then
             changed = .true.

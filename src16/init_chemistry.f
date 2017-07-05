@@ -16,7 +16,8 @@
 
       open(unit=12, file=dispol_file, status='old')
       write(*,*)
-      write(*,*) 'reading molecules and kp-data from dispol_new.dat'
+      write(*,*) 'reading molecules and kp-data from '
+     &           //trim(dispol_file)
       read(12,*) NMOLdim
       allocate(cmol(NMOLdim),fit(NMOLdim),natom(NMOLdim),a(NMOLdim,0:7))
       allocate(m_kind(0:6,NMOLdim),m_anz(6,NMOLdim))
