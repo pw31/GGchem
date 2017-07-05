@@ -1168,7 +1168,7 @@
           !*** AlCl3[s]: eigener Fit nach JANAF ***
           !----------------------------------------
           pst = bar
-          dG = 4.17188Q+05/TT 
+          dG = 4.17188Q+05/TT    !fit_set
      &        -1.40425Q+06  
      &        +5.68472Q+02*TT 
      &        -1.79150Q-02*TT**2
@@ -1181,7 +1181,7 @@
             lbruch = lbruch + LOG(term)*dust_nu(i,j)
           enddo
           Sat(i) = EXP(lbruch-dG)
-          !psat = EXP( -1.49010Q+04/TT    !fit_set
+          !psat = EXP( -1.49010Q+04/TT    
      &    !            +4.07301Q+01
      &    !            -3.64958Q-03*TT 
      &    !            -2.95869Q-08*TT**2  
@@ -1193,7 +1193,7 @@
           !*** AlCl3[s]: eigener Fit nach JANAF ***
           !----------------------------------------
           pst = bar
-          dG =-1.51097Q+06/TT 
+          dG =-1.51097Q+06/TT    !fit_set
      &        -1.36116Q+06 
      &        +4.88316Q+02*TT 
      &        -2.96109Q-02*TT**2
@@ -1206,7 +1206,7 @@
             lbruch = lbruch + LOG(term)*dust_nu(i,j)
           enddo
           Sat(i) = EXP(lbruch-dG)
-          !psat = EXP( -1.15857Q+04/TT    !fit_set
+          !psat = EXP( -1.15857Q+04/TT    
      &    !            +3.65148Q+01
      &    !            -1.22410Q-02*TT 
      &    !            +5.42405Q-06*TT**2  
@@ -1558,11 +1558,10 @@
           !  lbruch = lbruch + LOG(term)*dust_nu(i,j)
           !enddo
           !Sat(i) = EXP(lbruch-dG)
-          psat = EXP(-1.27706Q+04/TT     !fit_set
-     &               +2.65686Q+01
-     &               -2.74334Q-03*TT  
-     &               +1.33155Q-06*TT**2 
-     &               -2.85129Q-10*TT**3)
+          psat = EXP(-1.26494Q+04/TT     !fit_set
+     &               +2.58560Q+01
+     &               -1.36371Q-03*TT  
+     &               +2.63744Q-07*TT**2)
           Sat(i) = nat(Na)*kT/psat
 
 	else if (dust_nam(i).eq.'KCl[l]') then
@@ -1583,11 +1582,10 @@
           !  lbruch = lbruch + LOG(term)*dust_nu(i,j)
           !enddo
           !Sat(i) = EXP(lbruch-dG)
-          psat = EXP(-2.53357Q+04/TT     !fit_set
-     &               +3.55589Q+01
-     &               -7.28441Q-03*TT  
-     &               +2.45727Q-06*TT**2 
-     &               -3.78244Q-10*TT**3)
+          psat = EXP(-2.50293Q+04/TT     !fit_set
+     &               +3.39453Q+01
+     &               -4.61815Q-03*TT  
+     &               +7.36857Q-07*TT**2)
           Sat(i) = nmol(KCl)*kT/psat
 
 	else if (dust_nam(i).eq.'CaCl2[s]') then
@@ -1803,11 +1801,10 @@
           !*** LiH[l]: George's JANAF-fit T=suggested ***
           !----------------------------------------------
           pst = bar
-          psat = EXP(-2.66115Q+04/TT     !fit_set
-     &               +3.45915Q+01
-     &               -6.34712Q-03*TT  
-     &               +2.30270Q-06*TT**2 
-     &               -3.65328Q-10*TT**3)
+          psat = EXP(-2.63155Q+04/TT     !fit_set
+     &               +3.30329Q+01
+     &               -3.77190Q-03*TT  
+     &               +6.41033Q-07*TT**2)
           Sat(i) = nmol(LiH)*kT/psat
 
         else

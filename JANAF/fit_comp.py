@@ -35,12 +35,12 @@ def stock(T,A,B,C,D,E):
     val = - Rgas*T*(A/T + B*np.log(T) + C + D*T + E*T**2)
     return val
 
-tmin = 50
-tmax = 6000
+tmin = 1508.00
+tmax = 3442.00
 temp = np.arange(tmin,tmax,1)
 
-line1 = lines[142]
-line2 = lines[147]
+line1 = lines[217]
+line2 = lines[221]
 print line1
 print line2
 data1 = line1.split()
@@ -102,64 +102,81 @@ plt.show()
 fig,ax = plt.subplots()
 minorLocator = MultipleLocator(100)
 ax.xaxis.set_minor_locator(minorLocator)
-plt.plot(temp,fit1/fit2)
-plt.plot(temp,0*temp+1,c='black',ls='--')
+if (value == 'pvap'):
+  plt.plot(temp,fit1/fit2)
+  plt.plot(temp,0*temp+1,c='black',ls='--')
+  plt.ylabel(data1[0]+' / '+data2[0])
+  plt.ylim(0,2)
+if (value == 'dg'):
+  plt.plot(temp,fit1-fit2)
+  plt.plot(temp,0*temp,c='black',ls='--')
+  plt.ylabel(data1[0]+' - '+data2[0])
+  #plt.ylim(0,2)
 plt.title(specie)
 plt.xlabel('T [K]')
-plt.ylabel(data1[0]+' / '+data2[0])
 plt.xlim(tmin,tmax)
-plt.ylim(0,2)
 Nt = temp.size
 ibest = 0
 qbest = 1.e+99
+qmax  = 0
 for i in range(0,Nt):
-  q = fit1[i]/fit2[i]
-  if (abs(q-1)<qbest):
-    ibest=i
-    qbest=abs(q-1)
+  if (value == 'pvap'):
+    q = fit1[i]/fit2[i]
+    if (abs(q-1)<qbest):
+      ibest=i
+      qbest=abs(q-1)
+  if (value == 'dg'):
+    q = fit1[i]-fit2[i]
+    if (abs(q)<qbest):
+      ibest=i
+      qbest=abs(q)
+    if (abs(q)>qmax):
+      qmax = abs(q)
 tmelt = temp[ibest]
 print "melting temperature: ",tmelt,"K"
 print "pvap(melting temp.): ",fit1[ibest],"bar"
-plt.plot([tmelt,tmelt],[0,1],c='black',ls='--')
+plt.plot([tmelt,tmelt],[-qmax,qmax],c='black',ls='--')
 plt.show()
 #plt.savefig(pp,format='pdf')
 #plt.clf()
 
 
-#for line1 in lines:
-#    data1 = line1.split()
-#    for line2 in lines:
-#        data2 = line2.split()
-#        if (data1[0:2] == data2[0:2]):
-#            for i in range(3,8):
-#                data2[i] = float(data2[i])
-#            if (data2[2] == 'Yaws'):
-#                fit = yaws(temp,*data2[3:8])
-#                #plt.yscale('log')
-#            elif (data2[2] == 'S&H'):
-#                fit = poly(temp,*data2[3:8])*cal
-#            elif (data2[2] == 'poly'):
-#                if (data2[1] == 'dg'):
-#                    fit = poly(temp,*data2[3:8])
-#                else:
-#                    fit = np.exp(poly(temp,*data2[3:8]))
-#                    #plt.yscale('log')
-#            elif (data2[2] == 'Woitke?'):
-#                fit = np.exp(newf(temp,*data2[3:6]))
-#                #plt.yscale('log')
-#            elif (data2[2] == 'Stock'):
-#                fit = stock(temp,*data2[3:8])
-#            plt.plot(temp,fit,label = data2[2])
-#    specie = data1[0]
-#    value = data1[1]
-#    if (value == 'pvap'): unit = '[dyn/cm2]'
-#    if (value == 'dg'): unit = '[J/mol]'
-#    plt.title(specie)
-#    plt.xlabel('T [K]')
-#    plt.ylabel(value +' '+ unit)
-#    plt.legend(frameon=False)
-#    #plt.show()
-#    plt.savefig(pp,format='pdf')
-#    plt.clf()
+for line1 in lines:
+    data1 = line1.split()
+    if (data1[0][:-3] == 'Ti'):    #Choose condensate
+        for line2 in lines:
+            data2 = line2.split()
+            if (data1[0:2] == data2[0:2]):
+                for i in range(3,8):
+                    data2[i] = float(data2[i])
+                if (data2[2] == 'Yaws'):
+                    fit = yaws(temp,*data2[3:8])
+                    plt.yscale('log')
+                elif (data2[2] == 'S&H'):
+                    fit = poly(temp,*data2[3:8])*cal
+                elif (data2[2] == 'poly'):
+                    if (data2[1] == 'dg'):
+                        fit = poly(temp,*data2[3:8])
+                    else:
+                        fit = np.exp(poly(temp,*data2[3:8]))
+                        plt.yscale('log')
+                elif (data2[2] == 'Woitke?'):
+                    fit = np.exp(newf(temp,*data2[3:6]))
+                    plt.yscale('log')
+                elif (data2[2] == 'Stock'):
+                    fit = stock(temp,*data2[3:8])
+                plt.plot(temp,fit,label = data2[2])
+        specie = data1[0]
+        value = data1[1]
+        if (value == 'pvap'): unit = '[dyn/cm2]'
+        if (value == 'dg'): unit = '[J/mol]'
+        plt.xlim(tmin,tmax)
+        plt.title(specie)
+        plt.xlabel('T [K]')
+        plt.ylabel(value +' '+ unit)
+        plt.legend(frameon=False)
+        plt.show()
+        #plt.savefig(pp,format='pdf')
+        #plt.clf()
 #pp.close()
 #print '... written output to fit_comp.pdf.'
