@@ -13,7 +13,10 @@
       !-------------------------
       ! ***  default values  ***
       !-------------------------
-      dispol_file  = 'dispol_new.dat'
+      dispol_file(1) = 'dispol_new.dat'
+      dispol_file(2) = ''
+      dispol_file(3) = ''
+      dispol_file(4) = ''
       elements     = 'H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li el'
       abund_pick   = 3
       model_eqcond = .false.
@@ -82,9 +85,18 @@
           read(line,*) NewChemIt
         else if (index(line,"! NewBackIt")>0) then 
           read(line,*) NewBackIt
+        else if (index(line,"! dispol_file2")>0) then 
+          i = index(line,"!")
+          read(line(1:i-1),*) dispol_file(2)
+        else if (index(line,"! dispol_file3")>0) then 
+          i = index(line,"!")
+          read(line(1:i-1),*) dispol_file(3)
+        else if (index(line,"! dispol_file4")>0) then 
+          i = index(line,"!")
+          read(line(1:i-1),*) dispol_file(4)
         else if (index(line,"! dispol_file")>0) then 
           i = index(line,"!")
-          read(line(1:i-1),*) dispol_file
+          read(line(1:i-1),*) dispol_file(1)
         else
           print*,"*** syntax error in "//trim(ParamFile)//":"
           print*,trim(line)

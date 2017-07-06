@@ -40,7 +40,7 @@
       module CHEMISTRY
 ************************************************************************
       use DUST_DATA,ONLY: NELEM
-      character(len=200) :: dispol_file
+      character(len=200) :: dispol_file(4)
       logical :: NewChemIt
       integer :: NewBackIt
       integer :: NMOLdim         ! max number of molecules
@@ -58,6 +58,7 @@
       integer :: elion(NELEM)                   ! indices of ions
       integer,allocatable :: fit(:)             ! fit-formular identifier
       integer,allocatable :: natom(:)           ! no of atoms in molecule    
+      integer,allocatable :: source(:)          ! no of source file
       integer,allocatable :: m_kind(:,:)        ! index of elements
       integer,allocatable :: m_anz(:,:)         ! stoichiometric coeffs
       real*8,allocatable  :: a(:,:)             ! kp fit-coeffs

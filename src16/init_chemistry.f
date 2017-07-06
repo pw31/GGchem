@@ -2,25 +2,19 @@
       subroutine INIT_CHEMISTRY
 ************************************************************************
       use PARAMETERS,ONLY: elements
-      use CHEMISTRY,ONLY: NMOLdim,NMOLE,NELM,catm,cmol,fit,natom,a,
-     &    dispol_file,m_kind,m_anz,elnum,elion,charge,
+      use CHEMISTRY,ONLY: NMOLdim,NMOLE,NELM,catm,cmol,
+     &    dispol_file,source,fit,natom,a,
+     &    m_kind,m_anz,elnum,elion,charge,
      &    el,H,He,Li,Be,B,C,N,O,F,Ne,Na,Mg,Al,Si,P,S,Cl,Ar,K,Ca,
      &    Sc,Ti,V,Cr,Mn,Fe,Co,Ni,Cu,Zn,Ga,Ge,As,Se,Br,Kr,Rb,Sr,Y,Zr
       use EXCHANGE,ONLY: nmol
       implicit none
-      integer :: i,ii,j,iel,e,smax
+      integer :: loop,i,ii,j,iel,e,smax,ret
       character(len=2) :: cel(40),elnam
       character(len=20) :: molname,upper,leer='                    '
-      character(len=200) :: line
-      logical :: found,allfound
+      character(len=200) :: line,filename
+      logical :: found,allfound,charged
 
-      open(unit=12, file=dispol_file, status='old')
-      write(*,*)
-      write(*,*) 'reading molecules and kp-data from '
-     &           //trim(dispol_file)
-      read(12,*) NMOLdim
-      allocate(cmol(NMOLdim),fit(NMOLdim),natom(NMOLdim),a(NMOLdim,0:7))
-      allocate(m_kind(0:6,NMOLdim),m_anz(6,NMOLdim))
       cel(:) = '.'
       read(elements,*,end=100) cel
  100  NELM = 0
@@ -83,74 +77,95 @@
         endif   
         print*,'element '//elnam,elnum(NELM)
       enddo
+
+      NMOLdim = 10000
+      allocate(cmol(NMOLdim),fit(NMOLdim),natom(NMOLdim),a(NMOLdim,0:7))
+      allocate(source(NMOLdim),m_kind(0:6,NMOLdim),m_anz(6,NMOLdim))
       i=1
-      do ii=1,NMOLdim
-        !read(12,'(A200)',end=200) line
-        !read(line,'(A10)') cmol(i)
-        !line = line(11:)
-        read(12,*) molname,iel,cel(1:iel),m_anz(1:iel,i)
-        molname=trim(molname)
-        !print*,molname,iel
-        read(12,'(A200)') line
-        read(line,*) fit(i)
-        !print*,trim(line),fit(i)
-        if (fit(i)==6) then
-          read(line,*) fit(i),(a(i,j),j=0,7)
-        else   
-          read(line,*) fit(i),(a(i,j),j=0,4)
-        endif  
-        m_kind(0,i) = iel
-        natom(i) = 0
-        found = .true.
-        smax  = 0
-        do j=1,m_kind(0,i)
-          natom(i) = natom(i)+m_anz(j,i)
-          if (index(elements,cel(j))<=0) found=.false. 
-          smax = MAX(smax,ABS(m_anz(j,i)))
-        enddo  
-        if (.not.found) cycle    ! molecule has non-selected element 
-        if (m_kind(0,i)==1.and.natom(i)==1) cycle  ! pure atom
-        if (smax>16) cycle       ! stoichiometric coefficient > 16
-        j = index(molname,"_")
-        if (j>1) then
-          cmol(i) = upper(molname(j+1:)//leer(1:j))
-        else
-          cmol(i) = upper(molname)
-        endif   
-        do j=1,i-1
-          if (cmol(i)==cmol(j)) then
-            print*,"*** double molecule "//trim(cmol(i))
-     &             //" in "//dispol_file//"."
-            stop
+      do loop=1,4
+        filename = trim(dispol_file(loop))
+        if (filename=='') exit
+        write(*,*)
+        write(*,*) 'reading molecules and kp-data from '
+     &             //trim(filename)//" ..."
+        open(unit=12, file=filename, status='old')
+        read(12,*) NMOLdim
+        do ii=1,NMOLdim
+          read(12,*) molname,iel,cel(1:iel),m_anz(1:iel,i)
+          molname=trim(molname)
+          read(12,'(A200)') line
+          read(line,*) fit(i)
+          if (fit(i)==6) then
+            read(line,*) fit(i),(a(i,j),j=0,7)
+          else   
+            read(line,*) fit(i),(a(i,j),j=0,4)
+          endif  
+          m_kind(0,i) = iel
+          natom(i) = 0
+          found = .true.
+          smax  = 0
+          do j=1,m_kind(0,i)
+            natom(i) = natom(i)+m_anz(j,i)
+            if (index(elements,cel(j))<=0) found=.false. 
+            smax = MAX(smax,ABS(m_anz(j,i)))
+          enddo  
+          if (.not.found) cycle    ! molecule has unselected element 
+          if (smax>16) cycle       ! stoichiometric coefficient > 16
+          if (m_kind(0,i)==1.and.natom(i)==1) cycle  ! pure atom
+          j = index(molname,"_")
+          if (j>1) then
+            cmol(i) = upper(molname(j+1:)//leer(1:j))
+          else
+            cmol(i) = upper(molname)
           endif
+          charged = .false.
+          do j=1,m_kind(0,i)
+            elnam = cel(j)
+            found = .false.
+            do e=1,NELM
+              if (elnam.eq.catm(e)) then
+                found=.true.
+                exit
+              endif  
+            enddo
+            if (.not.found) stop "*** should not occur"
+            m_kind(j,i) = e
+            if (e==el) charged=.true. 
+          enddo  
+          if (fit(i)==6.and.charged) cycle ! charged BarklemCollet
+          source(i) = loop
+          call CHECK_DOUBLE(cmol(i),m_kind(:,i),m_anz(:,i),i,loop,ret)
+          if (ret>0) then
+            source(ret) = loop
+            cmol(ret) = cmol(i)
+            fit(ret)  = fit(i)
+            a(ret,:)  = a(i,:)
+            write(line,'(I4,A20,1x,99(I3,1x,A2,1x))')
+     &           ret,trim(cmol(ret)),(m_anz(j,ret),cel(j),j=1,iel)
+            print*,trim(line)//"    OVERWRITE" 
+          else  
+            write(line,'(I4,A20,1x,99(I3,1x,A2,1x))')
+     &            i,trim(cmol(i)),(m_anz(j,i),catm(m_kind(j,i)),j=1,iel)
+            if (loop==1) then
+              print*,trim(line)
+            else
+              print*,trim(line)//"    --> NEW" 
+            endif   
+            if (iel==2.and.
+     >       ((m_kind(1,i)==el.and.m_anz(1,i)==-1.and.m_anz(2,i)==1).or.
+     >        (m_kind(2,i)==el.and.m_anz(2,i)==-1.and.m_anz(1,i)==1))
+     >        ) then
+              e = m_kind(1,i)
+              if (e==el) e=m_kind(2,i)
+              elion(e) = i
+            endif
+            i = i+1
+          endif  
         enddo
-        print'(I4,A20,1x,99(I3,1x,A2,1x))',
-     &        i,trim(cmol(i)),(m_anz(j,i),cel(j),j=1,iel)
-        do j=1,m_kind(0,i)
-          elnam = cel(j)
-          found = .false.
-          do e=1,NELM
-            if (elnam.eq.catm(e)) then
-              found=.true.
-              exit
-            endif  
-          enddo
-          if (.not.found) stop "*** should not occur"
-          m_kind(j,i) = e
-        enddo  
-        if (iel==2.and.
-     >      ((m_kind(1,i)==el.and.m_anz(1,i)==-1.and.m_anz(2,i)==1).or.
-     >       (m_kind(2,i)==el.and.m_anz(2,i)==-1.and.m_anz(1,i)==1))
-     >     ) then
-          e = m_kind(1,i)
-          if (e==el) e=m_kind(2,i)
-          elion(e) = i
-        endif
-        i = i + 1
-      enddo
- 200  close(12)
+ 200    close(12)
+      enddo  
       NMOLE = i-1
-      allocate(nmol(NMOLdim))
+      allocate(nmol(NMOLE))
   
       print*,NMOLE,' species'
       print*,NELM,' elements'
@@ -164,3 +179,62 @@
 
       end
 
+************************************************************************
+      subroutine CHECK_DOUBLE(molname,kind,anz,N,loop,ret)
+************************************************************************
+      use CHEMISTRY,ONLY: cmol,m_kind,m_anz,dispol_file,source
+      implicit none
+      character(len=20) :: molname
+      integer,intent(IN) :: kind(0:6),anz(6),N,loop
+      integer,intent(OUT) :: ret
+      integer :: i,j,jj,el,ambi
+      logical :: found,allfound,eqname,eqsource
+
+      ret  = 0
+      ambi = 0
+      do i=1,N-1
+        if (kind(0).ne.m_kind(0,i)) cycle   ! different no(elements)
+        allfound=.true.
+        do j=1,kind(0)
+          el = kind(j)
+          found = .false.
+          do jj=1,m_kind(0,i)
+            if (el.ne.m_kind(jj,i)) cycle
+            found = .true.
+            exit
+          enddo
+          if (.not.found) then
+            allfound = .false.
+            exit                            ! different elements
+          else if (anz(j).ne.m_anz(jj,i)) then
+            allfound = .false.
+            exit                            ! different stoich.fac.
+          endif
+        enddo
+        if (.not.allfound) cycle
+        eqname = (trim(molname)==trim(cmol(i)))
+        eqsource = (loop==source(i))
+        if (eqname.and.eqsource) then
+          print*,"*** double molecule in "//dispol_file(loop)
+          print*,trim(molname)//", "//trim(cmol(i))
+          stop
+        else if ((.not.eqname).and.eqsource.and.loop==1) then
+          print*,trim(molname)//", "//trim(cmol(i))//
+     &         " different isomere in first source is OK"
+          return  
+        else if (eqname.and.(.not.eqsource)) then  
+          ret = i
+          return
+        else
+          ambi = i 
+        endif
+      enddo
+      if (ambi>0) then
+        print*,"*** "//trim(molname)//", "//trim(cmol(ambi))//
+     &       " ambiguous names in ..."
+        print*,trim(dispol_file(loop))//
+     &       ", "//trim(dispol_file(source(ambi)))
+        print*,"please equalise in both data files."
+        stop 
+      endif  
+      end
