@@ -237,7 +237,7 @@
         xmin = 9.Q+99 
         do j=1,dust_nel(i)
           el = dust_el(i,j)
-          xmin = min(xmin,eps00(el)/dust_nu(i,j))    
+          xmin = min(xmin,eps00(el)/REAL(dust_nu(i,j),kind=qp))    
         enddo
         dscale(i) = xmin                        ! max dust abundances
       enddo   
@@ -274,9 +274,9 @@
             do j=1,dust_nel(i)
               el = dust_el(i,j)
               !if (el.ne.O) pot(i)=pot(i)+dust_nu(i,j)
-              if (eps(el)/dust_nu(i,j).lt.xmin) then    
-                xmin = eps(el)/dust_nu(i,j)
-                pot(i) = 1.Q0/DBLE(dust_nu(i,j))
+              if (eps(el)/REAL(dust_nu(i,j),kind=qp).lt.xmin) then    
+                xmin = eps(el)/REAL(dust_nu(i,j),kind=qp)
+                pot(i) = 1.Q0/REAL(dust_nu(i,j),kind=qp)
               endif
             enddo
             Sat1(i)=Sat0(i)**(1.Q0/pot(i))
@@ -1748,7 +1748,7 @@
               if (unknown>0) then 
                 dk = dustkind(eq,unknown)
                 d_resolved(dk) = .true.
-                mat(dk,:) = -vec(:)/REAL(stoich(eq,unknown))
+                mat(dk,:) = -vec(:)/REAL(stoich(eq,unknown),kind=qp)
                 do j=1,Nind
                   el2 = Iindex(j)
                   if (mat(dk,el2).eq.0.Q0) cycle

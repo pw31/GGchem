@@ -116,7 +116,8 @@
      &  //"Na2_g NaO_g NaOH_g (NaOH)2_g NaH_g NaCN_g Na2SO4_g "
      &  //"HCl_g NaCl_g (NaCl)2_g CaCl_g CaCl2_g SiCl_g "
      &  //"CaOH_g Ca(OH)2_g CaS_g CaO_g Ca2_g "                          ! CaH missing
-     &  //"TiO_g TiO2_g TiCl_g TiCl2_g TiCl4_g OTiCl_g TiOCl2_g "        ! TiC,TiC2,TiH,TiS missing
+     &  //"TiO_g TiO2_g TiCl_g TiCl2_g TiCl3_g TiCl4_g OTiCl_g "         
+     &  //"TiOCl2_g "                                                    ! TiC,TiC2,TiH,TiS missing
      &  //"KCl_g KOH_g KH_g (KOH)2_g KCN_g (KCl)2_g K2SO4_g KO_g K2_g "
      &  //"AlOH_g OAlOH_g Al2O_g (AlO)2_g AlCl_g AlH_g AlS_g "
      &  //"AlCl2_g AlCl3_g (AlCl3)2_g AlO_g AlO2_g OAlH_g AlC_g "
@@ -129,7 +130,6 @@
       !--- TEA complete ---
       NISTspecies = trim(species)
      &  //"Li2_g Li2O_g Li2SO4_g LiN_g (LiO)2_g LiOCl_g LiONa_g LiON_g " ! new Li
-     &  //"TiCl3_g "                                                     ! new Ti
      &  //"(FeCl2)2_g (FeCl3)2_g FeCl3_g Fe(CO)5_g "                     ! new Fe
      &  //"Mg2_g "                                                       ! new Mg
      &  //"Al2_g "                                                       ! new Al

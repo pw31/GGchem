@@ -55,7 +55,7 @@
       Tg    = Tmax
       nHges = nHmax
       eps   = eps0
-      verbose = 0
+      verbose = 2
 
 *     ------------------------------------------------------------------
       if (model_eqcond) call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)

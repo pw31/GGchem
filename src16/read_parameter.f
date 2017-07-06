@@ -3,7 +3,7 @@
 ************************************************************************
       use PARAMETERS,ONLY: elements,abund_pick,model_dim,model_pconst,
      >                     model_struc,model_eqcond,Npoints,
-     >                     Tmin,Tmax,pmin,pmax,nHmin,nHmax
+     >                     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax
       use CHEMISTRY,ONLY: NewChemIt,NewBackIt,dispol_file
       use DUST_DATA,ONLY: bar
       implicit none
@@ -21,6 +21,7 @@
       model_pconst = .true.
       model_struc  = .false.
       Npoints      = 200
+      Tfast        = 750.d0
       Tmin         = 100.d0
       Tmax         = 6000.d0
       pmin         = 1.d0*bar
@@ -63,6 +64,8 @@
           read(line,*) Tmax
         else if (index(line,"! Tmin")>0) then   
           read(line,*) Tmin
+        else if (index(line,"! Tfast")>0) then   
+          read(line,*) Tfast
         else if (index(line,"! pmax")>0) then   
           read(line,*) pmax
           pmax = pmax*bar

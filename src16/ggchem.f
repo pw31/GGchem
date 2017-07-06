@@ -5,6 +5,7 @@
 *****  Ruft lediglich SMCHEM auf (mit kompatiber Datenstruktur)   *****
 *****                                                             *****
 ***********************************************************************
+      use PARAMETERS,ONLY: Tfast
       use CHEMISTRY,ONLY: NMOLE,NELEM,NELM,elnum,elion,el,charge,catm
       use EXCHANGE,ONLY: nel,nat,nion,nmol
       implicit none
@@ -27,7 +28,7 @@
       verb = verbose
       mk = merk
 
-      if (Tg<750.0) then
+      if (Tg<Tfast) then
         call SMCHEM16(nHges, Tg, epsi, anmono, nmol, mk, verb)
       else
         epsi8 = epsi

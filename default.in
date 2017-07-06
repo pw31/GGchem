@@ -23,4 +23,4 @@ dispol_new.dat        ! dispol_file
 200                   ! Npoints       (if not model_struc)
 .true.                ! NewChemIt
 5                     ! NewBackIt  
-
+750.0                 ! Tfast         (switch to real*8 for T>Tfast)
