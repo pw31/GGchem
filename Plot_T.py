@@ -5,6 +5,11 @@ from matplotlib.backends.backend_pdf import PdfPages
 plt.rcParams['axes.linewidth'] = 1.5
 pp = PdfPages('ggchem.pdf')
 
+mmHg = 1.3328E+3   # 1 mmHg in dyn/cm2
+def yaws(T,A,B,C,D,E):
+    val = 10**(A + B/T + C*np.log10(T) + D*T + E*T**2)
+    return val*mmHg
+
 file   = 'Static_Conc.dat'
 data   = open(file)
 dummy  = data.readline()
@@ -58,6 +63,9 @@ plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
 minorLocator = MultipleLocator(sep)
 ax.xaxis.set_minor_locator(minorLocator)
+#cAl2O3 = [ 14.1611, -2.8238E+04, -7.3843E-01, -3.7413E-07, 2.2086E-11 ]
+#pvap = yaws(Tg,*cAl2O3[0:5])
+#plt.plot(Tg,pvap/bar,lw=2)
 #fmt=ScalarFormatter(useOffset=False)
 #fmt.set_scientific(False)
 #ax.yaxis.set_major_formatter(fmt)
@@ -126,7 +134,9 @@ if (nmax>-99):
   plt.tick_params('both', length=3, width=1, which='minor')
   minorLocator = MultipleLocator(sep)
   ax.xaxis.set_minor_locator(minorLocator)
-  plt.legend(loc='lower right',fontsize=10,fancybox=True,handlelength=3,prop={'size':7})
+  sz = np.min([11,5+80.0/count])
+  plt.legend(loc='lower right',fontsize=10,fancybox=True,
+             handlelength=3,prop={'size':sz})
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
   plt.clf()
@@ -155,7 +165,13 @@ if (nmax>-99):
   plt.tick_params('both', length=3, width=1, which='minor')
   minorLocator = MultipleLocator(sep)
   ax.xaxis.set_minor_locator(minorLocator)
-  plt.legend(loc='lower right',fontsize=6,fancybox=True,prop={'size':4})
+  sz = np.min([11,4+90.0/count])
+  col = 1
+  if (count>30): 
+    sz = np.min([11,4+180.0/count])
+    col = 2
+  plt.legend(loc='lower right',fontsize=10,fancybox=True,
+             handlelength=3,prop={'size':sz},ncol=col)
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
   plt.clf()
@@ -181,7 +197,9 @@ if (nmax>-99):
   plt.tick_params(axis='both', labelsize=14)
   plt.tick_params('both', length=6, width=1.5, which='major')
   plt.tick_params('both', length=3, width=1, which='minor')
-  plt.legend(loc='lower right',fontsize=7,fancybox=True,prop={'size':4})
+  sz = np.min([11,4+90.0/count])
+  plt.legend(loc='lower right',fontsize=10,fancybox=True,
+             handlelength=3,prop={'size':sz})
   minorLocator = MultipleLocator(sep)
   ax.xaxis.set_minor_locator(minorLocator)
   plt.tight_layout()
@@ -218,7 +236,7 @@ plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
 #minorLocator = MultipleLocator(sep)
 #ax.xaxis.set_minor_locator(minorLocator)
-plt.legend(loc='lower left',fontsize=10,fancybox=True)
+plt.legend(loc='lower right',fontsize=11,fancybox=True)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
 plt.clf()
@@ -226,7 +244,7 @@ plt.clf()
 #================== where are the elements? ================
 ellist = ['H','C','O','N','SI','S','NA','CL','CA','TI','K','AL','MG','FE','LI','F','P','NI','MN','CR','ZN','ZR','RB','CU','B','BR','V','SR','el']
 allist = [' ',' ',' ',' ','Si',' ','Na','Cl','Ca','Ti',' ','Al','Mg','Fe','Li',' ',' ','Ni','Mn','Cr','Zn','Zr','Rb','Cu',' ','Br',' ','Sr','+']
-exlist = [' He ',' Cl CL Ca CA Cr CR Co CO Cu CU ',' ',' Na NA Ni NI Mn MN ',' ',' Si SI Sr SR ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' Fe FE ',' ',' ',' ',' ',' ',' ',' ',' ',' Br BR ',' ',' ',' ',' ']
+exlist = [' He ',' Cl CL Ca CA Cr CR Co Cu CU ',' ',' Na NA Ni NI Mn MN ',' ',' Si SI Sr SR ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' Fe FE ',' ',' ',' ',' ',' ',' ',' ',' ',' Br BR ',' ',' ',' ',' ']
 titels = ['hydrogen','carbon','oxygen','nitrogen','silicon','sulphur','sodium','chlorine','calcium','titanium','potassium','aluminum','magnesium','iron','lithium','fluorine','phosphorus','nickel','manganese','chromium','zinc','zirconium','rubidium','copper','boron','bromine','vanadium','strontium','charge carriers']
 limits = [2,5,2.5,6,6,5,6,4,7,8,6,6,6,6,7,6,6,6,6,6,6,6,6,6,6,6,6,6,5]   
 for i in range(0,29):
@@ -286,7 +304,13 @@ for i in range(0,29):
   plt.tick_params('both', length=3, width=1, which='minor')
   #minorLocator = MultipleLocator(sep)
   #ax.xaxis.set_minor_locator(minorLocator)
-  plt.legend(loc='lower left',fontsize=10,fancybox=True,prop={'size':5})
+  sz = np.min([11,5+80.0/count])
+  if (el=='el'):
+    plt.legend(loc='lower right',fontsize=10,fancybox=True,
+               handlelength=3,prop={'size':sz})
+  else:  
+    plt.legend(loc='lower left',fontsize=10,fancybox=True,
+               handlelength=3,prop={'size':sz})
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
   plt.clf()

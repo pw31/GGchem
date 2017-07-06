@@ -207,14 +207,17 @@
       eps(Y ) = 2.21  
       eps(Zr) = 2.58     
 
-      !eps(C)  = eps(O) + LOG10(2.0)   ! try C/O=2
+      !eps(C)  = eps(O) + LOG10(2.Q0)     ! try C/O=2
 
-      !eps(Si) = eps(H)+20.0           ! pure SiO2 modelling ...
-      !eps(O)  = eps(Si)+LOG10(2.0)    ! Si:O = 1:2
+      !eps(Si) = eps(H)+20.0              ! pure SiO2 modelling ...
+      !eps(O)  = eps(Si)+LOG10(2.Q0)      ! Si:O = 1:2
 
-      !eps(:) = eps(:)-40.0            ! pure H2O modelling ...
+      !eps(Al) = eps(H)+30.0              ! pure Al2O3 modelling ...
+      !eps(O)  = eps(Al)+LOG10(3.Q0/2.Q0) ! Al:O = 2:3
+
+      !eps(:) = eps(:)-40.0               ! pure H2O modelling ...
       !eps(H) = 12.0
-      !eps(O) = eps(H)-LOG10(2.0)    ! H:O = 2:1
+      !eps(O) = eps(H)-LOG10(2.Q0)        ! H:O = 2:1
 
       !do i=1,NELEM
       !  if (elnam(i).ne.'  ') then
@@ -230,7 +233,7 @@
       !enddo
 
       do i=1,NELEM
-        eps(i) = 10.d0 ** (eps(i)-12.d0)
+        eps(i) = 10.Q0 ** (eps(i)-12.Q0)
       enddo
   
 *     ------------------------------------
