@@ -230,11 +230,18 @@
         endif
       enddo
       if (ambi>0) then
-        print*,"*** "//trim(molname)//", "//trim(cmol(ambi))//
-     &       " ambiguous names in ..."
-        print*,trim(dispol_file(loop))//
-     &       ", "//trim(dispol_file(source(ambi)))
-        print*,"please equalise in both data files."
-        stop 
+        if (source(ambi)==loop) then 
+          print*,trim(molname)//", "//trim(cmol(ambi))//
+     &         " different isomere in subsequent source is OK"
+          ret = 0
+          return
+        else  
+          print*,"*** "//trim(molname)//", "//trim(cmol(ambi))//
+     &         " ambiguous names in ..."
+          print*,trim(dispol_file(loop))//
+     &         ", "//trim(dispol_file(source(ambi)))
+          print*,"please equalise in both data files."
+          stop 
+        endif  
       endif  
       end
