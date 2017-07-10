@@ -244,7 +244,7 @@ plt.clf()
 #================== where are the elements? ================
 ellist = ['H','C','O','N','SI','S','NA','CL','CA','TI','K','AL','MG','FE','LI','F','P','NI','MN','CR','ZN','ZR','RB','CU','B','BR','V','SR','el']
 allist = [' ',' ',' ',' ','Si',' ','Na','Cl','Ca','Ti',' ','Al','Mg','Fe','Li',' ',' ','Ni','Mn','Cr','Zn','Zr','Rb','Cu',' ','Br',' ','Sr','+']
-exlist = [' He ',' Cl CL Ca CA Cr CR Co Cu CU ',' ',' Na NA Ni NI Mn MN ',' ',' Si SI Sr SR ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' Fe FE ',' ',' ',' ',' ',' ',' ',' ',' ',' Br BR ',' ',' ',' ',' ']
+exlist = [' He ',' Cl CL Ca CA Cr CR Co Cu CU ',' ',' Na NA Ni NI ',' ',' Si SI Sr SR ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' Fe FE ',' ',' ',' ',' ',' ',' ',' ',' ',' Br BR ',' ',' ',' ',' ']
 titels = ['hydrogen','carbon','oxygen','nitrogen','silicon','sulphur','sodium','chlorine','calcium','titanium','potassium','aluminum','magnesium','iron','lithium','fluorine','phosphorus','nickel','manganese','chromium','zinc','zirconium','rubidium','copper','boron','bromine','vanadium','strontium','charge carriers']
 limits = [2,5,2.5,6,6,5,6,4,7,8,6,6,6,6,7,6,6,6,6,6,6,6,6,6,6,6,6,6,5]   
 for i in range(0,29):
@@ -268,16 +268,18 @@ for i in range(0,29):
     if (ind < 0 and el=='el'): 
       ind = str.find(molname,'-')
     if (ind >= 0):
-      next = molname[ind:ind+2]
-      #print mol,keyword[mol],next,str.find(ex,next),len(next)
-      if (len(next)==1 or str.find(ex,next)==-1 or molname=='SIS'):
-        yy = dat[:,mol]                # log10 nmol [cm-3]
-        yy = yy - lognH                # log10 nmol/n<H>
-        nmax = np.max([nmax,np.max(yy[iii])])
-        maxy = maxy + 10**yy
-        if (molname=='el'): nmin = np.min([nmin,np.min(yy[iii])])
-        mollist.append(mol)   
-        abulist.append(np.mean(yy))
+      next1 = molname[ind:ind+2]
+      next2 = molname[ind-1:ind+1]
+      #print keyword[mol],next1,str.find(ex,next1),len(next1)
+      if (len(next1)==1 or str.find(ex,next1)==-1 or molname=='SIS'):
+        if (next2!='MN' and next2!='ZN' and next2!='CO'):
+          yy = dat[:,mol]                # log10 nmol [cm-3]
+          yy = yy - lognH                # log10 nmol/n<H>
+          nmax = np.max([nmax,np.max(yy[iii])])
+          maxy = maxy + 10**yy
+          if (molname=='el'): nmin = np.min([nmin,np.min(yy[iii])])
+          mollist.append(mol)   
+          abulist.append(np.mean(yy))
   if (nmax==-100): continue
   indices = np.argsort(abulist)
   count = 0
