@@ -18,13 +18,15 @@ f.close()
 Rgas = 8.1344598   # J/mol/K
 cal  = 4.184       # 1 cal in J
 mmHg = 1.3328E+3   # 1 mmHg in dyn/cm2
+bar  = 1.00E+6     # 1 bar in dyn/cm2
 
-chemnam = 'Fe'     #choose specie
+chemnam = 'LiOH'     #choose specie
 
 for phase in ['_cr','_l']:
   if os.path.isfile(chemnam+phase+'.txt'):
     f = open(chemnam+phase+'.txt','r')
     header = f.readline().split()
+    f.close()
     molecule = header[-1]
     print molecule
     atoms = [] 
@@ -37,11 +39,26 @@ for phase in ['_cr','_l']:
         stoich.append(float(i))  #stoich coeff
     print atoms
     print stoich
-    f.close()
     data = np.genfromtxt(chemnam+phase+'.txt',skip_header=3,usecols=(0,6),dtype=float,invalid_raise=False)
     data = data[~np.any(np.isnan(data), axis=1)]
     tdat = data[:,0]
     gdat = data[:,1]
+    if os.path.isfile(chemnam+'.txt'):
+        gas = np.genfromtxt(chemnam+'.txt',skip_header=3,usecols=(0,6),dtype=float,invalid_raise=False)
+        gas = gas[~np.any(np.isnan(gas), axis=1)]
+        length = len(gas)
+        i=0
+        while not i==length:
+            #print i,length
+            if gas[i,0] not in tdat:
+                #print data[i]
+                gas = np.delete(gas,i,0)
+                length = len(gas)
+                continue
+            i=i+1
+        pdat = bar*np.exp(1000*(gdat-gas[:,1])/(Rgas*tdat))   #now in dyn/cm2
+        if (phase=='_cr'): spdat = pdat; stdat = tdat
+        if (phase=='_l'):  lpdat = pdat; ltdat = tdat
     j=0
     for atom in atoms[:-1]:
         data = np.genfromtxt(atom+'.txt',skip_header=3,usecols=(0,6),dtype=float,invalid_raise=False)
@@ -72,14 +89,14 @@ def yaws(T,A,B,C,D,E):
     return val*mmHg
 
 def newf(T,A,B,C):
-    val = A + B/(T + C)
+    val = np.exp(A + B/(T + C))
     return val
 
 def stock(T,A,B,C,D,E):
     val = - Rgas*T*(A/T + B*np.log(T) + C + D*T + E*T**2)
     return val
 
-tmin = 50
+tmin = 100
 tmax = 6000
 temp = np.arange(tmin,tmax,1)
 
@@ -99,7 +116,7 @@ for line1 in lines:
                         else:
                             fit1 = np.exp(poly(temp,*data1[3:8]))
                     elif (data1[2] == 'Woitke?'):
-                        fit1 = np.exp(newf(temp,*data1[3:6]))
+                        fit1 = newf(temp,*data1[3:6])
                     elif (data1[2] == 'Yaws'):
                         fit1 = yaws(temp,*data1[3:8])
                     elif (data1[2] == 'S&H'):
@@ -112,7 +129,7 @@ for line1 in lines:
                         else:
                             fit2 = np.exp(poly(temp,*data2[3:8]))
                     elif (data2[2] == 'Woitke?'):
-                        fit2 = np.exp(newf(temp,*data2[3:6]))
+                        fit2 = newf(temp,*data2[3:6])
                     elif (data2[2] == 'Yaws'):
                         fit2 = yaws(temp,*data2[3:8])
                     elif (data2[2] == 'S&H'):
@@ -122,9 +139,6 @@ for line1 in lines:
                     fig,ax = plt.subplots()
                     pmax = np.max([fit1,fit2])
                     pmin = np.min([fit1,fit2])
-                    if (data1[1] == 'pvap'):
-                        plt.yscale('log')
-                        pmin = np.max([pmin,pmax*1.E-25])
                     minorLocator = MultipleLocator(100)
                     ax.xaxis.set_minor_locator(minorLocator)
                     plt.plot(temp,fit1,label = data1[0],color='orange')
@@ -133,6 +147,10 @@ for line1 in lines:
                     value = data1[1]
                     if (value == 'pvap'):
                         unit = '[dyn/cm2]'
+                        plt.yscale('log')
+                        pmin = np.max([pmin,pmax*1.E-25])
+                        plt.scatter(stdat,spdat,color='darkorange',marker='.',label='data(s)')
+                        plt.scatter(ltdat,lpdat,color='dodgerblue',marker='.',label='data(l)')
                     if (value == 'dg'):
                         unit = '[J/mol]'
                         plt.scatter(stdat,sgdat,color='darkorange',marker='.',label='data(s)')
@@ -210,19 +228,24 @@ for line1 in lines:
                         fit = np.exp(poly(temp,*data2[3:8]))
                         plt.yscale('log')
                 elif (data2[2] == 'Woitke?'):
-                    fit = np.exp(newf(temp,*data2[3:6]))
+                    fit = newf(temp,*data2[3:6])
                     plt.yscale('log')
                 elif (data2[2] == 'Stock'):
                     fit = stock(temp,*data2[3:8])
+                print data2
                 plt.plot(temp,fit,label = data2[2])
         specie = data1[0]
         value = data1[1]
         if (value == 'pvap'):
             unit = '[dyn/cm2]'
+            if (data1[2] != 'Yaws'):
+              if (data1[0][-2]=='s'): plt.scatter(stdat,spdat,marker='.',label='data')
+              if (data1[0][-2]=='l'): plt.scatter(ltdat,lpdat,marker='.',label='data')
         if (value == 'dg'):
             unit = '[J/mol]'
-            if (data1[0][-2]=='s'): plt.scatter(stdat,sgdat,marker='.',label='data')
-            if (data1[0][-2]=='l'): plt.scatter(ltdat,lgdat,marker='.',label='data')
+            if (data2[2] != 'S&H'):
+              if (data1[0][-2]=='s'): plt.scatter(stdat,sgdat,marker='.',label='data')
+              if (data1[0][-2]=='l'): plt.scatter(ltdat,lgdat,marker='.',label='data')
         plt.xlim(tmin,tmax)
         plt.title(specie)
         plt.xlabel('T [K]')
