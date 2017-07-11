@@ -7,6 +7,8 @@ pp = PdfPages('ggchem.pdf')
 
 mmHg = 1.3328E+3   # 1 mmHg in dyn/cm2
 def yaws(T,A,B,C,D,E):
+    #print A,B,C,D,E
+    #print T
     val = 10**(A + B/T + C*np.log10(T) + D*T + E*T**2)
     return val*mmHg
 
@@ -29,18 +31,26 @@ Tg    = dat[:,0]                 # T [K]
 nHtot = dat[:,1]                 # n<H> [cm-3]
 lognH = np.log10(nHtot)          
 press = dat[:,2]                 # p [dyn/cm2]
-pmin  = np.min(press)/bar
-pmax  = np.max(press)/bar
-pmin  = pmin*0.9
-pmax  = pmax*1.1
-nHmin = np.min(nHtot)
-nHmax = np.max(nHtot)
-nHmin = nHmin*0.9
-nHmax = nHmax*1.1
 Tmin  = np.min(Tg)
 Tmax  = np.max(Tg)
 #if (Tmax>4*Tmin): Tmax=4*Tmin
 #if (Tmin<Tmax/3): Tmin=Tmax/3
+#Tmin  = 1100
+iii   = np.where((Tg>Tmin) & (Tg<Tmax))[0]
+pmin  = np.min(press[iii])/bar
+pmax  = np.max(press[iii])/bar
+pmin  = pmin*0.9
+pmax  = pmax*1.1
+if (pmax>pmin*5): 
+  pmin = pmin/2.0
+  pmax = pmax*2.0
+nHmin = np.min(nHtot[iii])
+nHmax = np.max(nHtot[iii])
+nHmin = nHmin*0.9
+nHmax = nHmax*1.1
+if (nHmax>nHmin*5): 
+  nHmin = nHmin/2.0
+  nHmax = nHmax*2.0
 sep = 20
 if (Tmax-Tmin>1500): sep=100
 if (Tmax-Tmin<500): sep=10
@@ -63,9 +73,16 @@ plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
 minorLocator = MultipleLocator(sep)
 ax.xaxis.set_minor_locator(minorLocator)
-#cAl2O3 = [ 14.1611, -2.8238E+04, -7.3843E-01, -3.7413E-07, 2.2086E-11 ]
-#pvap = yaws(Tg,*cAl2O3[0:5])
-#plt.plot(Tg,pvap/bar,lw=2)
+cAl2O3 = [  14.1611, -2.8238E+04, -7.3843E-01, -3.7413E-07, 2.2086E-11, 2421, 3253 ]
+cSiO2  = [-378.5210,  6.5473E+03,  1.3150E+02, -3.5774E-02, 3.4220E-06, 1883, 2503 ]
+cH2O   = [  29.8605, -3.1522E+03, -7.3037E+00,  2.4247E-09, 1.8090E-06,  273,  647 ]
+cFe    = [  11.5549, -1.9538E+04, -6.2549E-01, -2.7182E-09, 1.9086E-13, 1800, 3000 ]
+cc = cH2O
+Tyaws1 = cc[5]
+Tyaws2 = cc[6]
+Tyaws  = np.arange(Tyaws1, Tyaws2, 0.1)
+pvap   = yaws(Tyaws,*cc[0:5])
+plt.plot(Tyaws,pvap/bar,lw=2)
 #fmt=ScalarFormatter(useOffset=False)
 #fmt.set_scientific(False)
 #ax.yaxis.set_major_formatter(fmt)
@@ -94,7 +111,6 @@ plt.savefig(pp,format='pdf')
 plt.clf()
 
 #================== solid particle densities ===================
-iii = np.where((Tg>Tmin) & (Tg<Tmax))[0]
 solids = []
 smean = []
 nmax = float(-100)

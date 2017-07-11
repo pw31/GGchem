@@ -194,7 +194,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        !if (qread>1.Q-3.and.iread==346) verbose=2
+        if (qread>1.Q-3.and.iread==127) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -242,7 +242,7 @@
         dscale(i) = xmin                        ! max dust abundances
       enddo   
 
-      call GGCHEM(nHtot,T,eps,.false.,0)        ! one call from scratch
+      call GGCHEM(nHtot,T,eps,.false.,verbose)  ! one call from scratch
       xstep(:) = 0.Q0             
       call SUPER(nHtot,T,xstep,eps,Sat0)
       qual = SQUAL(Sat0,active)
@@ -1007,6 +1007,7 @@
      >                       ddust,eps,dscale,active,ok)
             endif  
             eps(Fe) = eps_save(Fe)
+            eps(O)  = eps_save(O)
           endif   
           if (active(iAl2O3).and.active(iAl2O3_l)) then
             changed = .true.
