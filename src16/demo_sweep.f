@@ -110,9 +110,9 @@
      &  //"OH_g CH_g CN_g HCO_g HCN_g NH_g NO_g NH2_g C2_g CH2_g CH3_g " 
      &  //"C2H_g HNO_g (CN)2_g C2H4_g C3_g C2N_g C2O_g "
      &  //"SiO_g SiH4_g SiS_g SiO2_g SiH_g SiN_g SiC_g Si2C_g SiC2_g "
-     &  //"Si2N_g Si2_g Si3_g Si(CH3)4_g SiH3Cl_g SiH2Cl2_g "            
+     &  //"Si2N_g Si2_g Si3_g Si(CH3)4_g SiH3Cl_g SiH2Cl2_g "            ! SiH3 missing
      &  //"H2S_g HS_g S2_g COS_g SO_g SO2_g SSO_g NS_g CS_g CS2_g "
-     &  //"O2S(OH)2_g "
+     &  //"O2S(OH)2_g "                                                  ! S2O missing
      &  //"Na2_g NaO_g NaOH_g (NaOH)2_g NaH_g NaCN_g Na2SO4_g "
      &  //"HCl_g NaCl_g (NaCl)2_g CaCl_g CaCl2_g SiCl_g "
      &  //"CaOH_g Ca(OH)2_g CaS_g CaO_g Ca2_g "                          ! CaH missing
@@ -123,15 +123,15 @@
      &  //"AlCl2_g AlCl3_g (AlCl3)2_g AlO_g AlO2_g OAlH_g AlC_g "
      &  //"OAlCl_g AlN_g "
      &  //"Mg(OH)2_g MgOH_g MgH_g MgCl2_g MgS_g MgCl_g MgO_g MgN_g "
-     &  //"(MgCl2)2_g Fe(OH)2_g FeCl_g FeCl2_g FeO_g FeS_g "             ! FeH missing
+     &  //"(MgCl2)2_g Mg2_g "
+     &  //"Fe(OH)2_g FeCl_g FeCl2_g FeO_g FeS_g "                        ! FeH missing
      &  //"LiCl_g LiOH_g LiH_g LiO_g (LiOH)2_g (LiCl)2_g (LiCl)3_g "  
-     &  //"LiN_g "    
+     &  //"LiN_g LiONa_g Li2O_g LiON_g "    
 
       !--- TEA complete ---
       NISTspecies = trim(species)
-     &  //"Li2_g Li2O_g Li2SO4_g LiN_g (LiO)2_g LiOCl_g LiONa_g LiON_g " ! new Li
+     &  //"Li2_g Li2SO4_g LiN_g (LiO)2_g LiOCl_g "                       ! new Li
      &  //"(FeCl2)2_g (FeCl3)2_g FeCl3_g Fe(CO)5_g "                     ! new Fe
-     &  //"Mg2_g "                                                       ! new Mg
      &  //"Al2_g "                                                       ! new Al
      &  //"(NaCN)2_g "                                                   ! new Na
      &  //"(KCN)2_g "                                                    ! new K

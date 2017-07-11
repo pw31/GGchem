@@ -121,7 +121,7 @@
       integer e,i,j,j1,ii,jj,kk,l,it,m1,m2,piter,iraus,itry
       integer Nseq,imin,imax,enew,e2,eseq(nel)
       integer,parameter :: itmax=200,Ncmax=16
-      real(kind=qp),parameter :: finish=1.Q-25
+      real(kind=qp) :: finish
       real(kind=qp) :: ppp,qqq
       real(kind=qp) :: g(0:nml),limit,condnum1,work(nel)
       real(kind=qp) :: kT,kT1,nelek,ng,Sa,Nenner,fak,lth,arg,term
@@ -1334,7 +1334,9 @@ c     g(TiC)   : siehe oben!
         eact(:) = .true.
         conv(:,:) = 9.Q+99
         switchoff(:) = 0
+        finish=1.Q-25
  300    continue
+        if (it>30) finish=10.Q0**(-25.0+20.0*(it-30.0)/(itmax-30.0))
         Nact = 0
         ii = 0
         do i=1,nel
