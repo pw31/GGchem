@@ -1336,7 +1336,7 @@ c     g(TiC)   : siehe oben!
         switchoff(:) = 0
         finish=1.Q-25
  300    continue
-        if (it>30) finish=10.Q0**(-25.0+20.0*(it-30.0)/(itmax-30.0))
+        if (it>30) finish=10.Q0**(-25.0+21.0*(it-30.0)/(itmax-30.0))
         Nact = 0
         ii = 0
         do i=1,nel
@@ -1440,7 +1440,7 @@ c     g(TiC)   : siehe oben!
         enddo
         if (it>itmax-10) then
           verbose=2
-          do ii=1,nact
+          do ii=1,Nact
             i = act_to_all(ii) 
             print'(A3,2(1pE12.3))',catm(i),
      >           anmono(i),-dp(ii)/(anmono(i)*kT) 
@@ -1452,7 +1452,7 @@ c     g(TiC)   : siehe oben!
         if (verbose>1) print'(i3,i3,2(1pE9.1)," converged(",i2,"):",
      >                    A50)',it,Nact,converge(it),limit,Nconv,txt
         if (it==itmax) then 
-          write(*,*) '*** keine Konvergenz in SMCHEM!'
+          write(*,*) '*** keine Konvergenz in SMCHEM16!'
           write(*,*) 'it, converge, ind =',it,converge(it),limit
           write(*,*) '  n<H>, T =',anhges,Tg
           !if (from_merk) then

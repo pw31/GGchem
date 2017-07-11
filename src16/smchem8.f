@@ -1465,7 +1465,7 @@ c     g(TiC)   : siehe oben!
         if (verbose>0) print'(i3,i3,2(1pE9.1)," converged(",i2,"):",
      >                    A50)',it,Nact,converge(it),fak-1.d0,Nconv,txt
         if (it==itmax) then 
-          write(*,*) '*** keine Konvergenz in SMCHEM!'
+          write(*,*) '*** keine Konvergenz in SMCHEM8!'
           write(*,*) 'it, converge, ind =',it,converge(it),limit
           write(*,*) '  n<H>, T =',anhges,Tg
           if (from_merk) then

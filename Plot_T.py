@@ -73,11 +73,13 @@ plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
 minorLocator = MultipleLocator(sep)
 ax.xaxis.set_minor_locator(minorLocator)
-cAl2O3 = [  14.1611, -2.8238E+04, -7.3843E-01, -3.7413E-07, 2.2086E-11, 2421, 3253 ]
-cSiO2  = [-378.5210,  6.5473E+03,  1.3150E+02, -3.5774E-02, 3.4220E-06, 1883, 2503 ]
-cH2O   = [  29.8605, -3.1522E+03, -7.3037E+00,  2.4247E-09, 1.8090E-06,  273,  647 ]
-cFe    = [  11.5549, -1.9538E+04, -6.2549E-01, -2.7182E-09, 1.9086E-13, 1800, 3000 ]
-cc = cH2O
+cAl2O3 = [  14.1611, -2.8238E+04, -7.3843E-01, -3.7413E-07,  2.2086E-11, 2421, 3253 ]
+cSiO2  = [-378.5210,  6.5473E+03,  1.3150E+02, -3.5774E-02,  3.4220E-06, 1883, 2503 ]
+cH2O   = [  29.8605, -3.1522E+03, -7.3037E+00,  2.4247E-09,  1.8090E-06,  273,  647 ]
+cFe    = [  11.5549, -1.9538E+04, -6.2549E-01, -2.7182E-09,  1.9086E-13, 1800, 3000 ]
+cNH3   = [  37.1575, -2.0277E+03, -1.1601E+01,  7.4625E-03, -9.5811E-12,  195,  406 ]
+cCO2   = [  35.0187, -1.5119E+03, -1.1335E+01,  9.3383E-03,  7.7626E-10,  216,  305 ]
+cc = cCO2
 Tyaws1 = cc[5]
 Tyaws2 = cc[6]
 Tyaws  = np.arange(Tyaws1, Tyaws2, 0.1)
@@ -288,7 +290,7 @@ for i in range(0,29):
       next2 = molname[ind-1:ind+1]
       #print keyword[mol],next1,str.find(ex,next1),len(next1)
       if (len(next1)==1 or str.find(ex,next1)==-1 or molname=='SIS'):
-        if (next2!='MN' and next2!='ZN' and next2!='CO'):
+        if (next2!='MN' and next2!='ZN'):
           yy = dat[:,mol]                # log10 nmol [cm-3]
           yy = yy - lognH                # log10 nmol/n<H>
           nmax = np.max([nmax,np.max(yy[iii])])

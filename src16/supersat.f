@@ -11,11 +11,11 @@
       real(kind=qp),intent(in) :: nat(NELEM),nmol(NMOLE)
       real(kind=qp),intent(out):: Sat(NDUST)
       real(kind=qp),parameter :: cal=4.184Q+0 
-      real(kind=qp),parameter :: mmHg=1.333Q+3 ! mmHg --> dyn/cm2
+      real(kind=qp),parameter :: mmHg=1.3328Q+3 ! mmHg --> dyn/cm2
       real(kind=qp) :: TT,kT,dG,lbruch,lresult,pst,psat,term,ex,TC,S2
       integer :: i,j,STINDEX,el
       integer,save :: TiO2,SiO,H2O,NH3,CH4,SiO2,CaCl2,H2SO4,FeS,NaCl
-      integer,save :: KCl,FeO,MgO,AlCl3,LiCl,TiO,LiOH,LiH
+      integer,save :: KCl,FeO,MgO,AlCl3,LiCl,TiO,LiOH,LiH,CO,CO2
       logical,save :: firstCall=.true.
 *
       if (firstCall) then
@@ -25,6 +25,8 @@
         H2O   = STINDEX(cmol,NMOLE,'H2O      ')
         NH3   = STINDEX(cmol,NMOLE,'NH3      ')
         CH4   = STINDEX(cmol,NMOLE,'CH4      ')
+        CO    = STINDEX(cmol,NMOLE,'CO       ')
+        CO2   = STINDEX(cmol,NMOLE,'CO2      ')
         CaCl2 = STINDEX(cmol,NMOLE,'CACL2    ')
         H2SO4 = STINDEX(cmol,NMOLE,'H2SO4    ')
         FeS   = STINDEX(cmol,NMOLE,'FES      ')
@@ -560,7 +562,7 @@
           !psat = mmHg*EXP(10.86423Q0 - 5619.406Q0/TT + 3.45Q-6*TT)
           !Sat(i) = nat(Na)*kT/psat
           !print*,TT,Sat(i)
-          pst = bar
+          !pst = bar
           !dG = 2.93259Q+04/TT 
      &    !    -1.08994Q+05  
      &    !    +1.13076Q+02*TT 
@@ -1088,6 +1090,28 @@
           !--------------------------------------------------------------------
           psat = exp(10.53 - 2161.Q0/TT - 86596.Q0/TT**2)*bar
           Sat(i) = nmol(NH3)*kT/psat
+ 
+        else if (dust_nam(i).eq.'CO[s]') then
+          !-----------------------------------------------------------------------
+          !***  CO[s]: Chemical Properties Handbook (McGraw-Hill 199)  68-132K ***
+          !-----------------------------------------------------------------------
+          psat = 10.0**(51.8145Q+00 
+     &                  -7.8824Q+02/TT 
+     &                  -2.2734Q+01*log10(TT) 
+     &                  +5.1225Q-02*TT
+     &                  +4.6603Q-11*TT**2) * mmHg
+          Sat(i) = nmol(CO)*kT/psat
+ 
+        else if (dust_nam(i).eq.'CO2[s]') then
+          !-------------------------------------------------------------------------
+          !***  CO2[s]: Chemical Properties Handbook (McGraw-Hill 199)  216-305K ***
+          !-------------------------------------------------------------------------
+          psat = 10.0**(35.0187Q+00 
+     &                  -1.5119Q+03/TT 
+     &                  -1.1335Q+01*log10(TT) 
+     &                  +9.3383Q-03*TT
+     &                  +7.7626Q-10*TT**2) * mmHg
+          Sat(i) = nmol(CO2)*kT/psat
  
         else if (dust_nam(i).eq.'CH4[s]') then
           !---------------------------------------------------------------------
