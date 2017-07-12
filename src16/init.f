@@ -218,7 +218,7 @@
       !eps(O)  = eps(Al)+LOG10(3.Q0/2.Q0) ! Al:O = 2:3
 
       !eps(C)  = eps(H)+30.0              ! pure CO2 modelling ...
-      !eps(O)  = eps(C)+LOG10(2.Q0)       ! C:O = 1:2
+      !eps(O)  = eps(C)+LOG10(2.0000000000001Q0)       ! C:O = 1:2
 
       !eps(:)  = eps(:)-30.0              ! pure NH3 modelling ...
       !eps(H)  = 12.0
