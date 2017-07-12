@@ -17,7 +17,7 @@ To checkout the git repository and compile the code, use
 > cp makefile.prodimo makefile
 > make
 
-The makefile.prodimo is for ifort compiler, adjust your own makfile if
+The makefile.prodimo is for ifort compiler, adjust your own makefile if
 you want to compile e.g. with gfortran.
 
 ----------------------------------------------------------------------
@@ -39,15 +39,15 @@ To visualise the results, use e.g.
 > evince ggchem.pdf &
 
 ----------------------------------------------------------------------
-Customize MyModel.in to tell GGchem what it should do.  Select or
+Customise MyModel.in to tell GGchem what it should do.  Select or
 deselect elements by modifying the first line, default choice is
 
  H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li el
 
 where "el" means to include atomic and molecular ions, and the
-electron density as well, assuming charge equilibrium.  Molecules
-listed below are included if they are made of the selected elements,
-otherwise they will be ignored.
+electron density as well, assuming charge equilibrium.  Molecules are
+included if they are made of the selected elements, otherwise they
+will be ignored.
 
 ----------------------------------------------------------------------
 Choose element abundances with parameter abund_pick. The default
@@ -59,7 +59,25 @@ al.(2009). There are additional pre-installed options to use data from
 src16/init.f.
 
 ----------------------------------------------------------------------
-Choose whether you want to contrain the pressure (model_pconst=.true.)
+Choose source for equilibrium constant kp(T)-data, default choice is 
+dispol_new.dat. There are 6 different fit-formulas implemented, see
+details in src16/smchem16.f (function gk). Data files having kp-data
+are 
+
+dispol_new.dat
+dispol_new_StockKitzmann.dat    : 2008, Diplomarbeit TU Berlin
+dispol_new_BarklemCollet.dat    : 2016, A&A 588, A96
+dispol_new_SharpHuebner.dat     : 1990, ApJSS 72, 417
+dispol_new_Tsuji.dat            : 1973, A&A 23, 411
+dispol_new_GGchem.dat           : own NIST-Janaf fits
+
+You can use combinations by setting dispol_file, dispol_file2, 
+dispol_file3, dispol_file4 in your MyModel.in file, in which case 
+the latter have preference over the former, and will overwrite 
+previous data.
+
+----------------------------------------------------------------------
+Choose whether you want to constrain the pressure (model_pconst=.true.)
 or the mass density (model_pconst=.false.).
 
 ----------------------------------------------------------------------
