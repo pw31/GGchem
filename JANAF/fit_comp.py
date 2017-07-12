@@ -20,7 +20,7 @@ cal  = 4.184       # 1 cal in J
 mmHg = 1.3328E+3   # 1 mmHg in dyn/cm2
 bar  = 1.00E+6     # 1 bar in dyn/cm2
 
-chemnam = 'LiOH'     #choose specie
+chemnam = 'CaCl2'     #choose specie
 
 for phase in ['_cr','_l']:
   if os.path.isfile(chemnam+phase+'.txt'):
@@ -232,7 +232,6 @@ for line1 in lines:
                     plt.yscale('log')
                 elif (data2[2] == 'Stock'):
                     fit = stock(temp,*data2[3:8])
-                print data2
                 plt.plot(temp,fit,label = data2[2])
         specie = data1[0]
         value = data1[1]
