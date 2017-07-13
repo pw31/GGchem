@@ -20,7 +20,7 @@ cal  = 4.184       # 1 cal in J
 mmHg = 1.3328E+3   # 1 mmHg in dyn/cm2
 bar  = 1.00E+6     # 1 bar in dyn/cm2
 
-chemnam = 'CaCl2'     #choose specie
+chemnam = 'TiO2'     #choose specie
 
 for phase in ['_cr','_l']:
   if os.path.isfile(chemnam+phase+'.txt'):
