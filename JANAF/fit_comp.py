@@ -20,7 +20,7 @@ cal  = 4.184       # 1 cal in J
 mmHg = 1.3328E+3   # 1 mmHg in dyn/cm2
 bar  = 1.00E+6     # 1 bar in dyn/cm2
 
-chemnam = 'TiO2'     #choose specie
+chemnam = 'Fe'     #choose specie
 
 for phase in ['_cr','_l']:
   if os.path.isfile(chemnam+phase+'.txt'):
@@ -75,7 +75,7 @@ for phase in ['_cr','_l']:
             i=i+1
         gdat = gdat - stoich[j]*data[:,1]
         j=j+1
-    gdat = 1000*gdat   #now in J/mol
+    #gdat = 1000*gdat   #now in J/mol
     if (phase=='_cr'): sgdat = gdat; stdat = tdat
     if (phase=='_l'):  lgdat = gdat; ltdat = tdat
 
@@ -117,8 +117,8 @@ for line1 in lines:
                             fit1 = np.exp(poly(temp,*data1[3:8]))
                     elif (data1[2] == 'Woitke?'):
                         fit1 = newf(temp,*data1[3:6])
-                    elif (data1[2] == 'Yaws'):
-                        fit1 = yaws(temp,*data1[3:8])
+                    #elif (data1[2] == 'Yaws'):
+                        #fit1 = yaws(temp,*data1[3:8])
                     elif (data1[2] == 'S&H'):
                         fit1 = poly(temp,*data1[3:8])*cal
                     elif (data1[2] == 'Stock'):
@@ -130,13 +130,17 @@ for line1 in lines:
                             fit2 = np.exp(poly(temp,*data2[3:8]))
                     elif (data2[2] == 'Woitke?'):
                         fit2 = newf(temp,*data2[3:6])
-                    elif (data2[2] == 'Yaws'):
-                        fit2 = yaws(temp,*data2[3:8])
+                    #elif (data2[2] == 'Yaws'):
+                        #fit2 = yaws(temp,*data2[3:8])
                     elif (data2[2] == 'S&H'):
                         fit2 = poly(temp,*data2[3:8])*cal
                     elif (data2[2] == 'Stock'):
                         fit2 = stock(temp,*data2[3:8])
                     fig,ax = plt.subplots()
+                    if (data1[1] == 'dg'):
+                        fit1 = fit1/1000 #kJ/mol
+                    if (data2[1] == 'dg'):
+                        fit2 = fit2/1000 #kJ/mol
                     pmax = np.max([fit1,fit2])
                     pmin = np.min([fit1,fit2])
                     minorLocator = MultipleLocator(100)
@@ -152,10 +156,11 @@ for line1 in lines:
                         plt.scatter(stdat,spdat,color='darkorange',marker='.',label='data(s)')
                         plt.scatter(ltdat,lpdat,color='dodgerblue',marker='.',label='data(l)')
                     if (value == 'dg'):
-                        unit = '[J/mol]'
+                        unit = '[kJ/mol]'
                         plt.scatter(stdat,sgdat,color='darkorange',marker='.',label='data(s)')
                         plt.scatter(ltdat,lgdat,color='dodgerblue',marker='.',label='data(l)')
-                    plt.title(specie+' '+data1[2])
+                    #plt.title(specie+' '+data1[2])
+                    plt.title(specie)
                     plt.xlabel('T [K]')
                     plt.ylabel(value +' '+ unit)
                     plt.xlim(tmin,tmax)
@@ -177,7 +182,8 @@ for line1 in lines:
                       plt.plot(temp,fit1-fit2)
                       plt.plot(temp,0*temp,c='black',ls='--')
                       plt.ylabel(data1[0]+' - '+data2[0])
-                    plt.title(specie+' '+data1[2])
+                    #plt.title(specie+' '+data1[2])
+                    plt.title(specie)
                     plt.xlabel('T [K]')
                     plt.xlim(tmin,tmax)
                     Nt = temp.size
@@ -216,9 +222,9 @@ for line1 in lines:
             if (data1[0:2] == data2[0:2]):
                 for i in range(3,8):
                     data2[i] = float(data2[i])
-                if (data2[2] == 'Yaws'):
-                    fit = yaws(temp,*data2[3:8])
-                    plt.yscale('log')
+                if (data2[2] == 'Yaws'): continue
+                    #fit = yaws(temp,*data2[3:8])
+                    #plt.yscale('log')
                 elif (data2[2] == 'S&H'):
                     fit = poly(temp,*data2[3:8])*cal
                 elif (data2[2] == 'poly'):
@@ -232,6 +238,8 @@ for line1 in lines:
                     plt.yscale('log')
                 elif (data2[2] == 'Stock'):
                     fit = stock(temp,*data2[3:8])
+                if (data2[1] == 'dg'):
+                        fit = fit/1000 #kJ/mol
                 plt.plot(temp,fit,label = data2[2])
         specie = data1[0]
         value = data1[1]
@@ -241,7 +249,7 @@ for line1 in lines:
               if (data1[0][-2]=='s'): plt.scatter(stdat,spdat,marker='.',label='data')
               if (data1[0][-2]=='l'): plt.scatter(ltdat,lpdat,marker='.',label='data')
         if (value == 'dg'):
-            unit = '[J/mol]'
+            unit = '[kJ/mol]'
             if (data2[2] != 'S&H'):
               if (data1[0][-2]=='s'): plt.scatter(stdat,sgdat,marker='.',label='data')
               if (data1[0][-2]=='l'): plt.scatter(ltdat,lgdat,marker='.',label='data')
