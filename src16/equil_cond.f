@@ -50,7 +50,7 @@
       integer :: imaxon,iminoff,info,ipvt(NELEM),e_num(NELEM)
       integer :: Nunsolved,unsolved(NELEM),Nvar1,Nvar2,var(NELEM)
       integer :: Nsolve,ebest,dbest,nonzero,itrivial,iread,ioff
-      integer :: ifail,Nact_save
+      integer :: ifail,Nact_save,imax
       integer :: act_to_elem(NELEM),act_to_dust(NELEM)
       integer :: Nzero,Ntrivial,etrivial(NELEM),dtrivial(NELEM)
       logical,dimension(NELEM) :: e_resolved,e_act,e_taken,is_esolved
@@ -282,7 +282,13 @@
             Sat1(i)=Sat0(i)**(1.Q0/pot(i))
             !print'(A15,0pF8.3)',dust_nam(i),pot(i)
           enddo 
+          Smax = 0.Q0
+          imax = 0
           do i=1,NDUST
+            if (Sat1(i)>Smax) then
+              Smax = Sat1(i)
+              imax = i
+            endif  
             if (Sat1(i)>1.Q0.and.(.not.active(i))) then
               turnon = Sat1(i)-1.Q0 
               if (i==iMg2SiO4) turnon=turnon*10.0
@@ -292,13 +298,13 @@
               endif  
             endif  
           enddo  
-          if (verbose>0.and.maxon>0.Q0) then
-            print'("  maxon =",1pE10.2,2x,A12)',maxon,dust_nam(imaxon)
-          endif 
+          if (verbose>0) print'("limited,Smax =",L2,1pE10.2,2x,A12)',
+     >                   limited,Smax,dust_nam(imax)
+          if (verbose>0.and.maxon>0.Q0) print'("  maxon =",
+     >                   1pE10.2,2x,A12)',maxon,dust_nam(imaxon)
           active_save = active 
           Nact_save = Nact
-          Smax = maxval(Sat1)
-          if (maxon>0.1*MAX(Smax-1.Q0,0.Q0)) then
+          if (maxon>0.0*MAX(Smax-1.Q0,0.Q0)) then
             if (imaxon.ne.iminoff) then 
               active(imaxon) = .true.
             endif  
@@ -545,6 +551,8 @@
               call TRANSFORM(iFe2SiO4,iSiO2,amount,1.Q0*2.Q0,
      >                       ddust,eps,dscale,active,ok)
             endif  
+            eps(Fe) = eps_save(Fe)
+            eps(Si) = eps_save(Si)
           endif   
           if (active(iFeO_l).and.active(iFe2SiO4).and.
      >        active(iSiO2)) then
@@ -566,7 +574,9 @@
      >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iFe2SiO4,iSiO2,amount,1.Q0*2.Q0,
      >                       ddust,eps,dscale,active,ok)
-            endif  
+            endif
+            eps(Fe) = eps_save(Fe)
+            eps(Si) = eps_save(Si)
           endif   
           if (active(iFeO_l).and.active(iFe2SiO4).and.
      >        active(iSiO2_l)) then
@@ -589,6 +599,8 @@
               call TRANSFORM(iFe2SiO4,iSiO2_l,amount,1.Q0*2.Q0,
      >                       ddust,eps,dscale,active,ok)
             endif  
+            eps(Fe) = eps_save(Fe)
+            eps(Si) = eps_save(Si)
           endif   
           if (active(iFeO_l).and.active(iFe_l).and..false.) then
             changed = .true.
@@ -606,6 +618,7 @@
               call TRANSFORM(iFe_l,iFeO_l,amount,1.Q0,
      >                       ddust,eps,dscale,active,ok)
             endif  
+            eps(Fe) = eps_save(Fe)
           endif   
           if (active(iSiO).and.active(iMgSiO3).and.
      >        active(iMg2SiO4).and..false.) then
@@ -627,9 +640,11 @@
               call TRANSFORM(iMgSiO3,iMg2SiO4,amount,0.5Q0*2.Q0,
      >                       ddust,eps,dscale,active,ok)
             endif  
+            eps(Mg) = eps_save(Mg)
+            eps(Si) = eps_save(Si)
           endif
           if (active(iSiO2).and.active(iMgSiO3).and.
-     >        active(iMg2SiO4).and..false.) then
+     >        active(iMg2SiO4)) then
             changed = .true.
             !--- decide ---
             if (Sat0(iMgSiO3).gt.Sat0(iSiO2)) then
@@ -725,6 +740,8 @@
               call TRANSFORM(iCaTiO3,iCaMgSi2O6,amount,1.Q0*2.Q0,
      >                       ddust,eps,dscale,active,ok)
             endif  
+            eps(Ca) = eps_save(Ca)
+            eps(Ti) = eps_save(Ti)
           endif  
           if (active(iCaMgSi2O6).and.active(iCaSiO3).and.
      >        active(iMgSiO3_l)) then
@@ -778,6 +795,7 @@
               call TRANSFORM(iTi4O7,iTiO2,amount,4.Q0,
      >                       ddust,eps,dscale,active,ok)
             endif  
+            eps(Ti) = eps_save(Ti)
           endif   
           if (active(iTi4O7_l).and.active(iTiO2)) then
             changed = .true.
@@ -795,6 +813,7 @@
               call TRANSFORM(iTi4O7_l,iTiO2,amount,4.Q0,
      >                       ddust,eps,dscale,active,ok)
             endif  
+            eps(Ti) = eps_save(Ti)
           endif   
           if (active(iMgTi2O5).and.active(iTiO2).and.
      >        active(iMgSiO3).and.active(iMg2SiO4)) then
@@ -820,7 +839,10 @@
      >                       ddust,eps,dscale,active,ok)
               call TRANSFORM(iMgTi2O5,iMg2SiO4,amount,1.Q0*3.Q0,
      >                       ddust,eps,dscale,active,ok)
-            endif  
+            endif
+            eps(Ti) = eps_save(Ti)
+            eps(Mg) = eps_save(Mg)
+            eps(Si) = eps_save(Si)
           endif   
           if (active(iMgTi2O5).and.active(iTiO2).and.
      >        active(iSiO2).and.active(iMg2SiO4)) then
@@ -847,6 +869,9 @@
               call TRANSFORM(iMgTi2O5,iMg2SiO4,amount,0.5Q0*3.Q0,
      >                       ddust,eps,dscale,active,ok)
             endif  
+            eps(Ti) = eps_save(Ti)
+            eps(Mg) = eps_save(Mg)
+            eps(Si) = eps_save(Si)
           endif   
           if (active(iNa2SiO3).and.active(iNaAlSi3O8).and.
      >        active(iMgSiO3).and.active(iMg2SiO4).and.
@@ -924,6 +949,9 @@
             endif
             !print*,eps(Na),eps(Al),eps(Si)
             !print*,eps_save(Na),eps_save(Al),eps_save(Si)
+            eps(Al) = eps_save(Al)
+            eps(Na) = eps_save(Na)
+            eps(Si) = eps_save(Si)
           endif  
           if (active(iNa2SiO3_l).and.active(iNaAlSi3O8).and.
      >        active(iAl2O3_l).and.active(iSiO2_l)) then
@@ -952,6 +980,9 @@
             endif
             !print*,eps(Na),eps(Al),eps(Si),eps(O)
             !print*,eps_save(Na),eps_save(Al),eps_save(Si),eps_save(O)
+            eps(Al) = eps_save(Al)
+            eps(Na) = eps_save(Na)
+            eps(Si) = eps_save(Si)
           endif  
           if (active(iH2O).and.active(iH2O_l)) then
             changed = .true.
@@ -1265,6 +1296,9 @@
             endif  
             !print*,eps(Ti),eps(Mg),eps(Si)
             !print*,eps_save(Ti),eps_save(Mg),eps_save(Si)
+            eps(Ti) = eps_save(Ti)
+            eps(Mg) = eps_save(Mg)
+            eps(Si) = eps_save(Si)
           endif 
           if (active(iMgTi2O5).and.active(iTiO2).and.
      >        active(iCaMgSi2O6).and.active(iCaSiO3).and.
@@ -1298,6 +1332,10 @@
             endif  
             !print*,eps(Ti),eps(Mg),eps(Si),eps(Ca)
             !print*,eps_save(Ti),eps_save(Mg),eps_save(Si),eps_save(Ca)
+            eps(Ca) = eps_save(Ca)
+            eps(Ti) = eps_save(Ti)
+            eps(Mg) = eps_save(Mg)
+            eps(Si) = eps_save(Si)
           endif 
           if (active(iMgTi2O5).and.active(iCaTiO3).and.
      >        active(iCaSiO3).and.active(iMgSiO3_l).and.
@@ -1331,6 +1369,10 @@
             endif  
             !print*,eps(Ti),eps(Mg),eps(Si),eps(Ca)
             !print*,eps_save(Ti),eps_save(Mg),eps_save(Si),eps_save(Ca)
+            eps(Ca) = eps_save(Ca)
+            eps(Ti) = eps_save(Ti)
+            eps(Mg) = eps_save(Mg)
+            eps(Si) = eps_save(Si)
           endif 
           if (active(iAl2O3).and.active(iMgAl2O4).and.
      >        active(iCaMgSi2O6).and.active(iCaSiO3).and.
@@ -1364,6 +1406,10 @@
             endif  
             !print*,eps(Al),eps(Mg),eps(Si),eps(Ca)
             !print*,eps_save(Al),eps_save(Mg),eps_save(Si),eps_save(Ca)
+            eps(Ca) = eps_save(Ca)
+            eps(Al) = eps_save(Al)
+            eps(Mg) = eps_save(Mg)
+            eps(Si) = eps_save(Si)
           endif 
           if (.not.ok) then
             print*,"TRANSFORM resulted in negative dust abundance"
