@@ -20,8 +20,9 @@ cal  = 4.184       # 1 cal in J
 mmHg = 1.3328E+3   # 1 mmHg in dyn/cm2
 bar  = 1.00E+6     # 1 bar in dyn/cm2
 
-chemnam = 'Fe'     #choose specie
+chemnam = 'Na2S'     #choose specie
 
+latexnm = re.sub(r'(\d+)',r'_\1',chemnam)
 for phase in ['_cr','_l']:
   if os.path.isfile(chemnam+phase+'.txt'):
     f = open(chemnam+phase+'.txt','r')
@@ -107,6 +108,10 @@ for line1 in lines:
             data2 = line2.split()
             if (data2[0] == chemnam+'[l]'):    #select liquid
                 if (data1[1:3]==data2[1:3]):
+                    #line1 = lines[10]         #manual selection
+                    #line2 = lines[13]
+                    #data1 = line1.split()
+                    #data2 = line2.split()
                     for i in range(3,8):
                         data1[i] = float(data1[i])
                         data2[i] = float(data2[i])
@@ -153,16 +158,17 @@ for line1 in lines:
                         unit = '[dyn/cm2]'
                         plt.yscale('log')
                         pmin = np.max([pmin,pmax*1.E-25])
-                        plt.scatter(stdat,spdat,color='darkorange',marker='.',label='data(s)')
-                        plt.scatter(ltdat,lpdat,color='dodgerblue',marker='.',label='data(l)')
+                        plt.scatter(ltdat,lpdat,color='dodgerblue',marker='o',label='data(l)')
+                        plt.scatter(stdat,spdat,color='darkorange',marker='+',label='data(s)')
+                        plt.ylabel(r'$ P_{{vap}} ({{{}}}) \quad \mathrm{{{}}}$'.format(latexnm,unit))
                     if (value == 'dg'):
                         unit = '[kJ/mol]'
-                        plt.scatter(stdat,sgdat,color='darkorange',marker='.',label='data(s)')
-                        plt.scatter(ltdat,lgdat,color='dodgerblue',marker='.',label='data(l)')
+                        plt.scatter(ltdat,lgdat,color='dodgerblue',marker='o',label='data(l)')
+                        plt.scatter(stdat,sgdat,color='darkorange',marker='+',label='data(s)')
+                        plt.ylabel(r'$\Delta_f G^\theta ({{{}}}) \quad \mathrm{{{}}}$'.format(latexnm,unit))
                     #plt.title(specie+' '+data1[2])
                     plt.title(specie)
-                    plt.xlabel('T [K]')
-                    plt.ylabel(value +' '+ unit)
+                    plt.xlabel(r'$T\ \mathrm{[K]}$')
                     plt.xlim(tmin,tmax)
                     plt.ylim(pmin,pmax)
                     #plt.xscale('log')
@@ -177,14 +183,15 @@ for line1 in lines:
                     if (value == 'pvap'):
                       plt.plot(temp,fit1/fit2)
                       plt.plot(temp,0*temp+1,c='black',ls='--')
-                      plt.ylabel(data1[0]+' / '+data2[0])
+                      plt.ylabel(r'$ P_{{vap}} (\mathrm{{{}[s]}}) \div P_{{vap}} (\mathrm{{{}[l]}})$'.format(latexnm,latexnm))
                     if (value == 'dg'):
                       plt.plot(temp,fit1-fit2)
                       plt.plot(temp,0*temp,c='black',ls='--')
-                      plt.ylabel(data1[0]+' - '+data2[0])
+                      unit = '[kJ/mol]'
+                      plt.ylabel(r'$\Delta_f G^\theta (\mathrm{{{}[s]}}) - \Delta_f G^\theta (\mathrm{{{}[l]}})  \quad \mathrm{{{}}}$'.format(latexnm,latexnm,unit))
                     #plt.title(specie+' '+data1[2])
                     plt.title(specie)
-                    plt.xlabel('T [K]')
+                    plt.xlabel(r'$T\ \mathrm{[K]}$')
                     plt.xlim(tmin,tmax)
                     Nt = temp.size
                     ibest = 0
@@ -222,41 +229,48 @@ for line1 in lines:
             if (data1[0:2] == data2[0:2]):
                 for i in range(3,8):
                     data2[i] = float(data2[i])
-                if (data2[2] == 'Yaws'): continue
-                    #fit = yaws(temp,*data2[3:8])
-                    #plt.yscale('log')
+                if (data2[2] == 'Yaws'):
+                    fit = yaws(temp,*data2[3:8])
+                    plt.yscale('log')
+                    lab = 'Yaws(1999)'
                 elif (data2[2] == 'S&H'):
                     fit = poly(temp,*data2[3:8])*cal
+                    lab = 'S&H(1990)'
                 elif (data2[2] == 'poly'):
                     if (data2[1] == 'dg'):
                         fit = poly(temp,*data2[3:8])
+                        lab = 'Equation(2)'
                     else:
                         fit = np.exp(poly(temp,*data2[3:8]))
                         plt.yscale('log')
+                        lab = 'Equation(6)'
                 elif (data2[2] == 'Woitke?'):
                     fit = newf(temp,*data2[3:6])
                     plt.yscale('log')
+                    lab = 'Equation(7)'
                 elif (data2[2] == 'Stock'):
                     fit = stock(temp,*data2[3:8])
+                    lab = 'Equation(3)'
                 if (data2[1] == 'dg'):
                         fit = fit/1000 #kJ/mol
-                plt.plot(temp,fit,label = data2[2])
+                plt.plot(temp,fit,label = lab)
         specie = data1[0]
         value = data1[1]
         if (value == 'pvap'):
             unit = '[dyn/cm2]'
+            plt.ylabel(r'$ P_{{vap}} ({{{}}}) \quad \mathrm{{{}}}$'.format(latexnm,unit))
             if (data1[2] != 'Yaws'):
-              if (data1[0][-2]=='s'): plt.scatter(stdat,spdat,marker='.',label='data')
-              if (data1[0][-2]=='l'): plt.scatter(ltdat,lpdat,marker='.',label='data')
+              if (data1[0][-2]=='s'): plt.scatter(stdat,spdat,marker='+',label='data',c='red')
+              if (data1[0][-2]=='l'): plt.scatter(ltdat,lpdat,marker='+',label='data',c='red')
         if (value == 'dg'):
             unit = '[kJ/mol]'
+            plt.ylabel(r'$\Delta_f G^\theta ({{{}}}) \quad \mathrm{{{}}}$'.format(latexnm,unit))
             if (data2[2] != 'S&H'):
-              if (data1[0][-2]=='s'): plt.scatter(stdat,sgdat,marker='.',label='data')
-              if (data1[0][-2]=='l'): plt.scatter(ltdat,lgdat,marker='.',label='data')
+              if (data1[0][-2]=='s'): plt.scatter(stdat,sgdat,marker='+',label='data',c='red')
+              if (data1[0][-2]=='l'): plt.scatter(ltdat,lgdat,marker='+',label='data',c='red')
         plt.xlim(tmin,tmax)
         plt.title(specie)
-        plt.xlabel('T [K]')
-        plt.ylabel(value +' '+ unit)
+        plt.xlabel(r'$T\ \mathrm{[K]}$')
         plt.legend(frameon=False)
         plt.show()
         #plt.savefig(pp,format='pdf')
