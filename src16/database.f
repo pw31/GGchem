@@ -142,6 +142,7 @@
         firstCall = .false.
       endif  
 
+      write(*,'("looking for nH,T=",2(1pE13.5)," ...")') nH,T
       ln = LOG(nH)
       lT = LOG(T) 
       qbest  = 9.d+99
@@ -150,7 +151,7 @@
       do i=NDAT,1,-1
         lnread = dbase(i)%ln 
         lTread = dbase(i)%lT
-        qual = 0.1*ABS(lnread-ln)+ABS((lTread-lT)+pot*(lnread-ln))
+        qual = 0.05*ABS(lnread-ln)+ABS((lTread-lT)+pot*(lnread-ln))
         if (qual<qbest) then 
           qbest = qual
           ibest = i
