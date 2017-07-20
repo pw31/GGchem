@@ -5,8 +5,8 @@
       use CHEMISTRY,ONLY: NMOLdim,NMOLE,NELM,catm,cmol,
      &    dispol_file,source,fit,natom,a,
      &    m_kind,m_anz,elnum,elion,charge,
-     &    el,H,He,Li,Be,B,C,N,O,F,Ne,Na,Mg,Al,Si,P,S,Cl,Ar,K,Ca,
-     &    Sc,Ti,V,Cr,Mn,Fe,Co,Ni,Cu,Zn,Ga,Ge,As,Se,Br,Kr,Rb,Sr,Y,Zr
+     &    el,H,He,Li,Be,B,C,N,O,F,Ne,Na,Mg,Al,Si,P,S,Cl,Ar,K,Ca,Sc,
+     &    Ti,V,Cr,Mn,Fe,Co,Ni,Cu,Zn,Ga,Ge,As,Se,Br,Kr,Rb,Sr,Y,Zr,W
       use EXCHANGE,ONLY: nmol
       implicit none
       integer :: loop,i,ii,j,iel,e,smax,ret
@@ -72,6 +72,7 @@
         elseif (elnam=='Sr') then; Sr=NELM ; elnum(NELM)=38 
         elseif (elnam=='Y')  then;  Y=NELM ; elnum(NELM)=39 
         elseif (elnam=='Zr') then; Zr=NELM ; elnum(NELM)=40
+        elseif (elnam=='W')  then;  W=NELM ; elnum(NELM)=41
         else
           stop "*** unknown element "
         endif   
@@ -166,7 +167,15 @@
       enddo  
       NMOLE = i-1
       allocate(nmol(NMOLE))
+
+      if (loop>1) then
+        print* 
+        do i=1,NMOLE
+          print*,i,cmol(i),' ->  '//trim(dispol_file(source(i)))
+        enddo
+      endif  
   
+      print* 
       print*,NMOLE,' species'
       print*,NELM,' elements'
       print'(99(A4))',(trim(catm(j)),j=1,NELM)

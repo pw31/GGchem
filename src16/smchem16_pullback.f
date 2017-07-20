@@ -116,12 +116,12 @@
 *  ist, die in die Dissoziationspolynome eingesetzt werden darf.
       real(kind=qp),parameter :: tdispol=100.Q0
 *-----------------------------------------------------------------------
-      integer stindex,at,info,ipvt(nel),Nconv,switch,iredo,ido
+      integer stindex,at,info,ipvt(nel),Nconv,switch,iredo,ido,iback
       integer Nact,all_to_act(nel),act_to_all(nel),switchoff(nel)
       integer e,i,j,j1,ii,jj,kk,l,it,m1,m2,piter,iraus,itry
       integer Nseq,imin,imax,enew,e2,eseq(nel)
       integer,parameter :: itmax=200,Ncmax=16
-      real(kind=qp) :: finish
+      real(kind=qp),parameter :: finish=1.Q-25
       real(kind=qp) :: ppp,qqq
       real(kind=qp) :: g(0:nml),limit,condnum1,work(nel)
       real(kind=qp) :: kT,kT1,nelek,ng,Sa,Nenner,fak,lth,arg,term
@@ -140,8 +140,8 @@
       real(kind=qp) :: converge(0:500),delp,nold,soll,haben,abw,sum
       real(kind=qp) :: dpp(4),func(4),dfunc(4,4),sca(4)
       real(kind=qp) :: pbefore1(4),pbefore2(4),pbefore3(2),pbefore4(2)
-      real(kind=qp) :: pbefore(nel)
-      real(kind=qp) :: emax,pges,pwork
+      real(kind=qp) :: pbefore(nel),qual(0:500)
+      real(kind=qp) :: emax,pges,pwork,Fnorm
       logical :: from_merk,eact(nel),redo(nel),done(nel),affect,known
       character(len=100) :: txt,line
       character(len=1) :: char
@@ -1122,10 +1122,8 @@ c     g(TiC)   : siehe oben!
           ! for initial guess, consider this 
           ! molecule to have all of element e2 
           !------------------------------------
-          if (pmol>0.Q0) then
-            pwork = MIN(pwork,(pges/(l*pmol))**(1.d0/REAL(l)))
-            !if (verbose>1) print'(A10,1pE10.3)',cmol(i),pwork
-          endif  
+          pwork = MIN(pwork,(pges/(l*pmol))**(1.d0/REAL(l)))
+          !if (verbose>1) print'(A10,1pE10.3)',cmol(i),pwork
         enddo  
         !----------------------------------------------
         ! solve 1d equation above with Newton's method 
@@ -1336,9 +1334,7 @@ c     g(TiC)   : siehe oben!
         eact(:) = .true.
         conv(:,:) = 9.Q+99
         switchoff(:) = 0
-        finish=1.Q-25
  300    continue
-        if (it>30) finish=10.Q0**(-25.0+21.0*(it-30.0)/(itmax-30.0))
         Nact = 0
         ii = 0
         do i=1,nel
@@ -1397,6 +1393,65 @@ c     g(TiC)   : siehe oben!
 *       ! limit NR-step and check convergence
 *       =====================================
         limit = 1.Q0                                   ! limit step, keep direction
+        qual(it) = 0.Q0
+        do ii=1,Nact
+          i = act_to_all(ii)
+          if (eps(i)>0.Q0) then
+            Fnorm = anHges*eps(i)*kT
+          else  
+            Fnorm = anmono(i)*kT
+          endif  
+          qual(it) = qual(it) + (FF0(ii)/Fnorm)**2
+        enddo
+        qual(it) = SQRT(qual(it)/Nact)
+        do iback=1,10
+          do ii=1,Nact
+            i = act_to_all(ii)
+            FF(ii) = anHges*eps(i)*kT - (anmono(i)*kT-limit*dp(ii))
+          enddo	
+          do i=1,nml
+            pmol = g(i)
+            do j=1,m_kind(0,i)
+              e  = m_kind(j,i) 
+              ii = all_to_act(e) 
+              pat = anmono(e)*kT-limit*dp(ii)
+              if (m_anz(j,i).gt.0) then
+                do kk=1,m_anz(j,i)
+                  pmol = pmol*pat
+                enddo
+              else
+                do kk=1,-m_anz(j,i)
+                  pmol = pmol/pat
+                enddo
+              endif
+            enddo
+            do j=1,m_kind(0,i)
+              m1 = m_kind(j,i)
+              if (.not.eact(m1)) cycle
+              m1 = all_to_act(m1)
+              term   = m_anz(j,i) * pmol
+              FF(m1) = FF(m1) - term
+            enddo
+          enddo  
+          qual(it+1) = 0.Q0
+          do ii=1,Nact
+            i = act_to_all(ii)
+            if (eps(i)>0.Q0) then
+              Fnorm = anHges*eps(i)*kT
+            else  
+              Fnorm = anmono(i)*kT
+            endif  
+            !print'(A4,2(1pE10.3))',catm(i),FF(ii),Fnorm
+            qual(it+1) = qual(it+1) + (FF(ii)/Fnorm)**2
+          enddo
+          qual(it+1) = SQRT(qual(it+1)/Nact)
+          if (verbose>1) print'("pullback",I3,3(1pE10.3))',
+     >                       iback,limit,qual(it),qual(it+1)
+          if (qual(it+1)<qual(it)) exit
+          limit = limit*0.5
+        enddo
+        dp = dp*limit
+
         converge(it) = 0.Q0
         Nconv = 0
         txt = ""
@@ -1442,19 +1497,20 @@ c     g(TiC)   : siehe oben!
         enddo
         if (it>itmax-10) then
           verbose=2
-          do ii=1,Nact
+          do ii=1,nact
             i = act_to_all(ii) 
             print'(A3,2(1pE12.3))',catm(i),
      >           anmono(i),-dp(ii)/(anmono(i)*kT) 
           enddo  
         endif  
-        crit = MAXVAL(converge(MAX(0,it-1):it))
+        !crit = MAXVAL(converge(MAX(0,it-1):it))
+        crit = MAXVAL(qual(MAX(0,it-1):it))
         !if (verbose>1) print'(99(1pE36.28E3))',
      >  !                  anmono(act_to_all(1:nact))
-        if (verbose>1) print'(i3,i3,2(1pE9.1)," converged(",i2,"):",
-     >                    A50)',it,Nact,converge(it),limit,Nconv,txt
+        if (verbose>1) print'(i3,i3,3(1pE9.1)," converged(",i2,"):",
+     >              A50)',it,Nact,converge(it),qual(it),limit,Nconv,txt
         if (it==itmax) then 
-          write(*,*) '*** keine Konvergenz in SMCHEM16!'
+          write(*,*) '*** keine Konvergenz in smchem16!'
           write(*,*) 'it, converge, ind =',it,converge(it),limit
           write(*,*) '  n<H>, T =',anhges,Tg
           !if (from_merk) then

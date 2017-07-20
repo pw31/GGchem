@@ -11,7 +11,7 @@
       module DUST_DATA
 ************************************************************************
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
-      integer,parameter :: NELEM=40        ! number of elements (up to Zr)
+      integer,parameter :: NELEM=41        ! number of elements (up to Zr + W)
       integer,parameter :: NDUSTmax=200    ! max number of condensed species
       integer :: NDUST                     ! number of condensed species
       integer :: NEPS                      ! number of affected elements
@@ -50,7 +50,7 @@
       integer :: Na=0,Mg=0,Al=0,Si=0,P=0,S=0,Cl=0,Ar=0,K=0,Ca=0
       integer :: Sc=0,Ti=0,V=0,Cr=0,Mn=0,Fe=0,Co=0,Ni=0,Cu=0,Zn=0
       integer :: Ga=0,Ge=0,As=0,Se=0,Br=0,Kr=0,Rb=0,Sr=0
-      integer :: Y=0,Zr=0
+      integer :: Y=0,Zr=0,W=0
       logical :: charge
       character(len=2) :: catm(NELEM)           ! names of elements
       character(len=20),allocatable :: cmol(:)  ! names of molecules
@@ -88,6 +88,6 @@
       integer,parameter :: Cl=17,Ar=18,K=19,Ca=20,Sc=21,Ti=22
       integer,parameter :: V=23,Cr=24,Mn=25,Fe=26,Co=27,Ni=28
       integer,parameter :: Cu=29,Zn=30,Ga=31,Ge=32,As=33,Se=34
-      integer,parameter :: Br=35,Kr=36,Rb=37,Sr=38,Y=39,Zr=40
+      integer,parameter :: Br=35,Kr=36,Rb=37,Sr=38,Y=39,Zr=40,W=41
       integer*8 :: chemcall=0,chemiter=0,itransform=0,ieqcond=0
       end
