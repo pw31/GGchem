@@ -14,7 +14,7 @@
       use DUST_DATA,ONLY: NELEM,eps=>eps0,mass,muH,elnam,amu
       use EXCHANGE,ONLY: H,He,Li,Be,B,C,N,O,F,Ne,Na,Mg,Al,Si,P,S,Cl,
      >                   Ar,K,Ca,Sc,Ti,V,Cr,Mn,Fe,Co,Ni,Cu,Zn,Ga,Ge,
-     >                   As,Se,Br,Kr,Rb,Sr,Y,Zr
+     >                   As,Se,Br,Kr,Rb,Sr,Y,Zr,W
       implicit none
       integer :: i,nr
       real*8 :: m,abund(NELEM,4)
@@ -66,6 +66,7 @@
       elnam(38) = 'Sr'
       elnam(39) = 'Y '
       elnam(40) = 'Zr'
+      elnam(41) = 'W '
 
 *     --------------------
 *     ***  Atommassen  ***
@@ -110,7 +111,8 @@
       mass(38) = 87.62  * amu  
       mass(39) = 88.906 * amu
       mass(40) = 91.224 * amu  
-       
+      mass(41) = 183.84 * amu       
+
 *     ---------------------------------------
 *     ***      element abundancies        ***
 *     ---------------------------------------
@@ -205,7 +207,8 @@
       eps(Rb) = 2.52    
       eps(Sr) = 2.87     
       eps(Y ) = 2.21  
-      eps(Zr) = 2.58     
+      eps(Zr) = 2.58  
+      eps(W ) = 0.85  
 
       !eps(C)  = eps(O) + LOG10(2.Q0)     ! try C/O=2
 
