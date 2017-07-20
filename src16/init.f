@@ -272,7 +272,7 @@
      &          elnam(i),12.d0+LOG10(eps(i)),eps(i),mass(i)/amu
         muH = muH + mass(i)*eps(i)
       enddo
-      write(*,'("rho = n<H> *",0pF12.4," amu")') muH/amu
+      write(*,'("rho = n<H> *",1pE12.4," amu")') muH/amu
 
       RETURN
       end
