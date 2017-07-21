@@ -4,7 +4,7 @@
       use CHEMISTRY,ONLY: NMOLE,cmol
       use dust_data,ONLY: NELEM,NDUST,bk,atm,rgas,bar,
      &                    dust_nam,dust_nel,dust_el,dust_nu,elnam
-      use EXCHANGE,ONLY: C,Na,Fe,S
+      use EXCHANGE,ONLY: C,Na,Fe,S,W,Zr
       implicit none
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
       real*8,intent(in) :: T
@@ -16,6 +16,7 @@
       integer :: i,j,STINDEX,el
       integer,save :: TiO2,SiO,H2O,NH3,CH4,SiO2,CaCl2,H2SO4,FeS,NaCl
       integer,save :: KCl,FeO,MgO,AlCl3,LiCl,TiO,LiOH,LiH,CO,CO2
+      integer,save :: WO3,ZrO2,VO
       logical,save :: firstCall=.true.
 *
       if (firstCall) then
@@ -39,6 +40,9 @@
         TiO   = STINDEX(cmol,NMOLE,'TIO      ')
         LiOH  = STINDEX(cmol,NMOLE,'LIOH     ')
         LiH   = STINDEX(cmol,NMOLE,'LIH      ')
+        WO3   = STINDEX(cmol,NMOLE,'WO3      ')
+        ZrO2  = STINDEX(cmol,NMOLE,'ZRO2     ')
+        VO    = STINDEX(cmol,NMOLE,'VO       ')
         firstCall=.false.
       endif    
       TT  = MAX(T,100.Q0)
@@ -1923,6 +1927,134 @@
      &               +6.41033Q-07*TT**2)
           Sat(i) = nmol(LiH)*kT/psat
 
+	else if (dust_nam(i).eq.'W[s]') then
+          !---------------------------------------
+          !*** W[s]: Peter JANAF-fit 100-4000K ***
+          !---------------------------------------
+          psat = EXP(-1.02351E+05/TT
+     &               +3.07543E+01 
+     &               -6.13643E-06*TT  
+     &               +5.36528E-08*TT**2 
+     &               -1.19522E-11*TT**3)
+          Sat(i) = nat(W)*kT/psat
+
+	else if (dust_nam(i).eq.'W[l]') then
+          !---------------------------------------
+          !*** W[l]: Peter JANAF-fit 298-6000K ***
+          !---------------------------------------
+          psat = EXP(-9.66863E+04/TT  
+     &               +2.90491E+01  
+     &               -2.11260E-04*TT 
+     &               -5.93323E-08*TT**2  
+     &               +6.15431E-12*TT**3)
+          Sat(i) = nat(W)*kT/psat
+
+	else if (dust_nam(i).eq.'WO3[s]') then
+          !-----------------------------------------
+          !*** WO3[s]: Peter JANAF-fit 100-3000K ***
+          !-----------------------------------------
+          psat = EXP(-6.63560E+04/TT  
+     &               +4.06161E+01 
+     &               -2.83452E-03*TT  
+     &               +6.33945E-07*TT**2 
+     &               -7.73057E-11*TT**3)
+          Sat(i) = nmol(WO3)*kT/psat
+ 
+	else if (dust_nam(i).eq.'WO3[l]') then
+          !-----------------------------------------
+          !*** WO3[l]: Peter JANAF-fit 298-3000K ***
+          !-----------------------------------------
+          psat = EXP(-5.98226E+04/TT  
+     &               +3.68387E+01 
+     &               -1.60492E-03*TT 
+     &               -3.33151E-07*TT**2  
+     &               +8.09588E-11*TT**3)
+          Sat(i) = nmol(WO3)*kT/psat
+ 
+	else if (dust_nam(i).eq.'Zr[s]') then
+          !----------------------------------------------
+          !*** Zr[s](beta): Peter JANAF-fit 298-2600K ***
+          !----------------------------------------------
+          psat = EXP(-7.28816E+04/TT
+     &               +3.11094E+01 
+     &               -6.94825E-04*TT
+     &               +2.42125E-07*TT**2 
+     &               -3.55274E-11*TT**3)
+          Sat(i) = nat(Zr)*kT/psat
+ 
+	else if (dust_nam(i).eq.'Zr[l]') then
+          !----------------------------------------
+          !*** Zr[l]: Peter JANAF-fit 298-5500K ***
+          !----------------------------------------
+          psat = EXP(-7.14144E+04/TT  
+     &               +3.06541E+01 
+     &               -5.47166E-04*TT  
+     &               +4.59756E-08*TT**2 
+     &               -9.40737E-13*TT**2)
+          Sat(i) = nat(Zr)*kT/psat
+ 
+	else if (dust_nam(i).eq.'ZrO2[s]') then
+          !------------------------------------------
+          !*** ZrO2[s]: Peter JANAF-fit 100-3500K ***
+          !------------------------------------------
+          psat = EXP(-9.77238E+04/TT  
+     &               +4.18463E+01 
+     &               -2.22011E-03*TT  
+     &               +3.20813E-07*TT**2 
+     &               -1.60657E-11*TT**3)
+          Sat(i) = nmol(ZrO2)*kT/psat
+ 
+	else if (dust_nam(i).eq.'ZrO2[l]') then
+          !------------------------------------------
+          !*** ZrO2[l]: Peter JANAF-fit 298-5000K ***
+          !------------------------------------------
+          psat = EXP(-8.87286E+04/TT  
+     &               +3.86685E+01 
+     &               -1.94950E-03*TT  
+     &               +2.38918E-07*TT**2 
+     &               -1.43097E-11*TT**3)
+          Sat(i) = nmol(ZrO2)*kT/psat
+ 
+	else if (dust_nam(i).eq.'MnS[s]') then
+          !------------------------------------
+          !*** MnS[s]: Sharp & Huebner 1990 ***
+          !------------------------------------
+          pst = atm
+          dG  = 1.12482E+05/TT
+     &         -1.81938E+05
+     &         +5.87107E+01*TT 
+     &         +8.89360E-05*TT**2
+     &         -4.20876E-09*TT**3
+          dG = dG/(rgas/cal*TT)
+          lbruch = 0.Q0
+          do j=1,dust_nel(i)
+            el     = dust_el(i,j)
+            lbruch = lbruch + dust_nu(i,j)*LOG(nat(el)*kT/pst)
+          enddo
+          Sat(i) = EXP(lbruch-dG)
+ 
+	else if (dust_nam(i).eq.'VO[s]') then
+          !----------------------------------------
+          !*** VO[s]: Peter JANAF-fit 100-2600K ***
+          !----------------------------------------
+          psat = EXP(-6.74603E+04/TT
+     &               +3.82717E+01 
+     &               -2.78551E-03*TT  
+     &               +5.72078E-07*TT**2 
+     &               -7.41840E-11*TT**3)
+          Sat(i) = nmol(VO)*kT/psat
+ 
+	else if (dust_nam(i).eq.'VO[l]') then
+          !----------------------------------------
+          !*** VO[l]: Peter JANAF-fit 298-3500K ***
+          !----------------------------------------
+          psat = EXP(-6.01063E+04/TT  
+     &               +3.45413E+01 
+     &               -2.64854E-03*TT  
+     &               +4.70724E-07*TT**2 
+     &               -3.85068E-11*TT**3)
+          Sat(i) = nmol(VO)*kT/psat
+ 
         else
           print*,dust_nam(i) 
           stop 'unbekannte Staubsorte in SUPERSAT '

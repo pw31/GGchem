@@ -258,6 +258,31 @@
       write(*,*) '239 = LiOH[s] pvap'
       write(*,*) '240 = LiOH[l] pvap'
       write(*,*) '241 = TiCl3'
+      write(*,*) '242 = atomic Al'
+      write(*,*) '243 = atomic O'
+      write(*,*) '244 = atomic Mg'
+      write(*,*) '245 = atomic Ca'
+      write(*,*) '246 = atomic Si'
+      write(*,*) '247 = atomic Na'
+      write(*,*) '248 = atomic K'
+      write(*,*) '249 = atomic Ti'
+      write(*,*) '250 = atomic Fe'
+      write(*,*) '251 = atomic S'
+      write(*,*) '252 = atomic C'
+      write(*,*) '253 = atomic Cl'
+      write(*,*) '254 = atomic Li'
+      write(*,*) '255 = atomic H'
+      write(*,*) '256 = atomic N'
+      write(*,*) '257 = W[s] pvap'
+      write(*,*) '258 = W[l] pvap'
+      write(*,*) '259 = WO3[s] pvap'
+      write(*,*) '260 = WO3[l] pvap'
+      write(*,*) '261 = ZrO2[s] pvap'
+      write(*,*) '262 = ZrO2[l] pvap'
+      write(*,*) '263 = VO[s] pvap'
+      write(*,*) '264 = VO[l] pvap'
+      write(*,*) '265 = Zr[s] pvap'
+      write(*,*) '266 = Zr[l] pvap'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -2003,6 +2028,107 @@
         Edzahl = 2
         stoich(2) = 1.D0
         stoich(3) = 3.D0
+      elseif (specie.eq.242) then
+        call READ_DATEI('Al.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Al_cr,l.txt',dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.243) then
+        call READ_DATEI('O.txt',dG,T,Nmax,N,S,1) 
+        Edzahl = 0
+      elseif (specie.eq.244) then
+        call READ_DATEI('Mg.txt',dG,T,Nmax,N,S,1) 
+        Edzahl = 0
+      elseif (specie.eq.245) then
+        call READ_DATEI('Ca.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Ca_cr,l.txt',dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.246) then
+        call READ_DATEI('Si.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Si_cr,l.txt',dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.247) then
+        call READ_DATEI('Na.txt',dG,T,Nmax,N,S,1) 
+        Edzahl = 0
+      elseif (specie.eq.248) then
+        call READ_DATEI('K.txt',dG,T,Nmax,N,S,1) 
+        Edzahl = 0
+      elseif (specie.eq.249) then
+        call READ_DATEI('Ti.txt',dG,T,Nmax,N,S,1) 
+        Edzahl = 0
+      elseif (specie.eq.250) then
+        call READ_DATEI('Fe.txt',dG,T,Nmax,N,S,1) 
+        Edzahl = 0
+      elseif (specie.eq.251) then
+        call READ_DATEI('S.txt',dG,T,Nmax,N,S,1) 
+        Edzahl = 0
+      elseif (specie.eq.252) then
+        call READ_DATEI('C.txt',dG,T,Nmax,N,S,1) 
+        Edzahl = 0
+      elseif (specie.eq.253) then
+        call READ_DATEI('Cl.txt',dG,T,Nmax,N,S,1) 
+        Edzahl = 0
+      elseif (specie.eq.254) then
+        call READ_DATEI('Li.txt',dG,T,Nmax,N,S,1) 
+        Edzahl = 0
+      elseif (specie.eq.255) then
+        call READ_DATEI('H.txt',dG,T,Nmax,N,S,1) 
+        Edzahl = 0
+      elseif (specie.eq.256) then
+        call READ_DATEI('N.txt',dG,T,Nmax,N,S,1) 
+        Edzahl = 0
+      elseif (specie.eq.257) then
+        call READ_DATEI('W_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('W.txt',dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.258) then
+        call READ_DATEI('W_l.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('W.txt',dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.259) then
+        call READ_DATEI('WO3_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('WO3.txt',dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.260) then
+        call READ_DATEI('WO3_l.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('WO3.txt',dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.261) then
+        call READ_DATEI('ZrO2_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('ZrO2.txt',dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.262) then
+        call READ_DATEI('ZrO2_l.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('ZrO2.txt',dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.263) then
+        call READ_DATEI('VO_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('VO.txt',dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.264) then
+        call READ_DATEI('VO_l.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('VO.txt',dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.265) then
+        call READ_DATEI('Zr_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Zr.txt',dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.266) then
+        call READ_DATEI('Zr_l.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Zr.txt',dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop

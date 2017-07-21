@@ -1,8 +1,10 @@
 # selected elements
-H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li el
+H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li F P V Cr Mn Ni Zr W el
 
-# name of file with molecular kp-data
-dispol_new.dat        ! dispol_file
+# name of files with molecular kp-data
+dispol_new.dat                          ! dispol_file
+dispol_BarklemCollet.dat                ! dispol_file2
+dispol_StockKitzmann_withoutTsuji.dat   ! dispol_file3
 
 # abundance options 1=EarthCrust, 2=Ocean, 3=Solar, 4=Meteorites
 3                     ! abund_pick
@@ -23,4 +25,5 @@ dispol_new.dat        ! dispol_file
 200                   ! Npoints       (if not model_struc)
 .true.                ! NewChemIt
 5                     ! NewBackIt  
-750.0                 ! Tfast         (switch to real*8 for T>Tfast)
+1000.0                ! Tfast
+
