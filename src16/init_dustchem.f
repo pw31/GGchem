@@ -25,6 +25,7 @@
       read(12,*) imax
       NDUST = 1
       do i=1,imax
+        read(12,1000) zeile
         read(12,*) dust_nam(NDUST)
         read(12,*) dust_rho(NDUST)
         read(12,*) dust_nel(NDUST)

@@ -20,8 +20,8 @@
       use DUST_DATA,ONLY: NELEM,NDUST,dust_nam,dust_nel,dust_nu,dust_el,
      >                    eps0,elnam,elcode
       use CONVERSION,ONLY: Nind,Ndep,Iindex,Dindex,is_dust,conv
-      use EXCHANGE,ONLY: Fe,Mg,Si,Al,Ca,Ti,O,S,Na,Kalium=>K,Cl,H,Li,
-     >                   itransform,ieqcond
+      use EXCHANGE,ONLY: Fe,Mg,Si,Al,Ca,Ti,O,S,Na,Cl,H,Li,Mn,W,
+     >                   Kalium=>K,itransform,ieqcond
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       real*8,intent(in) :: nHtot                ! H nuclei density [cm-3]
@@ -76,7 +76,7 @@
       integer,save :: iMgO_l=0,iAlCl3_l=0,iMgTiO3=0,iMgTiO3_l=0,iCaO_l=0
       integer,save :: iS_l=0,iK2SiO3=0,iK2SiO3_l=0,iTiC_l=0,iTi=0
       integer,save :: iTi_l=0,iTiO=0,iTiO_l=0,iSiS2_l=0,iLiOH=0
-      integer,save :: iLiOH_l=0
+      integer,save :: iLiOH_l=0,iMnS=0,iW=0,iW_l=0
       integer,save :: it_tot=0, sit_tot=0, fail_tot=0
       real*8 :: time0,time1,qread
 
@@ -160,6 +160,9 @@
           if (dust_nam(i).eq.'TiO[l]')        iTiO_l=i
           if (dust_nam(i).eq.'LiOH[s]')       iLiOH=i
           if (dust_nam(i).eq.'LiOH[l]')       iLiOH_l=i
+          if (dust_nam(i).eq.'MnS[s]')        iMnS=i 
+          if (dust_nam(i).eq.'W[s]')          iW=i 
+          if (dust_nam(i).eq.'W[l]')          iW_l=i 
         enddo
         firstCall = .false. 
       endif
@@ -194,7 +197,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        !if (qread>1.Q-3.and.iread==127) verbose=2
+        !if (qread>1.Q-3.and.iread==41) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -242,7 +245,7 @@
         dscale(i) = xmin                        ! max dust abundances
       enddo   
 
-      call GGCHEM(nHtot,T,eps,.false.,verbose)  ! one call from scratch
+      call GGCHEM(nHtot,T,eps,.false.,0)  ! one call from scratch
       xstep(:) = 0.Q0             
       call SUPER(nHtot,T,xstep,eps,Sat0)
       qual = SQUAL(Sat0,active)
@@ -1174,6 +1177,24 @@
             eps(Li) = eps_save(Li)
             eps(Cl) = eps_save(Cl)
           endif   
+          if (active(iW).and.active(iW_l)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iW).gt.Sat0(iW_l)) then
+              ioff = iW_l
+              active(iW_l) = .false.  
+              amount = ddust(iW_l)
+              call TRANSFORM(iW_l,iW,amount,1.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iW
+              active(iW) = .false.  
+              amount = ddust(iW)
+              call TRANSFORM(iW,iW_l,amount,1.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif  
+            eps(W) = eps_save(W)
+          endif   
           if (active(iMg2SiO4).and.active(iMg2SiO4_l)) then
             changed = .true.
             !--- decide ---
@@ -1651,6 +1672,26 @@
           Iindex(i) = Iindex(Nact+1) 
           e_act(Iindex(i)) = .true.
         endif   
+        if (active(iMnS).and.e_act(Mn).and.e_act(S).and.
+     >      e_num(Mn)==1.and.e_num(S)==1) then
+          do i=1,Nind
+            if (Iindex(i)==Mn) exit
+          enddo  
+          do j=1,Nind
+            if (Iindex(j)==S) exit
+          enddo  
+          if (i>j) then
+            e_act(Iindex(i)) = .false.
+            j=i
+          else
+            e_act(Iindex(j)) = .false.
+            i=j
+          endif
+          print*,"... exchanging "//elnam(Iindex(i))//
+     >                     " for "//elnam(Iindex(Nact+1))
+          Iindex(i) = Iindex(Nact+1) 
+          e_act(Iindex(i)) = .true.
+        endif
         if (active(iLiCl).and.e_act(Li).and.e_act(Cl).and.
      >      e_num(Li)==1.and.e_num(Cl)==1) then
           do i=1,Nind
