@@ -1940,14 +1940,14 @@
         call READ_DATEI('TiC_cr.txt'  ,dG,T,Nmax,N,S,1) 
         call READ_DATEI('Ti.txt'   ,dG,T,Nmax,N,S,2) 
         call READ_DATEI('C.txt'   ,dG,T,Nmax,N,S,3) 
-        Edzahl = 1
+        Edzahl = 2
         stoich(2) = 1.D0
         stoich(3) = 1.D0
       elseif (specie.eq.232) then
         call READ_DATEI('TiC_l.txt',dG,T,Nmax,N,S,1) 
         call READ_DATEI('Ti.txt'   ,dG,T,Nmax,N,S,2) 
         call READ_DATEI('C.txt'   ,dG,T,Nmax,N,S,3) 
-        Edzahl = 1
+        Edzahl = 2
         stoich(2) = 1.D0
         stoich(3) = 1.D0
       elseif (specie.eq.233) then
@@ -1964,7 +1964,7 @@
         call READ_DATEI('TiO_cr.txt'  ,dG,T,Nmax,N,S,1) 
         call READ_DATEI('Ti.txt'   ,dG,T,Nmax,N,S,2) 
         call READ_DATEI('O.txt'   ,dG,T,Nmax,N,S,3) 
-        Edzahl = 1
+        Edzahl = 2
         stoich(2) = 1.D0
         stoich(3) = 1.D0
       elseif (specie.eq.236) then
@@ -1982,7 +1982,7 @@
         call READ_DATEI('Li.txt'   ,dG,T,Nmax,N,S,2) 
         call READ_DATEI('O.txt'   ,dG,T,Nmax,N,S,3)
         call READ_DATEI('H.txt'   ,dG,T,Nmax,N,S,4) 
-        Edzahl = 1
+        Edzahl = 3
         stoich(2) = 1.D0
         stoich(3) = 1.D0
         stoich(4) = 1.D0
