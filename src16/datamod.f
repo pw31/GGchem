@@ -28,11 +28,14 @@
       integer :: dust_el(NDUSTmax,5)          ! indices of elements
       integer :: dust_nu(NDUSTmax,5)          ! stoichiometric coeffs
       
+      integer :: fit(NDUSTmax)                ! fit-formular identifier
+      real*8  :: cfit(NDUSTmax,0:4)           ! pvap fit coefficients
+      
       real(kind=qp) :: bk=1.380662Q-16    ! Boltzman constant
       real(kind=qp) :: bar=1.Q+6          ! 1 bar in dyn/cm2
       real(kind=qp) :: amu=1.66055Q-24    ! atomar mass unit
       real(kind=qp) :: atm=1.013Q+6       ! standard atmosphere pressure
-      real(kind=qp) :: rgas=8.31434Q+0    ! gas constant 
+      real(kind=qp) :: rgas=8.3144598Q+0  ! gas constant 
       real(kind=qp) :: muH                ! rho/n<H>
       end
 

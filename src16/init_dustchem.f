@@ -4,7 +4,7 @@
       use CHEMISTRY,ONLY: NMOLE,NELM,catm
       use DUST_DATA,ONLY: NEPS,NELEM,NDUST,eps0,
      &                    dust_nam,dust_rho,dust_vol,dust_mass,
-     &                    dust_nel,dust_nu,dust_el,
+     &                    dust_nel,dust_nu,dust_el,fit,cfit,
      &                    elnr,elcode,elnam,mass
       implicit none
       integer :: i,imax,j,k,el
@@ -23,9 +23,9 @@
       read(12,1000) zeile
       read(12,1000) zeile
       read(12,*) imax
+      read(12,1000) zeile
       NDUST = 1
       do i=1,imax
-        read(12,1000) zeile
         read(12,*) dust_nam(NDUST)
         read(12,*) dust_rho(NDUST)
         read(12,*) dust_nel(NDUST)
@@ -51,13 +51,27 @@
           enddo
           if (.not.found) allfound=.false.
         enddo
+        found = .false.
+        do 
+          read(12,1000) zeile
+          if (trim(zeile)=='') exit
+          if (zeile(1:1)=='#') cycle
+          print*,trim(zeile)
+          read(zeile,*) fit(NDUST),cfit(NDUST,0:4)
+          found = .true.
+        enddo
+        if (.not.found) then
+          print*,"*** syntax error in DustChem.dat, condensate=",
+     &         dust_nam(NDUST)
+          stop
+        endif  
         if (allfound) then
           dust_mass(NDUST) = dmass
           dust_vol(NDUST) = dmass/dust_rho(NDUST)
           write(*,1060) dust_nam(NDUST),dust_rho(NDUST),dust_vol(NDUST), 
      &    (dust_nu(NDUST,j),elnam(dust_el(NDUST,j)),j=1,dust_nel(NDUST))
           NDUST = NDUST+1
-        endif  
+        endif
       enddo
       NDUST=NDUST-1
 

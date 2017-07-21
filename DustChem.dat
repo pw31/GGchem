@@ -1,102 +1,134 @@
 dust species
 ============
-91
+14      91
 
-Al2O3[l]
-2.78
-2
- 2 Al
- 3 O
-
-Al2O3[s]
+Al2O3[s]       corundum(alpha)
 3.97
 2
  2 Al
  3 O
+# Sharp & Huebner (1990):
+# 1  0.00000E+00 -7.32976E+05  1.84782E+02 -2.57313E-03  0.00000E+00
+# dG-fit NIST-Janaf 100-3000K, fit quality +/- 7.64E-02:
+  2  1.29765E+06 -3.09312E+06  7.86027E+02 -1.36327E-02  8.59619E-07
 
-MgAl2O4[l]
+Al2O3[l]       corundum(liquid)
+2.78
+2
+ 2 Al
+ 3 O
+# dG-fit NIST-Janaf 298-4000K, fit quality +/- 7.30E-01:
+  2  9.69640E+06 -3.07785E+06  8.23186E+02 -3.65211E-02  2.33258E-06
+
+MgAl2O4[s]     spinel
+3.58
+3
+ 1 Mg
+ 2 Al
+ 4 O
+# Sharp & Huebner (1990):
+# 1  2.50397E+05 -9.83584E+05  2.54352E+02 -4.24568E-03  0.00000E+00
+# dG-fit NIST-Janaf 100-2800K, fit quality +/- 1.72E-01:
+  2  1.85854E+06 -4.11695E+06  1.06653E+03 -1.81276E-02  1.26020E-08
+
+MgAl2O4[l]     spinel(liquid)
 2.75
 3
  1 Mg
  2 Al
  4 O
+# dG-fit NIST-Janaf 298-4000K, fit quality +/- 2.80E-01:
+  2  4.87016E+06 -3.93827E+06  1.00592E+03 -2.80659E-02  1.70265E-06
 
-MgAl2O4[s]
-3.578
-3
- 1 Mg
- 2 Al
- 4 O
-
-CaMgSi2O6[s]
+CaMgSi2O6[s]   diopside
 3.26
 4
  1 Ca
  1 Mg
  2 Si
  6 O
+# Sharp & Huebner (1990):
+  1  1.36629E+05 -1.42281E+06  3.59968E+02 -4.70714E-03  1.67622E-07
 
-CaAl2Si2O8[s]
+CaAl2Si2O8[s]  anorthite
 2.73
 4
  1 Ca
  2 Al
  2 Si
  8 O
+# Sharp & Huebner (1990):
+  1  1.32241E+05 -1.87815E+06  4.71591E+02 -6.08175E-03  1.10392E-07
 
-NaAlSi3O8[s]
+NaAlSi3O8[s]   albite
 2.60
 4
  1 Na
  1 Al
  3 Si
  8 O
+# Sharp & Huebner (1990):
+  1  0.00000E+00 -1.83381E+06  4.49940E+02  0.00000E+00  0.00000E+00 
 
-KAlSi3O8[s]
+KAlSi3O8[s]    orthoclase
 2.53
 4
  1 K
  1 Al
  3 Si
  8 O
+# Sharp & Huebner (1990):
+  1  0.00000E+00 -1.83930E+06  4.49643Q+02  0.00000E+00  0.00000E+00 
 
-CaTiO3[s]
+CaTiO3[s]      Ca-titanate
 3.98
 3
  1 Ca
  1 Ti
  3 O
+# Sharp & Huebner (1990):
+  1  1.19107E+04 -7.30327E+05  1.75930E+02 -2.84630E-03  1.10392E-07
 
-CaSiO3[s]
+CaSiO3[s]      Ca-perovskite
 3.92
 3
  1 Ca
  1 Si
  3 O
+# Sharp & Huebner (1990):
+  1  6.37937E+04 -7.21819E+05  1.77647E+02 -2.59254E-03  0.00000E+00 
 
-TiO2[l]
-3.4
-2
- 1 Ti
- 2 O
-
-TiO2[s]      
+TiO2[s]        rutile
 4.23
 2
  1 Ti
  2 O
+# pvap NIST-Janaf 100-4000K, fit quality +/- 3.65E-01:
+  3 -7.65465E+04  3.72148E+01  1.76288E-03 -1.35859E-06  1.66681E-10
 
-Ti4O7[l]
+TiO2[l]        rutile(liquid)
 3.4
 2
- 4 Ti
- 7 O
+ 1 Ti
+ 2 O
+# pvap NIST-Janaf 298-4000K, fit quality +/- 1.93E-02:
+  3 -7.07819E+04  3.68021E+01 -1.29214E-03 -6.87776E-08  1.89408E-11
 
-Ti4O7[s]
+Ti4O7[s]       titanium_oxide
 4.19
 2
  4 Ti
  7 O
+# dG-fit NIST-Janaf 298-2400K, fit quality +/- 8.51E-02:
+  2  1.85821E+06 -7.06188E+06  1.70429E+03 -4.67044E-02  4.71514E-06
+
+Ti4O7[l]       titanium_oxide(liquid)
+3.4
+2
+ 4 Ti
+ 7 O
+# dG-fit NIST-Janaf 298-2400K, fit quality +/- 4.34E-01:
+  2  5.06384E+06 -6.89199E+06  1.64108E+03 -5.93652E-02  4.64893E-06
 
 MgTi2O5[l]
 3.7
