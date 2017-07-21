@@ -283,6 +283,8 @@
       write(*,*) '264 = VO[l] pvap'
       write(*,*) '265 = Zr[s] pvap'
       write(*,*) '266 = Zr[l] pvap'
+      write(*,*) '267 = ZrO2[s]'
+      write(*,*) '268 = ZrO2[l]'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -2129,6 +2131,20 @@
         call READ_DATEI('Zr.txt',dG,T,Nmax,N,S,2) 
         Edzahl = 1
         stoich(2) = 1.D0
+      elseif (specie.eq.267) then
+        call READ_DATEI('ZrO2_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Zr.txt',dG,T,Nmax,N,S,2) 
+        call READ_DATEI('O.txt',dG,T,Nmax,N,S,3)
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 2.D0
+      elseif (specie.eq.268) then
+        call READ_DATEI('ZrO2_l.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Zr.txt',dG,T,Nmax,N,S,2) 
+        call READ_DATEI('O.txt',dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 2.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop

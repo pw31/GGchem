@@ -20,7 +20,7 @@ cal  = 4.184       # 1 cal in J
 mmHg = 1.3328E+3   # 1 mmHg in dyn/cm2
 bar  = 1.00E+6     # 1 bar in dyn/cm2
 
-chemnam = 'LiOH'     #choose specie
+chemnam = 'W'     #choose specie
 
 latexnm = re.sub(r'(\d+)',r'_\1',chemnam)
 for phase in ['_cr','_l']:
