@@ -9,7 +9,7 @@ Al2O3[s]       CORUNDUM(alpha)
  3 O
 # Sharp & Huebner (1990):
 # 1  0.00000E+00 -7.32976E+05  1.84782E+02 -2.57313E-03  0.00000E+00
-# dG-fit NIST-Janaf 100-3000K, fit quality +/- 0.076:
+# dG-fit NIST-Janaf 100-3000K, +/- 0.076:
   2  1.29765E+06 -3.09312E+06  7.86027E+02 -1.36327E-02  8.59619E-07
 
 Al2O3[l]       CORUNDUM(liquid)          2327.0
@@ -17,7 +17,7 @@ Al2O3[l]       CORUNDUM(liquid)          2327.0
 2
  2 Al
  3 O
-# dG-fit NIST-Janaf 298-4000K, fit quality +/- 0.73:
+# dG-fit NIST-Janaf 298-4000K, +/- 0.73:
   2  9.69640E+06 -3.07785E+06  8.23186E+02 -3.65211E-02  2.33258E-06
 
 MgAl2O4[s]     SPINEL
@@ -28,7 +28,7 @@ MgAl2O4[s]     SPINEL
  4 O
 # Sharp & Huebner (1990):
 # 1  2.50397E+05 -9.83584E+05  2.54352E+02 -4.24568E-03  0.00000E+00
-# dG-fit NIST-Janaf 100-2800K, fit quality +/- 0.17:
+# dG-fit NIST-Janaf 100-2800K, +/- 0.17:
   2  1.85854E+06 -4.11695E+06  1.06653E+03 -1.81276E-02  1.26020E-08
 
 MgAl2O4[l]     SPINEL(liquid)            2408.0
@@ -37,7 +37,7 @@ MgAl2O4[l]     SPINEL(liquid)            2408.0
  1 Mg
  2 Al
  4 O
-# dG-fit NIST-Janaf 298-4000K, fit quality +/- 0.28:
+# dG-fit NIST-Janaf 298-4000K, +/- 0.28:
   2  4.87016E+06 -3.93827E+06  1.00592E+03 -2.80659E-02  1.70265E-06
 
 CaMgSi2O6[s]   DIOPSIDE
@@ -103,7 +103,7 @@ TiO2[s]        RUTILE
 2
  1 Ti
  2 O
-# pvap NIST-Janaf 100-4000K, fit quality +/- 0.37:
+# pvap NIST-Janaf 100-4000K, +/- 0.37:
   3 -7.65465E+04  3.72148E+01  1.76288E-03 -1.35859E-06  1.66681E-10
 
 TiO2[l]        RUTILE(liquid)            2130.0
@@ -111,7 +111,7 @@ TiO2[l]        RUTILE(liquid)            2130.0
 2
  1 Ti
  2 O
-# pvap NIST-Janaf 298-4000K, fit quality +/- 0.019:
+# pvap NIST-Janaf 298-4000K, +/- 0.019:
   3 -7.07819E+04  3.68021E+01 -1.29214E-03 -6.87776E-08  1.89408E-11
 
 Ti4O7[s]       TITANIUM_OXIDE
@@ -119,7 +119,7 @@ Ti4O7[s]       TITANIUM_OXIDE
 2
  4 Ti
  7 O
-# dG-fit NIST-Janaf 298-2400K, fit quality +/- 0.085:
+# dG-fit NIST-Janaf 298-2400K, +/- 0.085:
   2  1.85821E+06 -7.06188E+06  1.70429E+03 -4.67044E-02  4.71514E-06
 
 Ti4O7[l]       TITANIUM_OXIDE(liquid)    1950.0
@@ -127,7 +127,7 @@ Ti4O7[l]       TITANIUM_OXIDE(liquid)    1950.0
 2
  4 Ti
  7 O
-# dG-fit NIST-Janaf 298-2400K, fit quality +/- 0.43:
+# dG-fit NIST-Janaf 298-2400K, +/- 0.43:
   2  5.06384E+06 -6.89199E+06  1.64108E+03 -5.93652E-02  4.64893E-06
 
 Mg2SiO4[s]     FOSTERITE 
@@ -138,7 +138,7 @@ Mg2SiO4[s]     FOSTERITE
  4 O
 # Sharp & Huebner (1990):
 # 1  7.52334E+04 -9.38369E+05  2.47581E+02 -3.14980E-03  0.00000E+00
-# dG-fit NIST-Janaf 100-3000K, fit quality +/- 0.14:
+# dG-fit NIST-Janaf 100-3000K, +/- 0.14:
   2  1.70117E+06 -3.93154E+06  1.04604E+03 -1.77300E-02  7.18369E-07
 
 Mg2SiO4[l]     FOSTERITE(liquid)         2171.0
@@ -147,7 +147,7 @@ Mg2SiO4[l]     FOSTERITE(liquid)         2171.0
  2 Mg
  1 Si
  4 O
-# dG-fit NIST-Janaf 298-3000K, fit quality +/- 0.15:
+# dG-fit NIST-Janaf 298-3000K, +/- 0.15:
   2  3.26302E+06 -3.87698E+06  1.03152E+03 -2.48587E-02  1.67747E-06
 
 MgSiO3[s]      ENSTATITE
@@ -158,7 +158,7 @@ MgSiO3[s]      ENSTATITE
  3 O
 # Sharp & Huebner (1990):
 # 1  8.74400E+03 -6.92565E+05  1.77877E+02 -1.41412E-03  0.00000E+00  
-# dG-fit NIST-Janaf 100-2500K, fit quality +/- 0.27:
+# dG-fit NIST-Janaf 100-2500K, +/- 0.27:
   2  1.54295E+06 -2.90619E+06  7.60576E+02 -1.52087E-02  1.78138E-06
 
 MgSiO3[l]      ENSTATITE(liquid)         1850.0
@@ -167,26 +167,30 @@ MgSiO3[l]      ENSTATITE(liquid)         1850.0
  1 Mg
  1 Si
  3 O
-# dG-fit NIST-Janaf 298-3000K, fit quality 1.52E-01:
+# dG-fit NIST-Janaf 298-3000K, +/- 0.15:
   2  2.94675E+06 -2.86104E+06  7.52974E+02 -2.55722E-02  2.36166E-06
  
 Fe[s]          IRON
 7.87
 1 
  1 Fe
-# dG-fit NIST-Janaf 100-2200K, fit quality 0.20:
+# dG-fit NIST-Janaf 100-2200K, +/- 0.20:
   2  5.02534E+05 -4.20959E+05  1.70068E+02 -1.65310E-02  2.10361E-06
-# dG/RT Stock-fit NIST-Janaf 100-2200K, fit quality 0.16:
+# dG/RT Stock-fit NIST-Janaf 100-2200K, +/- 0.16:
 # 5  4.97717E+04 -1.41563E+00 -1.04403E+01  2.55631E-03 -2.46615E-07
+# pvap-fit NIST-Janaf 100-2200K, +/- 0.050:
+# 3 -4.99622E+04  3.21370E+01  6.68363E-04 -1.13811E-06  2.57277E-10
 
 Fe[l]          IRON(liquid)              1809.0
 6.98
 1
  1 Fe
-# dG-fit NIST-Janaf extended 100-4000K, fit quality 0.31:
+# dG-fit NIST-Janaf extended 100-4000K, +/- 0.31:
   2 -2.10749E+04 -4.04879E+05  1.55545E+02 -1.10965E-02  8.59559E-07
-# dG/RT Stock-fit NIST-Janaf 298-4000K, fit quality 0.25:
+# dG/RT Stock-fit NIST-Janaf 298-4000K, +/- 0.25:
 # 5  4.82752E+04 -1.36166E+00 -9.76140E+00  2.32702E-03 -1.99694E-07
+# pvap-fit NIST-Janaf 298-4000K, +/- 0.027:
+# 3 -4.87741E+04  3.26355E+01 -1.38271E-03  1.09701E-07  0.00000E+00
 
 Fe2SiO4[s]     FAYALITE
 4.3
@@ -204,7 +208,7 @@ FeS[s]         TROILITE
  1 S
 # Sharp & Huebner (1990):
 # 1 -6.83787E+04 -1.88620E+05  6.70590E+01 -2.31838E-03  0.00000E+00
-# pvap-fit NIST-Janaf 100-900K, fit quality 0.078:
+# pvap-fit NIST-Janaf 100-900K, +/- 0.078:
   3 -5.69922E+04  3.86753E+01 -4.68301E-03  1.03559E-06 -8.42872E-11
 
 FeS[l]         TROILITE(liquid)          1463.0
@@ -212,7 +216,7 @@ FeS[l]         TROILITE(liquid)          1463.0
 2
  1 Fe
  1 S
-# pvap-fit NIST-Janaf 298-3800K, fit quality 0.078:
+# pvap-fit NIST-Janaf 298-3800K, +/- 0.078:
   3 -5.26135E+04  3.46138E+01 -3.55056E-03  7.59195E-07 -6.94708E-11
 
 MgTi2O5[s]     MG-DITITANATE
@@ -223,7 +227,7 @@ MgTi2O5[s]     MG-DITITANATE
  5 O
 # Sharp & Huebner (1990):
 # 1  3.07902E+05 -1.16223E+06  2.88995E+02 -4.64108E-03  0.00000E+00
-# dG-fit NIST-Janaf 100-3000K, fit quality 0.40:
+# dG-fit NIST-Janaf 100-3000K, +/- 0.40:
   2  2.12742E+06 -4.86574E+06  1.21637E+03 -2.34246E-02  8.39658E-07
 
 MgTi2O5[l]     MG-DITITANATE(liquid)     1963.0
@@ -232,14 +236,14 @@ MgTi2O5[l]     MG-DITITANATE(liquid)     1963.0
  1 Mg
  2 Ti
  5 O
-# dG-fit NIST-Janaf 298-4000K, fit quality 0.32:
+# dG-fit NIST-Janaf 298-4000K, +/- 0.32:
   2  5.49485E+06 -4.75803E+06  1.18602E+03 -4.08290E-02  3.08428E-06
 
 C[s]           GRAPHITE
 2.2
 1
  1 C
-# 3para pvap-fit NIST-Janaf 100-4000K, fit quality 0.063:
+# 3para pvap-fit NIST-Janaf 100-4000K, +/- 0.063:
   4  3.27860E+01 -8.65139E+04  4.80395E-01  0.00000E+00  0.00000E+00
 
 TiC[s]         TITANIUM_CARBIDE
@@ -247,7 +251,7 @@ TiC[s]         TITANIUM_CARBIDE
 2
  1 Ti
  1 C
-# dG-fit NIST-Janaf 100-4000K, fit quality 0.32:
+# dG-fit NIST-Janaf 100-4000K, +/- 0.32:
   2  1.11878E+05 -1.37612E+06  3.20666E+02 -4.63379E-03  1.85306E-07
 
 TiC[l]         TITANIUM_CARBIDE(liquid)  3290.0
@@ -255,7 +259,7 @@ TiC[l]         TITANIUM_CARBIDE(liquid)  3290.0
 2
  1 Ti
  1 C
-# dG-fit NIST-Janaf 298-4500K, fit quality 0.025:
+# dG-fit NIST-Janaf 298-4500K, +/- 0.025:
   2  5.34201E+05 -1.30289E+06  3.01268E+02 -6.61621E-03  5.21065E-07
 
 SiC[s]         SILICON_CARBIDE(alpha)
@@ -263,7 +267,7 @@ SiC[s]         SILICON_CARBIDE(alpha)
 2
  1 Si
  1 C
-# dG-fit NIST-Janaf 100-4000K, fit quality 0.067:
+# dG-fit NIST-Janaf 100-4000K, +/- 0.067:
   2  6.73337E+05 -1.24381E+06  3.21779E+02 -4.54405E-03  2.69711E-07
 
 Fe2O3[s]       HEMATITE 
@@ -287,7 +291,7 @@ SiO2[s]        QUARTZ
 2
  1 Si
  2 O
-# pvap-fit NIST-Janaf 100-2000K, fit quality 0.080:
+# pvap-fit NIST-Janaf 100-2000K, +/- 0.080:
   3 -7.28086E+04  3.65312E+01 -2.56109E-04 -5.24980E-07  1.53343E-10
 
 SiO2[l]        QUARTZ(liquid)            1696.0
@@ -295,21 +299,21 @@ SiO2[l]        QUARTZ(liquid)            1696.0
 2
  1 Si
  2 O
-# pvap-fit NIST-Janaf 100-4500K, fit quality 0.080:
+# pvap-fit NIST-Janaf 100-4500K, +/- 0.080:
   3 -7.18591E+04  3.59570E+01 -6.57765E-04 -3.78705E-08  8.78339E-12
 
 Zr[s]          ZIRCONIUM(beta)
 6.52
 1
  1 Zr
-# pvap-fit NIST-Janaf 298-2600K, fit quality 0.0056:
+# pvap-fit NIST-Janaf 298-2600K, +/- 0.0056:
   3 -7.28816E+04  3.11094E+01 -6.94825E-04  2.42125E-07 -3.55274E-11
 
 Zr[l]          ZIRCONIUM(liquid)         2125.0
 5.8            estimated
 1
  1 Zr
-# pvap-fit NIST-Janaf 298-5500K, fit quality 0.016:
+# pvap-fit NIST-Janaf 298-5500K, +/- 0.016:
   3 -7.14144E+04  3.06541E+01 -5.47166E-04  4.59756E-08 -9.40737E-13
 
 ZrO2[s]        BADDELEYITE 
@@ -317,7 +321,7 @@ ZrO2[s]        BADDELEYITE
 2
  1 Zr
  2 O
-# pvap-fit NIST-Janaf 298-3500K, fit quality 0.062:
+# pvap-fit NIST-Janaf 298-3500K, +/- 0.062:
   3 -9.77238E+04  4.18463E+01 -2.22011E-03  3.20813E-07 -1.60657E-11
 
 ZrO2[l]        BADDELEYITE(liquid)       2950.0
@@ -325,21 +329,21 @@ ZrO2[l]        BADDELEYITE(liquid)       2950.0
 2
  1 Zr
  2 O
-# pvap-fit NIST-Janaf 298-5000K, fit quality 0.11:
+# pvap-fit NIST-Janaf 298-5000K, +/- 0.11:
   3 -8.87286E+04  3.86685E+01 -1.94950E-03  2.38918E-07 -1.43097E-11
 
 W[s]           TUNGSTEN 
 19.25
 1
  1 W
-# pvap-fit NIST-Janaf 100-4800K, fit quality 0.027:
+# pvap-fit NIST-Janaf 100-4800K, +/- 0.027:
   3 -1.02351E+05  3.07543E+01 -6.13643E-06  5.36528E-08 -1.19522E-11
 
 W[l]           TUNGSTEN(liquid)          3680.0
 17.6           
 1
  1 W
-# pvap-fit NIST-Janaf 298-6000K, fit quality 0.015:
+# pvap-fit NIST-Janaf 298-6000K, +/- 0.015:
   3 -9.66863E+04  2.90491E+01  2.11260E-04 -5.93323E-08  6.15431E-12
 
 WO3[s]         TUNGSTEN_TRIOXIDE
@@ -347,7 +351,7 @@ WO3[s]         TUNGSTEN_TRIOXIDE
 2
  1 W
  3 O
-# pvap-fit NIST-Janaf 100-3000K, fit quality 0.014:
+# pvap-fit NIST-Janaf 100-3000K, +/- 0.014:
   3 -6.63560E+04  4.06161E+01 -2.83452E-03  6.33945E-07 -7.73057E-11
 
 WO3[l]         TUNGSTEN_TRIOXIDE(liquid) 1745.0
@@ -355,7 +359,7 @@ WO3[l]         TUNGSTEN_TRIOXIDE(liquid) 1745.0
 2
  1 W
  3 O
-# pvap-fit NIST-Janaf 100-3000K, fit quality 0.014:
+# pvap-fit NIST-Janaf 100-3000K, +/- 0.014:
   3 -5.98226E+04  3.68387E+01 -1.60492E-03 -3.33151E-07  8.09588E-11
 
 MgO[s]         PERICLASE
@@ -363,7 +367,7 @@ MgO[s]         PERICLASE
 2
  1 Mg
  1 O
-# pvap-fit NIST-Janaf 100-4000K, fit quality 0.091:
+# pvap-fit NIST-Janaf 100-4000K, +/- 0.091:
   3 -7.91838E+04  3.57312E+01  1.45021E-04 -8.47194E-08  4.49221E-12
 
 MgO[l]         PERICLASE(liquid)         3105.0
@@ -371,7 +375,7 @@ MgO[l]         PERICLASE(liquid)         3105.0
 2
  1 Mg
  1 O
-# pvap-fit NIST-Janaf 298-5000K, fit quality 0.035:
+# pvap-fit NIST-Janaf 298-5000K, +/- 0.035:
   3 -7.07437E+04  3.25683E+01  6.94583E-04 -2.71415E-07  2.24580E-11
 
 FeO[s]         FERROPERICLASE
@@ -379,7 +383,7 @@ FeO[s]         FERROPERICLASE
 2
  1 Fe
  1 O
-# pvap=fit NIST-Janaf 298-2000K, fit quality 0.015:
+# pvap=fit NIST-Janaf 298-2000K, +/- 0.015:
   3 -6.30018E+04  3.66364E+01 -2.42990E-03  3.18636E-07  0.00000E+00
 
 FeO[l]         FERROPERICLASE(liquid)    1650.0
@@ -387,7 +391,7 @@ FeO[l]         FERROPERICLASE(liquid)    1650.0
 2
  1 Fe
  1 O
-# pvap-fit NIST-Janaf 298-5000K, fit quality 0.0066:
+# pvap-fit NIST-Janaf 298-5000K, +/- 0.007:
   3 -6.03086E+04  3.48392E+01 -2.21932E-03  2.77859E-07 -1.56828E-11
 
 Na2SiO3[s]     SODIUM_METASILICATE
@@ -396,7 +400,7 @@ Na2SiO3[s]     SODIUM_METASILICATE
  2 Na
  1 Si
  3 O
-# dG polynom-fit NIST-Janaf 100-2500K, fit quality 0.17:
+# dG-fit NIST-Janaf 100-2500K, +/- 0.17:
   2  1.31453E+06 -2.98538E+06  8.76910E+02 -2.65571E-02  1.15443E-06
 
 Na2SiO3[l]     SODIUM_METASILICATE(liquid)    1362.0
@@ -405,7 +409,7 @@ Na2SiO3[l]     SODIUM_METASILICATE(liquid)    1362.0
  2 Na
  1 Si
  3 O
-# dG polynom-fit NIST-Janaf 298-2500K, fit quality 0.091:
+# dG-fit NIST-Janaf 298-2500K, +/- 0.091:
   2  1.72092E+06 -2.93824E+06  8.49423E+02 -3.54866E-02  3.74762E-06
 
 H2O[s]         WATER_ICE
@@ -423,7 +427,7 @@ H2O[l]         WATER(liquid)    273.15
  1 O
 # pvap special (Ackerman & Marley 2001)
 # 99  0.0  0.0  0.0  0.0  0.0
-# pvap Yaws 273-647K
+# pvap Yaws 273-647K:
   6  29.8605E+00 -3.1522E+03 -7.3037E+00  2.4247E-09  1.8090E-06
 
 NH3[s]         AMONIA(liquid/solid)           195.4
@@ -431,7 +435,7 @@ NH3[s]         AMONIA(liquid/solid)           195.4
 2
  1 N
  3 H
-# pvap special (CRC Handbook of Chemistry and Physics, Weast 1971)
+# pvap special (CRC Handbook of Chemistry and Physics, Weast 1971):
   99  0.0  0.0  0.0  0.0  0.0
 
 CH4[s]         METHANE(liquid/solid)           90.7
@@ -439,7 +443,7 @@ CH4[s]         METHANE(liquid/solid)           90.7
 2
  1 C
  4 H
-# pvap special (Prydz & Goodwin 1972)
+# pvap special (Prydz & Goodwin 1972):
   99  0.0  0.0  0.0  0.0  0.0
 
 CO[s]          CARBON_MONOXIDE(liquid/solid)   68.2
@@ -447,7 +451,7 @@ CO[s]          CARBON_MONOXIDE(liquid/solid)   68.2
 2
  1 C
  1 O
-# pvap Yaws 68-132K
+# pvap Yaws 68-132K:
   6  51.8145E+00 -7.8824E+02 -2.2734E+01  5.1225E-02  4.6603E-11
 
 CO2[s]         CARBON_DIOXIDE(liquid/solid)   194.7
@@ -455,7 +459,7 @@ CO2[s]         CARBON_DIOXIDE(liquid/solid)   194.7
 2
  1 C
  2 O
-# pvap Yaws 216-305K
+# pvap Yaws 216-305K:
   6  35.0187E+00 -1.5119E+03 -1.1335E+01  9.3383E-03  7.7626E-10
 
 H2SO4[s]       SULPHURIC_ACID(liquid/solid)   283.5
@@ -464,23 +468,23 @@ H2SO4[s]       SULPHURIC_ACID(liquid/solid)   283.5
  2 H
  1 S
  4 O
-# dG polynom-fit NIST-Janaf 100-1000K, fit quality +/- 0.35:
+# dG-fit NIST-Janaf 100-1000K, +/- 0.35:
   2  9.70368E+05 -2.53825E+06  9.35422E+02 -4.96224E-02  0.00000E+00
-# pvap Yaws 283-603K 
+# pvap Yaws 283-603K: 
 # 6  2.05820E+00 -4.1924E+03  3.2578E+00 -1.1224E-03  5.5371E-07
 
 Na[s]          SODIUM
 0.968
 1
  1 Na
-# pvap polynon-fit NIST-Janaf 100-1000K, fit quality +/- 0.003:
+# pvap-fit NIST-Janaf 100-1000K, +/- 0.003:
   3 -1.30424E+04  2.70281E+01 -1.44654E-03 -4.12467E-07  3.86734E-10
 
 Na[l]          SODIUM(liquid)     370.98 
 0.927
 1
  1 Na
-# pvap extended polynon-fit NIST-Janaf 100-2400K, fit quality +/- 0.003:
+# pvap extended fit NIST-Janaf 100-2400K, +/- 0.003:
   3 -1.26494E+04  2.58560E+01 -1.36371E-03  2.63744E-07  0.00000E+00
 
 NaCl[s]        HALITE
@@ -488,7 +492,7 @@ NaCl[s]        HALITE
 2
  1 Na
  1 Cl
-# pvap polynon-fit NIST-Janaf 100-1000K, fit quality +/- 0.003
+# pvap-fit NIST-Janaf 100-1000K, +/- 0.003
   3 -2.79146E+04  3.46023E+01 -3.11287E-03  5.30965E-07 -2.59584E-12
 
 NaCl[l]        HALITE(liquid)     1073.8
@@ -496,7 +500,7 @@ NaCl[l]        HALITE(liquid)     1073.8
 2
  1 Na
  1 Cl
-# pvap polynon-fit NIST-Janaf 298-2500K, fit quality +/- 0.13:
+# pvap-fit NIST-Janaf 298-2500K, +/- 0.13:
   3 -2.48880E+04  3.18494E+01 -3.08748E-03  4.84990E-07 -2.60359E-11
 
 KCl[s]         SYLVITE
@@ -504,7 +508,7 @@ KCl[s]         SYLVITE
 2
  1 K
  1 Cl
-# pvap polynon-fit NIST-Janaf 100-2400K, fit quality +/- 0.014:
+# pvap-fit NIST-Janaf 100-2400K, +/- 0.014:
   3 -2.69250E+04  3.39574E+01 -2.04903E-03 -2.83957E-07  1.82974E-10
 
 KCl[l]	       SYLVITE(liquid)    1044.0
@@ -512,21 +516,21 @@ KCl[l]	       SYLVITE(liquid)    1044.0
 2
  1 K
  1 Cl
-# pvap polynon-fit NIST-Janaf 298-2400K, fit quality +/- 0.036:
+# pvap-fit NIST-Janaf 298-2400K, +/- 0.036:
   3 -2.50293E+04  3.39453E+01 -4.61815E-03  7.36857E-07  0.00000E+00
 
 S[s]           SULPHUR
 2.08
 1
  1 S
-# pvap polynon-fit NIST-Janaf 100-800K, fit quality +/- 0.003:
+# pvap-fit NIST-Janaf 100-800K, +/- 0.003:
   3 -3.32020E+04  2.90980E+01  3.44461E-03 -4.54179E-06  1.85126E-09
 
 S[l]           SULPHUR(liquid)    388.36
 1.7
 1
  1 S
-# pvap polynon-fit NIST-Janaf 298-2400K, fit quality +/- 0.036:
+# pvap-fit NIST-Janaf 298-2400K, +/- 0.036:
   3 -3.32601E+04  3.07134E+01 -2.01083E-03  4.47359E-07  0.00000E+00
 
 MgS[s]         MG_SULPHIDE
@@ -534,7 +538,7 @@ MgS[s]         MG_SULPHIDE
 2
  1 Mg
  1 S
-# dG polynom-fit NIST-Janaf 100-3000K, fit quality +/- 0.11:
+# dG-fit NIST-Janaf 100-3000K, +/- 0.11:
   2 -3.08737E+04 -7.70053E+05  2.69294E+02 -5.60302E-03  3.38303E-07
 
 LiCl[s]        LITHIUM_CHLORIDE
@@ -542,7 +546,7 @@ LiCl[s]        LITHIUM_CHLORIDE
 2
  1 Li
  1 Cl
-# pvap polynom-fit NIST-Janaf 100-2000K, fit quality +/- 0.084:
+# pvap-fit NIST-Janaf 100-2000K, +/- 0.084:
   3 -2.57733E+04  3.36349E+01 -2.43056E-03  2.35233E-07  0.00000E+00
  
 LiCl[l]        LITHIUM_CHLORIDE(liquid)     883.0
@@ -550,7 +554,7 @@ LiCl[l]        LITHIUM_CHLORIDE(liquid)     883.0
 2
  1 Li
  1 Cl
-# pvap polynom-fit NIST-Janaf 298-2000K, fit quality +/- 0.008:
+# pvap-fit NIST-Janaf 298-2000K, +/- 0.008:
  3 -2.38196E+04  3.23179E+01 -4.07306E-03  1.00591E-06 -9.65764E-11
 
 SiS2[s]        SILICON_DISULFIDE
@@ -558,7 +562,7 @@ SiS2[s]        SILICON_DISULFIDE
 2
  1 Si
  2 S
-# dG polynom-fit NIST-Janaf 298-2000K, fit quality +/- 0.009:
+# dG-fit NIST-Janaf 298-2000K, +/- 0.009:
   2 -1.96413E+05 -1.21744E+06  4.29645E+02 -1.32885E-02  9.27515E-07
 
 SiS2[l]        SILICON_DISULFIDE(liquid)    1363.0
@@ -566,7 +570,7 @@ SiS2[l]        SILICON_DISULFIDE(liquid)    1363.0
 2
  1 Si
  2 S
-# dG polynom-fit NIST-Janaf 298-2000K, fit quality +/- 0.024:
+# dG-fit NIST-Janaf 298-2000K, +/- 0.024:
   2  5.45975E+05 -1.21556E+06  4.34344E+02 -1.99379E-02  2.31933E-06
 
 AlCl3[s]       ALUMINIUM_TRICHLORIDE
@@ -574,7 +578,7 @@ AlCl3[s]       ALUMINIUM_TRICHLORIDE
 2
  1 Al
  3 Cl
-# dG polynom-fit NIST-Janaf 100-1500K, fit quality +/- 0.082:
+# dG-fit NIST-Janaf 100-1500K, +/- 0.082:
   2  4.17188E+05 -1.40425E+06  5.68472E+02 -1.79150E-02 -4.81449E-06
 
 AlCl3[l]       ALUMINIUM_TRICHLORIDE(liquid)   465.7
@@ -582,7 +586,7 @@ AlCl3[l]       ALUMINIUM_TRICHLORIDE(liquid)   465.7
 2
  1 Al
  3 Cl
-# dG polynom-fit NIST-Janaf 298-1500K, fit quality +/- 0.011:
+# dG-fit NIST-Janaf 298-1500K, +/- 0.011:
   2 -1.51097E+06 -1.36116E+06  4.88316E+02 -2.96109E-02  3.95859E-06
 
 CaO[s]         LIME
@@ -590,7 +594,7 @@ CaO[s]         LIME
 2
  1 Ca
  1 O
-# dG polynom-fit NIST-Janaf 100-3600K, fit quality +/- 0.20:
+# dG-fit NIST-Janaf 100-3600K, +/- 0.20:
   2 -4.94275E+04 -1.06229E+06  2.81700E+02 -7.00317E-03  4.60182E-07
 
 CaO[l]         LIME(liquid)     3200.0
@@ -598,7 +602,7 @@ CaO[l]         LIME(liquid)     3200.0
 2
  1 Ca
  1 O
-# dG polynom-fit NIST-Janaf 298-4500K, fit quality +/- 0.15:
+# dG-fit NIST-Janaf 298-4500K, +/- 0.15:
   2  7.88379E+05 -9.87984E+05  2.61388E+02 -8.44845E-03  6.19197E-07
 
 CaCl2[s]       CALCIUM_DICHLORIDE
@@ -606,7 +610,7 @@ CaCl2[s]       CALCIUM_DICHLORIDE
 2
  1 Ca
  2 Cl
-# pvap polynom-fit NIST-Janaf 100-2000K, fit quality +/- 0.092:
+# pvap-fit NIST-Janaf 100-2000K, +/- 0.092:
   3 -3.91597E+04  3.71795E+01 -1.93815E-03  1.18087E-07  0.00000E+00
 
 CaCl2[l]       CALCIUM_DICHLORIDE(liquid)   1045.0
@@ -614,7 +618,7 @@ CaCl2[l]       CALCIUM_DICHLORIDE(liquid)   1045.0
 2
  1 Ca
  2 Cl
-# pvap polynom-fit NIST-Janaf 298-3000K, fit quality +/- 0.025:
+# pvap-fit NIST-Janaf 298-3000K, +/- 0.025:
   3 -3.68100E+04  3.61822E+01 -3.53647E-03  5.03350E-07 -3.05198E-11
 
 LiH[s]         LITHIUM_HYDRIDE
@@ -622,7 +626,7 @@ LiH[s]         LITHIUM_HYDRIDE
 2
  1 Li
  1 H
-# pvap polynom-fit NIST-Janaf 100-1500K, fit quality +/- 0.044:
+# pvap-fit NIST-Janaf 100-1500K, +/- 0.044:
   3 -2.76405E+04  3.07600E+01  3.06028E-03 -3.26876E-06  7.70757E-10
 
 LiH[l]         LITHIUM_HYDRIDE(liquid)       961.8
@@ -630,7 +634,7 @@ LiH[l]         LITHIUM_HYDRIDE(liquid)       961.8
 2
  1 Li
  1 H
-# pvap polynom-fit NIST-Janaf 298-2000K, fit quality +/- 0.036:
+# pvap-fit NIST-Janaf 298-2000K, +/- 0.036:
   3 -2.63155E+04  3.30329E+01 -3.77190E-03  6.41033E-07  0.00000E+00
 
 MgTiO3[s]      GEIKIELITE
@@ -639,7 +643,7 @@ MgTiO3[s]      GEIKIELITE
  1 Mg
  1 Ti
  3 O
-# dG polynom-fit NIST-Janaf 100-3000K, fit quality +/- 0.20:
+# dG-fit NIST-Janaf 100-3000K, +/- 0.20:
   2  8.18358E+05 -2.94809E+06  7.57824E+02 -1.56613E-02  1.01510E-06
 
 MgTiO3[l]      GEIKIELITE(liquid)           1953.0
@@ -648,7 +652,7 @@ MgTiO3[l]      GEIKIELITE(liquid)           1953.0
  1 Mg
  1 Ti
  3 O
-# dG polynom-fit NIST-Janaf 298-4000K, fit quality 0.19:
+# dG-fit NIST-Janaf 298-4000K, +/- 0.19:
   2  2.95447E+06 -2.88536E+06  7.40614E+02 -2.52836E-02  1.86167E-06
 
 K2SiO3[s]      POTASSIUM_SILICATE 
@@ -657,7 +661,7 @@ K2SiO3[s]      POTASSIUM_SILICATE
  2 K
  1 Si
  3 O
-# dG polynom-fit NIST-Janaf 100-2200K, fit quality 0.089:
+# dG-fit NIST-Janaf 100-2200K, +/- 0.089:
   2  1.08754E+06 -2.93466E+06  8.61167E+02 -3.66511E-02  3.06399E-06
 
 K2SiO3[l]      POTASSIUM_SILICATE(liquid)   1249.0
@@ -666,21 +670,21 @@ K2SiO3[l]      POTASSIUM_SILICATE(liquid)   1249.0
  2 K
  1 Si
  3 O
-# dG polynom-fit NIST-Janaf 298-3000K, fit quality 0.34:
+# dG-fit NIST-Janaf 298-3000K, +/- 0.34:
   2 -2.09568E+06 -2.87130E+06  8.04917E+02 -3.03325E-02  2.75492E-06
 
 Ti[s]          TITANIUM(beta)
 4.51
 1
  1 Ti
-# dG polynom-fit NIST-Janaf 298-2500K, fit quality +/- 0.021:
+# dG-fit NIST-Janaf 298-2500K, +/- 0.021:
   2  1.31154E+05 -4.67808E+05  1.45369E+02 -3.49413E-03  0.00000E+00
 
 Ti[l]          TITANIUM(liquid)             1939.0
 4.14
 1
  1 Ti
-# dG polynom-fit NIST-Janaf 298-4500K, fit quality +/- 0.18:
+# dG-fit NIST-Janaf 298-4500K, +/- 0.18:
   2  1.72969E+06 -4.68384E+05  1.54389E+02 -9.64953E-03  7.21551E-07
 
 TiO[s]         TITANIUM_MONOXIDE(beta)
@@ -688,7 +692,7 @@ TiO[s]         TITANIUM_MONOXIDE(beta)
 2
  1 Ti
  1 O
-# pvap polynom-fit NIST-Janaf 298-2500K, fit quality +/- 0.007:
+# pvap-fit NIST-Janaf 298-2500K, +/- 0.007:
   3 -7.14013E+04  3.80934E+01 -1.49104E-03  6.06190E-08  0.00000E+00
 
 TiO[l]         TITANIUM_MONOXIDE(liquid)    2023.0 
@@ -696,7 +700,7 @@ TiO[l]         TITANIUM_MONOXIDE(liquid)    2023.0
 2
  1 Ti
  1 O
-# pvap polynom-fit NIST-Janaf 298-4500K, fit quality +/- 0.009:
+# pvap-fit NIST-Janaf 298-4500K, +/- 0.009:
   3 -6.61504E+04  3.58743E+01 -1.97510E-03  2.33017E-07 -1.21467E-11
 
 LiOH[s]        LITHIUM_HYDROXIDE 
@@ -705,7 +709,7 @@ LiOH[s]        LITHIUM_HYDROXIDE
  1 Li
  1 O
  1 H
-# pvap polynom-fit NIST-Janaf 100-1500K, fit quality +/- 0.036:
+# pvap-fit NIST-Janaf 100-1500K, +/- 0.036:
   3 -3.01062E+04  3.37718E+01  9.66853E-04 -2.02320E-06  5.34064E-10
 
 LiOH[l]        LITHIUM_HYDROXIDE(liquid)     744.3 
@@ -714,7 +718,7 @@ LiOH[l]        LITHIUM_HYDROXIDE(liquid)     744.3
  1 Li
  1 O
  1 H
-# pvap polynom-fit NIST-Janaf 298-2500K, fit quality +/- 0.066:
+# pvap-fit NIST-Janaf 298-2500K, +/- 0.066:
   3 -2.87677E+04  3.42848E+01 -3.81580E-03  5.39401E-07  0.00000E+00
 
 VO[s]          VANADIUM_MONOXIDE
@@ -722,7 +726,7 @@ VO[s]          VANADIUM_MONOXIDE
 2
  1 V
  1 O
-# pvap polynom-fit NIST-Janaf 100-2600K, fit quality +/- 0.016:
+# pvap-fit NIST-Janaf 100-2600K, +/- 0.016:
   3 -6.74603E+04  3.82717E+01 -2.78551E-03  5.72078E-07 -7.41840E-11
 
 VO[l]          VANADIUM_MONOXIDE(liquid)   2063.0
@@ -730,7 +734,7 @@ VO[l]          VANADIUM_MONOXIDE(liquid)   2063.0
 2
  1 V
  1 O
-# pvap polynom-fit NIST-Janaf 298-3500K, fit quality +/- 0.006:
+# pvap-fit NIST-Janaf 298-3500K, +/- 0.006:
   3 -6.01063E+04  3.45413E+01 -2.64854E-03  4.70724E-07 -3.85068E-11
 
 CaS[s]         CALCIUM_SULFIDE
@@ -738,7 +742,7 @@ CaS[s]         CALCIUM_SULFIDE
 2
  1 Ca
  1 S
-# dG polynom-fit NIST-Janaf 100-3000K, fit quality +/- 0.13:
+# dG-fit NIST-Janaf 100-3000K, +/- 0.13:
   2 -8.11371E+04 -9.28021E+05  2.69568E+02 -7.11550E-03  5.21453E-07
 
 FeS2[s]	       PYRITE
@@ -746,7 +750,7 @@ FeS2[s]	       PYRITE
 2
  1 Fe
  2 S
-# dG polynom-fit NIST-Janaf 100-1400K, fit quality +/- 0.052:
+# dG-fit NIST-Janaf 100-1400K, +/- 0.052:
   2  5.30142E+05 -1.14524E+06  4.72929E+02 -4.33681E-03 -1.49521E-06
 
 Na2S[s]        SODIUM_SULFIDE
@@ -754,7 +758,7 @@ Na2S[s]        SODIUM_SULFIDE
 2
  2 Na
  1 S
-# dG polynom-fit NIST-Janaf 298-2000K, fit quality 0.30:
+# dG-fit NIST-Janaf 298-2000K, +/- 0.30:
   2  1.99053E+06 -8.70027E+05  4.06721E+02 -2.78298E-02  0.00000E+00
 
 MnS[s]         ALABANDITE
@@ -762,6 +766,6 @@ MnS[s]         ALABANDITE
 2
  1 Mn
  1 S
-# Sharp & Hueber (1990)
+# Sharp & Hueber (1990):
   1  1.12482E+05 -1.81938E+05  5.87107E+01  8.89360E-05 -4.20876E-09
 
