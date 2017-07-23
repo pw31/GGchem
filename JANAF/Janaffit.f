@@ -285,6 +285,7 @@
       write(*,*) '266 = Zr[l] pvap'
       write(*,*) '267 = ZrO2[s]'
       write(*,*) '268 = ZrO2[l]'
+      write(*,*) '269 = SiC[s]'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -2145,6 +2146,13 @@
         Edzahl = 2
         stoich(2) = 1.D0
         stoich(3) = 2.D0
+      elseif (specie.eq.269) then
+        call READ_DATEI('SiC_cr.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Si.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('C.txt'   ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 1.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop

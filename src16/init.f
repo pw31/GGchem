@@ -231,19 +231,6 @@
       !eps(H) = 12.0
       !eps(O) = eps(H)-LOG10(2.Q0)        ! H:O = 2:1
 
-      !do i=1,NELEM
-      !  if (elnam(i).ne.'  ') then
-      !    if ((elnam(i).ne.'H' ).and.(elnam(i).ne.'He').and.
-     >!        (elnam(i).ne.'C' ).and.(elnam(i).ne.'O' ).and.
-     >!        (elnam(i).ne.'N' ).and.(elnam(i).ne.'Si').and.
-     >!        (elnam(i).ne.'S' ).and.
-     >!        (elnam(i).ne.'Na').and.(elnam(i).ne.'Ca').and.
-     >!        (elnam(i).ne.'Cl').and.(elnam(i).ne.'Ti')) then
-      !      eps(i) = eps(i)-30.0
-      !    endif
-      !  endif
-      !enddo
-
       do i=1,NELEM
         eps(i) = 10.Q0 ** (eps(i)-12.Q0)
       enddo

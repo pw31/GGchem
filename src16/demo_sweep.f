@@ -13,7 +13,7 @@
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       real :: p,pe,Tg,rho,nHges,nges,kT,pges
       real :: nTEA,pTEA,mu,muold,fac
-      real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST)
+      real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST),out(NDUST)
       integer :: i,j,jj,l,iel,NOUT
       character(len=5000) :: species,NISTspecies,elnames
       character(len=200) :: line
@@ -199,14 +199,18 @@
 
         write(*,1010) ' Tg=',Tg,' pe=',nel*kT,' n<H>=',nHges,
      &                ' p=',pges/bar,' mu=',mu/amu
+        do jj=1,NDUST
+          out(jj) = LOG10(MIN(1.Q+300,MAX(1.Q-300,Sat(jj))))
+          if (ABS(Sat(jj)-1.Q0)<1.E-10) out(jj)=0.Q0
+        enddo  
         print*
         write(70,2010) Tg,nHges,pges,
      &       LOG10(MAX(1.Q-300, nel)),
      &      (LOG10(MAX(1.Q-300, nat(elnum(jj)))),jj=1,el-1),
      &      (LOG10(MAX(1.Q-300, nat(elnum(jj)))),jj=el+1,NELM),
      &      (LOG10(MAX(1.Q-300, nmol(jj))),jj=1,NMOLE),
-     &    (LOG10(MIN(1.Q+300,MAX(1.Q-300,Sat(jj)))),jj=1,NDUST),
-     &             (LOG10(MAX(1.Q-300, eldust(jj))),jj=1,NDUST)
+     &      (out(jj),jj=1,NDUST),
+     &      (LOG10(MAX(1.Q-300, eldust(jj))),jj=1,NDUST)
 
         nTEA = 0.0                           ! no electrons
         do j=1,NELEM

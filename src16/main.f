@@ -8,6 +8,7 @@
       call INIT
       call INIT_CHEMISTRY
       call INIT_DUSTCHEM
+
       if (model_dim==0) then
         call DEMO_CHEMISTRY
       else if (model_dim==1) then  

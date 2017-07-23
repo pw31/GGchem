@@ -1,8 +1,8 @@
-*********************************************************************
+**********************************************************************
       SUBROUTINE SUPERSAT(T,nat,nmol,Sat)
-*********************************************************************
+**********************************************************************
       use CHEMISTRY,ONLY: NMOLE,cmol
-      use dust_data,ONLY: NELEM,NDUST,bk,atm,rgas,bar,
+      use dust_data,ONLY: NELEM,NDUST,bk,atm,rgas,bar,Tcorr,is_liquid,
      &                    dust_nam,dust_nel,dust_el,dust_nu,elnam
       use EXCHANGE,ONLY: C,Na,Fe,S,W,Zr
       implicit none
@@ -742,8 +742,9 @@
      &         +8.76910Q+02*TT 
      &         -2.65571Q-02*TT**2
      &         +1.15443Q-06*TT**3
-          if (TT .gt. 4000) then    !manipulation above mp
-            dG = dG + EXP(TT-4000) - 1.Q0
+          !if (TT>4000) then    !manipulation above mp
+          !  dG = dG + EXP(TT-4000.Q0) - 1.Q0
+          !endif  
           dG = dG/(rgas*TT)
           lbruch = 0.Q0
           do j=1,dust_nel(i)
@@ -949,8 +950,9 @@
      &         +4.29645Q+02*TT
      &         -1.32885Q-02*TT**2
      &         +9.27515Q-07*TT**3
-          if (TT .gt. 3000) then    !manipulation above mp
-            dG = dG + EXP(TT-3000) - 1.Q0
+          !if (TT>3000.Q0) then    !manipulation above mp
+          !  dG = dG + EXP(TT-3000.Q0) - 1.Q0
+          !endif  
           dG = dG/(rgas*TT)
           lbruch = 0.Q0
           do j=1,dust_nel(i)
@@ -1107,17 +1109,15 @@
           !enddo
           !Sat(i) = EXP(lbruch-dG)
           !--- Ackerman & Marley 2001 ---
-          TC   = MIN(2000.0,TT)-275.15         ! T[degree Celsius]
+          TC   = MIN(2000.0,TT)-273.15         ! T[degree Celsius]
           psat = 6112.1*exp((18.729*TC - TC**2/227.3)/(TC + 257.87))
-          !--- make sure that liquid psat stays > solid psat for low T ---
-          psat = psat*exp(-2.Q-6*MIN(0.Q0,TC+20.Q0)**3)  
           Sat(i) = nmol(H2O)*kT/psat
           
         else if (dust_nam(i).eq.'H2O[s]') then
           !----------------------------------------
           !***  H2O[s]: Ackerman & Marley 2001  ***
           !----------------------------------------
-          TC   = MIN(2000.0,TT)-275.15         ! T[degree Celsius]
+          TC   = MIN(2000.0,TT)-273.15         ! T[degree Celsius]
           psat = 6111.5*exp((23.036*TC - TC**2/333.7)/(TC + 279.82))
           Sat(i) = nmol(H2O)*kT/psat
  
@@ -1129,25 +1129,25 @@
           Sat(i) = nmol(NH3)*kT/psat
  
         else if (dust_nam(i).eq.'CO[s]') then
-          !-----------------------------------------------------------------------
-          !***  CO[s]: Chemical Properties Handbook (McGraw-Hill 199)  68-132K ***
-          !-----------------------------------------------------------------------
-          psat = 10.0**(51.8145Q+00 
-     &                  -7.8824Q+02/TT 
-     &                  -2.2734Q+01*log10(TT) 
-     &                  +5.1225Q-02*TT
-     &                  +4.6603Q-11*TT**2) * mmHg
+          !------------------------------------------------------------------------
+          !***  CO[s]: Chemical Properties Handbook (McGraw-Hill 1999)  68-132K ***
+          !------------------------------------------------------------------------
+          psat = 10.Q0**(51.8145Q+00 
+     &                   -7.8824Q+02/TT 
+     &                   -2.2734Q+01*log10(TT) 
+     &                   +5.1225Q-02*TT
+     &                   +4.6603Q-11*TT**2) * mmHg
           Sat(i) = nmol(CO)*kT/psat
  
         else if (dust_nam(i).eq.'CO2[s]') then
-          !-------------------------------------------------------------------------
-          !***  CO2[s]: Chemical Properties Handbook (McGraw-Hill 199)  216-305K ***
-          !-------------------------------------------------------------------------
-          psat = 10.0**(35.0187Q+00 
-     &                  -1.5119Q+03/TT 
-     &                  -1.1335Q+01*log10(TT) 
-     &                  +9.3383Q-03*TT
-     &                  +7.7626Q-10*TT**2) * mmHg
+          !--------------------------------------------------------------------------
+          !***  CO2[s]: Chemical Properties Handbook (McGraw-Hill 1999)  216-305K ***
+          !--------------------------------------------------------------------------
+          psat = 10.Q0**(35.0187Q+00 
+     &                   -1.5119Q+03/TT 
+     &                   -1.1335Q+01*log10(TT) 
+     &                   +9.3383Q-03*TT
+     &                   +7.7626Q-10*TT**2) * mmHg
           Sat(i) = nmol(CO2)*kT/psat
  
         else if (dust_nam(i).eq.'CH4[s]') then
@@ -1157,32 +1157,33 @@
           psat = 10.0**(3.9895 - 443.028/(TT-0.49))*bar
           Sat(i) = nmol(CH4)*kT/psat
  
-        else if (dust_nam(i).eq.'H2SO4[l]') then
+        else if (dust_nam(i).eq.'H2SO4[s]') then
           !---------------------------------------------
           !***  H2SO4[cr/l]: eigener Fit nach JANAF  ***
           !---------------------------------------------
           pst = bar
-          !dG = 9.70368Q+05/TT
-     &    !    -2.53825Q+06  
-     &    !    +9.35422Q+02*TT 
-     &    !    -4.96224Q-02*TT**2
-          !dG = dG/(rgas*TT)
-          !lbruch = 0.Q0
-          !do j=1,dust_nel(i)
-          !  el     = dust_el(i,j)
-          !  term   = nat(el)*kT/pst
-          !  lbruch = lbruch + LOG(term)*dust_nu(i,j)
-          !enddo
-          !Sat(i) = EXP(lbruch-dG)
-          !---------------------------------------------
-          !***  H2SO4[l]: C.L.Yaws T=283.15-603.15K  ***
-          !---------------------------------------------
-          psat = 10.0**( 2.0582Q+00 
-     &                  -4.1924Q+03/TT
-     &                  +3.2578Q+00*LOG10(TT)
-     &                  -1.1224Q-03*TT
-     &                  +5.5371Q-07*TT**2)
-          Sat(i) = nmol(H2SO4)*kT/psat	
+          dG = 9.70368Q+05/TT
+     &        -2.53825Q+06  
+     &        +9.35422Q+02*TT 
+     &        -4.96224Q-02*TT**2
+          dG = dG/(rgas*TT)
+          lbruch = 0.Q0
+          do j=1,dust_nel(i)
+            el     = dust_el(i,j)
+            term   = nat(el)*kT/pst
+            lbruch = lbruch + LOG(term)*dust_nu(i,j)
+          enddo
+          Sat(i) = EXP(lbruch-dG)
+          !------------------------------------------
+          !***  H2SO4: C.L.Yaws T=283.15-603.15K  ***
+          !------------------------------------------
+          !psat = 10.Q0**( 2.0582Q+00 
+     &    !               -4.1924Q+03/TT
+     &    !               +3.2578Q+00*LOG10(TT)
+     &    !               -1.1224Q-03*TT
+     &    !               +5.5371Q-07*TT**2)*mmHg
+          !Sat(i) = nmol(H2SO4)*kT/psat	
+          !print*,SNGL(S2),SNGL(Sat(i))
 
         else if (dust_nam(i).eq.'C[s]') then
           !--------------------------------------------------------------
@@ -1211,13 +1212,10 @@
           !*** Na2S[s]: George's fit JANAF recommended ***
           !-----------------------------------------------
           pst = bar
-          dG = 4.58701Q+06/TT    !best
-     &        -8.83701Q+05 
-     &        +4.29314Q+02*TT 
-     &        -4.24080Q-02*TT**2
-     &        +3.20512Q-06*TT**3
-          if (TT .gt. 2000) then    !manipulation above mp
-            dG = dG + EXP(TT-2000) - 1.Q0
+          dG = 1.99053E+06/TT
+     &        -8.70027E+05  
+     &        +4.06721E+02*TT 
+     &        -2.78298E-02*TT**2
           dG = dG/(rgas*TT)
           lbruch = 0.Q0
           do j=1,dust_nel(i)
@@ -1232,13 +1230,14 @@
           !*** AlCl3[s]: eigener Fit nach JANAF ***
           !----------------------------------------
           pst = bar
-          dG = 4.17188Q+05/TT    !best
+          dG = 4.17188Q+05/TT     !best
      &        -1.40425Q+06  
      &        +5.68472Q+02*TT 
      &        -1.79150Q-02*TT**2
      &        -4.81449Q-06*TT**3
-          if (TT .gt. 3000) then    !manipulation above mp
-            dG = dG + EXP(TT-3000) - 1.Q0
+          !if (TT>3000.Q0) then    !manipulation above mp
+          !  dG = dG + EXP(TT-3000.Q0) - 1.Q0
+          !endif  
           dG = dG/(rgas*TT)
           lbruch = 0.Q0
           do j=1,dust_nel(i)
@@ -1711,7 +1710,7 @@
 
 	else if (dust_nam(i).eq.'CaCl2[s]') then
           !-------------------------------------
-          !*** CaCl2[l]: own fit T=100-2000K ***
+          !*** CaCl2[s]: own fit T=100-2000K ***
           !-------------------------------------
           pst = bar
           psat = EXP(-3.91597Q+04/TT    !best
@@ -1944,7 +1943,7 @@
           !---------------------------------------
           psat = EXP(-9.66863E+04/TT  
      &               +2.90491E+01  
-     &               -2.11260E-04*TT 
+     &               +2.11260E-04*TT 
      &               -5.93323E-08*TT**2  
      &               +6.15431E-12*TT**3)
           Sat(i) = nat(W)*kT/psat
@@ -1990,7 +1989,7 @@
      &               +3.06541E+01 
      &               -5.47166E-04*TT  
      &               +4.59756E-08*TT**2 
-     &               -9.40737E-13*TT**2)
+     &               -9.40737E-13*TT**3)
           Sat(i) = nat(Zr)*kT/psat
  
 	else if (dust_nam(i).eq.'ZrO2[s]') then
@@ -2058,6 +2057,15 @@
         else
           print*,dust_nam(i) 
           stop 'unbekannte Staubsorte in SUPERSAT '
+        endif
+
+        if (Tcorr(i)>0.0) then
+          if (is_liquid(i).and.TT<Tcorr(i)) then
+            Sat(i) = Sat(i)/EXP(0.1*(Tcorr(i)-TT)) 
+          endif   
+          if ((.not.is_liquid(i)).and.TT>Tcorr(i)) then
+            Sat(i) = Sat(i)/EXP(0.1*(TT-Tcorr(i)))
+          endif   
         endif
 
       enddo
