@@ -1,6 +1,6 @@
 dust species
 ============
-91
+93
 
 Al2O3[s]       CORUNDUM(alpha)
 3.97
@@ -760,6 +760,20 @@ Na2S[s]        SODIUM_SULFIDE
  1 S
 # dG-fit NIST-Janaf 298-2000K, +/- 0.30:
   2  1.99053E+06 -8.70027E+05  4.06721E+02 -2.78298E-02  0.00000E+00
+
+Mn[s]          MANGANESE
+7.43
+1
+ 1 Mn
+# pvap-fit NIST-Janaf 100-1900K, +/- 0.006
+  3 -3.41316E+04  3.12732E+01 -5.59461E-04 -4.63498E-07  1.01677E-10
+
+Mn[l]          MANGANESE(liquid)    1519.0
+5.95
+1 
+ 1 Mn
+# pvap-fit NIST-Janaf 298-3000K, +/- 0.004
+  3 -3.22207E+04  3.01880E+01 -1.14796E-03 -3.02939E-08  2.15830E-11
 
 MnS[s]         ALABANDITE
 3.99
