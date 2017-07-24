@@ -1,15 +1,17 @@
 **********************************************************************
       SUBROUTINE INIT_DUSTCHEM
 **********************************************************************
+      use PARAMETERS,ONLY: model_eqcond
       use CHEMISTRY,ONLY: NMOLE,NELM,catm
       use DUST_DATA,ONLY: NEPS,NELEM,NDUST,eps0,
      &                    dust_nam,dust_rho,dust_vol,dust_mass,
      &                    dust_nel,dust_nu,dust_el,fit,cfit,
-     &                    elnr,elcode,elnam,mass
+     &                    elnr,elcode,elnam,mass,Tmelt,Tcorr
       implicit none
       integer :: i,imax,j,k,el
       real*8 :: dmass
       character(len=200):: zeile
+      character(len=20) :: dummy
       character(len=2)  :: name
       logical :: is_atom,found,allfound
 
@@ -26,7 +28,12 @@
       read(12,1000) zeile
       NDUST = 1
       do i=1,imax
-        read(12,*) dust_nam(NDUST)
+        read(12,1000) zeile
+        if (index(zeile,'[l]').le.0) then
+          read(zeile,*) dust_nam(NDUST)
+        else
+          read(zeile,*) dust_nam(NDUST),dummy,Tmelt(NDUST)
+        endif
         read(12,*) dust_rho(NDUST)
         read(12,*) dust_nel(NDUST)
         dmass = 0.d0
@@ -56,7 +63,6 @@
           read(12,1000) zeile
           if (trim(zeile)=='') exit
           if (zeile(1:1)=='#') cycle
-          print*,trim(zeile)
           read(zeile,*) fit(NDUST),cfit(NDUST,0:4)
           found = .true.
         enddo
@@ -99,6 +105,9 @@
           endif
         enddo
       enddo
+
+      Tcorr(:) = -1.d0
+      if (model_eqcond) call CHECK_MELTING
       write(*,*)
  
       RETURN 
@@ -114,3 +123,107 @@
  2021 format(2(I2,1x,a8),11x,'->',I2,1x,a10,99(I2,1x,a8))
  2031 format(3(I2,1x,a8)    ,'->',I2,1x,a10,99(I2,1x,a8))
       end 
+
+***********************************************************************
+      SUBROUTINE CHECK_MELTING
+***********************************************************************
+      use CHEMISTRY,ONLY: NMOLE,NELM,catm
+      use DUST_DATA,ONLY: qp,NELEM,NDUST,dust_nam,Tmelt,Tcorr,is_liquid
+      implicit none
+      real*8 :: T
+      real(kind=qp) :: nat(NELEM),nmol(NMOLE),Sat(NDUST)
+      real(kind=qp) :: old,new,S(NDUST,10000)
+      integer :: i,j,k,iT,Ncheck,il,is
+      integer :: iliq(NDUST),isol(NDUST)
+      character(len=15) :: search
+
+      !--------------------------------------
+      ! ***  identify solid/liquid pairs  ***
+      !--------------------------------------
+      is_liquid(:) = .false.
+      Ncheck = 0
+      do i=1,NDUST
+        k = index(dust_nam(i),'[l]')
+        if (k>0) then
+          is_liquid(i) = .true. 
+          Ncheck = Ncheck+1 
+          iliq(Ncheck) = i
+          isol(Ncheck) = 0
+          search = dust_nam(i)
+          search = search(1:k-1)//'[s]'
+          do j=1,NDUST
+            if (search==dust_nam(j)) then
+              isol(Ncheck) = j
+            endif
+          enddo
+          if (isol(Ncheck)==0) then
+            print*,"*** liquid without solid "//trim(dust_nam(i))
+            stop
+          endif  
+        endif
+      enddo  
+
+      !-------------------------------
+      ! ***  check melting points  ***
+      !-------------------------------
+      print*
+      print*,'auto-correction for spurious liquid <-> solid '//
+     &       'phase transitions ...'
+      nat = 1.d0
+      nmol = 1.d0
+      do iT=100,10000
+        T = DBLE(iT) 
+        call SUPERSAT(T,nat,nmol,Sat)
+        S(:,iT) = Sat(:)
+      enddo  
+      do i=1,Ncheck
+        il = iliq(i)
+        is = isol(i)
+        do iT=101,10000
+          T = DBLE(iT) 
+          old = S(is,iT-1)/S(il,iT-1)
+          new = S(is,iT)/S(il,iT)
+          if (old>1.Q0.and.new<1.Q0) then
+            !print'(A15,"-> ",A15,":",2(0pF8.1))',
+     &      !     dust_nam(is),dust_nam(il),T,Tmelt(il)
+          else if (old<1.Q0.and.new>1.Q0) then
+            !print'(A15,"<- ",A15,":",0pF8.1,
+     &      !     " false intersection point")',
+     &      !     dust_nam(is),dust_nam(il),T
+            if (T<Tmelt(il)) then
+              Tcorr(il) = 0.5*(T+Tmelt(il))  
+              print'(" ... correct ",A15," T <",0pF7.1)',
+     &             dust_nam(il),Tcorr(il) 
+            else  
+              Tcorr(is) = 0.5*(T+Tmelt(il))  !correct solid
+              print'(" ... correct ",A15," T >",0pF7.1)',
+     &             dust_nam(is),Tcorr(is) 
+            endif  
+          endif  
+        enddo   
+      enddo
+      do iT=100,10000
+        T = DBLE(iT) 
+        call SUPERSAT(T,nat,nmol,Sat)
+        S(:,iT) = Sat(:)
+      enddo  
+      print'(26x,"melting point[K]  should be")'
+      do i=1,Ncheck
+        il = iliq(i)
+        is = isol(i)
+        do iT=101,10000
+          T = DBLE(iT) 
+          old = S(is,iT-1)/S(il,iT-1)
+          new = S(is,iT)/S(il,iT)
+          if (old>1.Q0.and.new<1.Q0) then
+            print'(A15,"-> ",A15,":",2(0pF8.1))',
+     &           dust_nam(is),dust_nam(il),T,Tmelt(il)
+          else if (old<1.Q0.and.new>1.Q0) then
+            print'(A15,"<- ",A15,":",0pF8.1,
+     &           " false intersection point")',
+     &           dust_nam(is),dust_nam(il),T
+            stop
+          endif  
+        enddo   
+      enddo
+      end

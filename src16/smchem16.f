@@ -324,7 +324,7 @@
         lth = LOG10(th1)
         arg = 12.75293 - 5.44850*th1    - 1.56672*lth
      &                 + 1.56041*lth**2 - 0.93275*lth**3
-        g(TiC) = EXP(MIN(1.Q+4,-2.30256*arg))
+        g(TiC) = EXP(MIN(1.1Q+4,-2.30256*arg))
 
 *  Umrechnen der Tsuji-CaH-GG-Konstante in das Gail'sche System
 *  -log(10)*log Kp(Tsuji) = -2.30256*log Kp(Tsuji) = ln Kp(Gail)
@@ -334,7 +334,7 @@
       !&       +4.23487E-01*th2
       !&       -6.14674E-02*th3
       !&       +3.16392E-03*th4
-      !  g(CaH) = EXP(MIN(1.Q+4,-2.30256*arg))
+      !  g(CaH) = EXP(MIN(1.1Q+4,-2.30256*arg))
 c
       !   arg = 0.0
       !   arg =  1.17824E+01
@@ -385,7 +385,7 @@ c  fit to Janaf tables made 27/02/2017
       !&        +2.47290E+01*TT1
       !&        -4.64016E-04*TT2
       !&        +6.79410E-08*TT3)/RcalT
-      !  g(FeH) = EXP(MIN(1.Q+4,-arg))/atm
+      !  g(FeH) = EXP(MIN(1.1Q+4,-arg))/atm
 
 c Sharp & Huebner 1990
       !  arg = (-3.04561E+05/TT1 
@@ -393,7 +393,7 @@ c Sharp & Huebner 1990
       !&        +2.32539E+01*TT1 
       !&        -1.56846E-04*TT2 
       !&        +4.53896E-08*TT3)/RcalT
-      !  g(TiH) = EXP(MIN(1.Q+4,-arg))/atm
+      !  g(TiH) = EXP(MIN(1.1Q+4,-arg))/atm
 c fit to Janaf tables made 27/02/2017
       !   arg = ( 3.07543E+05/TT1 
       !&         -1.00087E+05 
@@ -1301,7 +1301,7 @@ c     g(TiC)   : siehe oben!
           if (i.ne.TiC) g(i)=gk(i)
           if (verbose>1.and.g(i)>1.Q+300) then
             print'("huge kp",A12,1pE12.3E4,I2)',cmol(i),g(i),fit(i)
-          else if (g(i)>exp(9999.Q0)) then
+          else if (g(i)>exp(1.1Q+4)) then
             print'("*** limited kp",A12,1pE12.3E4,I2)',
      >                                          cmol(i),g(i),fit(i)
           endif 
@@ -1708,7 +1708,7 @@ c     g(TiC)   : siehe oben!
         print*,cmol(i),"i,fit=",i,fit(i)
         stop "???"
       endif  
-      gk = EXP(MIN(1.Q+4,lnk))
+      gk = EXP(MIN(1.1Q+4,lnk))
       end FUNCTION gk
 
       end SUBROUTINE smchem16

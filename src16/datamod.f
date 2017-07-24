@@ -24,6 +24,9 @@
       real*8  :: dust_rho(NDUSTmax)           ! dust material densities
       real*8  :: dust_mass(NDUSTmax)          ! dust monomer volume
       real*8  :: dust_vol(NDUSTmax)           ! dust monomer volume
+      real*8  :: Tmelt(NDUSTmax)              ! melting points
+      real*8  :: Tcorr(NDUSTmax)
+      logical :: is_liquid(NDUSTmax)
       integer :: dust_nel(NDUSTmax)           ! no of elements in dust
       integer :: dust_el(NDUSTmax,5)          ! indices of elements
       integer :: dust_nu(NDUSTmax,5)          ! stoichiometric coeffs
