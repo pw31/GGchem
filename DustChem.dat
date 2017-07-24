@@ -761,7 +761,7 @@ Na2S[s]        SODIUM_SULFIDE
 # dG-fit NIST-Janaf 298-2000K, +/- 0.30:
   2  1.99053E+06 -8.70027E+05  4.06721E+02 -2.78298E-02  0.00000E+00
 
-Mn[s]          MANGANESE
+Mn[s]          MANGANESE(alpha-delta)
 7.43
 1
  1 Mn
