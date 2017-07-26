@@ -113,7 +113,7 @@
       species = "H_g He_ref H2_ref "                                       ! H and He
      &  //"C_g N_g O_g Na_g Mg_g Si_g Al_g Ca_g Ti_g S_g Fe_g Cl_g "       ! atoms
      &  //"K_g Li_g F_g P_g V_g Cr_g Mn_g Ni_g Zr_g W_g "
-     &  //"C_g C2_g C2H2_g C2H4_g C2H_g C3_g C4_g C5_g CH2_g CH3_g "       ! C
+     &  //"C2_g C2H2_g C2H4_g C2H_g C3_g C4_g C5_g CH2_g CH3_g "           ! C
      &  //"CH4_g CH_g "
      &  //"N2_ref C2N_g C4N2_g (CN)2_g CN_g CNN_g HCN_g HNNH_g "           ! N
      &  //"N2H4_g N3_g NC101_g NCN_g NH2_g NH3_g NH_g "
