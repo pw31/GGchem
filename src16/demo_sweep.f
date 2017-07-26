@@ -110,65 +110,83 @@
       enddo
 
       !--- TEA explicit choice ---  
-      species = "H_g He_ref H2_ref C_g N_g O_g Si_g S_g "
-     &  //"Na_g Ca_g Cl_g Ti_g K_g Al_g Mg_g Fe_g Li_g "
-     &  //"F_g P_g Cr_g Mn_g Ni_g W_g "
-     &  //"O2_ref N2_ref Al2_g Al2O_g AlC_g AlCl2_g "
-     &  //"(AlCl3)2_g AlCl3_g AlCl_g  AlH_g AlN_g " 
-     &  //"(AlO)2_g AlO2_g AlO_g AlOH_g AlS_g C2Cl2_g C2Cl4_g " 
-     &  //"C2Cl6_g C2_g C2H2_g C2H4_g C2H4O_g C2HCl_g C2H_g " 
-     &  //"C2N_g C2O_g C3_g C3O2_g C4_g C4N2_g C5_g Ca2_g " 
-     &  //"CaCl2_g CaCl_g  CaO_g Ca(OH)2_g CaOH_g CaS_g " 
-     &  //"CCl2_g CCl3_g CCl4_g CCl_g  CH2Cl2_g CH2_g " 
-     &  //"CH3Cl_g CH3_g CH4_g CHCl3_g CHCl_g CH_g CHP_g Cl2O_g "
-     &  //"ClCN_g  ClO2_g ClO_g ClSSCl_g (CN)2_g CN_g CNN_g "
-     &  //"CO2_g COCl2_g COCl_g CO_g COS_g CP_g  CrN_g " 
-     &  //"CrO2_g CrO3_g CrO_g CS2_g CS_g (FeCl2)2_g FeCl2_g " 
-     &  //"(FeCl3)2_g FeCl3_g FeCl_g Fe(CO)5_g  FeO_g " 
-     &  //"Fe(OH)2_g FeS_g H2CO_g H2O_g H2S_g HCl_g HCN_g HCO_g " 
-     &  //"HNCO_g HNNH_g HNO_g HOCl_g HONO2_g HOO_g HOOH_g " 
-     &  //"HS_g K2_g K2SO4_g (KCl)2_g KCl_g (KCN)2_g KCN_g " 
-     &  //"KH_g KO_g (KOH)2_g KOH_g Li2_g Li2O_g Li2SO4_g " 
-     &  //"(LiCl)2_g (LiCl)3_g LiCl_g Li_g LiH_g LiN_g (LiO)2_g " 
-     &  //"LiOCl_g LiO_g (LiOH)2_g LiOH_g LiONa_g LiON_g Mg2_g " 
-     &  //"(MgCl2)2_g MgCl2_g MgCl_g  MgH_g MgN_g MgO_g " 
-     &  //"Mg(OH)2_g MgOH_g MgS_g  N2H4_g N2O3_g N2O4_g " 
-     &  //"N2O5_g N2O_g N3_g Na2_g Na2SO4_g (NaCl)2_g NaCl_g " 
-     &  //"(NaCN)2_g NaCN_g  NaH_g NaO_g (NaOH)2_g NaOH_g " 
-     &  //"NC101_g NCN_g  NH2_g NH3_g NH_g NiCl2_g NiCl_g " 
-     &  //"Ni(CO)4_g  NiS_g NO2Cl_g NO2_g NO3_g NO_g NS_g " 
-     &  //"O2S(OH)2_g O2W(OH)2_g O3_g OAlCl_g OAlH_g OAlOH_g " 
-     &  //"OH_g ONCl_g OPCl3_g OTiCl_g OWCl4_g P2_g (P2O3)2_g " 
-     &  //"(P2O5)2_g P4_g P4S3_g PCl3_g PCl5_g PCl_g  PH2_g " 
-     &  //"PH3_g PH_g PN_g PO2_g PO_g PS_g S2Cl_g S2_g S3_g S4_g " 
-     &  //"S5_g S6_g S7_g S8_g SCl2_g SCl_g  Si2C_g Si2_g " 
-     &  //"Si2N_g Si3_g SiC2_g SiC_g Si(CH3)4_g SiCH3Cl3_g SiCl2_g " 
-     &  //"SiCl3_g SiCl4_g SiCl_g  SiH2Cl2_g SiH3Cl_g SiH4_g " 
-     &  //"SiHCl3_g SiH_g SiN_g SiO2_g SiO_g SiS_g SO2Cl2_g SO2_g " 
-     &  //"SO3_g SO_g SPCl3_g SSO_g TiCl2_g TiCl3_g TiCl4_g TiCl_g "
-     &  //"TiO2_g TiOCl2_g TiO_g W3O8_g WCl2_g WCl4_g " 
-     &  //"(WCl5)2_g WCl5_g WCl6_g WCl_g WO2Cl2_g WO2_g " 
-     &  //"(WO3)2_g (WO3)3_g (WO3)4_g WO3_g WO_g "    
+      species = "H_g He_ref H2_ref C_g N_g O_g Na_g Mg_g Si_g "            ! H and atoms
+     &  //"C_g C2_g C2H2_g C2H4_g C2H_g C3_g C4_g C5_g CH2_g CH3_g "       ! C
+     &  //"CH4_g CH_g "
+     &  //"N2_ref C2N_g C4N2_g (CN)2_g CN_g CNN_g HCN_g HNNH_g "           ! N
+     &  //"N2H4_g N3_g NC101_g NCN_g NH2_g NH3_g NH_g "
+     &  //"O2_ref C2H4O_g C2O_g C3O2_g CO2_g CO_g H2CO_g H2O_g HCO_g "    
+     &  //"HNCO_g HNO_g HONO2_g HOO_g HOOH_g N2O3_g N2O4_g N2O5_g "
+     &  //"N2O_g NO2_g NO3_g NO_g O3_g OH_g "
+     &  //"Na2_g (NaCN)2_g NaCN_g NaH_g NaO_g (NaOH)2_g NaOH_g "           ! Na
+     &  //"Mg2_g MgH_g MgN_g MgO_g Mg(OH)2_g MgOH_g "                      ! Mg
+     &  //"Si2C_g Si2_g Si2N_g Si3_g SiC2_g SiC_g Si(CH3)4_g "             ! Si
+     &  //"SiH4_g SiH_g SiN_g SiO2_g SiO_g "                        
 
-      !--- TEA complete ---
-      NISTspecies = trim(species)
-     &  //"Li2_g Li2SO4_g LiN_g (LiO)2_g LiOCl_g "                       ! new Li
-     &  //"(FeCl2)2_g (FeCl3)2_g FeCl3_g Fe(CO)5_g "                     ! new Fe
-     &  //"Al2_g "                                                       ! new Al
-     &  //"(NaCN)2_g "                                                   ! new Na
-     &  //"(KCN)2_g "                                                    ! new K
-     &  //"SiCH3Cl3_g SiCl2_g SiCl3_g SiCl4_g "                          ! new Si
-     &  //"ClSSCl_g S2Cl_g S3_g S4_g S5_g S6_g S7_g S8_g SCl2_g SCl_g "  ! new S
-     &  //"SO2Cl2_g SO3_g "
-     &  //"C2Cl2_g C2Cl4_g C2Cl6_g C2HCl_g CCl2_g CCl3_g CCl4_g CCl_g "  ! new Cl
-     &  //"CH2Cl2_g CH3Cl_g CHCl3_g CHCl_g Cl2O_g ClCN_g ClO2_g ClO_g "
-     &  //"COCl2_g COCl_g HOCl_g NO2Cl_g ONCl_g "
-     &  //"C2H4O_g C3O2_g H2CO_g HNCO_g HONO2_g HOO_g HOOH_g N2O3_g "    ! new O
-     &  //"N2O4_g N2O5_g N2O_g NO2_g NO3_g "                             
-     &  //"C4N2_g CNN_g HNNH_g N2H4_g N3_g NC101_g NCN_g "               ! new N
-     &  //"C4_g C5_g "                                                   ! new C
+      !--- all NIST species ---
+      NISTspecies = "H2_ref H_g He_ref "                                   ! H and He
+     &  //"C2_g C2H2_g C2H4_g C2H_g C3_g C4_g C5_g C_g CH2_g CH3_g "       ! C
+     &  //"CH4_g CH_g "
+     &  //"N2_ref C2N_g C4N2_g (CN)2_g CN_g CNN_g HCN_g HNNH_g N2H4_g "    ! N
+     &  //"N3_g NC101_g NCN_g N_g NH2_g NH3_g NH_g "
+     &  //"O2_ref C2H4O_g C2O_g C3O2_g CO2_g CO_g H2CO_g H2O_g HCO_g "     ! O
+     &  //"HNCO_g HNO_g HONO2_g HOO_g HOOH_g N2O3_g N2O4_g N2O5_g "
+     &  //"N2O_g NO2_g NO3_g NO_g O3_g O_g OH_g "
+     &  //"Na2_g (NaCN)2_g NaCN_g Na_g NaH_g NaO_g (NaOH)2_g NaOH_g "      ! Na
+     &  //"Mg2_g Mg_g MgH_g MgN_g MgO_g Mg(OH)2_g MgOH_g "                 ! Mg
+     &  //"Si2C_g Si2_g Si2N_g Si3_g SiC2_g SiC_g Si(CH3)4_g Si_g "        ! Si
+     &  //"SiH4_g SiH_g SiN_g SiO2_g SiO_g "                        
+     &  //"Al2_g Al2O_g AlC_g Al_g AlH_g AlN_g (AlO)2_g AlO2_g AlO_g "     ! Al
+     &  //"AlOH_g OAlH_g OAlOH_g "
+     &  //"Ca2_g Ca_g CaO_g Ca(OH)2_g CaOH_g "                             ! Ca
+     &  //"Ti_g TiO2_g TiO_g "                                             ! Ti
+     &  //"AlS_g CaS_g COS_g CS2_g CS_g FeS_g H2S_g HS_g MgS_g "           ! S
+     &  //"Na2SO4_g NS_g O2S(OH)2_g S2_g S3_g S4_g S5_g S6_g S7_g S8_g "
+     &  //"S_g SiS_g SO2_g SO3_g SO_g SSO_g "
+     &  //"AlCl2_g (AlCl3)2_g AlCl3_g AlCl_g C2Cl2_g C2Cl4_g C2Cl6_g "     ! Cl
+     &  //"C2HCl_g CaCl2_g CaCl_g CCl2_g CCl3_g CCl4_g CCl_g CH2Cl2_g "
+     &  //"CH3Cl_g CHCl3_g CHCl_g Cl2O_g ClCN_g Cl_g ClO2_g ClO_g "
+     &  //"ClSSCl_g COCl2_g COCl_g (FeCl2)2_g FeCl2_g (FeCl3)2_g "
+     &  //"FeCl3_g FeCl_g HCl_g HOCl_g (MgCl2)2_g MgCl2_g MgCl_g "
+     &  //"(NaCl)2_g NaCl_g NO2Cl_g OAlCl_g ONCl_g OTiCl_g S2Cl_g "
+     &  //"SCl2_g SCl_g SiCH3Cl3_g SiCl2_g SiCl3_g SiCl4_g SiCl_g "
+     &  //"SiH2Cl2_g SiH3Cl_g SiHCl3_g SO2Cl2_g TiCl2_g TiCl3_g "
+     &  //"TiCl4_g TiCl_g TiOCl2_g "
+     &  //"K2_g K2SO4_g (KCl)2_g KCl_g (KCN)2_g KCN_g K_g KH_g KO_g "      ! K
+     &  //"(KOH)2_g KOH_g "
+     &  //"Li2_g Li2O_g Li2SO4_g (LiCl)2_g (LiCl)3_g LiCl_g Li_g LiH_g "   ! Li
+     &  //"LiN_g (LiO)2_g LiOCl_g LiO_g (LiOH)2_g LiOH_g LiONa_g "
+     &  //"LiON_g "
+     &  //"AlCl2F_g AlClF2_g AlClF_g AlF2_g (AlF3)2_g AlF3_g AlF_g "       ! F
+     &  //"C2F2_g C2F4_g C2F6_g C2HF_g CaF2_g CaF_g CCl2F2_g CCl3F_g "
+     &  //"CClF3_g CF2_g CF3CN_g CF3_g CF3OF_g CF3SF5_g CF4_g CF_g "
+     &  //"CH2ClF_g CH2F2_g CH3F_g CHCl2F_g CHClF2_g CHF3_g CHF_g "
+     &  //"ClF3_g ClF5_g ClF_g ClO3F_g COClF_g COF2_g COF_g FCN_g "
+     &  //"FeF2_g FeF3_g FeF_g F_g FONO2_g FSSF_g H3F3_g H4F4_g "
+     &  //"H5F5_g H6F6_g H7F7_g HCOF_g (HF)2_g HF_g HOF_g HSO3F_g "
+     &  //"(KF)2_g KF_g Li2ClF_g LiAlF4_g (LiF)2_g (LiF)3_g LiF_g "
+     &  //"LiOF_g MgClF_g (MgF2)2_g MgF2_g MgF_g N2F4_g NaAlF4_g "
+     &  //"(NaF)2_g NaF_g NF2_g NF3_g NF3O_g NF_g NO2F_g O2F_g "
+     &  //"OAlF2_g OAlF_g OF2_g OF_g ONF_g OSF2_g OSiF2_g OTiF2_g "
+     &  //"OTiF_g S2F10_g SClF5_g SF2_g SF3_g SF4_g SF5_g SF6_g SF_g "
+     &  //"SiCH3F3_g SiCl3F_g SiClF3_g SiF2_g SiF3_g SiF4_g SiF_g "
+     &  //"SiH2F2_g SiH3F_g SiHF3_g SO2ClF_g SO2F2_g SSF2_g TiF2_g "
+     &  //"TiF3_g TiF4_g TiF_g "
+     &  //"CHP_g CP_g OPCl3_g P2_g (P2O3)2_g (P2O5)2_g P4_g P4S3_g "       ! P
+     &  //"PCl3_g PCl5_g PCl_g PF2_g PF3_g PF5_g PF_g P_g PH2_g PH3_g "
+     &  //"PH_g PN_g PO2_g POCl2F_g POClF2_g POF3_g PO_g PSF3_g PSF_g "
+     &  //"PS_g SPCl3_g "
+     &  //"V_g VN_g VO2_g VO_g "                                           ! V
+     &  //"Cr_g CrN_g CrO2_g CrO3_g CrO_g "                                ! Cr
+     &  //"Mn_g "                                                          ! Mn
+     &  //"NiCl2_g NiCl_g Ni(CO)4_g Ni_g NiS_g "                           ! Ni
+     &  //"ZrCl2_g ZrCl3_g ZrCl4_g ZrCl_g ZrF2_g ZrF3_g ZrF4_g ZrF_g "     ! Zr
+     &  //"Zr_g ZrH_g ZrN_g ZrO2_g ZrO_g "
+     &  //"O2W(OH)2_g OWCl4_g W3O8_g WCl2_g WCl4_g (WCl5)2_g WCl5_g "      ! W
+     &  //"WCl6_g WCl_g WF4O_g WF6_g WF_g W_g WO2Cl2_g WO2_g (WO3)2_g "
+     &  //"(WO3)3_g (WO3)4_g WO3_g WO_g "
 
-      !species = trim(NISTspecies)     ! want full NIST species list?
+      !species = NISTspecies    ! want all NIST species?
 
       write(frmt,'("(A",I4.4,")")') len(trim(species))
       open(unit=71,file='ggchem.atm',status='replace')
@@ -176,9 +194,9 @@
       write(71,frmt) trim(species) 
       write(71,*)
       write(71,'(A8)') "#TEADATA"
-      write(71,'(A10,A8,99(A18))') 
-     &      "#Pressure ","Temp","H","He","C","N","O","Si","S",
-     &      "Na","Ca","Cl","Ti","K","Al","Mg","Fe","Li"
+      write(71,'(A10,A8,99(A18))') "#Pressure ","Temp",
+     &         (trim(elnam(elnum(j))),j=1,el-1),
+     &         (trim(elnam(elnum(j))),j=el+1,NELM)
 
       !----------------------------------------
       ! ***  run chemistry on linear track  ***
@@ -244,11 +262,9 @@
           nTEA = nTEA + nmol(j)              ! molecules
         enddo
         pTEA = nTEA*bk*Tg
-        write(71,'(1pE10.4,0pF8.2,99(1pE18.11))') 
-     &     pTEA/bar,Tg,eps(H),eps(He),eps(C),eps(N),eps(O),
-     &     eps(Si),eps(S),eps(Na),eps(Ca),eps(Cl),eps(Ti),
-     &     eps(K),eps(Al),eps(Mg),eps(Fe),eps(Li)
-
+        write(71,'(1pE10.4,0pF8.2,99(1pE18.11))') pTEA/bar,Tg,
+     &      (eps(elnum(jj)),jj=1,el-1),
+     &      (eps(elnum(jj)),jj=el+1,NELM)
         if (verbose>0) read(*,'(a1)') char
 
       enddo  

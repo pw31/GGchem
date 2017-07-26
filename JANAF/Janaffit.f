@@ -273,6 +273,7 @@
       write(*,*) '254 = atomic Li'
       write(*,*) '255 = atomic H'
       write(*,*) '256 = atomic N'
+      write(*,*) '272 = atomic Mn'
       write(*,*) '257 = W[s] pvap'
       write(*,*) '258 = W[l] pvap'
       write(*,*) '259 = WO3[s] pvap'
@@ -2034,57 +2035,54 @@
         stoich(2) = 1.D0
         stoich(3) = 3.D0
       elseif (specie.eq.242) then
-        call READ_DATEI('Al.txt',dG,T,Nmax,N,S,1) 
-        call READ_DATEI('Al_cr,l.txt',dG,T,Nmax,N,S,2) 
-        Edzahl = 1
-        stoich(2) = 1.D0
+        call READ_DATEI('Alatom.txt',dG,T,Nmax,N,S,1) 
+        Edzahl = 0
       elseif (specie.eq.243) then
-        call READ_DATEI('O.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Oatom.txt',dG,T,Nmax,N,S,1) 
         Edzahl = 0
       elseif (specie.eq.244) then
-        call READ_DATEI('Mg.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Mgatom.txt',dG,T,Nmax,N,S,1) 
         Edzahl = 0
       elseif (specie.eq.245) then
-        call READ_DATEI('Ca.txt',dG,T,Nmax,N,S,1) 
-        call READ_DATEI('Ca_cr,l.txt',dG,T,Nmax,N,S,2) 
-        Edzahl = 1
-        stoich(2) = 1.D0
+        call READ_DATEI('Caatom.txt',dG,T,Nmax,N,S,1) 
+        Edzahl = 0
       elseif (specie.eq.246) then
-        call READ_DATEI('Si.txt',dG,T,Nmax,N,S,1) 
-        call READ_DATEI('Si_cr,l.txt',dG,T,Nmax,N,S,2) 
-        Edzahl = 1
-        stoich(2) = 1.D0
+        call READ_DATEI('Siatom.txt',dG,T,Nmax,N,S,1) 
+        Edzahl = 0
       elseif (specie.eq.247) then
-        call READ_DATEI('Na.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Naatom.txt',dG,T,Nmax,N,S,1) 
         Edzahl = 0
       elseif (specie.eq.248) then
-        call READ_DATEI('K.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Katom.txt',dG,T,Nmax,N,S,1) 
         Edzahl = 0
       elseif (specie.eq.249) then
-        call READ_DATEI('Ti.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Tiatom.txt',dG,T,Nmax,N,S,1) 
         Edzahl = 0
       elseif (specie.eq.250) then
-        call READ_DATEI('Fe.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Featom.txt',dG,T,Nmax,N,S,1) 
         Edzahl = 0
       elseif (specie.eq.251) then
-        call READ_DATEI('S.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Satom.txt',dG,T,Nmax,N,S,1) 
         Edzahl = 0
       elseif (specie.eq.252) then
-        call READ_DATEI('C.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Catom.txt',dG,T,Nmax,N,S,1) 
         Edzahl = 0
       elseif (specie.eq.253) then
-        call READ_DATEI('Cl.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Clatom.txt',dG,T,Nmax,N,S,1) 
         Edzahl = 0
       elseif (specie.eq.254) then
-        call READ_DATEI('Li.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Liatom.txt',dG,T,Nmax,N,S,1) 
         Edzahl = 0
       elseif (specie.eq.255) then
-        call READ_DATEI('H.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Hatom.txt',dG,T,Nmax,N,S,1) 
         Edzahl = 0
       elseif (specie.eq.256) then
-        call READ_DATEI('N.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Natom.txt',dG,T,Nmax,N,S,1) 
         Edzahl = 0
-      elseif (specie.eq.257) then
+      elseif (specie.eq.272) then
+        call READ_DATEI('Mnatom.txt',dG,T,Nmax,N,S,1) 
+        Edzahl = 0
+      elseif (specie.eq.258) then
         call READ_DATEI('W_cr.txt',dG,T,Nmax,N,S,1) 
         call READ_DATEI('W.txt',dG,T,Nmax,N,S,2) 
         Edzahl = 1
