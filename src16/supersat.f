@@ -17,10 +17,7 @@
       real(kind=qp) :: a(0:4),term,n1
       integer :: i,j,l,STINDEX,el,imol
       character(len=20) :: search,upper,leer='                    '
-      !integer,save :: TiO2,SiO,H2O,NH3,CH4,SiO2,CaCl2,H2SO4,FeS,NaCl
-      !integer,save :: KCl,FeO,MgO,AlCl3,LiCl,TiO,LiOH,LiH,CO,CO2
-      !integer,save :: WO3,ZrO2,VO
-      !logical,save :: firstCall=.true.
+
 
       T1  = MAX(T,100.Q0)
       T2  = T1**2
