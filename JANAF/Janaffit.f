@@ -2203,6 +2203,7 @@
       write(*,*)
       write(*,*) 'fit for what?'
       write(*,*)
+      write(*,*) '0 = dG(T) without 1/T-term'
       write(*,*) '1 = dG(T)'
       write(*,*) '2 = kp(T) Gail-fit'
       write(*,*) '3 = -dG/RT Stock-fit'
@@ -2251,6 +2252,9 @@
             else if (mode.eq.4) then
               x(Ndat) = xx
               y(Ndat) = (DLOG(bar) + yy*1000.D0/(Rgas*xx))*xx
+            else if (mode.eq.0) then
+              x(Ndat) = xx
+              y(Ndat) = yy * 1000.D0
             endif
             write(*,1010) xx,yy,x(Ndat),y(Ndat)
           endif
@@ -2284,6 +2288,9 @@
           else if (mode.eq.4) then
             x(i) = xx
             y(i) = (DLOG(bar) + yy*1000.D0/(Rgas*xx))*xx
+          else if (mode.eq.0) then
+            x(i) = xx
+            y(i) = yy * 1000.D0
           endif
           write(*,1010) xx,yy,x(i),y(i)
         enddo
@@ -2311,6 +2318,9 @@
           else if (mode.eq.4) then
             x(Ndat+i) = xx
             y(Ndat+i) = (DLOG(bar) + yy*1000.D0/(Rgas*xx))*xx
+          else if (mode.eq.0) then
+            x(Ndat+i) = xx
+            y(Ndat+i) = yy * 1000.D0
           endif
           write(*,1010) xx,yy,x(Ndat+i),y(Ndat+i)
         enddo
@@ -2391,6 +2401,10 @@
         write(*,*)
         write(*,*) 'ln pvap(T)[dyn/cm2] = a_0 + a_1 / ( T + a_2 )'
         write(*,*)
+      else if (mode.eq.0) then
+        write(*,*)
+        write(*,*) 'dG(T)[J/mol] = Summe_i{ a_i*T^i }'
+        write(*,*)
       endif  
       do i=0,grad
         write(*,1000) i,koeff(i)
@@ -2419,6 +2433,9 @@
         else if (mode.eq.5) then
           yy   = yy/xx
           yfit = pvap(3,Afit,xx)
+        else if (mode.eq.0) then
+          yy   = yy/1000.D0
+          yfit = yfit/1000.D0
         endif
         delta1 = MAX(delta1, ABS(yy-yfit))
         delta2 = delta2 + (yy-yfit)**2
@@ -2446,6 +2463,8 @@
         else if (mode.eq.5) then
           yy   = yy/xx
           yfit = pvap(3,Afit,xx)
+        else if (mode.eq.0) then
+          yfit = yfit/1000.D0
         endif
         write(12,1020) xx,yfit
       enddo

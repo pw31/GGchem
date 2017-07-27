@@ -1,0 +1,37 @@
+ Line 1:  nreac, iwet            (free format)
+ Line 2:  [blank]                (free format)
+ Line 3:  descriptive title      (a80)
+ Line 4:  nm, na, ng, nw         (free format)
+ nm Lines:  coeff  mname  mform  (1x,f9.3,2x,a20,2x,a30)
+ ng Lines:  coeff  aname  aform  (1x,f9.3,2x,a20,2x,a30)
+ na Lines:  coeff  gname  gform  (1x,f9.3,2x,a20,2x,a30)
+ [1 Line:   coeff  H2O    H2O]   (1x,f9.3,2x,a20,2x,a30)
+
+*** each of the nreac reaction blocks
+*** contains 3+nm+ng+na+nw lines
+
+*******************************************************
+
+  3  1
+
+ NaCl,aq                                                                         
+   0   3   0   0
+    -1.000  Na+                   Na(+)                         
+    -1.000  Cl-                   Cl(-)                         
+     1.000  NaCl,aq               NaCl(0)                       
+
+ CO2,g                                                                           
+   0   2   1   1
+     1.000  HCO3-                 HCO3(-)                       
+     1.000  H+                    H(+)                          
+    -1.000  CO2,g                 CO2                           
+    -1.000  H2O                   H2O                           
+
+ Albite                                                                          
+   1   4   0   1
+    -1.000  ALBITE                Na1Al1Si3O8                   
+    -4.000  H+                    H(+)                          
+     1.000  Na+                   Na(+)                         
+     1.000  Al+3                  Al(+3)                        
+     3.000  SiO2,aq               SiO2(0)                       
+     2.000  H2O                   H2O                           
