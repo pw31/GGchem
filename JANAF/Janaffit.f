@@ -274,6 +274,12 @@
       write(*,*) '255 = atomic H'
       write(*,*) '256 = atomic N'
       write(*,*) '272 = atomic Mn'
+      write(*,*) '273 = atomic Cr'
+      write(*,*) '274 = atomic Zr'
+      write(*,*) '275 = atomic Cu'
+      write(*,*) '276 = atomic F'
+      write(*,*) '277 = atomic P'
+      write(*,*) '278 = atomic Ni'
       write(*,*) '257 = W[s] pvap'
       write(*,*) '258 = W[l] pvap'
       write(*,*) '259 = WO3[s] pvap'
@@ -2081,6 +2087,24 @@
         Edzahl = 0
       elseif (specie.eq.272) then
         call READ_DATEI('Mnatom.txt',dG,T,Nmax,N,S,1) 
+        Edzahl = 0
+      elseif (specie.eq.273) then
+        call READ_DATEI('Cratom.txt',dG,T,Nmax,N,S,1) 
+        Edzahl = 0
+      elseif (specie.eq.274) then
+        call READ_DATEI('Zratom.txt',dG,T,Nmax,N,S,1) 
+        Edzahl = 0
+      elseif (specie.eq.275) then
+        call READ_DATEI('Cuatom.txt',dG,T,Nmax,N,S,1) 
+        Edzahl = 0
+      elseif (specie.eq.276) then
+        call READ_DATEI('Fatom.txt',dG,T,Nmax,N,S,1) 
+        Edzahl = 0
+      elseif (specie.eq.277) then
+        call READ_DATEI('Patom.txt',dG,T,Nmax,N,S,1) 
+        Edzahl = 0
+      elseif (specie.eq.278) then
+        call READ_DATEI('Niatom.txt',dG,T,Nmax,N,S,1) 
         Edzahl = 0
       elseif (specie.eq.258) then
         call READ_DATEI('W_cr.txt',dG,T,Nmax,N,S,1) 

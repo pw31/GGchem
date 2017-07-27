@@ -1,8 +1,8 @@
-;file1 = 'N.txt'
-;file2 = 'N2.txt'
+;file1 = 'F.txt'
+;file2 = 'F2.txt'
 ;stoich = 0.5
-file1 = 'Mn.txt'
-file2 = 'Mnref.txt'
+file1 = 'Ni.txt'
+file2 = 'Niref.txt'
 stoich = 1.0
 line1 = ''
 line2 = ''
