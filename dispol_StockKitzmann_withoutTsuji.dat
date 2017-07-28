@@ -1,4 +1,14 @@
-857  molecules without Tsuji re-fits, except for HS
+857  molecules without Tsuji re-fits
+HS          2  H  S  1  1          : Woitke re-fitted from NIST 2017
+ 4  4.23352E+04 -1.58869E+00 -1.54130E-02  2.52514E-04 -9.19992E-09
+PH3         2   H  P  3  1         : Woitke re-fitted from NIST 2017
+ 4  1.12196E+05 -6.48813E+00  6.41757E+00  2.31993E-03 -1.38454E-07
+PH2         2   H  P  2  1         : Woitke re-fitted from NIST 2017
+ 4  7.43018E+04 -3.79856E+00  3.13658E+00  1.11063E-03 -6.69289E-08
+PH          2   H  P  1  1         : Woitke re-fitted from NIST 2017
+ 4  3.33009E+04 -1.75432E+00  1.65582E+00  4.35721E-04 -2.40582E-08
+PN          2   N  P  1  1         : Woitke re-fitted from NIST 2017
+ 4  8.18598E+04 -1.60139E+00 -2.22616E+00  5.05120E-04 -3.89487E-08
 AlCl                  2  Al Cl  1  1                  : Aluminum_Chloride
  4  6.017264E+04 -9.821892E-01 -5.807752E+00  1.657745E-04 -6.111931E-09
 AlClF                 3  Al Cl  F  1  1  1            : Aluminum_Chloride_Fluoride
@@ -549,10 +559,6 @@ OH                    2   H  O  1  1                  : Hydroxyl
  4  5.095864E+04 -1.866565E+00  1.282958E+00  3.276122E-04 -1.278949E-08
 HO2                   2   H  O  1  2                  : Hydroperoxo
  4  8.500313E+04 -3.523465E+00 -2.130209E+00  9.461323E-04 -4.567542E-08
-PH                    2   H  P  1  1                  : Phosphinidene
- 4  3.567809E+04 -1.822663E+00  2.110846E+00  4.785606E-04 -2.733836E-08
-HS                    2   H  S  1  1                  : Mercapto (Tsuji!)
- 4  4.229745e+04 -1.068888e+00 -3.461164e+00 -6.663915e-05  9.322630e-09
 SiH                   2   H Si  1  1                  : Silylidyne
  4  3.463998E+04 -1.549551E+00 -8.925064E-02  3.232154E-04 -1.633165E-08
 H2                    1   H  2                        : Hydrogen
@@ -571,14 +577,10 @@ H2O                   2   H  O  2  1                  : Water
  4  1.103365E+05 -4.178360E+00  3.174469E+00  9.406468E-04 -4.048246E-08
 H2SO4                 3   H  O  S  2  4  1            : Sulfuric_Acid
  4  2.927154E+05 -6.314017E+00 -4.949513E+01  2.478249E-03 -1.348949E-07
-PH2                   2   H  P  2  1                  : Phosphino
- 4  7.653164E+04 -3.535000E+00  1.292541E+00  9.841633E-04 -5.885083E-08
 H2S                   2   H  S  2  1                  : Hydrogen_Sulfide
  4  8.716853E+04 -4.031500E+00  3.169919E+00  1.088267E-03 -5.467143E-08
 NH3                   2   H  N  3  1                  : Ammonia
  4  1.393426E+05 -6.395323E+00  4.959812E+00  1.815303E-03 -8.857936E-08
-PH3                   2   H  P  3  1                  : Phosphine
- 4  1.154632E+05 -2.999862E+00 -1.458820E+01  1.789874E-03 -1.016338E-07
 N2H4                  2   H  N  4  2                  : Hydrazine
  4  2.050651E+05 -8.417644E+00 -9.252613E+00  2.768946E-03 -1.412524E-07
 SiH4                  2   H Si  4  1                  : Silane
@@ -603,8 +605,6 @@ NO2                   2   N  O  1  2                  : Nitrogen_Oxide
  4  1.121494E+05 -2.824944E+00 -1.020395E+01  8.369774E-04 -4.928322E-08
 NO3                   2   N  O  1  3                  : Nitrogen_Oxide
  4  1.376053E+05 -3.094520E+00 -2.679846E+01  1.164862E-03 -6.980239E-08
-PN                    2   N  P  1  1                  : Phosphorus_Nitride
- 4  8.196523E+04 -1.364973E+00 -3.852843E+00  3.799596E-04 -3.034615E-08
 SN                    2   N  S  1  1                  : Nitrogen_Sulfide
  4  5.811946E+04 -1.398060E+00 -2.882074E+00  3.533470E-04 -2.286216E-08
 SiN                   2   N Si  1  1                  : Silicon_Nitride

@@ -39,7 +39,7 @@ nHmin = nHmin*0.9
 nHmax = nHmax*1.1
 Tmin  = np.min(Tg)
 Tmax  = np.max(Tg)
-Tmin  = 600.0
+Tmin  = 650.0
 Tmax  = 5000.0
 #if (Tmax>4*Tmin): Tmax=4*Tmin
 #if (Tmin<Tmax/3): Tmin=Tmax/3
@@ -178,12 +178,11 @@ ellist = ['H','C','O','N','SI','S','NA','CL','CA','TI','K','AL','MG','FE','LI','
 allist = [' ',' ',' ',' ','Si',' ','Na','Cl','Ca','Ti',' ','Al','Mg','Fe','Li',' ',' ','Ni','Mn','Cr','Zn','Zr','Rb','Cu',' ','Br',' ','Sr',' ','+']
 exlist = [' He ',' Cl CL Ca CA Cr CR Co Cu CU ',' ',' Na NA Ni NI ',' ',' Si SI Sr SR ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' Fe FE ',' ',' ',' ',' ',' ',' ',' ',' ',' Br BR ',' ',' ',' ',' ',' ']
 titels = ['hydrogen','carbon','oxygen','nitrogen','silicon','sulphur','sodium','chlorine','calcium','titanium','potassium','aluminum','magnesium','iron','lithium','fluorine','phosphorus','nickel','manganese','chromium','zinc','zirconium','rubidium','copper','boron','bromine','vanadium','strontium','tungston','charge carriers']
-limits = [2,4,3,3,10,10,10,4,10,12,10,9,10,12,12,10,10,10,10,10,10,10,10,10,10,10,10,10,10,5]    #Orich
+limits = [2,4.5,3.5,4,10,6,10,4,10,12,10,9,10,12,12,4,5,10,10,10,10,10,10,10,10,10,10,10,10,5]    #Orich
 #limits = [2,5,3.5,6,6,5,6,4,6,6,6,6,6,6,6.5,5]  #Crich
 Tind1 = np.where((Tg<Tmax)    & (Tg>Tmin))[0]
 Tind2 = np.where((T_tea<Tmax) & (T_tea>Tmin))[0]
 for i in range(0,30):
-  fig,ax = plt.subplots()
   el = ellist[i]
   al = allist[i]
   ex = exlist[i]
@@ -214,6 +213,8 @@ for i in range(0,30):
         maxy = maxy + 10**yy
         mollist.append(mol)   
         abulist.append(np.mean(yy[Tind1]))
+  if (len(abulist)<=0): continue
+  fig,ax = plt.subplots()
   indices = np.argsort(abulist)
   count = 0
   maxy = np.log10(maxy)

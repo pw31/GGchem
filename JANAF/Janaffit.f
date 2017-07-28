@@ -295,6 +295,10 @@
       write(*,*) '269 = SiC[s]'
       write(*,*) '270 = Mn[s]'
       write(*,*) '271 = Mn[l]'
+      write(*,*) '279 = PH3'
+      write(*,*) '280 = PH2'
+      write(*,*) '281 = PH'
+      write(*,*) '282 = PN'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -764,7 +768,7 @@
         stoich(2) = 1.D0
         stoich(3) = 1.D0
       elseif (specie.eq.67) then
-        call READ_DATEI('HS.txt' ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('HScorr.txt' ,dG,T,Nmax,N,S,1) 
         call READ_DATEI('H.txt'  ,dG,T,Nmax,N,S,2) 
         call READ_DATEI('S.txt'  ,dG,T,Nmax,N,S,3) 
         Edzahl = 2
@@ -2187,6 +2191,34 @@
         call READ_DATEI('Mn.txt'   ,dG,T,Nmax,N,S,2) 
         Edzahl = 1
         stoich(2) = 1.D0
+      elseif (specie.eq.279) then
+        call READ_DATEI('PH3.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('P.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('H.txt'   ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 3.D0
+      elseif (specie.eq.280) then
+        call READ_DATEI('PH2corr.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('P.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('H.txt'   ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 2.D0
+      elseif (specie.eq.281) then
+        call READ_DATEI('PH.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('P.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('H.txt'   ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 1.D0
+      elseif (specie.eq.282) then
+        call READ_DATEI('PN.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('P.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('N.txt'   ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 1.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop
