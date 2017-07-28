@@ -67,13 +67,15 @@ lines  = data.readlines()
 data.close()
 sp_tea = np.array(header.split())
 print "TEA has ",sp_tea
-Npoint = len(lines)-1
+Npoint = len(lines)
 Nsp    = len(sp_tea)
 #dat2  = np.loadtxt(file,skiprows=8)
 dat2   = np.zeros((Npoint,Nsp),dtype='float')
 for i in range(0,Npoint):
   lval = lines[i].split()
-  for isp in range(0,Nsp):
+  Nval = len(lval)
+  if (Nval<Nsp): Nval=Nval-1
+  for isp in range(0,Nval):
     dat2[i,isp] = np.float(lval[isp])
 p_tea     = dat2[:,0]            # TEA's pressure [bar]
 T_tea     = dat2[:,1]            # TEA's temperature
