@@ -39,8 +39,8 @@ nHmin = nHmin*0.9
 nHmax = nHmax*1.1
 Tmin  = np.min(Tg)
 Tmax  = np.max(Tg)
-Tmin  = 550.0
-Tmax  = 5000.0
+Tmin  = 500.0
+Tmax  = 6000.0
 #if (Tmax>4*Tmin): Tmax=4*Tmin
 #if (Tmin<Tmax/3): Tmin=Tmax/3
 sep = 20
@@ -49,7 +49,7 @@ Tmin  = Tmin*0.85
 Tmax  = Tmax*1.05
 
 #file   = 'TEAoutdir/results/TEAoutdir.tea'
-file    = 'TEAoutOrich/results/TEAoutOrich.tea'
+file   = 'TEAoutOrich/results/TEAoutOrich.tea'
 #file   = 'TEAoutCrich/results/TEAoutCrich.tea'
 #file   = 'TEAoutEarthCrust/results/TEAoutEarthCrust.tea'
 #file   = 'TEAoutOcean/results/TEAoutOcean.tea'
@@ -63,10 +63,18 @@ dum    = data.readline()
 dum    = data.readline()
 dum    = data.readline()
 header = data.readline()
+lines  = data.readlines()
 data.close()
 sp_tea = np.array(header.split())
 print "TEA has ",sp_tea
-dat2      = np.loadtxt(file,skiprows=8)
+Npoint = len(lines)-1
+Nsp    = len(sp_tea)
+#dat2  = np.loadtxt(file,skiprows=8)
+dat2   = np.zeros((Npoint,Nsp),dtype='float')
+for i in range(0,Npoint):
+  lval = lines[i].split()
+  for isp in range(0,Nsp):
+    dat2[i,isp] = np.float(lval[isp])
 p_tea     = dat2[:,0]            # TEA's pressure [bar]
 T_tea     = dat2[:,1]            # TEA's temperature
 ntot_tea  = p_tea*bar/bk/T_tea   # TEA's ntot [cm-3]
@@ -266,7 +274,7 @@ for i in range(0,30):
   plt.tick_params('both', length=3, width=1, which='minor')
   #minorLocator = MultipleLocator(sep)
   #ax.xaxis.set_minor_locator(minorLocator)
-  plt.legend(loc='lower right',fontsize=10,fancybox=True)
+  plt.legend(loc='lower left',fontsize=10,fancybox=True)
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
   plt.clf()

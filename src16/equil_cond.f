@@ -21,7 +21,7 @@
      >                    eps0,elnam,elcode
       use CONVERSION,ONLY: Nind,Ndep,Iindex,Dindex,is_dust,conv
       use EXCHANGE,ONLY: Fe,Mg,Si,Al,Ca,Ti,O,S,Na,Cl,H,Li,Mn,W,
-     >                   Kalium=>K,itransform,ieqcond
+     >                   Kalium=>K,Zr,itransform,ieqcond
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       real*8,intent(in) :: nHtot                ! H nuclei density [cm-3]
@@ -76,7 +76,7 @@
       integer,save :: iMgO_l=0,iAlCl3_l=0,iMgTiO3=0,iMgTiO3_l=0,iCaO_l=0
       integer,save :: iS_l=0,iK2SiO3=0,iK2SiO3_l=0,iTiC_l=0,iTi=0
       integer,save :: iTi_l=0,iTiO=0,iTiO_l=0,iSiS2_l=0,iLiOH=0
-      integer,save :: iLiOH_l=0,iMnS=0,iW=0,iW_l=0
+      integer,save :: iLiOH_l=0,iMnS=0,iW=0,iW_l=0,iZrO2,iZrSiO4
       integer,save :: it_tot=0, sit_tot=0, fail_tot=0
       real*8 :: time0,time1,qread
 
@@ -163,6 +163,8 @@
           if (dust_nam(i).eq.'MnS[s]')        iMnS=i 
           if (dust_nam(i).eq.'W[s]')          iW=i 
           if (dust_nam(i).eq.'W[l]')          iW_l=i 
+          if (dust_nam(i).eq.'ZrO2[s]')       iZrO2=i 
+          if (dust_nam(i).eq.'ZrSiO4[s]')     iZrSiO4=i 
         enddo
         firstCall = .false. 
       endif
@@ -197,7 +199,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        !if (qread>1.Q-3.and.iread==41) verbose=2
+        !if (qread>1.Q-3.and.iread==103) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -326,6 +328,37 @@
           dust_save = ddust
           ioff = 0
           ok = .true.
+          if (active(iZrO2).and.active(iZrSiO4).and.
+     >        active(iMgSiO3).and.active(iMg2SiO4)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iZrO2)>Sat0(iZrSiO4)) then
+              ioff = iZrSiO4
+              active(iZrSiO4) = .false.
+              amount = ddust(iZrSiO4)/3.Q0
+              call TRANSFORM(iZrSiO4,iZrO2,amount,1.Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iZrSiO4,iMgSiO3,amount,2.Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iZrSiO4,iMg2SiO4,amount,-1.Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iZrO2
+              active(iZrO2) = .false.
+              amount = ddust(iZrO2)/3.Q0
+              call TRANSFORM(iZrO2,iZrSiO4,amount,1.Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iZrO2,iMgSiO3,amount,-2.Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iZrO2,iMg2SiO4,amount,1.Q0*3.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif  
+            !print*,eps(Zr),eps(Mg),eps(Si)
+            !print*,eps_save(Zr),eps_save(Mg),eps_save(Si)
+            eps(Zr) = eps_save(Zr)
+            eps(Mg) = eps_save(Mg)
+            eps(Si) = eps_save(Si)
+          endif  
           if (active(iKCl).and.active(iKAlSi3O8).and.
      >        active(iNaCl).and.active(iMgAl2O4).and.
      >        active(iMgSiO3).and.active(iMg2SiO4).and.

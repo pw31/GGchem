@@ -122,7 +122,7 @@
      &  //"N2O_g NO2_g NO3_g NO_g O3_g OH_g "
      &  //"Na2_g (NaCN)2_g NaCN_g NaH_g NaO_g (NaOH)2_g NaOH_g "           ! Na
      &  //"Mg2_g MgH_g MgN_g MgO_g Mg(OH)2_g MgOH_g "                      ! Mg
-     &  //"Si2C_g Si2_g Si2N_g Si3_g SiC2_g SiC_g "                        ! Si
+     &  //"Si2C_g Si2_g Si2N_g Si3_g SiC2_g SiC_g "                        ! Si (SiH2,SiH3 missing)
      &  //"SiH4_g SiH_g SiN_g SiO2_g SiO_g "                               ! (Si(CH3)4_g not working)
      &  //"Fe(CO)5_g FeO_g Fe(OH)2_g "                                     ! Fe (FeH missing)
      &  //"Al2_g Al2O_g AlC_g AlH_g AlN_g (AlO)2_g AlO2_g AlO_g "          ! Al

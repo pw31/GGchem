@@ -21,6 +21,8 @@ WO2         2   O  W  2  1         : Woitke re-fitted from NIST 2017
  4  1.52223E+05 -2.90088E+00 -6.10642E+00  6.14536E-04 -5.66091E-08
 WO3         2   O  W  3  1         : Woitke re-fitted from NIST 2017
  4  2.26374E+05 -3.71610E+00 -2.00906E+01  1.23669E-03 -9.83304E-08
+WCl2        2  Cl  W  2  1         : Woitke re-fitted from NIST 2017
+ 4  1.32700E+05 -1.21609E+00 -1.53398E+01  1.99702E-05 -7.57683E-10
 AlCl                  2  Al Cl  1  1                  : Aluminum_Chloride
  4  6.017264E+04 -9.821892E-01 -5.807752E+00  1.657745E-04 -6.111931E-09
 AlClF                 3  Al Cl  F  1  1  1            : Aluminum_Chloride_Fluoride
@@ -1371,8 +1373,6 @@ Cl2Pb+                3  Cl Pb el  2  1 -1            : Lead_Chloride_Ion
  4 -4.500701E+04  1.570643E+00 -3.067241E+01  5.218983E-05 -1.990425E-08
 SrCl2                 2  Cl Sr  2  1                  : Strontium_Chloride
  4  1.053430E+05 -1.676664E+00 -1.050884E+01  5.987943E-04 -5.885952E-08
-WCl2                  2  Cl  W  2  1                  : Tungsten_Chloride
- 4  1.319079E+05 -3.064469E+00 -2.397404E+00  5.366373E-04 -1.398984E-08
 ZrCl2                 2  Cl Zr  2  1                  : Zirconium_Chloride
  4  1.245416E+05 -1.578467E+00 -1.607770E+01  3.002557E-04 -1.790571E-08
 (LiCl)3               2  Cl Li  3  3                  : Lithium_Chloride

@@ -1,6 +1,6 @@
 dust species
 ============
-93
+94
 
 Al2O3[s]       CORUNDUM(alpha)
 3.97
@@ -340,6 +340,8 @@ ZrO2[s]        BADDELEYITE
 # 2  2.50975E+05 -2.20941E+06  4.66693E+02 -8.53569E-03  1.08036E-06
 # pvap-fit NIST-Janaf 298-3500K, +/- 0.062:
   3 -9.77238E+04  4.18463E+01 -2.22011E-03  3.20813E-07 -1.60657E-11
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.14 kJ/mol
+# 5  2.64872269e+05 -3.34054963e+00 -3.41496907e+01  3.63522006e-03 -4.58432420e-07 
 
 ZrO2[l]        BADDELEYITE(liquid)       2950.0
 5.0            estimated
@@ -348,6 +350,17 @@ ZrO2[l]        BADDELEYITE(liquid)       2950.0
  2 O
 # pvap-fit NIST-Janaf 298-5000K, +/- 0.11:
   3 -8.87286E+04  3.86685E+01 -1.94950E-03  2.38918E-07 -1.43097E-11
+
+ZrSiO4[s]      ZIRCONIUM_SILICATE
+4.56
+3
+ 1 Zr
+ 1 Si
+ 4 O
+# dG-fit NIST-Janaf 100-3000K, +/- 0.24:
+  2  1.30614E+06 -4.09193E+06  9.38120E+02 -1.28242E-02  1.42142E-06
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.26 kJ/mol
+# 5  4.90061109e+05 -8.78711378e+00 -5.52713896e+01  8.61307409e-03 -1.02724926e-06 
 
 W[s]           TUNGSTEN 
 19.25
