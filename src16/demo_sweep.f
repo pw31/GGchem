@@ -122,13 +122,13 @@
      &  //"N2O_g NO2_g NO3_g NO_g O3_g OH_g "
      &  //"Na2_g (NaCN)2_g NaCN_g NaH_g NaO_g (NaOH)2_g NaOH_g "           ! Na
      &  //"Mg2_g MgH_g MgN_g MgO_g Mg(OH)2_g MgOH_g "                      ! Mg
-     &  //"Si2C_g Si2_g Si2N_g Si3_g SiC2_g SiC_g Si(CH3)4_g "             ! Si
-     &  //"SiH4_g SiH_g SiN_g SiO2_g SiO_g "                        
-     &  //"Fe(CO)5_g FeO_g Fe(OH)2_g "                                     ! Fe
+     &  //"Si2C_g Si2_g Si2N_g Si3_g SiC2_g SiC_g "                        ! Si
+     &  //"SiH4_g SiH_g SiN_g SiO2_g SiO_g "                               ! (Si(CH3)4_g not working)
+     &  //"Fe(CO)5_g FeO_g Fe(OH)2_g "                                     ! Fe (FeH missing)
      &  //"Al2_g Al2O_g AlC_g AlH_g AlN_g (AlO)2_g AlO2_g AlO_g "          ! Al
      &  //"AlOH_g OAlH_g OAlOH_g "
-     &  //"Ca2_g CaO_g Ca(OH)2_g CaOH_g "                                  ! Ca
-     &  //"TiO2_g TiO_g "                                                  ! Ti
+     &  //"Ca2_g CaO_g Ca(OH)2_g CaOH_g "                                  ! Ca (CaH missing)
+     &  //"TiO2_g TiO_g "                                                  ! Ti (TiS,TiH,TiC,TiN,TiC2 missing)
      &  //"AlS_g CaS_g COS_g CS2_g CS_g FeS_g H2S_g HS_g MgS_g "           ! S
      &  //"Na2SO4_g NS_g O2S(OH)2_g "
      &  //"S2_g S3_g S4_g S7_g S8_g "                                      ! (S5,S6 not working)
@@ -139,7 +139,7 @@
      &  //"ClSSCl_g COCl2_g COCl_g (FeCl2)2_g FeCl2_g (FeCl3)2_g "
      &  //"FeCl3_g FeCl_g HCl_g HOCl_g (MgCl2)2_g MgCl2_g MgCl_g "
      &  //"(NaCl)2_g NaCl_g NO2Cl_g OAlCl_g ONCl_g OTiCl_g S2Cl_g "
-     &  //"SCl2_g SCl_g SiCH3Cl3_g SiCl2_g SiCl3_g SiCl4_g SiCl_g "
+     &  //"SCl2_g SCl_g SiCl2_g SiCl3_g SiCl4_g SiCl_g "                   ! (SiCH3Cl3_g not working)
      &  //"SiH2Cl2_g SiH3Cl_g SiHCl3_g SO2Cl2_g TiCl2_g TiCl3_g "
      &  //"TiCl4_g TiCl_g TiOCl2_g "
      &  //"K2_g K2SO4_g (KCl)2_g KCl_g (KCN)2_g KCN_g KH_g KO_g "          ! K
@@ -167,9 +167,10 @@
      &  //"PH_g PN_g PO2_g POCl2F_g POClF2_g POF3_g PO_g PSF3_g PSF_g "
      &  //"PS_g SPCl3_g "
      &  //"VN_g VO2_g VO_g "                                               ! V
-     &  //"CrN_g CrO2_g CrO3_g CrO_g "                                     ! Cr
-     &  //""                                                               ! Mn
-     &  //"NiCl2_g NiCl_g Ni(CO)4_g NiS_g "                                ! Ni
+     &  //"CrN_g CrO2_g CrO3_g CrO_g "                                     ! Cr (CrH missing)
+     &  //""                                                               ! Mn (all missing)
+     &  //"NiCl2_g NiCl_g NiS_g "                                          ! Ni (NiH,NiO,NiF missing)
+     &  //""                                                               ! (Ni(CO)4_g not working)
      &  //"ZrCl2_g ZrCl3_g ZrCl4_g ZrCl_g ZrF2_g ZrF3_g ZrF4_g ZrF_g "     ! Zr
      &  //"ZrH_g ZrN_g ZrO2_g ZrO_g "
      &  //"O2W(OH)2_g OWCl4_g W3O8_g WCl2_g WCl4_g (WCl5)2_g WCl5_g "      ! W
@@ -233,7 +234,7 @@
      &  //"V_g VN_g VO2_g VO_g "                                           ! V
      &  //"Cr_g CrN_g CrO2_g CrO3_g CrO_g "                                ! Cr
      &  //"Mn_g "                                                          ! Mn
-     &  //"NiCl2_g NiCl_g Ni(CO)4_g Ni_g NiS_g "                           ! Ni
+     &  //"NiCl2_g NiCl_g Ni(CO)4_g Ni_g NiS_g "                           ! Ni (NiH,NiF missing)
      &  //"ZrCl2_g ZrCl3_g ZrCl4_g ZrCl_g ZrF2_g ZrF3_g ZrF4_g ZrF_g "     ! Zr
      &  //"Zr_g ZrH_g ZrN_g ZrO2_g ZrO_g "
      &  //"O2W(OH)2_g OWCl4_g W3O8_g WCl2_g WCl4_g (WCl5)2_g WCl5_g "      ! W

@@ -299,6 +299,11 @@
       write(*,*) '280 = PH2'
       write(*,*) '281 = PH'
       write(*,*) '282 = PN'
+      write(*,*) '283 = SO2'
+      write(*,*) '284 = MgClF'
+      write(*,*) '285 = WO'
+      write(*,*) '286 = WO2'
+      write(*,*) '287 = WO3'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -1762,7 +1767,7 @@
         Edzahl = 1
         stoich(2) = 5.D0
       elseif (specie.eq.195) then
-        call READ_DATEI('S2O.txt' ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('S2Ocorr.txt' ,dG,T,Nmax,N,S,1) 
         call READ_DATEI('S.txt'  ,dG,T,Nmax,N,S,2) 
         call READ_DATEI('O.txt'  ,dG,T,Nmax,N,S,3) 
         Edzahl = 2
@@ -2219,6 +2224,43 @@
         Edzahl = 2
         stoich(2) = 1.D0
         stoich(3) = 1.D0
+      elseif (specie.eq.283) then
+        call READ_DATEI('SO2.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('S.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('O.txt'   ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 2.D0
+      elseif (specie.eq.284) then
+        call READ_DATEI('MgClF.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Mg.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('Cl.txt'   ,dG,T,Nmax,N,S,3) 
+        call READ_DATEI('F.txt'   ,dG,T,Nmax,N,S,4) 
+        Edzahl = 3
+        stoich(2) = 1.D0
+        stoich(3) = 1.D0
+        stoich(4) = 1.D0
+      elseif (specie.eq.285) then
+        call READ_DATEI('WO.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('W.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('O.txt'   ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 1.D0
+      elseif (specie.eq.286) then
+        call READ_DATEI('WO2.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('W.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('O.txt'   ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 2.D0
+      elseif (specie.eq.287) then
+        call READ_DATEI('WO3.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('W.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('O.txt'   ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 3.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop

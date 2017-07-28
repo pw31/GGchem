@@ -10,13 +10,16 @@ end
 
 line1 = ''
 line2 = ''
-file1 = 'PH2.txt'
-file2 = 'Pref.txt'
-file3 = 'H2.txt'
+file1 = 'MgClF.txt'
+file2 = 'Mgref.txt'
+file3 = 'Cl2.txt'
+file4 = 'F2.txt'
 norm2   = 1.0
 norm3   = 0.5
+norm4   = 0.5
 stoich2 = 1.0
-stoich3 = 2.0
+stoich3 = 1.0
+stoich4 = 1.0
 R = 8.31447 ;J/K/mol
 openr,1,file1
 readf,1,line1
@@ -38,7 +41,7 @@ HH2 = INTERPOL(HH2,T2,T1)
 dH2 = INTERPOL(dH2,T2,T1)
 dG2 = INTERPOL(dG2,T2,T1)
 
-readcol,'H2.txt',T3,Cp3,S3,GHoverT3,HH3,dH3,dG3,logkf3,skipline=3
+readcol,file3,T3,Cp3,S3,GHoverT3,HH3,dH3,dG3,logkf3,skipline=3
 GHoverT3 = -GHoverT3*norm3
 HH3 = HH3*1000.0*norm3                ; reference state is 1/2 H2
 dH3 = dH3*1000.0*norm3
@@ -48,21 +51,32 @@ HH3 = INTERPOL(HH3,T3,T1)
 dH3 = INTERPOL(dH3,T3,T1)
 dG3 = INTERPOL(dG3,T3,T1)
 
+readcol,file4,T4,Cp4,S4,GHoverT4,HH4,dH4,dG4,logkf4,skipline=3
+GHoverT4 = -GHoverT4*norm4
+HH4 = HH4*1000.0*norm4                ; reference state is 1/2 H2
+dH4 = dH4*1000.0*norm4
+dG4 = dG4*1000.0*norm4
+GHoverT3 = INTERPOL(GHoverT3,T3,T1)   ; interpolate to T1-temperatures
+HH4 = INTERPOL(HH4,T3,T1)
+dH4 = INTERPOL(dH4,T3,T1)
+dG4 = INTERPOL(dG4,T3,T1)
+
 N=N_ELEMENTS(T1)
 for i=0,N-1 do begin
   if (ABS(T1(i)-298.15) LT 1.E-3) then begin
     Href1=dH1(i) 
     Href2=dH2(i) 
     Href3=dH3(i) 
+    Href4=dH4(i) 
   endif  
 endfor
 
 S1test  = 1.0/T1*HH1 - GHoverT1                       ; works
 dG1test = -R*T1*ALOG(10.0)*logkf1                     ; works
-dgef    = GHoverT1 - stoich2*GHoverT2 - stoich3*GHoverT3
-dHref   = Href1    - stoich2*Href2    - stoich3*Href3
+dgef    = GHoverT1 - stoich2*GHoverT2 - stoich3*GHoverT3 - stoich4*GHoverT4
+dHref   = Href1    - stoich2*Href2    - stoich3*Href3    - stoich4*Href4
 dG1test = dHref + T1*dgef                             ; works
-dH1test = dHref + HH1 - stoich2*HH2 - stoich3*HH3     ; works
+dH1test = dHref + HH1 - stoich2*HH2 - stoich3*HH3 - stoich3*HH4     ; works
 logkf1test = -dG1test/(R*T1)/ALOG(10.0)
 
 openw,1,"test.txt"

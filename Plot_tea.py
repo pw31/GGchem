@@ -39,7 +39,7 @@ nHmin = nHmin*0.9
 nHmax = nHmax*1.1
 Tmin  = np.min(Tg)
 Tmax  = np.max(Tg)
-Tmin  = 650.0
+Tmin  = 550.0
 Tmax  = 5000.0
 #if (Tmax>4*Tmin): Tmax=4*Tmin
 #if (Tmin<Tmax/3): Tmin=Tmax/3
@@ -178,7 +178,7 @@ ellist = ['H','C','O','N','SI','S','NA','CL','CA','TI','K','AL','MG','FE','LI','
 allist = [' ',' ',' ',' ','Si',' ','Na','Cl','Ca','Ti',' ','Al','Mg','Fe','Li',' ',' ','Ni','Mn','Cr','Zn','Zr','Rb','Cu',' ','Br',' ','Sr',' ','+']
 exlist = [' He ',' Cl CL Ca CA Cr CR Co Cu CU ',' ',' Na NA Ni NI ',' ',' Si SI Sr SR ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' Fe FE ',' ',' ',' ',' ',' ',' ',' ',' ',' Br BR ',' ',' ',' ',' ',' ']
 titels = ['hydrogen','carbon','oxygen','nitrogen','silicon','sulphur','sodium','chlorine','calcium','titanium','potassium','aluminum','magnesium','iron','lithium','fluorine','phosphorus','nickel','manganese','chromium','zinc','zirconium','rubidium','copper','boron','bromine','vanadium','strontium','tungston','charge carriers']
-limits = [2,4.5,3.5,4,10,6,10,4,10,12,10,9,10,12,12,4,5,10,10,10,10,10,10,10,10,10,10,10,10,5]    #Orich
+limits = [2,4.5,3.5,4,7,5,10,3,10,6,10,6,6,12,6,4,5,10,10,10,10,10,10,10,10,10,10,10,10,5]    #Orich
 #limits = [2,5,3.5,6,6,5,6,4,6,6,6,6,6,6,6.5,5]  #Crich
 Tind1 = np.where((Tg<Tmax)    & (Tg>Tmin))[0]
 Tind2 = np.where((T_tea<Tmax) & (T_tea>Tmin))[0]
@@ -266,7 +266,7 @@ for i in range(0,30):
   plt.tick_params('both', length=3, width=1, which='minor')
   #minorLocator = MultipleLocator(sep)
   #ax.xaxis.set_minor_locator(minorLocator)
-  plt.legend(loc='lower left',fontsize=10,fancybox=True)
+  plt.legend(loc='lower right',fontsize=10,fancybox=True)
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
   plt.clf()

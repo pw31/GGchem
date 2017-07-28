@@ -9,6 +9,18 @@ PH          2   H  P  1  1         : Woitke re-fitted from NIST 2017
  4  3.33009E+04 -1.75432E+00  1.65582E+00  4.35721E-04 -2.40582E-08
 PN          2   N  P  1  1         : Woitke re-fitted from NIST 2017
  4  8.18598E+04 -1.60139E+00 -2.22616E+00  5.05120E-04 -3.89487E-08
+SO2         2   O  S  2  1         : Woitke re-fitted from NIST 2017
+ 4  1.27905E+05 -3.68505E+00 -5.04460E+00  1.38250E-03 -8.66752E-08
+S2O         2   O  S  1  2         : Woitke re-fitted from NIST 2017
+ 4  1.02446E+05 -3.26805E+00 -6.28324E+00  1.20799E-03 -8.12174E-08
+MgClF       3  Cl  F Mg  1  1  1   : Woitke re-fitted from NIST 2017
+ 4  1.09651E+05 -2.12483E+00 -1.15990E+01  6.93435E-04 -4.54707E-08
+WO          2   O  W  1  1         : Woitke re-fitted from NIST 2017
+ 4  8.07011E+04 -1.64832E+00  6.20649E-01  1.02786E-06 -1.00770E-08
+WO2         2   O  W  2  1         : Woitke re-fitted from NIST 2017
+ 4  1.52223E+05 -2.90088E+00 -6.10642E+00  6.14536E-04 -5.66091E-08
+WO3         2   O  W  3  1         : Woitke re-fitted from NIST 2017
+ 4  2.26374E+05 -3.71610E+00 -2.00906E+01  1.23669E-03 -9.83304E-08
 AlCl                  2  Al Cl  1  1                  : Aluminum_Chloride
  4  6.017264E+04 -9.821892E-01 -5.807752E+00  1.657745E-04 -6.111931E-09
 AlClF                 3  Al Cl  F  1  1  1            : Aluminum_Chloride_Fluoride
@@ -247,8 +259,6 @@ ClCu                  2  Cl Cu  1  1                  : Copper_Chloride
  4  4.397064E+04 -9.969549E-01 -4.834620E+00  2.474752E-04 -2.394786E-08
 ClF                   2  Cl  F  1  1                  : Chlorine_Fluoride
  4  3.000644E+04 -8.365397E-01 -7.313493E+00 -1.312371E-04  3.440155E-08
-MgClF                 3  Cl  F Mg  1  1  1            : Magnesium_Chloride_Fluoride
- 4  1.099012E+05 -1.587921E+00 -1.458755E+01  4.042236E-04 -2.538222E-08
 ClFO2S                4  Cl  F  O  S  1  1  2  1      : Sulfuryl_Chloride_Fluoride
  4  1.836981E+05 -3.264581E+00 -4.109256E+01  1.341446E-03 -7.822520E-08
 ClFO3                 3  Cl  F  O  1  1  3            : Perchloryl_Fluoride
@@ -637,8 +647,6 @@ PO                    2   O  P  1  1                  : Posphorus_Oxide
  4  7.055075E+04 -1.232151E+00 -4.240658E+00  3.243910E-04 -2.618878E-08
 SO                    2   O  S  1  1                  : Sulfur_Oxide
  4  6.229887E+04 -1.591262E+00 -2.624228E+00  4.403879E-04 -2.299404E-08
-S2O                   2   O  S  1  2                  : Sulfur_Oxide_SSO
- 4  1.089264E+05  1.472604E+01 -1.245923E+02 -4.190432E-03  2.017397E-07
 SiO                   2   O Si  1  1                  : Silicon_Oxide
  4  9.588067E+04 -1.267162E+00 -5.984293E+00  2.617198E-04 -1.674044E-08
 TiO                   2   O Ti  1  1                  : Titanium_Oxide
@@ -649,8 +657,6 @@ O2                    1   O  2                        : Oxygen
  4  5.953360E+04 -1.615166E+00 -3.609765E+00  4.062738E-04 -1.869462E-08
 PO2                   2   O  P  2  1                  : Phosphorus_Oxide
  4  1.353894E+05 -1.995953E+00 -1.517271E+01  6.073361E-04 -4.405570E-08
-SO2                   2   O  S  2  1                  : Sulfur_Dioxide
- 4  1.283823E+05 -2.581295E+00 -1.263201E+01  7.949799E-04 -4.608226E-08
 SiO2                  2   O Si  2  1                  : Silicon_Oxide
  4  1.504694E+05 -1.709339E+00 -2.069091E+01  5.983008E-04 -3.735817E-08
 TiO2                  2   O Ti  2  1                  : Titanium_Oxide
@@ -1659,18 +1665,12 @@ SrO                   2   O Sr  1  1                  : Strontium_Oxide
  4  5.058991E+04 -2.375129E+00  4.038896E+00  1.192872E-03 -6.633243E-08
 TaO                   2   O Ta  1  1                  : Tantalum_Oxide
  4  1.005558E+05 -1.068785E+00 -5.428660E+00 -1.765238E-04  1.420546E-08
-WO                    2   O  W  1  1                  : Tungsten_Oxide
- 4  8.018458E+04 -2.788859E+00  8.758362E+00  1.125002E-04  6.158054E-09
 ZrO                   2   O Zr  1  1                  : Zirconium_Oxide
  4  9.574745E+04 -2.469712E+00  1.810562E+00  1.166858E-03 -8.516708E-08
 TaO2                  2   O Ta  2  1                  : Tantalum_Oxide
  4  1.777883E+05 -1.410605E+00 -1.797838E+01 -1.806103E-04  4.121828E-09
-WO2                   2   O  W  2  1                  : Tungsten_Oxide
- 4  1.519553E+05 -3.427395E+00 -2.153364E+00  3.829996E-04 -1.590220E-08
 ZrO2                  2   O Zr  2  1                  : Zirconium_Oxide 
  4  1.672866E+05 -2.030093E+00 -1.461147E+01  3.221911E-04 -3.202310E-08
-WO3                   2   O  W  3  1                  : Tungsten_Oxide
- 4  2.263994E+05 -3.534840E+00 -2.098259E+01  6.207065E-04 -3.078169E-08
 (WO3)2                2   O  W  6  2                  : Tungsten_Oxide
  4  5.232871E+05 -3.497049E+00 -8.424901E+01  6.861884E-04 -3.080126E-08
 W3O8                  2   O  W  8  3                  : Tungsten_Oxide
