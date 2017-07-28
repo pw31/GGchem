@@ -80,7 +80,7 @@ for iline in range(0,999):
     for j in range(0,99):
       info = lines[i].split()
       i = i+1
-      print info
+      #print info
       if (len(info)<1): break
       if (info[0]=='2'): tmp=info[1:6]
       if (info[1]=='2'): tmp=info[2:7]
@@ -93,8 +93,62 @@ for iline in range(0,999):
       lfit.append(cfit)
 GGnam   = np.array(lnam,dtype='str')
 GGcoeff = np.array(lfit)
-print GGnam
-print GGcoeff
+#print GGnam
+#print GGcoeff
+#sys.exit()
+
+#==========================================================================
+# read SLOP16 database
+#==========================================================================
+elnam  = np.loadtxt('../Abundances.dat',skiprows=5,usecols=[2],dtype='str')
+elmass = np.loadtxt('../Abundances.dat',skiprows=5,usecols=[3])
+elnam  = np.array(elnam,dtype='str')
+elmass = np.array(elmass,dtype='float')
+amu = 1.66055E-24              # atomar mass unit [g]
+NA  = 6.022140857E+23          # Avogadro's number [1/mol] 
+f = open('slop16.dat','r')
+lines = f.readlines()[355:]
+f.close()
+SLOPname = []
+SLOPstoich = []
+SLOPrho = []
+Nline = len(lines)
+for iline in range(0,Nline):
+  line = lines[iline]
+  if (line.find('gases')>=0): break
+  if (line.find('ref:')<0): continue
+  name   = lines[iline-2].split()[0]
+  stoich = lines[iline-1].split()[1]
+  vol    = lines[iline+1].split()[3]   #[cm3/mol]
+  mass = 0
+  warn = 0
+  st   = stoich
+  #print name,stoich
+  for iel in range(0,9):
+    ind1 = st.find('(')
+    ind2 = st.find(')')
+    if (ind1<0): break
+    #print st,ind1,ind2
+    elem = st[0:ind1]
+    numb = st[ind1+1:ind2]
+    st   = st[ind2+1:]
+    if (elem==''): warn=1
+    if (elem.find('Ru')>=0): warn=1
+    if (elem.find('+')>=0): warn=1
+    if (numb.find('N')>=0): warn=1
+    if (warn==0):
+      ind  = np.where(elnam==elem)[0][0]
+      #print float(numb),elem,ind,elmass[ind]
+      mass = mass + float(numb)*elmass[ind]
+  if (warn==0):
+    rho = mass*amu*NA/float(vol)  
+    print name,stoich,"rho=",rho 
+    SLOPname.append(name)
+    SLOPstoich.append(stoich)
+    SLOPrho.append(rho)
+SLOPname   = np.array(SLOPname,dtype='str')
+SLOPstoich = np.array(SLOPstoich,dtype='str')
+SLOPrho    = np.array(SLOPrho,dtype='float')
 #sys.exit()
 
 #==========================================================================
@@ -117,6 +171,7 @@ lq1   = []
 lq2   = []
 lcoef = []
 lGdat = []
+lrho  = []
 all   = ''
 for icond in range(0,999):
   line1 = lines[iline]
@@ -137,7 +192,7 @@ for icond in range(0,999):
   name  = line1.split()[0]
   form  = line1.split()[1]
   st    = line2.split()[1]
-  copy  = st
+  stoich= st
   #print form,name
   Nel = 0
   el  = []
@@ -149,7 +204,6 @@ for icond in range(0,999):
   durch4 = 1
   durch5 = 1
   Natom  = 0
-  mult   = 1
   for iel in range(0,9):
     ind1 = st.find('(')
     ind2 = st.find(')')
@@ -176,6 +230,7 @@ for icond in range(0,999):
   #print Ncond,warn
   if (warn==1): continue
   Ncond = Ncond+1
+  mult = 1
   if (durch2): mult=2
   if (durch3): mult=3
   if (durch4): mult=4
@@ -186,7 +241,7 @@ for icond in range(0,999):
     el  = []
     num = []
     form2 = ''
-    st = copy
+    st = stoich
     for iel in range(0,Nel):
       ind1 = st.find('(')
       ind2 = st.find(')')
@@ -201,8 +256,17 @@ for icond in range(0,999):
       if (numb<>'1'): form2 = form2+numb
     print form2,el,num  
 
+  # search for density in SLOP16.dat
+  rho = 3.0  # default
+  ind = np.where(SLOPstoich==stoich)[0]
+  if (len(ind)>0): 
+    rho = SLOPrho[ind[0]]
+    print "density found in SLOP",name,SLOPname[ind[0]],rho
+  else:  
+    print "density not found",name
   if (all.find(' '+form2+' ')<0): Ncond2=Ncond2+1
   all = all+' '+form2+' '
+  lrho.append(rho)
   lform.append(form2)
   lname.append(name)
   lNel.append(Nel)
@@ -213,6 +277,7 @@ for icond in range(0,999):
   # name of condensate and stoichiometry
   #-------------------------------------
   print form2,leer[len(form2):],name
+  print rho
   el  = np.array(el)
   num = np.array(num,dtype='str')
   print Nel
@@ -257,7 +322,7 @@ for icond in range(0,999):
     stoich = int(num[iel])
     ind    = np.where(atnam == elname)[0][0]
     coeff  = atdat[ind,:]
-    print elname,stoich,coeff
+    #print elname,stoich,coeff
     dGatm  = Stock(T1,coeff)
     dG_su  = dG_su - stoich*dGatm
 
@@ -281,6 +346,7 @@ for icond in range(0,999):
   
 print
 print Ncond2," condensates"
+#sys.exit()
 sys.stdout.write("now plotting ")
 
 lform = np.array(lform,dtype='str')
@@ -290,7 +356,10 @@ lq1   = np.array(lq1,dtype='float')
 lq2   = np.array(lq2,dtype='float')
 lcoef = np.array(lcoef,dtype='float')
 lGdat = np.array(lGdat,dtype='float')
+lrho  = np.array(lrho,dtype='float')
 file  = open('DustChemSUPCRTBL.dat','w')
+file.write("dust species\n")
+file.write("============\n")
 file.write("%i\n" % Ncond2) 
 index = np.argsort(lq1)
 all   = ''
@@ -305,12 +374,14 @@ for icond in range(0,Ncond):
   qual = lq2[i]
   coeff= lcoef[i]
   dG_su= lGdat[i]
+  rho  = lrho[i]
   if (all.find(' '+form+' ')>=0): 
     print form,name,"omitted"
     continue
   all = all+' '+form+' '
   file.write("\n")
   file.write("%s%s%s\n" %(form,leer[len(form):],name))
+  file.write("%5.2f\n" % rho)
   file.write("%i\n" % Nel)
   for iel in range(0,Nel):
     file.write("%2d %s\n"% (int(num[iel]),el[iel]))

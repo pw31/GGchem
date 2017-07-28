@@ -1,9 +1,9 @@
-;file1 = 'F.txt'
-;file2 = 'F2.txt'
-;stoich = 0.5
-file1 = 'Ni.txt'
-file2 = 'Niref.txt'
-stoich = 1.0
+file1 = 'Cl.txt'
+file2 = 'Cl2ref.txt'
+stoich = 0.5
+;file1 = 'Ni.txt'
+;file2 = 'Niref.txt'
+;stoich = 1.0
 line1 = ''
 line2 = ''
 openr,1,file1
