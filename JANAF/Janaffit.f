@@ -306,6 +306,14 @@
       write(*,*) '287 = WO3'
       write(*,*) '288 = WCl2'
       write(*,*) '289 = ZrSiO4_cr'
+      write(*,*) '290 = H2WO4'
+      write(*,*) '291 = WCl'
+      write(*,*) '292 = WF'
+      write(*,*) '293 = WO2Cl2'
+      write(*,*) '294 = W2O6'
+      write(*,*) '295 = W3O8'
+      write(*,*) '296 = W3O9'
+      write(*,*) '297 = W4O12'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -2279,6 +2287,66 @@
         stoich(2) = 1.D0
         stoich(3) = 1.D0
         stoich(4) = 4.D0
+      elseif (specie.eq.290) then
+        call READ_DATEI('H2WO4.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('H.txt'    ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('W.txt'   ,dG,T,Nmax,N,S,3) 
+        call READ_DATEI('O.txt'   ,dG,T,Nmax,N,S,4) 
+        Edzahl = 3
+        stoich(2) = 2.D0
+        stoich(3) = 1.D0
+        stoich(4) = 4.D0
+      elseif (specie.eq.291) then
+        call READ_DATEI('WCl.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('W.txt'    ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('Cl.txt'   ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 1.D0
+      elseif (specie.eq.292) then
+        call READ_DATEI('WF.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('W.txt'    ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('F.txt'   ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 1.D0
+      elseif (specie.eq.293) then
+        call READ_DATEI('WO2Cl2.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('W.txt'    ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('O.txt'   ,dG,T,Nmax,N,S,3) 
+        call READ_DATEI('Cl.txt'   ,dG,T,Nmax,N,S,4) 
+        Edzahl = 3
+        stoich(2) = 1.D0
+        stoich(3) = 2.D0
+        stoich(4) = 2.D0
+      elseif (specie.eq.294) then
+        call READ_DATEI('W2O6.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('W.txt'    ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('O.txt'   ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 2.D0
+        stoich(3) = 6.D0
+      elseif (specie.eq.295) then
+        call READ_DATEI('W3O8.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('W.txt'    ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('O.txt'   ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 3.D0
+        stoich(3) = 8.D0
+      elseif (specie.eq.296) then
+        call READ_DATEI('W3O9.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('W.txt'    ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('O.txt'   ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 3.D0
+        stoich(3) = 9.D0
+      elseif (specie.eq.297) then
+        call READ_DATEI('W4O12.txt'  ,dG,T,Nmax,N,S,1) 
+        call READ_DATEI('W.txt'    ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('O.txt'   ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 4.D0
+        stoich(3) = 12.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop

@@ -137,7 +137,7 @@ plt.clf()
 
 #================== some important molecules ====================
 fig,ax = plt.subplots()
-mols  = ['H2','H','N2','H2O','O2','CO','CO2','CH4','NH3','C2H2','O3','He','el']
+mols  = ['H2','H','N2','H2O','O2','CO','CO2','CH4','NH3','He']
 nmax  = np.float(0)
 for mol in range(4,4+NELEM+NMOLE):
   yy = dat[:,mol]                # log10 nmol [cm-3]
@@ -274,7 +274,7 @@ for i in range(0,30):
   plt.tick_params('both', length=3, width=1, which='minor')
   #minorLocator = MultipleLocator(sep)
   #ax.xaxis.set_minor_locator(minorLocator)
-  plt.legend(loc='lower left',fontsize=10,fancybox=True)
+  plt.legend(loc='lower right',fontsize=10,fancybox=True)
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
   plt.clf()
