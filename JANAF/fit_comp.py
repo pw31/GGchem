@@ -20,7 +20,7 @@ cal  = 4.184       # 1 cal in J
 mmHg = 1.3328E+3   # 1 mmHg in dyn/cm2
 bar  = 1.00E+6     # 1 bar in dyn/cm2
 
-chemnam = 'W'     #choose specie
+chemnam = 'Fe'     #choose specie
 
 latexnm = re.sub(r'(\d+)',r'_\1',chemnam)
 for phase in ['_cr','_l']:
@@ -160,7 +160,7 @@ for line1 in lines:
                         pmin = np.max([pmin,pmax*1.E-25])
                         plt.scatter(ltdat,lpdat,color='dodgerblue',marker='o',label='data(l)')
                         plt.scatter(stdat,spdat,color='darkorange',marker='+',label='data(s)')
-                        plt.ylabel(r'$ P_{{vap}} ({{{}}}) \quad \mathrm{{{}}}$'.format(latexnm,unit))
+                        plt.ylabel(r'$ p^{\mathrm{vap}} \mathrm{[dyn/cm^2]}$',fontsize=16)
                     if (value == 'dg'):
                         unit = '[kJ/mol]'
                         plt.scatter(ltdat,lgdat,color='dodgerblue',marker='o',label='data(l)')
@@ -168,11 +168,12 @@ for line1 in lines:
                         plt.ylabel(r'$\Delta_f G^\theta ({{{}}}) \quad \mathrm{{{}}}$'.format(latexnm,unit))
                     #plt.title(specie+' '+data1[2])
                     plt.title(specie)
-                    plt.xlabel(r'$T\ \mathrm{[K]}$')
+                    plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=16)
                     plt.xlim(tmin,tmax)
                     plt.ylim(pmin,pmax)
                     #plt.xscale('log')
-                    plt.legend(frameon=False)
+                    plt.legend(frameon=False,loc='upper left')
+                    plt.subplots_adjust(left=0.14, right=0.96, top=0.94, bottom=0.14)
                     plt.show()
                     #plt.savefig(pp,format='pdf')
                     #plt.clf()

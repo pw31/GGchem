@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import sys
 from scipy.optimize import curve_fit
 from matplotlib.backends.backend_pdf import PdfPages
-plt.rcParams['axes.linewidth'] = 1.5
+plt.rcParams['axes.linewidth'] = 2
 pp = PdfPages('dG.pdf')
 
 # nature constants and unit conversions 
@@ -173,7 +173,7 @@ lcoef = []
 lGdat = []
 lrho  = []
 all   = ''
-for icond in range(0,999):
+for icond in range(0,9999):
   line1 = lines[iline]
   iline = iline+1
   if (line1.find('abandoned')>0): break
@@ -361,6 +361,7 @@ file  = open('DustChemSUPCRTBL.dat','w')
 file.write("dust species\n")
 file.write("============\n")
 file.write("%i\n" % Ncond2) 
+file2 = open('DustChemSUPCRTBL.tex','w')
 index = np.argsort(lq1)
 all   = ''
 iplot = 0
@@ -371,6 +372,7 @@ for icond in range(0,Ncond):
   Nel  = lNel[i]
   el   = lel[i]
   num  = lnum[i]
+  sortq = lq1[i]
   qual = lq2[i]
   coeff= lcoef[i]
   dG_su= lGdat[i]
@@ -389,12 +391,14 @@ for icond in range(0,Ncond):
         % (Tmin1,Tmax1,qual))
   file.write("  5 %15.8e %15.8e %15.8e %15.8e %15.8e \n" \
         % (coeff[0],coeff[1],coeff[2],coeff[3],coeff[4]))
+  file2.write(" %15s & %20s & %5.1f & 5 & %13.6e & %13.6e & %13.6e & %13.6e & %13.6e & $\pm$%4.2f%s \n" \
+              % (form,name,sortq/1000,coeff[0],coeff[1],coeff[2],coeff[3],coeff[4],qual,'\\\\'))
 
   sys.stdout.write(".")
   sys.stdout.flush()
 
   iplot = iplot+1
-  plt.figure(figsize=(7,10))
+  plt.figure(figsize=(7,8))
   plt.subplot(211)
   # the SUPCRTBL data
   dG_su_fit = Stock(T2,coeff)
@@ -439,8 +443,8 @@ for icond in range(0,Ncond):
   plt.plot(T2,dG_su_fit/1000  ,c='blue',lw=2.0,label='SUPCRTBL fit')
   plt.plot(T1,dG_su/1000 ,c='black',ls='--',lw=3.5,label='SUPCRTBL data')
   plt.xlim(0.0,1.05*Tmax2)
-  plt.xlabel(r'$T\,\mathrm{[K]}$',fontsize=20)
-  plt.ylabel(r'$\Delta_\mathrm{f} G^{\mathrm{1bar}}\mathrm{[kJ/mol]}$',fontsize=20)
+  plt.xlabel(r'$T\,\mathrm{[K]}$',fontsize=16)
+  plt.ylabel(r'$\Delta_\mathrm{f} G^{\mathrm{1bar}}\mathrm{[kJ/mol]}$',fontsize=16)
   plt.title(form+"  -  "+name)
   plt.subplots_adjust(left=0.13, right=0.98, top=0.94, bottom=0.13)
   plt.legend(loc='upper left')
@@ -463,15 +467,16 @@ for icond in range(0,Ncond):
     ymax = np.max([ymax,-ymin])  
     plt.xlim(0.0,1.05*Tmax2)
     plt.ylim(2*ymin,2*ymax)
-    plt.xlabel(r'$T\,\mathrm{[K]}$',fontsize=20)
-    plt.ylabel(r'$\Delta_\mathrm{f} G^{\mathrm{1bar}}\mathrm{[kJ/mol]}$',fontsize=20)
+    plt.xlabel(r'$T\,\mathrm{[K]}$',fontsize=16)
+    plt.ylabel(r'$\Delta_\mathrm{f} G^{\mathrm{1bar}}\mathrm{[kJ/mol]}$',fontsize=16)
     plt.legend(loc='lower center')
 
-  plt.subplots_adjust(left=0.16,right=0.99,bottom=0.06,top=0.97,hspace=0.15)
+  plt.subplots_adjust(left=0.16,right=0.99,bottom=0.1,top=0.96,hspace=0.15)
   plt.savefig(pp,format='pdf')
   plt.clf()
 
 file.close
+file2.close
 pp.close()
 print ' '
 print ' '
