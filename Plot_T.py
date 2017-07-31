@@ -158,7 +158,7 @@ if (nmax>-99):
   plt.legend(loc='lower right',fontsize=11,fancybox=True,
              handlelength=3,prop={'size':sz})
   plt.tight_layout()
-  plt.show()
+  #plt.show()
   plt.savefig(pp,format='pdf')
   plt.clf()
 
@@ -225,7 +225,7 @@ if (nmax>-99):
   minorLocator = MultipleLocator(sep)
   ax.xaxis.set_minor_locator(minorLocator)
   plt.tight_layout()
-  plt.show()
+  #plt.show()
   plt.savefig(pp,format='pdf')
   plt.clf()
 

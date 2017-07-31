@@ -118,7 +118,7 @@ TiO2[l]        RUTILE(liquid)            2130.0
 # pvap NIST-Janaf 298-4000K, +/- 0.019:
   3 -7.07819E+04  3.68021E+01 -1.29214E-03 -6.87776E-08  1.89408E-11
 
-Ti4O7[s]       TITANIUM_OXIDE
+Ti4O7[s]       TITANIUM-OXIDE
 4.19
 2
  4 Ti
@@ -126,7 +126,7 @@ Ti4O7[s]       TITANIUM_OXIDE
 # dG-fit NIST-Janaf 298-2400K, +/- 0.085:
   2  1.85821E+06 -7.06188E+06  1.70429E+03 -4.67044E-02  4.71514E-06
 
-Ti4O7[l]       TITANIUM_OXIDE(liquid)    1950.0
+Ti4O7[l]       TITANIUM-OXIDE(liquid)    1950.0
 3.4
 2
  4 Ti
@@ -257,7 +257,7 @@ C[s]           GRAPHITE
 # 3para pvap-fit NIST-Janaf 100-4000K, +/- 0.063:
   4  3.27860E+01 -8.65139E+04  4.80395E-01  0.00000E+00  0.00000E+00
 
-TiC[s]         TITANIUM_CARBIDE
+TiC[s]         TITANIUM-CARBIDE
 4.93
 2
  1 Ti
@@ -265,7 +265,7 @@ TiC[s]         TITANIUM_CARBIDE
 # dG-fit NIST-Janaf 100-4000K, +/- 0.32:
   2  1.11878E+05 -1.37612E+06  3.20666E+02 -4.63379E-03  1.85306E-07
 
-TiC[l]         TITANIUM_CARBIDE(liquid)  3290.0
+TiC[l]         TITANIUM-CARBIDE(liquid)  3290.0
 3.9
 2
  1 Ti
@@ -273,7 +273,7 @@ TiC[l]         TITANIUM_CARBIDE(liquid)  3290.0
 # dG-fit NIST-Janaf 298-4500K, +/- 0.025:
   2  5.34201E+05 -1.30289E+06  3.01268E+02 -6.61621E-03  5.21065E-07
 
-SiC[s]         SILICON_CARBIDE(alpha)
+SiC[s]         SILICON-CARBIDE(alpha)
 3.21
 2
  1 Si
@@ -281,7 +281,7 @@ SiC[s]         SILICON_CARBIDE(alpha)
 # dG-fit NIST-Janaf 100-4000K, +/- 0.067:
   2  6.73337E+05 -1.24381E+06  3.21779E+02 -4.54405E-03  2.69711E-07
 
-Fe2O3[s]       HEMATITE 
+Fe2O3[s]       HEMATITE
 5.25
 2
  2 Fe
@@ -289,7 +289,7 @@ Fe2O3[s]       HEMATITE
 # Sharp & Huebner (1990):
   1 -9.09265E+01 -5.75261E+05  1.85908E+02 -7.14322E-03  8.63059E-07
 
-SiO[s]         SILICON_MONOXIDE
+SiO[s]         SILICON-MONOXIDE
 2.18
 2
  1 Si
@@ -351,7 +351,7 @@ ZrO2[l]        BADDELEYITE(liquid)       2950.0
 # pvap-fit NIST-Janaf 298-5000K, +/- 0.11:
   3 -8.87286E+04  3.86685E+01 -1.94950E-03  2.38918E-07 -1.43097E-11
 
-ZrSiO4[s]      ZIRCONIUM_SILICATE
+ZrSiO4[s]      ZR-SILICATE
 4.56
 3
  1 Zr
@@ -376,7 +376,7 @@ W[l]           TUNGSTEN(liquid)          3680.0
 # pvap-fit NIST-Janaf 298-6000K, +/- 0.015:
   3 -9.66863E+04  2.90491E+01  2.11260E-04 -5.93323E-08  6.15431E-12
 
-WO3[s]         TUNGSTEN_TRIOXIDE
+WO3[s]         W-TRIOXIDE
 7.16
 2
  1 W
@@ -384,7 +384,7 @@ WO3[s]         TUNGSTEN_TRIOXIDE
 # pvap-fit NIST-Janaf 100-3000K, +/- 0.014:
   3 -6.63560E+04  4.06161E+01 -2.83452E-03  6.33945E-07 -7.73057E-11
 
-WO3[l]         TUNGSTEN_TRIOXIDE(liquid) 1745.0
+WO3[l]         W-TRIOXIDE(liquid) 1745.0
 7.0            estimated
 2
  1 W
@@ -424,7 +424,7 @@ FeO[l]         FERROPERICLASE(liquid)    1650.0
 # pvap-fit NIST-Janaf 298-5000K, +/- 0.007:
   3 -6.03086E+04  3.48392E+01 -2.21932E-03  2.77859E-07 -1.56828E-11
 
-Na2SiO3[s]     SODIUM_METASILICATE
+Na2SiO3[s]     NA-METASILICATE
 2.4
 3
  2 Na
@@ -433,7 +433,7 @@ Na2SiO3[s]     SODIUM_METASILICATE
 # dG-fit NIST-Janaf 100-2500K, +/- 0.17:
   2  1.31453E+06 -2.98538E+06  8.76910E+02 -2.65571E-02  1.15443E-06
 
-Na2SiO3[l]     SODIUM_METASILICATE(liquid)    1362.0
+Na2SiO3[l]     NA-METASILICATE(liquid)    1362.0
 1.9
 3
  2 Na
@@ -442,7 +442,7 @@ Na2SiO3[l]     SODIUM_METASILICATE(liquid)    1362.0
 # dG-fit NIST-Janaf 298-2500K, +/- 0.091:
   2  1.72092E+06 -2.93824E+06  8.49423E+02 -3.54866E-02  3.74762E-06
 
-H2O[s]         WATER_ICE
+H2O[s]         WATER-ICE
 0.93
 2
  2 H
@@ -476,7 +476,7 @@ CH4[s]         METHANE(liquid/solid)           90.7
 # pvap special (Prydz & Goodwin 1972):
   99  0.0  0.0  0.0  0.0  0.0
 
-CO[s]          CARBON_MONOXIDE(liquid/solid)   68.2
+CO[s]          C-MONOXIDE(liquid/solid)   68.2
 1.14
 2
  1 C
@@ -484,7 +484,7 @@ CO[s]          CARBON_MONOXIDE(liquid/solid)   68.2
 # pvap Yaws 68-132K:
   6  51.8145E+00 -7.8824E+02 -2.2734E+01  5.1225E-02  4.6603E-11
 
-CO2[s]         CARBON_DIOXIDE(liquid/solid)   194.7
+CO2[s]         C-DIOXIDE(liquid/solid)   194.7
 1.98
 2
  1 C
@@ -492,7 +492,7 @@ CO2[s]         CARBON_DIOXIDE(liquid/solid)   194.7
 # pvap Yaws 216-305K:
   6  35.0187E+00 -1.5119E+03 -1.1335E+01  9.3383E-03  7.7626E-10
 
-H2SO4[s]       SULPHURIC_ACID(liquid/solid)   283.5
+H2SO4[s]       SULPHURIC-ACID(liquid/solid)   283.5
 1.84
 3
  2 H
@@ -524,7 +524,7 @@ NaCl[s]        HALITE
  1 Cl
 # dG-fit NIST-Janaf 100-1500K, +/- 0.11:
 # 2  9.69833E+04 -6.41377E+05  2.54233E+02 -1.12391E-02  0.00000E+00
-# pvap-fit NIST-Janaf 100-1000K, +/- 0.003
+# pvap-fit NIST-Janaf 100-1000K, +/- 0.003:
   3 -2.79146E+04  3.46023E+01 -3.11287E-03  5.30965E-07 -2.59584E-12
  
 NaCl[l]        HALITE(liquid)     1073.8
@@ -567,7 +567,7 @@ S[l]           SULPHUR(liquid)    388.36
 # pvap-fit NIST-Janaf 298-2400K, +/- 0.036:
   3 -3.32601E+04  3.07134E+01 -2.01083E-03  4.47359E-07  0.00000E+00
 
-MgS[s]         MG_SULPHIDE
+MgS[s]         MG-SULPHIDE
 2.68
 2
  1 Mg
@@ -575,7 +575,7 @@ MgS[s]         MG_SULPHIDE
 # dG-fit NIST-Janaf 100-3000K, +/- 0.11:
   2 -3.08737E+04 -7.70053E+05  2.69294E+02 -5.60302E-03  3.38303E-07
 
-LiCl[s]        LITHIUM_CHLORIDE
+LiCl[s]        LI-CHLORIDE
 2.07
 2
  1 Li
@@ -583,7 +583,7 @@ LiCl[s]        LITHIUM_CHLORIDE
 # pvap-fit NIST-Janaf 100-2000K, +/- 0.084:
   3 -2.57733E+04  3.36349E+01 -2.43056E-03  2.35233E-07  0.00000E+00
  
-LiCl[l]        LITHIUM_CHLORIDE(liquid)     883.0
+LiCl[l]        LI-CHLORIDE(liquid)     883.0
 1.7
 2
  1 Li
@@ -591,7 +591,7 @@ LiCl[l]        LITHIUM_CHLORIDE(liquid)     883.0
 # pvap-fit NIST-Janaf 298-2000K, +/- 0.008:
  3 -2.38196E+04  3.23179E+01 -4.07306E-03  1.00591E-06 -9.65764E-11
 
-SiS2[s]        SILICON_DISULFIDE
+SiS2[s]        SI-DISULFIDE
 1.85
 2
  1 Si
@@ -599,7 +599,7 @@ SiS2[s]        SILICON_DISULFIDE
 # dG-fit NIST-Janaf 298-2000K, +/- 0.009:
   2 -1.96413E+05 -1.21744E+06  4.29645E+02 -1.32885E-02  9.27515E-07
 
-SiS2[l]        SILICON_DISULFIDE(liquid)    1363.0
+SiS2[l]        SI-DISULFIDE(liquid)    1363.0
 1.5
 2
  1 Si
@@ -607,7 +607,7 @@ SiS2[l]        SILICON_DISULFIDE(liquid)    1363.0
 # dG-fit NIST-Janaf 298-2000K, +/- 0.024:
   2  5.45975E+05 -1.21556E+06  4.34344E+02 -1.99379E-02  2.31933E-06
 
-AlCl3[s]       ALUMINIUM_TRICHLORIDE
+AlCl3[s]       AL-TRICHLORIDE
 2.48
 2
  1 Al
@@ -615,7 +615,7 @@ AlCl3[s]       ALUMINIUM_TRICHLORIDE
 # dG-fit NIST-Janaf 100-1500K, +/- 0.082:
   2  4.17188E+05 -1.40425E+06  5.68472E+02 -1.79150E-02 -4.81449E-06
 
-AlCl3[l]       ALUMINIUM_TRICHLORIDE(liquid)   465.7
+AlCl3[l]       AL-TRICHLORIDE(liquid)   465.7
 2.0
 2
  1 Al
@@ -639,7 +639,7 @@ CaO[l]         LIME(liquid)     3200.0
 # dG-fit NIST-Janaf 298-4500K, +/- 0.15:
   2  7.88379E+05 -9.87984E+05  2.61388E+02 -8.44845E-03  6.19197E-07
 
-CaCl2[s]       CALCIUM_DICHLORIDE
+CaCl2[s]       CA-DICHLORIDE
 2.15
 2
  1 Ca
@@ -647,7 +647,7 @@ CaCl2[s]       CALCIUM_DICHLORIDE
 # pvap-fit NIST-Janaf 100-2000K, +/- 0.092:
   3 -3.91597E+04  3.71795E+01 -1.93815E-03  1.18087E-07  0.00000E+00
 
-CaCl2[l]       CALCIUM_DICHLORIDE(liquid)   1045.0
+CaCl2[l]       CA-DICHLORIDE(liquid)   1045.0
 1.7
 2
  1 Ca
@@ -655,7 +655,7 @@ CaCl2[l]       CALCIUM_DICHLORIDE(liquid)   1045.0
 # pvap-fit NIST-Janaf 298-3000K, +/- 0.025:
   3 -3.68100E+04  3.61822E+01 -3.53647E-03  5.03350E-07 -3.05198E-11
 
-LiH[s]         LITHIUM_HYDRIDE
+LiH[s]         LI-HYDRIDE
 0.78
 2
  1 Li
@@ -663,7 +663,7 @@ LiH[s]         LITHIUM_HYDRIDE
 # pvap-fit NIST-Janaf 100-1500K, +/- 0.044:
   3 -2.76405E+04  3.07600E+01  3.06028E-03 -3.26876E-06  7.70757E-10
 
-LiH[l]         LITHIUM_HYDRIDE(liquid)       961.8
+LiH[l]         LI-HYDRIDE(liquid)       961.8
 0.62
 2
  1 Li
@@ -691,7 +691,7 @@ MgTiO3[l]      GEIKIELITE(liquid)           1953.0
 # dG-fit NIST-Janaf 298-4000K, +/- 0.19:
   2  2.95447E+06 -2.88536E+06  7.40614E+02 -2.52836E-02  1.86167E-06
 
-K2SiO3[s]      POTASSIUM_SILICATE 
+K2SiO3[s]      K-SILICATE 
 2.4
 3
  2 K
@@ -700,7 +700,7 @@ K2SiO3[s]      POTASSIUM_SILICATE
 # dG-fit NIST-Janaf 100-2200K, +/- 0.089:
   2  1.08754E+06 -2.93466E+06  8.61167E+02 -3.66511E-02  3.06399E-06
 
-K2SiO3[l]      POTASSIUM_SILICATE(liquid)   1249.0
+K2SiO3[l]      K-SILICATE(liquid)   1249.0
 1.9
 3
  2 K
@@ -723,7 +723,7 @@ Ti[l]          TITANIUM(liquid)             1939.0
 # dG-fit NIST-Janaf 298-4500K, +/- 0.18:
   2  1.72969E+06 -4.68384E+05  1.54389E+02 -9.64953E-03  7.21551E-07
 
-TiO[s]         TITANIUM_MONOXIDE(beta)
+TiO[s]         TI-MONOXIDE(beta)
 4.95
 2
  1 Ti
@@ -731,7 +731,7 @@ TiO[s]         TITANIUM_MONOXIDE(beta)
 # pvap-fit NIST-Janaf 298-2500K, +/- 0.007:
   3 -7.14013E+04  3.80934E+01 -1.49104E-03  6.06190E-08  0.00000E+00
 
-TiO[l]         TITANIUM_MONOXIDE(liquid)    2023.0 
+TiO[l]         TI-MONOXIDE(liquid)    2023.0 
 4.0
 2
  1 Ti
@@ -739,7 +739,7 @@ TiO[l]         TITANIUM_MONOXIDE(liquid)    2023.0
 # pvap-fit NIST-Janaf 298-4500K, +/- 0.009:
   3 -6.61504E+04  3.58743E+01 -1.97510E-03  2.33017E-07 -1.21467E-11
 
-LiOH[s]        LITHIUM_HYDROXIDE 
+LiOH[s]        LI-HYDROXIDE 
 1.46
 3
  1 Li
@@ -748,7 +748,7 @@ LiOH[s]        LITHIUM_HYDROXIDE
 # pvap-fit NIST-Janaf 100-1500K, +/- 0.036:
   3 -3.01062E+04  3.37718E+01  9.66853E-04 -2.02320E-06  5.34064E-10
 
-LiOH[l]        LITHIUM_HYDROXIDE(liquid)     744.3 
+LiOH[l]        LI-HYDROXIDE(liquid)     744.3 
 1.2
 3
  1 Li
@@ -757,7 +757,7 @@ LiOH[l]        LITHIUM_HYDROXIDE(liquid)     744.3
 # pvap-fit NIST-Janaf 298-2500K, +/- 0.066:
   3 -2.87677E+04  3.42848E+01 -3.81580E-03  5.39401E-07  0.00000E+00
 
-VO[s]          VANADIUM_MONOXIDE
+VO[s]          V-MONOXIDE
 5.76
 2
  1 V
@@ -765,7 +765,7 @@ VO[s]          VANADIUM_MONOXIDE
 # pvap-fit NIST-Janaf 100-2600K, +/- 0.016:
   3 -6.74603E+04  3.82717E+01 -2.78551E-03  5.72078E-07 -7.41840E-11
 
-VO[l]          VANADIUM_MONOXIDE(liquid)   2063.0
+VO[l]          V-MONOXIDE(liquid)   2063.0
 5.2
 2
  1 V
@@ -773,7 +773,7 @@ VO[l]          VANADIUM_MONOXIDE(liquid)   2063.0
 # pvap-fit NIST-Janaf 298-3500K, +/- 0.006:
   3 -6.01063E+04  3.45413E+01 -2.64854E-03  4.70724E-07 -3.85068E-11
 
-CaS[s]         CALCIUM_SULFIDE
+CaS[s]         CALCIUM-SULFIDE
 2.59
 2
  1 Ca
@@ -789,7 +789,7 @@ FeS2[s]	       PYRITE
 # dG-fit NIST-Janaf 100-1400K, +/- 0.052:
   2  5.30142E+05 -1.14524E+06  4.72929E+02 -4.33681E-03 -1.49521E-06
 
-Na2S[s]        SODIUM_SULFIDE
+Na2S[s]        NA-SULFIDE
 1.86
 2
  2 Na
@@ -801,14 +801,14 @@ Mn[s]          MANGANESE(alpha-delta)
 7.43
 1
  1 Mn
-# pvap-fit NIST-Janaf 100-1900K, +/- 0.006
+# pvap-fit NIST-Janaf 100-1900K, +/- 0.006:
   3 -3.41316E+04  3.12732E+01 -5.59461E-04 -4.63498E-07  1.01677E-10
 
 Mn[l]          MANGANESE(liquid)    1519.0
 5.95
 1 
  1 Mn
-# pvap-fit NIST-Janaf 298-3000K, +/- 0.004
+# pvap-fit NIST-Janaf 298-3000K, +/- 0.004:
   3 -3.22207E+04  3.01880E+01 -1.14796E-03 -3.02939E-08  2.15830E-11
 
 MnS[s]         ALABANDITE

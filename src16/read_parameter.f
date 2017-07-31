@@ -4,7 +4,7 @@
       use PARAMETERS,ONLY: elements,abund_pick,model_dim,model_pconst,
      >                     model_struc,model_eqcond,Npoints,
      >                     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax
-      use CHEMISTRY,ONLY: NewChemIt,NewBackIt,dispol_file
+      use CHEMISTRY,ONLY: NewChemIt,NewBackIt,NewFullIt,dispol_file
       use DUST_DATA,ONLY: bar
       implicit none
       integer :: iarg,iline,i
@@ -13,8 +13,6 @@
       !-------------------------
       ! ***  default values  ***
       !-------------------------
-      elements     = 'H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li F P V '
-     >             //'Cr Mn Ni Zr W el'
       dispol_file(1) = 'dispol_BarklemCollet.dat'
       dispol_file(2) = 'dispol_StockKitzmann_withoutTsuji.dat'
       dispol_file(3) = 'dispol_WoitkeRefit.dat'
@@ -35,6 +33,7 @@
       nHmax        = 4.d+19
       NewChemIt    = .true.
       NewBackIt    = 5
+      NewFullIt    = .true.
 
       !-------------------------------------------
       ! ***  change parameters via input file  ***
@@ -87,6 +86,8 @@
           read(line,*) NewChemIt
         else if (index(line,"! NewBackIt")>0) then 
           read(line,*) NewBackIt
+        else if (index(line,"! NewFullIt")>0) then 
+          read(line,*) NewFullIt
         else if (index(line,"! dispol_file2")>0) then 
           i = index(line,"!")
           read(line(1:i-1),*) dispol_file(2)

@@ -6,38 +6,6 @@
 *     ---------------                                                  *
 *     Diese Routine berechnet eine GG-Chemie                           *
 *                                                                      *
-*   - Wird der Parameter "nachit"=FALSE gesetzt, so berechnet          *
-*     sie kein exaktes Dissoziationsgleichgewicht, sondern nutzt       *
-*     das Wissen aus dem Irsee-paper. Nur die wichtigen Dissozia-      *
-*     tionsgleichgewichte werden dann geloest und so die Dichten       *
-*     der haeufigsten Molekuele bestimmt. Dabei loest die Routine      *
-*     zunaechst die Gleichgewichte der haeufigsten Elemente und        *
-*     geht dann weiter zu weniger haeufigen. Die bereits geloesten     *
-*     GG werden als von selteneren Elementen unbeeinflusst angenommen. *
-*     Hierin liegt natuerlich auch die Schwaeche der Routine: Sie geht *
-*     von bestimmten chemischen Haeufigkeiten aus. Weichen diese       *
-*     stark von den Vorstellungen der Routine ab, so werden die        *
-*     Ergebnisse falsch (z.B. wenn  [C]/[O] ~ 1 ist!!!)                *
-*                                                                      *
-*     Welche Molekuele in diesem Fall beruecksichtigt werden, steht    *
-*     unten im Text.                                                   *
-*                                                                      *
-*     Die Abweichungen der wichtigen Molekuele liegen in der Regel     *
-*     unter einem Faktor 2, oft unter 10%.                             *
-*     Die Namen der beteiligten Atome und Molekuele werden ueber den   *
-*     commonblock chemnam an die Aussenwelt uebergeben. Mit Hilfe      *
-*     der Funktion stindex (siehe unten) kann man sich leicht nach     *
-*     dem ersten Aufruf der Routine smchem die Indices der einzelnen   *
-*     Molekuele im array anmol verschaffen; z.B.                       *
-*     nnco = stindex(cmol,dim,'CO')                                    *
-*                                                                      *
-*     Die Routine ist extrem schnell und beansprucht wenig Platz.      *
-*                                                                      *
-*                                                                      *
-*   - Wird der Parameter "nachit"=TRUE gesetzt, so berechnet die       *
-*     Routine die GG-Chemie korrekt nach Newton-Raphson, wobei         *
-*     obige Konzentrationen als Startwerte verwendet werden.           * 
-*                                                                      *
 *----------------------------------------------------------------------*
 *                                                                      *
 *     e i n g a b e :                                                  *
@@ -51,29 +19,8 @@
 *     anmono : vektor mit den dichten der monomere  falls relevant     *
 *     anmol  : vektor mit den dichten der molekuele falls relevant     *
 *                                                                      *
-*----------------------------------------------------------------------*
-*                                                                      *
-*     b e n o e t i g t e  u n t e r p r o g r a m m e :               *
-*     stindex                                                          *
-*                                                                      *
-*     b e n o e t i g t e  d a t e i e n :                             *
-*     dispol.dat                                                       *
-*                                                                      *
 ************************************************************************
-*                                                                      *
-*     Die Nummerierung der Elemente ist wie folgt:                     *
-*     __________________________________________________________________ 
-*     Element: He e- H C N O Si Mg Al Fe S  Na K  Ti Ca Li Cl Fl
-*     Nummer:  1  2  3 4 5 6  7  8  9 10 11 12 13 14 15 16 17 18
-*     __________________________________________________________________
-*                                                                      *
-************************************************************************
-*     (c)       Carsten Dominik                     Do 11. Maerz 1993  *
-*     Revision und nachit-Erweiterung Peter Woitke  Do  7. Maerz 1996  *
-*     GG-Konstanten fuer TiC von Andreas Gauger gewonnen               *
-*     auf der Grundlage spekrtoskopischer Messungen          11.09.97  *
-************************************************************************
-      use CHEMISTRY,ONLY: NewChemIt,NewBackIt,
+      use CHEMISTRY,ONLY: NewChemIt,NewBackIt,NewFullIt,
      >                    nml=>NMOLE,nel=>NELM,cmol,catm,
      >                    m_kind,m_anz,a,natom,charge,elion,
      >                    He,el,H,C,N,O,Si,Mg,Al,Fe,S,Na,K,Ti,Ca,Li,Cl,
@@ -95,12 +42,6 @@
 *  beruecksichtigten Molekuele dennoch inkonsistent mitgerechnet werden. 
       logical alle
       data alle/.true./
-*-----------------------------------------------------------------------
-*  Die Variable "nachit" entscheidet, ob die GG-Chemie zur Ermittlung
-*  der korrekten Loesung nach Newton-Raphson nachiteriert wird.
-*  (braucht laenger, manchmal Konvergenzprobleme)
-      logical nachit
-      data nachit/.true./      
 *-----------------------------------------------------------------------
 *  Bei merk=.true. merkt sich die Routine die letzte konvergiert Loesung
 *  und geht beim naechsten Mal von diesen Startwerten aus.
@@ -146,6 +87,7 @@
       real*8 :: emax,pges,pwork
       logical :: from_merk,eact(nel),done(nel),redo(nel)
       logical :: IS_NAN,isOK,affect,known
+      character(len=5000) :: mols
       character(len=100) :: txt,line
       character(len=1) :: char
       integer,save :: ilauf=0 
@@ -1091,7 +1033,8 @@ c     g(TiC)   : siehe oben!
         !-------------------------------------------
         ! store coeff for Sum_l coeff(l) p^l = pges 
         !-------------------------------------------
-        coeff(:) = 0.d0          
+        coeff(:) = 0.d0   
+        mols = ''
         do i=1,nml
           affect = .false. 
           known  = .true. 
@@ -1118,6 +1061,7 @@ c     g(TiC)   : siehe oben!
           enddo  
           if (.not.affect) cycle  
           if (.not.known) cycle
+          mols = trim(mols)//" "//cmol(i)
           coeff(l) = coeff(l) + l*pmol
           !------------------------------------
           ! for initial guess, consider this 
@@ -1126,6 +1070,7 @@ c     g(TiC)   : siehe oben!
           !print*,trim(cmol(i)),l,g(i),pmol
           pwork = MIN(pwork,(pges/(l*pmol))**(1.d0/REAL(l)))
         enddo  
+        if (verbose>1) print*,trim(mols)
         !----------------------------------------------
         ! solve 1d equation above with Newton's method 
         !----------------------------------------------
@@ -1322,7 +1267,7 @@ c     g(TiC)   : siehe oben!
       endif  
 
 *-----------------------------------------------------------------------
-      if (nachit) then
+      if (NewFullIt) then
 *       ! Jacobi matrix and rhs vector for Newton-Raphson
 *       =================================================
         it = 0
@@ -1578,29 +1523,29 @@ c     g(TiC)   : siehe oben!
           write(99,'(0pF9.3,1pE10.3,I4,99(1pE10.3))') 
      >          Tg,anHges,it,badness
         endif  
-*
-*       ! final anmol determination
-*       ===========================
-        amerk = anmono/anHges
-        do i=1,nml
-          pmol = g(i)
-          do j=1,m_kind(0,i)
-            pat = anmono(m_kind(j,i))*kT
-            if (m_anz(j,i).gt.0) then
-              do kk=1,m_anz(j,i)
-                pmol = pmol*pat
-              enddo
-            else
-              do kk=1,-m_anz(j,i)
-                pmol = pmol/pat
-              enddo
-            endif
-          enddo
-          anmol(i) = pmol*kT1
-        enddo
-        if (charge) pel=anmono(el)*kT
 
-      endif      ! nachit
+      endif      ! NewFullIt
+
+*     ! final anmol determination
+*     ===========================
+      amerk = anmono/anHges
+      do i=1,nml
+        pmol = g(i)
+        do j=1,m_kind(0,i)
+          pat = anmono(m_kind(j,i))*kT
+          if (m_anz(j,i).gt.0) then
+            do kk=1,m_anz(j,i)
+              pmol = pmol*pat
+            enddo
+          else
+            do kk=1,-m_anz(j,i)
+              pmol = pmol/pat
+            enddo
+          endif
+        enddo
+        anmol(i) = pmol*kT1
+      enddo
+      if (charge) pel=anmono(el)*kT
 
       if (ngestst) then
 *       ! Test auf Elementerhaltung
@@ -1637,7 +1582,6 @@ c     g(TiC)   : siehe oben!
             if (verbose>1) then
               print'(3(1pE14.7))',soll/anHges,haben/anHges,sum
             endif  
-            nachit = .true.
             from_merk = .false.
             ansave = anmono
             anmono(e)=anmono(e)/sum

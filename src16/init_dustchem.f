@@ -3,21 +3,22 @@
 **********************************************************************
       use PARAMETERS,ONLY: model_eqcond
       use CHEMISTRY,ONLY: NMOLE,NELM,catm
-      use DUST_DATA,ONLY: NEPS,NELEM,NDUST,eps0,
+      use DUST_DATA,ONLY: NDUSTmax,NEPS,NELEM,NDUST,eps0,
      &                    dust_nam,dust_rho,dust_vol,dust_mass,
      &                    dust_nel,dust_nu,dust_el,fit,cfit,
      &                    elnr,elcode,elnam,mass,Tmelt,Tcorr
       implicit none
-      integer :: i,imax,j,k,el
-      real*8 :: dmass
-      character(len=200):: zeile
-      character(len=20) :: dummy
+      integer :: i,imax,j,k,el,j1,j2
+      real*8 :: dmass,prec(NDUSTmax)
+      character(len=200):: zeile,lastzeile
+      character(len=100) :: trivial(NDUSTmax),limit
       character(len=2)  :: name
       logical :: is_atom,found,allfound
 
       write(*,*) 
       write(*,*) "reading DustChem.dat ..."
       write(*,*) "========================"
+      trivial(:)=' '
 
       open(12, file='DustChem.dat', status='old')
  
@@ -29,10 +30,14 @@
       NDUST = 1
       do i=1,imax
         read(12,1000) zeile
-        if (index(zeile,'[l]').le.0) then
-          read(zeile,*) dust_nam(NDUST)
-        else
-          read(zeile,*) dust_nam(NDUST),dummy,Tmelt(NDUST)
+        read(zeile,*) dust_nam(NDUST)
+        j1 = index(zeile,' ')
+        read(zeile(j1+1:),*) trivial(NDUST)
+        if (index(zeile,'[l]')>0) then
+          j2 = index(zeile,trim(trivial(NDUST)))
+     &       + len(trim(trivial(NDUST)))
+          read(zeile(j2+1:),*) Tmelt(NDUST)
+          trivial(NDUST)=' '
         endif
         read(12,*) dust_rho(NDUST)
         read(12,*) dust_nel(NDUST)
@@ -60,10 +65,14 @@
         enddo
         found = .false.
         do 
+          lastzeile = zeile 
           read(12,1000) zeile
           if (trim(zeile)=='') exit
           if (zeile(1:1)=='#') cycle
           read(zeile,*) fit(NDUST),cfit(NDUST,0:4)
+          j1 = index(lastzeile,'+/-')
+          j2 = index(lastzeile,':')
+          if (j1>0) read(lastzeile(j1+3:j2-1),*) prec(NDUST)
           found = .true.
         enddo
         if (.not.found) then
@@ -109,7 +118,23 @@
       Tcorr(:) = -1.d0
       if (model_eqcond) call CHECK_MELTING
       write(*,*)
- 
+
+      !open(unit=1,file='condensates.tex')
+      !do i=1,NDUST
+      !  limit = ' '
+      !  j = index(dust_nam(i),"[l]")
+      !  if (Tcorr(i)>0.and.j>0) then
+      !    write(limit,'("$>$",I4,"K")') int(Tcorr(i))
+      !  else if (Tcorr(i)>0) then
+      !    write(limit,'("$<$",I4,"K")') int(Tcorr(i))
+      !  endif  
+      !  write(1,3000)
+     &!    dust_nam(i),trivial(i),fit(i),limit,cfit(i,0:4),
+     &!    prec(i),dust_rho(i)
+      !enddo  
+      !close(1)
+      !stop
+
       RETURN 
  1000 format(a200)
  1010 format(a2)
@@ -122,6 +147,8 @@
  2011 format(1(I2,1x,a8),22x,'->',I2,1x,a10,99(I2,1x,a8))
  2021 format(2(I2,1x,a8),11x,'->',I2,1x,a10,99(I2,1x,a8))
  2031 format(3(I2,1x,a8)    ,'->',I2,1x,a10,99(I2,1x,a8))
+ 3000 format(A15," & ",A25," & ",I2," & ",A8," & ",
+     &       5(1pE12.5," & "),"$\pm$",0pF4.2," & ",0pF5.2)
       end 
 
 ***********************************************************************
