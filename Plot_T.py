@@ -36,6 +36,7 @@ Tmax  = np.max(Tg)
 #if (Tmax>4*Tmin): Tmax=4*Tmin
 #if (Tmin<Tmax/3): Tmin=Tmax/3
 #Tmin  = 1100
+Tmax = 1850
 iii   = np.where((Tg>Tmin) & (Tg<Tmax))[0]
 pmin  = np.min(press[iii])/bar
 pmax  = np.max(press[iii])/bar
@@ -54,7 +55,7 @@ if (nHmax>nHmin*5):
 sep = 20
 if (Tmax-Tmin>1500): sep=100
 if (Tmax-Tmin<500): sep=10
-Tmin  = Tmin*0.95
+#Tmin  = Tmin*0.95
 Tmax  = Tmax*1.1
 styl  = ['-','-','-','-','-','-','-','--','--','--','--','--','--','--',':',':',':',':',':',':',':','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.']
 widt  = [ 2 , 2 , 2 , 2 , 2 , 2 , 2 ,  2 ,  2 ,  2 ,  2 ,  2 ,  2 ,  2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  ]
@@ -141,7 +142,7 @@ if (nmax>-99):
     if (np.max(yy[iii])>nmax-20):
       plt.plot(Tg,yy,ls=styl[count],lw=widt[count],label=solid)
       count = count + 1
-  plt.title('condensates',fontsize=20)
+  #plt.title('condensates',fontsize=20)
   plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
   plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{solid}/n_\mathrm{\langle H\rangle}$',fontsize=20)
   #plt.xscale('log')
@@ -153,9 +154,11 @@ if (nmax>-99):
   minorLocator = MultipleLocator(sep)
   ax.xaxis.set_minor_locator(minorLocator)
   sz = np.min([11,5+80.0/count])
-  plt.legend(loc='lower right',fontsize=10,fancybox=True,
+  sz = sz+3
+  plt.legend(loc='lower right',fontsize=11,fancybox=True,
              handlelength=3,prop={'size':sz})
   plt.tight_layout()
+  plt.show()
   plt.savefig(pp,format='pdf')
   plt.clf()
 
@@ -186,7 +189,7 @@ if (nmax>-99):
   sz = np.min([11,4+90.0/count])
   col = 1
   if (count>30): 
-    sz = np.min([11,4+180.0/count])
+    sz = np.min([13,4+180.0/count])
     col = 2
   plt.legend(loc='lower right',fontsize=10,fancybox=True,
              handlelength=3,prop={'size':sz},ncol=col)
@@ -206,7 +209,7 @@ if (nmax>-99):
     if (np.max(S[iii])>0.7):
       plt.plot(Tg,S,ls=styl[count],lw=widt[count],label=solid)
       count = count + 1
-  plt.title('supersaturation ratios',fontsize=20)
+  #plt.title('supersaturation ratios',fontsize=20)
   plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
   plt.ylabel(r'$S$',fontsize=20)
   #plt.xscale('log')
@@ -215,12 +218,14 @@ if (nmax>-99):
   plt.tick_params(axis='both', labelsize=14)
   plt.tick_params('both', length=6, width=1.5, which='major')
   plt.tick_params('both', length=3, width=1, which='minor')
-  sz = np.min([11,4+90.0/count])
+  sz = np.min([13,4+90.0/count])
+  sz = sz+3
   plt.legend(loc='lower right',fontsize=10,fancybox=True,
              handlelength=3,prop={'size':sz})
   minorLocator = MultipleLocator(sep)
   ax.xaxis.set_minor_locator(minorLocator)
   plt.tight_layout()
+  plt.show()
   plt.savefig(pp,format='pdf')
   plt.clf()
 

@@ -199,7 +199,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        !if (qread>1.Q-3.and.iread==103) verbose=2
+        !if (qread>1.Q-3.and.iread==354) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -765,7 +765,7 @@
               amount = ddust(iTi4O7)/2.Q0
               call TRANSFORM(iTi4O7,iCaTiO3,amount,4.Q0*2.Q0,
      >                       ddust,eps,dscale,active,ok)
-              call TRANSFORM(iTi4O7,iCaMgSi2O6,amount,-4.Q0*4.Q0,
+              call TRANSFORM(iTi4O7,iCaMgSi2O6,amount,-4.Q0*2.Q0,
      >                       ddust,eps,dscale,active,ok)
             else  
               ioff = iCaTiO3
@@ -1575,6 +1575,16 @@
         !-------------------------------------
         ! ***  some explict special cases  ***
         !-------------------------------------
+        if (active(iCaMgSi2O6).and.active(iCaAl2Si2O8).and.
+     >      e_act(Si).and.(.not.e_act(Mg))) then
+          print*,"... exchanging Si for Mg"
+          e_act(Si) = .false.
+          e_act(Mg) = .true.
+          do i=1,Nind
+            if (Iindex(i)==Si) exit
+          enddo  
+          Iindex(i) = Mg
+        endif   
         if (active(iAl2O3).and.active(iMgAl2O4).and..not.e_act(Mg)) then
           print*,"... exchanging "//elnam(Iindex(Nact))//" for Mg"
           e_act(Iindex(Nact)) = .false.
@@ -2247,7 +2257,8 @@
         do i=1,NELEM
           worst = MAX(worst,ABS(1.Q0-check(i)/eps00(i)))
         enddo
-        if (verbose>1) write(*,*) "element conservation error 2:",worst
+        if (verbose>1.or.worst>1.Q-8) write(*,*) 
+     >     "element conservation error 2:",worst
         if (worst>1.Q-8) stop
 
         xstep(:) = 0.Q0

@@ -13,9 +13,11 @@
       !-------------------------
       ! ***  default values  ***
       !-------------------------
-      dispol_file(1) = 'dispol_new.dat'
-      dispol_file(2) = ''
-      dispol_file(3) = ''
+      elements     = 'H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li F P V '
+     >             //'Cr Mn Ni Zr W el'
+      dispol_file(1) = 'dispol_BarklemCollet.dat'
+      dispol_file(2) = 'dispol_StockKitzmann_withoutTsuji.dat'
+      dispol_file(3) = 'dispol_WoitkeRefit.dat'
       dispol_file(4) = ''
       elements     = 'H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li el'
       abund_pick   = 3
@@ -23,8 +25,8 @@
       model_dim    = 1
       model_pconst = .true.
       model_struc  = .false.
-      Npoints      = 200
-      Tfast        = 750.d0
+      Npoints      = 100
+      Tfast        = 1000.d0
       Tmin         = 100.d0
       Tmax         = 6000.d0
       pmin         = 1.d0*bar

@@ -48,8 +48,8 @@ if (Tmax-Tmin>1500): sep=100
 Tmin  = Tmin*0.85
 Tmax  = Tmax*1.05
 
-#file   = 'TEAoutdir/results/TEAoutdir.tea'
-file   = 'TEAoutOrich/results/TEAoutOrich.tea'
+file   = 'TEAoutLowPress/results/TEAoutLowPress.tea'
+#file   = 'TEAoutOrich/results/TEAoutOrich.tea'
 #file   = 'TEAoutCrich/results/TEAoutCrich.tea'
 #file   = 'TEAoutEarthCrust/results/TEAoutEarthCrust.tea'
 #file   = 'TEAoutOcean/results/TEAoutOcean.tea'
