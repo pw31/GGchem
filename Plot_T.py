@@ -36,7 +36,7 @@ Tmax  = np.max(Tg)
 #if (Tmax>4*Tmin): Tmax=4*Tmin
 #if (Tmin<Tmax/3): Tmin=Tmax/3
 #Tmin  = 1100
-Tmax = 1850
+#Tmax = 1850
 iii   = np.where((Tg>Tmin) & (Tg<Tmax))[0]
 pmin  = np.min(press[iii])/bar
 pmax  = np.max(press[iii])/bar
@@ -55,7 +55,7 @@ if (nHmax>nHmin*5):
 sep = 20
 if (Tmax-Tmin>1500): sep=100
 if (Tmax-Tmin<500): sep=10
-#Tmin  = Tmin*0.95
+Tmin  = Tmin*0.95
 Tmax  = Tmax*1.1
 styl  = ['-','-','-','-','-','-','-','--','--','--','--','--','--','--',':',':',':',':',':',':',':','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.']
 widt  = [ 2 , 2 , 2 , 2 , 2 , 2 , 2 ,  2 ,  2 ,  2 ,  2 ,  2 ,  2 ,  2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  ]
@@ -161,6 +161,16 @@ if (nmax>-99):
   #plt.show()
   plt.savefig(pp,format='pdf')
   plt.clf()
+
+  for iT in range(0,NPOINT):
+    iact = 0
+    outp = ' '
+    for i in range(4+NELEM+NMOLE+NDUST,4+NELEM+NMOLE+2*NDUST,1):
+      #print keyword[i],dat[iT,i]
+      if (dat[iT,i]>-200): 
+        iact=iact+1
+        outp=outp+' '+keyword[i][1:]
+    print Tg[iT],iact,outp  
 
 #================== supersaturation ratios ===================
   fig,ax = plt.subplots()

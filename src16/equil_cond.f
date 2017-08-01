@@ -199,7 +199,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        !if (qread>1.Q-3.and.iread==354) verbose=2
+        !if (qread>1.Q-3.and.iread==90) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -328,6 +328,43 @@
           dust_save = ddust
           ioff = 0
           ok = .true.
+          if (active(iMgAl2O4).and.active(iCaAl2Si2O8).and.
+     >        active(iCaMgSi2O6).and.
+     >        active(iMgSiO3).and.active(iMg2SiO4)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iCaAl2Si2O8)>Sat0(iMgAl2O4)) then
+              ioff = iMgAl2O4
+              active(iMgAl2O4) = .false.
+              amount = ddust(iMgAl2O4)/4.Q0
+              call TRANSFORM(iMgAl2O4,iCaAl2Si2O8,amount,1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iMgAl2O4,iCaMgSi2O6,amount,-1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iMgAl2O4,iMgSiO3,amount,-2.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iMgAl2O4,iMg2SiO4,amount,2.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iCaAl2Si2O8
+              active(iCaAl2Si2O8) = .false.
+              amount = ddust(iCaAl2Si2O8)/4.Q0
+              call TRANSFORM(iCaAl2Si2O8,iMgAl2O4,amount,1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iCaAl2Si2O8,iCaMgSi2O6,amount,1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iCaAl2Si2O8,iMgSiO3,amount,2.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iCaAl2Si2O8,iMg2SiO4,amount,-2.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif  
+            !print*,eps(Ca),eps(Mg),eps(Si),eps(Al)
+            !print*,eps_save(Ca),eps_save(Mg),eps_save(Si),eps_save(Al)
+            eps(Al) = eps_save(Al)
+            eps(Mg) = eps_save(Mg)
+            eps(Si) = eps_save(Si)
+            eps(Ca) = eps_save(Ca)
+          endif  
           if (active(iZrO2).and.active(iZrSiO4).and.
      >        active(iMgSiO3).and.active(iMg2SiO4)) then
             changed = .true.

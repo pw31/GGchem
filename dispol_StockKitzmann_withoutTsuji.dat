@@ -1,4 +1,4 @@
-856  molecules without Tsuji re-fits
+855  molecules without Tsuji re-fits
 AlCl                  2  Al Cl  1  1                  : Aluminum_Chloride
  4  6.017264E+04 -9.821892E-01 -5.807752E+00  1.657745E-04 -6.111931E-09
 AlClF                 3  Al Cl  F  1  1  1            : Aluminum_Chloride_Fluoride
@@ -1709,5 +1709,3 @@ Zr+                   2  Zr el  1 -1                  : Zirconium_Ion
  4 -7.948175E+04  2.748092E+00 -1.567833E+01 -2.268741E-05 -1.100851E-08
 Zr-                   2  Zr el  1  1                  : Zirconium_Ion 
  4  4.727351E+03 -2.230759E+00  1.314274E+01 -3.459445E-04  7.184281E-09
-TIC         2 Ti C  1  1
- 1   0.00000E+00   0.00000E+00   0.00000E+00   0.00000E+00   0.00000E+00
