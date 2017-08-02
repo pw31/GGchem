@@ -23,4 +23,8 @@ JANAF/a.out
 JANAF/*~
 JANAF/fitout*
 JANAF/*.pdf
+JANAF/*fitdata*
 model_*.in
+kp.pdf
+logfile
+perform.dat
