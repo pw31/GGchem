@@ -180,36 +180,41 @@ plt.figure(figsize=(4,4))
 
 ymin = 0.0
 ymax = 0.0
+iT = np.where(T>400)[0]
+iT2= np.where(T>400)[0]
+print iT
 if (len(ind1)>0):
   plt.plot(T,(lnkp1-kpmean)/ln10,c='black',lw=2.5,label='old GGchem')
-  ymin = np.min([ymin,np.min(lnkp1-kpmean)])
-  ymax = np.max([ymax,np.max(lnkp1-kpmean)])
+  ymin = np.min([ymin,np.min(lnkp1[iT]-kpmean[iT])])
+  ymax = np.max([ymax,np.max(lnkp1[iT]-kpmean[iT])])
 
 if (len(ind2)>0):
   plt.plot(T,(lnkp2-kpmean)/ln10,c='green',lw=3.5,label='Stock & Kitzmann')
-  ymin = np.min([ymin,np.min(lnkp2-kpmean)])
-  ymax = np.max([ymax,np.max(lnkp2-kpmean)])
+  ymin = np.min([ymin,np.min(lnkp2[iT]-kpmean[iT])])
+  ymax = np.max([ymax,np.max(lnkp2[iT]-kpmean[iT])])
 
 if (len(ind4)>0):
   plt.plot(T,(lnkp4-kpmean)/ln10,c='orange',lw=1.5,label='Sharp & Huebner')
-  ymin = np.min([ymin,np.min(lnkp4-kpmean)])
-  ymax = np.max([ymax,np.max(lnkp4-kpmean)])
+  ymin = np.min([ymin,np.min(lnkp4[iT]-kpmean[iT])])
+  ymax = np.max([ymax,np.max(lnkp4[iT]-kpmean[iT])])
 
 if (len(ind5)>0):
   plt.plot(T,lnkp51-kpmean,c='magenta',lw=1.5,label='Tsuji')
+  ymin = np.min([ymin,np.min(lnkp51[iT2]-kpmean[iT2])])
+  ymax = np.max([ymax,np.max(lnkp51[iT2]-kpmean[iT2])])
 
 if (len(ind3)>0):
   plt.plot(T,(lnkp3-kpmean)/ln10,c='blue',ls='--',lw=1.5,label='Barklem & Collet')
-  ymin = np.min([ymin,np.min(lnkp3-kpmean)])
-  ymax = np.max([ymax,np.max(lnkp3-kpmean)])
+  ymin = np.min([ymin,np.min(lnkp3[iT]-kpmean[iT])])
+  ymax = np.max([ymax,np.max(lnkp3[iT]-kpmean[iT])])
 
 plt.xlabel(r'$T\,\mathrm{[K]}$',fontsize=15)
 plt.ylabel(r'$\log_{10} k_p - \langle\log_{10} k_p\rangle \mathrm{[cgs]}$',fontsize=15)
 plt.title(name)
 plt.xlim(Tmin,6000)
-ymin = np.min([ymin,-ymax]/ln10)
-ymax = np.min([ymax,-ymin])
-plt.ylim(2*ymin,2*ymax)
+ymin = np.min([ymin,-ymax])
+ymax = np.max([ymax,-ymin])
+plt.ylim(2*ymin/ln10,2*ymax/ln10)
 plt.xscale('log')
 plt.subplots_adjust(left=0.19, right=0.94, top=0.94, bottom=0.14)
 plt.tick_params(axis='both', which='major', length=6,width=1.5)
@@ -280,41 +285,47 @@ ymax = 0.0
 if (len(ind1)>0):
   dG = ((1-Natom)*np.log(bar) - lnkp1)*R*T/1000
   plt.plot(T,dG-Gmean,c='black',lw=2.5,label='old GGchem')
-  ymin = np.min([ymin,np.min(dG-Gmean)])
-  ymax = np.max([ymax,np.max(dG-Gmean)])
+  ymin = np.min([ymin,np.min(dG[iT]-Gmean[iT])])
+  ymax = np.max([ymax,np.max(dG[iT]-Gmean[iT])])
 
 if (len(ind2)>0):
   dG = ((1-Natom)*np.log(bar) - lnkp2)*R*T/1000
   plt.plot(T,dG-Gmean,c='green',lw=3.5,label='Stock & Kitzmann')
-  ymin = np.min([ymin,np.min(dG-Gmean)])
-  ymax = np.max([ymax,np.max(dG-Gmean)])
+  ymin = np.min([ymin,np.min(dG[iT]-Gmean[iT])])
+  ymax = np.max([ymax,np.max(dG[iT]-Gmean[iT])])
 
 if (len(ind4)>0):
   dG = ((1-Natom)*np.log(bar) - lnkp4)*R*T/1000
   plt.plot(T,dG-Gmean,c='orange',lw=1.5,label='Sharp & Huebner')
-  ymin = np.min([ymin,np.min(dG-Gmean)])
-  ymax = np.max([ymax,np.max(dG-Gmean)])
+  ymin = np.min([ymin,np.min(dG[iT]-Gmean[iT])])
+  ymax = np.max([ymax,np.max(dG[iT]-Gmean[iT])])
 
 if (len(ind5)>0):
   dG = ((1-Natom)*np.log(bar) - lnkp51)*R*T/1000
   plt.plot(T,dG-Gmean,c='magenta',lw=1.5,label='Tsuji')
+  ymin = np.min([ymin,np.min(dG[iT2]-Gmean[iT2])])
+  ymax = np.max([ymax,np.max(dG[iT2]-Gmean[iT2])])
 
 if (len(ind3)>0):
   dG = ((1-Natom)*np.log(bar) - lnkp3)*R*T/1000
   plt.plot(T,dG-Gmean,c='blue',ls='--',lw=1.5,label='Barklem & Collet')
-  ymin = np.min([ymin,np.min(dG-Gmean)])
-  ymax = np.max([ymax,np.max(dG-Gmean)])
+  ymin = np.min([ymin,np.min(dG[iT]-Gmean[iT])])
+  ymax = np.max([ymax,np.max(dG[iT]-Gmean[iT])])
 
 plt.xlabel(r'$T\,\mathrm{[K]}$',fontsize=15)
 plt.ylabel(r'$\Delta G_{\rm f}^\theta - \langle\Delta G_{\rm f}^\theta\rangle \mathrm{[kJ/mol]}$',fontsize=15)
 plt.title(name)
+plt.xlim(Tmin,6000)
+plt.xscale('log')
+ymin = np.min([ymin,-ymax])
+ymax = np.max([ymax,-ymin])
 plt.ylim(2*ymin,2*ymax)
 plt.subplots_adjust(left=0.19, right=0.94, top=0.94, bottom=0.14)
 plt.legend(loc='upper left',fontsize=10)
 plt.tick_params(axis='both', which='major', length=6,width=1.5)
 plt.tick_params(axis='both', which='minor', length=4,width=1)
-minorLocator = MultipleLocator(500.0)
-ax.xaxis.set_minor_locator(minorLocator)
+#minorLocator = MultipleLocator(500.0)
+#ax.xaxis.set_minor_locator(minorLocator)
 #minorLocator = MultipleLocator(5.0)
 #ax.yaxis.set_minor_locator(minorLocator)
 plt.savefig(pp,format='pdf')
