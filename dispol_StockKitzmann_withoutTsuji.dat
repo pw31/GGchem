@@ -67,7 +67,7 @@ CCl2                  2   C Cl  1  2                  : Dichloromethylene
  4  8.608732E+04 -2.483738E+00 -1.094307E+01  1.063778E-03 -6.442757E-08
 CCl2F2                3   C Cl  F  1  2  2            : Dichlorodifluoromethane
  4  1.929976E+05 -3.117515E+00 -4.125018E+01  1.262527E-03 -7.156344E-08
-CCl2O                 3   C Cl  O  1  2  1            : Carbonic_Dichloride
+COCl2                 3   C Cl  O  1  2  1            : Carbonic_Dichloride
  4  1.711741E+05 -2.843348E+00 -2.586679E+01  9.572505E-04 -5.422071E-08
 CCl3                  2   C Cl  1  3                  : Trichloromethyl
  4  1.198900E+05 -2.263170E+00 -2.847850E+01  7.477936E-04 -4.193635E-08
@@ -323,9 +323,9 @@ Cl2O2_clo2cl          2  Cl  O  2  2                  : Chlorine_Oxide_ClO2Cl
  4  7.271178E+04 -1.928747E+00 -3.007792E+01  6.670815E-04 -3.785963E-08
 Cl2O2_cloclo          2  Cl  O  2  2                  : Chloryl_Chloride_ClOClO
  4  6.750696E+04 -1.819368E+00 -2.974508E+01  6.226837E-04 -3.520974E-08
-Cl2O2S                3  Cl  O  S  2  2  1            : Sulfuryl_Chloride
+SO2Cl2                3  Cl  O  S  2  2  1            : Sulfuryl_Chloride
  4  1.645122E+05 -2.962024E+00 -4.266905E+01  1.203653E-03 -6.967624E-08
-Cl2S                  2  Cl  S  2  1                  : Sulfur_Chloride
+SCl2                  2  Cl  S  2  1                  : Sulfur_Chloride
  4  6.415422E+04 -1.798735E+00 -1.438549E+01  4.163349E-04 -2.400247E-08
 SiCl2                 2  Cl Si  2  1                  : Dichlorosilylene
  4  1.032143E+05 -1.475848E+00 -1.650997E+01  2.628985E-04 -1.471530E-08
@@ -335,7 +335,7 @@ CoCl3                 2  Cl Co  3  1                  : Cobalt_Chloride
  4  1.143220E+05 -1.571311E+00 -3.064196E+01  2.956898E-04 -1.341746E-08
 (CuCl)3               2  Cl Cu  3  3                  : Copper_Chloride
  4  1.966119E+05 -5.494141E-01 -6.477948E+01  6.807878E-04 -7.317526E-08
-Cl3FSi                3  Cl  F Si  3  1  1            : Trichlorofluorosilane
+SiFCl3                3  Cl  F Si  3  1  1            : Trichlorofluorosilane
  4  2.082538E+05 -1.722781E+00 -4.769161E+01  6.993171E-04 -3.953555E-08
 FeCl3                 2  Cl Fe  3  1                  : Iron_Chloride
  4  1.237548E+05 -1.744679E+00 -2.866330E+01  5.516168E-04 -3.993226E-08
@@ -361,7 +361,7 @@ SiCl4                 2  Cl Si  4  1                  : Tetrachlorosilane
  4  1.918209E+05 -1.781718E+00 -4.862786E+01  6.946529E-04 -3.854815E-08
 TiCl4                 2  Cl Ti  4  1                  : Titanium_Chloride
  4  2.068147E+05 -1.489108E+00 -4.911879E+01  6.153542E-04 -5.093727E-08
-Cl5P                  2  Cl  P  5  1                  : Phosphorus_Chloride
+PCl5                  2  Cl  P  5  1                  : Phosphorus_Chloride
  4  1.539585E+05 -1.796494E+00 -6.392889E+01  9.271576E-04 -5.666018E-08
 (FeCl3)2              2  Cl Fe  6  2                  : Iron_Chloride
  4  2.659352E+05 -1.398768E+00 -8.949739E+01  1.068863E-03 -7.787994E-08
@@ -459,7 +459,7 @@ F2O2S                 3   F  O  S  2  2  1            : Sulfuryl_Fluoride
  4  2.029192E+05 -3.624664E+00 -4.046335E+01  1.498046E-03 -8.776730E-08
 PF2                   2   F  P  2  1                  : Phosphorus_Fluoride
  4  1.154753E+05 -1.844182E+00 -1.445542E+01  5.335543E-04 -3.799321E-08
-F2S                   2   F  S  2  1                  : Sulfur_Fluoride
+SF2                   2   F  S  2  1                  : Sulfur_Fluoride
  4  8.764926E+04 -2.039579E+00 -1.440504E+01  5.637853E-04 -3.413598E-08
 F2S2(1)                2   F  S  2  2                  : Difluorodisulfane
  4  1.258355E+05 -1.935929E+00 -3.112729E+01  7.161601E-04 -4.520539E-08
@@ -477,7 +477,7 @@ F3H3                  2   F  H  3  3                  : Hydrogen_Fluoride
  4  2.116999E+05 -5.747748E+00 -2.725692E+01  2.014582E-03 -1.017204E-07
 NF3                   2   F  N  3  1                  : Nitrogen_Fluoride
  4  1.008648E+05 -2.717014E+00 -2.736623E+01  1.007932E-03 -5.866641E-08
-F3NO                  3   F  N  O  3  1  1            : Nitrogen_Fluoride_Oxide
+NOF3                  3   F  N  O  3  1  1            : Nitrogen_Fluoride_Oxide
  4  1.344984E+05 -3.247254E+00 -4.142359E+01  1.366425E-03 -7.897168E-08
 POF3                  3   F  O  P  3  1  1            : Phosphoryl_Fluoride
  4  2.469518E+05 -3.196343E+00 -4.213795E+01  1.386879E-03 -8.681747E-08
@@ -495,9 +495,9 @@ F4H4                  2   F  H  4  4                  : Hydrogen_Fluoride
  4  2.838699E+05 -7.002326E+00 -4.503218E+01  2.688241E-03 -1.357537E-07
 Mg2F4                 2   F Mg  4  2                  : Magnesium_Fluoride
  4  2.801173E+05 -1.371581E+00 -6.352371E+01  9.455932E-04 -6.038449E-08
-F4N2                  2   F  N  4  2                  : Tetrafluorohydrazine
+N2F4                  2   F  N  4  2                  : Tetrafluorohydrazine
  4  1.523117E+05 -3.669847E+00 -5.453673E+01  1.740121E-03 -1.018427E-07
-F4S                   2   F  S  4  1                  : Sulfur_Fluoride
+SF4                   2   F  S  4  1                  : Sulfur_Fluoride
  4  1.628970E+05 -2.476089E+00 -4.531443E+01  1.092529E-03 -6.415875E-08
 SiF4                  2   F Si  4  1                  : Tetrafluorosilane
  4  2.861009E+05 -2.743007E+00 -4.565997E+01  1.151252E-03 -6.726551E-08
@@ -511,7 +511,7 @@ SF5                   2   F  S  5  1                  : Sulfur_Fluoride
  4  1.899168E+05 -2.874078E+00 -6.158670E+01  1.406860E-03 -7.774917E-08
 F6H6                  2   F  H  6  6                  : Hydrogen_Fluoride
  4  4.299421E+05 -9.509356E+00 -8.111423E+01  4.034576E-03 -2.037576E-07
-F6S                   2   F  S  6  1                  : Sulfur_Fluoride
+SF6                   2   F  S  6  1                  : Sulfur_Fluoride
  4  2.368543E+05 -3.890970E+00 -7.614086E+01  1.980283E-03 -1.145203E-07
 F7H7                  2   F  H  7  7                  : Hydrogen_Fluoride
  4  5.009300E+05 -1.076300E+01 -9.934594E+01  4.707814E-03 -2.377636E-07
@@ -783,41 +783,41 @@ F-                    2   F el  1  1                  : Fluorine_Ion
  4  3.944534E+04 -2.683220E+00  1.379440E+01  6.439959E-05 -3.566745E-09
 MgF+                  3   F Mg el  1  1 -1            : Magnesium_Fluoride_Ion
  4 -3.348505E+04  2.144508E+00 -2.387067E+01  6.214912E-04 -5.339791E-08
-FP+                   3   F  P el  1  1 -1            : Phosphorus_Fluoride_Ion
+PF+                   3   F  P el  1  1 -1            : Phosphorus_Fluoride_Ion
  4 -6.036245E+04  1.383957E+00 -1.877829E+01  2.802095E-04 -2.297252E-08
-FP-                   3   F  P el  1  1  1            : Phosphorus_Fluoride_Ion
+PF-                   3   F  P el  1  1  1            : Phosphorus_Fluoride_Ion
  4  6.635867E+04 -3.423326E+00  8.566511E+00  2.176375E-04 -1.910921E-08
-FS+                   3   F  S el  1  1 -1            : Sulfur_Fluoride_Ion
+SF+                   3   F  S el  1  1 -1            : Sulfur_Fluoride_Ion
  4 -7.602421E+04  1.106200E+00 -1.743357E+01  3.452441E-04 -1.702925E-08
-FS-                   3   F  S el  1  1  1            : Sulfur_Fluoride_Ion
+SF-                   3   F  S el  1  1  1            : Sulfur_Fluoride_Ion
  4  6.430410E+04 -3.628373E+00  8.514783E+00  2.336481E-04 -1.013963E-08
 F2K-                  3   F  K el  2  1  1            : Potassium_Fluoride_Ion
  4  1.124183E+05 -3.343829E+00 -6.460415E+00  4.051561E-04 -3.427321E-08
-F2Mg+                 3   F Mg el  2  1 -1            : Magnesium_Fluoride_Ion
+MgF2+                 3   F Mg el  2  1 -1            : Magnesium_Fluoride_Ion
  4 -3.387423E+04  1.438089E+00 -3.259764E+01  4.171908E-04 -2.628262E-08
-F2Na-                 3   F Na el  2  1  1            : Sodium_Fluoride_Ion
+NaF2-                 3   F Na el  2  1  1            : Sodium_Fluoride_Ion
  4  1.115992E+05 -3.399338E+00 -6.672054E+00  3.716112E-04 -2.533463E-08
-F2P+                  3   F  P el  2  1 -1            : Phosphorus_Fluoride_Ion
+PF2+                  3   F  P el  2  1 -1            : Phosphorus_Fluoride_Ion
  4  6.881470E+02  6.498735E-01 -2.931202E+01  5.331135E-04 -3.774096E-08
-F2P-                  3   F  P el  2  1  1            : Phosphorus_Fluoride_Ion
+PF2-                  3   F  P el  2  1  1            : Phosphorus_Fluoride_Ion
  4  1.328823E+05 -4.341043E+00 -9.257485E-01  5.363371E-04 -3.848041E-08
-F2S+                  3   F  S el  2  1 -1            : Sulfur_Fluoride_Ion
+SF2+                  3   F  S el  2  1 -1            : Sulfur_Fluoride_Ion
  4 -3.176559E+04  4.699859E-01 -2.798697E+01  5.566050E-04 -3.340738E-08
-F2S-                  3   F  S el  2  1  1            : Sulfur_Fluoride_Ion
+SF2-                  3   F  S el  2  1  1            : Sulfur_Fluoride_Ion
  4  9.923656E+04 -4.088062E+00 -1.849242E+00  4.001287E-04 -2.493142E-08
-F3S+                  3   F  S el  3  1 -1            : Sulfur_Fluoride_Ion
+SF3+                  3   F  S el  3  1 -1            : Sulfur_Fluoride_Ion
  4  1.485261E+04 -1.953499E-01 -4.249303E+01  9.810887E-04 -5.731992E-08
-F3S-                  3   F  S el  3  1  1            : Sulfur_Fluoride_Ion
+SF3-                  3   F  S el  3  1  1            : Sulfur_Fluoride_Ion
  4  1.542127E+05 -4.583671E+00 -1.655714E+01  7.659349E-04 -4.567825E-08
-F4S+                  3   F  S el  4  1 -1            : Sulfur_Fluoride_Ion
+SF4+                  3   F  S el  4  1 -1            : Sulfur_Fluoride_Ion
  4  2.185358E+04  2.511613E-01 -5.951363E+01  1.008469E-03 -5.928814E-08
-F4S-                  3   F  S el  4  1  1            : Sulfur_Fluoride_Ion
+SF4-                  3   F  S el  4  1  1            : Sulfur_Fluoride_Ion
  4  1.772869E+05 -4.037536E+00 -3.536959E+01  7.361572E-04 -4.240090E-08
-F5S+                  3   F  S el  5  1 -1            : Sulfur_Fluoride_Ion
+SF5+                  3   F  S el  5  1 -1            : Sulfur_Fluoride_Ion
  4  6.062890E+04 -3.680757E-01 -7.663435E+01  1.407990E-03 -7.730413E-08
-F5S-                  3   F  S el  5  1  1            : Sulfur_Fluoride_Ion
+SF5-                  3   F  S el  5  1  1            : Sulfur_Fluoride_Ion
  4  2.326616E+05 -4.526013E+00 -5.135894E+01  1.115526E-03 -6.562149E-08
-F6S-                  3   F  S el  6  1  1            : Sulfur_Fluoride_Ion
+SF6-                  3   F  S el  6  1  1            : Sulfur_Fluoride_Ion
  4  2.507627E+05 -6.134579E+00 -6.216870E+01  1.887610E-03 -1.093166E-07
 Fe+                   2  Fe el  1 -1                  : Iron_Ion
  4 -9.122890E+04  2.759257E+00 -1.593942E+01  5.915071E-05 -1.431080E-08
@@ -921,7 +921,7 @@ AlBr                  2  Al Br  1  1                  : Aluminum_Bromide
  4  5.107348E+04 -4.719070E-01 -8.889581E+00 -7.433798E-05  7.003514E-09
 AlBr3                 2  Al Br  1  3                  : Aluminum_Bromide
  4  1.294108E+05 -7.377796E-02 -4.049624E+01 -2.125866E-04  1.176909E-08
-LiF4Al                3  Al  F Li  1  4  1            : Lithium_Tetrafluoroaluminate
+LiAlF4                3  Al  F Li  1  4  1            : Lithium_Tetrafluoroaluminate
  4  3.196967E+05 -1.964598E+00 -6.182489E+01  1.143171E-03 -7.076263E-08
 AlI                   2  Al  I  1  1                  : Aluminum_Iodide 
  4  4.419174E+04 -5.179088E-01 -8.331149E+00  1.389671E-05  4.533271E-10
@@ -1327,7 +1327,7 @@ CaI2                  2  Ca  I  1  2                  : Calcium_Iodide
  4  7.802253E+04 -3.832162E-01 -2.031049E+01  3.232612E-04 -4.417653E-08
 CsCl                  2  Cl Cs  1  1                  : Cesium_Chloride
  4  5.237049E+04 -1.081851E+00 -3.107999E+00  3.791216E-04 -3.857773E-08
-ClFLi2                3  Cl  F Li  1  1  2            : Lithium_Chloride_Fluoride
+Li2ClF                3  Cl  F Li  1  1  2            : Lithium_Chloride_Fluoride
  4  1.527288E+05 -1.989746E+00 -2.758306E+01  7.993010E-04 -5.562379E-08
 ClHg                  2  Cl Hg  1  1                  : Mercury_Chloride
  4  1.228763E+04 -8.793910E-01 -3.840311E+00  1.575830E-04 -5.336377E-09
@@ -1373,7 +1373,7 @@ ZrCl3                 2  Cl Zr  3  1                  : Zirconium_Chloride
  4  1.798348E+05 -1.702278E+00 -2.979107E+01  5.099722E-04 -4.089652E-08
 MoCl4                 2  Cl Mo  4  1                  : Molybdenum_Chloride
  4  1.835031E+05 -1.654558E+00 -4.604704E+01  8.659723E-04 -6.872245E-08
-WCl4O                 3  Cl  O  W  4  1  1            : Tungsten_Chloride_Oxide
+WOCl4                 3  Cl  O  W  4  1  1            : Tungsten_Chloride_Oxide
  4  2.584974E+05 -3.834526E+00 -4.895767E+01  9.607391E-04 -4.506045E-08
 PbCl4                 2  Cl Pb  4  1                  : Lead_Chloride
  4  1.481251E+05 -7.976566E-01 -4.966329E+01  3.158432E-04 -3.371718E-08
@@ -1451,9 +1451,9 @@ F2Sr                  2   F Sr  2  1                  : Strontium_Fluoride
  4  1.305728E+05 -1.577183E+00 -1.276837E+01  6.223416E-04 -6.187511E-08
 ZrF2                  2   F Zr  2  1                  : Zirconium_Fluoride
  4  1.591029E+05 -2.139853E+00 -1.211854E+01  3.829695E-04 -2.427751E-08
-F3Li3                 2   F Li  3  3                  : Lithium_Fluoride 
+Li3F3                 2   F Li  3  3                  : Lithium_Fluoride 
  4  2.684026E+05 -1.685507E+00 -5.907171E+01  1.139474E-03 -8.150271E-08
-F3Mo                  2   F Mo  3  1                  : Molybdenum_Fluoride
+MoF3                  2   F Mo  3  1                  : Molybdenum_Fluoride
  4  1.804855E+05 -2.124372E+00 -3.028553E+01  1.133359E-03 -8.462594E-08
 ZrF3                  2   F Zr  3  1                  : Zirconium_Fluoride
  4  2.346821E+05 -1.857016E+00 -3.088128E+01  6.571920E-04 -5.177095E-08
