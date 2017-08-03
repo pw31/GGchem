@@ -3,7 +3,7 @@
 ************************************************************************
       use PARAMETERS,ONLY: elements
       use CHEMISTRY,ONLY: NMOLdim,NMOLE,NELM,catm,cmol,
-     &    dispol_file,source,fit,natom,a,
+     &    dispol_file,source,fit,natom,a,error,
      &    m_kind,m_anz,elnum,elion,charge,
      &    el,H,He,Li,Be,B,C,N,O,F,Ne,Na,Mg,Al,Si,P,S,Cl,Ar,K,Ca,Sc,
      &    Ti,V,Cr,Mn,Fe,Co,Ni,Cu,Zn,Ga,Ge,As,Se,Br,Kr,Rb,Sr,Y,Zr,W
@@ -14,6 +14,7 @@
       character(len=20) :: molname,upper,leer='                    '
       character(len=200) :: line,filename
       logical :: found,allfound,charged
+      real*8 :: fiterr
 
       cel(:) = '.'
       read(elements,*,end=100) cel
@@ -80,7 +81,8 @@
       enddo
 
       NMOLdim = 10000
-      allocate(cmol(NMOLdim),fit(NMOLdim),natom(NMOLdim),a(NMOLdim,0:7))
+      allocate(cmol(NMOLdim),fit(NMOLdim),natom(NMOLdim))
+      allocate(error(NMOLdim),a(NMOLdim,0:7))
       allocate(source(NMOLdim),m_kind(0:6,NMOLdim),m_anz(6,NMOLdim))
       i=1
       do loop=1,4
@@ -92,8 +94,13 @@
         open(unit=12, file=filename, status='old')
         read(12,*) NMOLdim
         do ii=1,NMOLdim
-          read(12,*) molname,iel,cel(1:iel),m_anz(1:iel,i)
+          read(12,'(A200)') line
+          read(line,*) molname,iel,cel(1:iel),m_anz(1:iel,i)
           molname=trim(molname)
+          fiterr = 0.0
+          j = index(line,"+/-")
+          if (j>0) read(line(j+3:),*) fiterr
+          error(i) = fiterr
           read(12,'(A200)') line
           read(line,*) fit(i)
           if (fit(i)==6) then
@@ -133,7 +140,7 @@
             m_kind(j,i) = e
             if (e==el) charged=.true. 
           enddo  
-          if (fit(i)==6.and.charged) cycle ! charged BarklemCollet
+          if (fit(i)==6.and.charged) cycle ! old charged BarklemCollet
           source(i) = loop
           call CHECK_DOUBLE(cmol(i),m_kind(:,i),m_anz(:,i),i,loop,ret)
           if (ret>0) then
@@ -141,6 +148,7 @@
             cmol(ret) = cmol(i)
             fit(ret)  = fit(i)
             a(ret,:)  = a(i,:)
+            error(ret)= error(i)
             write(line,'(I4,A20,1x,99(I3,1x,A2,1x))')
      &           ret,trim(cmol(ret)),(m_anz(j,ret),cel(j),j=1,iel)
             print*,trim(line)//"    OVERWRITE" 
@@ -175,6 +183,20 @@
         enddo
       endif  
   
+      !open(unit=1,file='chemicals.tex')
+      !write(1,*) NMOLE
+      !do i=1,NMOLE
+      !  if (error(i)>0.0) then 
+      !    write(1,3000)
+     &!      i,cmol(i),source(i),fit(i),a(i,0:4),error(i)
+      !  else  
+      !    write(1,3010)
+     &!      i,cmol(i),source(i),fit(i),a(i,0:4)
+      !  endif  
+      !enddo  
+      !close(1)
+      !stop
+
       print* 
       print*,NMOLE,' species'
       print*,NELM,' elements'
@@ -185,7 +207,10 @@
         print'(1x,99(A4))',(trim(cmol(elion(j))),j=1,el-1),'  ',
      >                     (trim(cmol(elion(j))),j=el+1,NELM)
       endif  
-
+ 3000 format(I4," & ",A12," & (",I1,") & ",I1," & ",
+     &       5(1pE12.5," & "),"$\pm$",0pF4.2,"\\")
+ 3010 format(I4," & ",A12," & (",I1,") & ",I1," & ",
+     &       5(1pE12.5," & "),"\\")
       end
 
 ************************************************************************
