@@ -3,7 +3,7 @@
 **********************************************************************
       use PARAMETERS,ONLY: model_eqcond
       use CHEMISTRY,ONLY: NMOLE,NELM,catm
-      use DUST_DATA,ONLY: NDUSTmax,NEPS,NELEM,NDUST,eps0,
+      use DUST_DATA,ONLY: NDUSTmax,NEPS,NELEM,NDUST,eps0,amu,
      &                    dust_nam,dust_rho,dust_vol,dust_mass,
      &                    dust_nel,dust_nu,dust_el,fit,cfit,
      &                    elnr,elcode,elnam,mass,Tmelt,Tcorr

@@ -9,7 +9,7 @@ src16/*.mod
 src16/makefile
 src16/ggchem16
 src16/*~
-Static_Conc.dat
+Static_Conc*.dat
 database.dat
 instructions*
 paper
@@ -28,3 +28,4 @@ model_*.in
 kp.pdf
 logfile
 perform.dat
+out.ps

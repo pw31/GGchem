@@ -40,6 +40,7 @@ OBJECTS  = datamod.o \
            supersat.o \
 	   stindex.o \
            upper.o \
+	   nucleation.o \
            main.o
 
 .SUFFIXES : .o .f .F .f90

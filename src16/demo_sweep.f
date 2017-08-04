@@ -3,18 +3,16 @@
 ***********************************************************************
       use PARAMETERS,ONLY: Tmin,Tmax,pmin,pmax,nHmin,nHmax,
      >                     model_eqcond,model_pconst,Npoints
-      use CHEMISTRY,ONLY: NELM,NMOLE,elnum,cmol,el,charge
+      use CHEMISTRY,ONLY: NELM,NMOLE,elnum,cmol,catm,el,charge
       use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,muH,
      >                    amu,dust_nam,dust_mass,dust_Vol
-      use EXCHANGE,ONLY: nel,nat,nion,nmol,
-     >                   H,He,Li,C,N,O,F,Ne,Na,Mg,Al,Si,S,Cl,K,Ca,Ti,
-     >                   Cr,Mn,Fe,Ni
+      use EXCHANGE,ONLY: nel,nat,nion,nmol,H,C,N,O,W
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
-      real :: p,pe,Tg,rho,nHges,nges,kT,pges
-      real :: nTEA,pTEA,mu,muold,fac
+      real :: p,pe,Tg,rhog,rhod,nHges,nges,kT,pges
+      real :: nTEA,pTEA,mu,muold,fac,Jstar,Nstar
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST),out(NDUST)
-      integer :: i,j,jj,l,iel,NOUT
+      integer :: i,j,jj,l,iel,NOUT,ic,stindex
       character(len=5000) :: species,NISTspecies,elnames
       character(len=200) :: line
       character(len=20) :: frmt,name,short_name(NDUST),test1,test2
@@ -45,7 +43,9 @@
      &               (trim(elnam(elnum(j))),j=el+1,NELM),
      &               (trim(cmol(i)),i=1,NMOLE),
      &               ('S'//trim(short_name(i)),i=1,NDUST),
-     &               ('n'//trim(short_name(i)),i=1,NDUST)
+     &               ('n'//trim(short_name(i)),i=1,NDUST),
+     &               ('eps'//trim(catm(i)),i=1,NELM),
+     &               'dust/gas','Nstar(W)','Jstar(W)'
 
       !--- TEA automated choice from dispol_large.dat ---
       species = "H_g He_ref C_g N_g O_g Si_g S_g Na_g "
@@ -266,13 +266,15 @@
           nHges = EXP(LOG(nHmax)+fac*LOG(nHmin/nHmax))
         endif  
         eldust = 0.0
+
+        !--- run chemistry (+phase equilibrium)    ---
+        !--- iterate to achieve requested pressure ---
         do 
           if (model_pconst) nHges = p*mu/(bk*Tg)/muH
           if (model_eqcond) then
             call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
           endif  
           call GGCHEM(nHges,Tg,eps,.false.,0)
-          call SUPERSAT(Tg,nat,nmol,Sat)
           kT = bk*Tg
           nges = nel
           do j=1,NELEM
@@ -289,15 +291,27 @@
           if (ABS(mu/muold-1.0)<1.E-5) exit
         enddo  
 
-        print'(i4," Tg[K] =",0pF8.2,"  n<H>[cm-3] =",1pE10.3)',
-     >        i,Tg,nHges
+        !--- compute supersat ratios and nucleation rates ---
+        call SUPERSAT(Tg,nat,nmol,Sat)
+        ic = stindex(dust_nam,NDUST,'W[s]')
+        call NUCLEATION('W',Tg,dust_vol(ic),dust_mass(ic),
+     &                  nat(W),Sat(ic),Jstar,Nstar)
 
-        write(*,1010) ' Tg=',Tg,' pe=',nel*kT,' n<H>=',nHges,
-     &                ' p=',pges/bar,' mu=',mu/amu
+        !--- compute dust/gas density ratio ---
+        rhog = nHges*muH
+        rhod = 0.0
         do jj=1,NDUST
+          rhod = rhod + nHges*eldust(jj)*dust_mass(jj)
           out(jj) = LOG10(MIN(1.Q+300,MAX(1.Q-300,Sat(jj))))
           if (ABS(Sat(jj)-1.Q0)<1.E-10) out(jj)=0.Q0
         enddo  
+
+        print'(i4," Tg[K] =",0pF8.2,"  n<H>[cm-3] =",1pE10.3)',
+     >        i,Tg,nHges
+
+        write(*,1010) ' Tg=',Tg,' n<H>=',nHges,
+     &                ' p=',pges/bar,' mu=',mu/amu,
+     &                ' dust/gas=',rhod/rhog
         print*
         write(70,2010) Tg,nHges,pges,
      &       LOG10(MAX(1.Q-300, nel)),
@@ -305,7 +319,10 @@
      &      (LOG10(MAX(1.Q-300, nat(elnum(jj)))),jj=el+1,NELM),
      &      (LOG10(MAX(1.Q-300, nmol(jj))),jj=1,NMOLE),
      &      (out(jj),jj=1,NDUST),
-     &      (LOG10(MAX(1.Q-300, eldust(jj))),jj=1,NDUST)
+     &      (LOG10(MAX(1.Q-300, eldust(jj))),jj=1,NDUST),
+     &      (LOG10(eps(jj)),jj=1,NELM),
+     &       LOG10(MAX(1.Q-300, rhod/rhog)),
+     &       LOG10(MAX(1.Q-300, Jstar)), Nstar
 
         nTEA = 0.0                           ! no electrons
         do j=1,NELEM
@@ -331,7 +348,7 @@
       write(*,frmt) trim(species)
 
  1000 format(4(' eps(',a2,') = ',1pD8.2))
- 1010 format(a5,0pF8.2,99(a6,1pE10.3))
+ 1010 format(a4,0pF8.2,3(a6,1pE9.2),1(a11,1pE9.2))
  2000 format(999(1x,a12))
  2010 format(0pF13.4,2(1pE13.4),999(0pF13.5))
       end  

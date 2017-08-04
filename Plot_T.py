@@ -113,6 +113,28 @@ plt.tight_layout()
 plt.savefig(pp,format='pdf')
 plt.clf()
 
+#================== the dust/gas mass ratio ====================
+fig,ax = plt.subplots()
+ind = np.where(keyword=='dust/gas')[0][0]
+log10_dust_gas = dat[:,ind]
+plt.plot(Tg,10**log10_dust_gas,lw=4)
+plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
+plt.ylabel(r'$\mathrm{dust/gas}$',fontsize=20)
+plt.xlim(Tmin,Tmax)
+plt.ylim(1.E-10,0.1)
+plt.yscale('log')
+plt.tick_params(axis='both', labelsize=15)
+plt.tick_params('both', length=6, width=1.5, which='major')
+plt.tick_params('both', length=3, width=1, which='minor')
+minorLocator = MultipleLocator(sep)
+ax.xaxis.set_minor_locator(minorLocator)
+#fmt=ScalarFormatter(useOffset=False)
+#fmt.set_scientific(False)
+#ax.yaxis.set_major_formatter(fmt)
+plt.tight_layout()
+plt.savefig(pp,format='pdf')
+plt.clf()
+
 #================== solid particle densities ===================
 solids = []
 smean = []
