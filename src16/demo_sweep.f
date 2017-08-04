@@ -5,7 +5,7 @@
      >                     model_eqcond,model_pconst,Npoints
       use CHEMISTRY,ONLY: NELM,NMOLE,elnum,cmol,catm,el,charge
       use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,muH,
-     >                    amu,dust_nam,dust_mass,dust_Vol
+     >                    amu,dust_nam,dust_mass,dust_Vol,mass
       use EXCHANGE,ONLY: nel,nat,nion,nmol,H,C,N,O,W
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
@@ -294,7 +294,7 @@
         !--- compute supersat ratios and nucleation rates ---
         call SUPERSAT(Tg,nat,nmol,Sat)
         ic = stindex(dust_nam,NDUST,'W[s]')
-        call NUCLEATION('W',Tg,dust_vol(ic),dust_mass(ic),
+        call NUCLEATION('W',Tg,dust_vol(ic),mass(W),
      &                  nat(W),Sat(ic),Jstar,Nstar)
 
         !--- compute dust/gas density ratio ---
@@ -322,7 +322,8 @@
      &      (LOG10(MAX(1.Q-300, eldust(jj))),jj=1,NDUST),
      &      (LOG10(eps(jj)),jj=1,NELM),
      &       LOG10(MAX(1.Q-300, rhod/rhog)),
-     &       LOG10(MAX(1.Q-300, Jstar)), Nstar
+     &       LOG10(MAX(1.Q-300, Jstar)), 
+     &       MIN(999999.99999,Nstar)
 
         nTEA = 0.0                           ! no electrons
         do j=1,NELEM

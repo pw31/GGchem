@@ -45,7 +45,7 @@
      &               ('S'//trim(short_name(i)),i=1,NDUST),
      &               ('n'//trim(short_name(i)),i=1,NDUST),
      &               ('eps'//trim(catm(i)),i=1,NELM),
-     &               'dust/gas','Nstar(W)','Jstar(W)'
+     &               'dust/gas','Jstar(W)','Nstar(W)'
 
       !-------------------------------------
       ! ***  run chemistry on structure  ***
@@ -114,7 +114,8 @@
      &      (LOG10(MAX(1.Q-300, eldust(jj))),jj=1,NDUST),
      &      (LOG10(eps(jj)),jj=1,NELM),
      &       LOG10(MAX(1.Q-300, rhod/rhog)),
-     &       LOG10(MAX(1.Q-300, Jstar)), Nstar
+     &       LOG10(MAX(1.Q-300, Jstar)), 
+     &       MIN(999999.99999,Nstar)
 
         enddo
       enddo  

@@ -68,7 +68,7 @@
       integer,allocatable :: m_kind(:,:)        ! index of elements
       integer,allocatable :: m_anz(:,:)         ! stoichiometric coeffs
       real*8,allocatable  :: a(:,:)             ! kp fit-coeffs
-      real*8,allocatable  :: error(:)           ! kp fit-coeffs
+      real*8,allocatable  :: error(:)           ! kp fit errors
       real*8 :: th1,th2,th3,th4,TT1,TT2,TT3     
       end
 

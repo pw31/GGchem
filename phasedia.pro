@@ -348,53 +348,55 @@ data = READ_TABLE(filename,head=3,/double)
 quant = strsplit(header,/EXTRACT)
 iT  = where(quant EQ 'Tg')
 ip  = where(quant EQ 'pges')
-iq  = where(quant EQ 'Jstar(W)')
+iq1 = where(quant EQ 'Jstar(W)')
+iq2 = where(quant EQ 'Nstar(W)')
 iS  = where(quant EQ 'SW')
 inH = where(quant EQ 'nHges')
 
-T  = dblarr(Npoints,Npoints)
-p  = dblarr(Npoints,Npoints)
-q  = dblarr(Npoints,Npoints)
-S  = dblarr(Npoints,Npoints)
-nH = dblarr(Npoints,Npoints)
+T    = dblarr(Npoints,Npoints)
+p    = dblarr(Npoints,Npoints)
+lJst = dblarr(Npoints,Npoints)
+Nst  = dblarr(Npoints,Npoints)
+lS   = dblarr(Npoints,Npoints)
+nH   = dblarr(Npoints,Npoints)
 ii = 0
 for iy=0,Npoints-1 do begin
   for ix=0,Npoints-1 do begin
-    T(ix,iy) = data(iT,ii)
-    p(ix,iy) = data(ip,ii)
-    q(ix,iy) = data(iq,ii)        ; log10 Jstar(W) [1/cm3/s]
-   nH(ix,iy) = data(inH,ii)       ; n<H> [1/cm3]
-    S(ix,iy) = data(iS,ii)        ; log10 Sat(W)
+    T(ix,iy)    = data(iT,ii)
+    p(ix,iy)    = data(ip,ii)
+    lJst(ix,iy) = data(iq1,ii)     ; log10 Jstar [1/cm3/s]
+    Nst(ix,iy)  = data(iq2,ii)     ; Nstar
+    nH(ix,iy)   = data(inH,ii)     ; n<H> [1/cm3]
+    lS(ix,iy)   = data(iS,ii)      ; log10 Sat(W)
     ii = ii+1
   endfor
 endfor
-q    = q - ALOG10(nH)             ; log10 Jstar(W)/n<H> [1/s]
+yy   = lJst - ALOG10(nH)          ; log10 Jstar/n<H> [1/s]
 logp = ALOG10(p)-6.0              ; log10 p [bar]
 Tmin = min(T)
 Tmax = max(T)
 pmin = min(logp)
 pmax = max(logp)
-qmax = max(q)
-qmin = qmax-50.0
+ymax = max(yy)
+ymin = ymax-30.0
 ilev = 80
-ddd  = (qmax-qmin)/ilev
+ddd  = (ymax-ymin)/ilev
 lev=dblarr(ilev+1)
 col=intarr(ilev+1)      
-colmin=2       ; use 2/253 for rainbow colors
+colmin=35
 colmax=253
 for i=0, ilev do begin
-  lev(i)=qmin+ddd*i
-  col(i)=fix(colmin+(colmax-colmin)*(lev(i)-qmin)/(qmax-qmin))
+  lev(i)=ymin+ddd*i
+  col(i)=fix(colmin+(colmax-colmin)*(lev(i)-ymin)/(ymax-ymin))
 endfor
 pos=[0.12,0.12,0.98,0.98]
-q2 = 0.15*qmax+0.85*qmin
-q(WHERE(q LT q2)) = q2
+yy(WHERE(yy LT ymin)) = ymin
 xticks  = [800,1000,1200,1600,2000,2400,2800]
 Nxticks = N_ELEMENTS(xticks)
 yticks  = [1,0,-1,-2,-3,-4,-5,-6,-7]
 Nyticks = N_ELEMENTS(yticks)
 
-contour,q,T,logp,/xlog,$
+contour,yy,T,logp,/xlog,$
     xrange=[700,3000],yrange=[1,-7],$
     xminor=2,yminor=2,$
     xticks=Nxticks-1,xtickv=xticks,$
@@ -404,10 +406,65 @@ contour,q,T,logp,/xlog,$
     levels=lev, /fill, c_colors=col, position=pos,$
     charthick=3.0,thick=5,xthick=6,ythick=6,charsize=1.7
 
-contour,S,T,logp,/overplot,level=[0.0],c_annotation='S=1',$
-    c_linestyle=2,c_charsize=1.3,c_thick=10,color=white
+contour,lS,T,logp,/overplot,level=[0.0],c_annotation='S=1',$
+    c_linestyle=2,c_charsize=1.6,c_thick=10,color=white
 
-SKALA_VERT, ilev+1,lev,col,'!7log (J!L*!N/n!L<H>!N) [1/s]',[0.86,0.45,0.89,0.95]
+SKALA_VERT, ilev+1,lev,col,'!7log (J!L*!N/n!L<H>!N) [1/s]',[0.86,0.5,0.89,0.95]
+
+ymax = 2.0
+ymin = 0.0
+ilev = 80
+ddd  = (ymax-ymin)/ilev
+for i=0, ilev do begin
+  lev(i)=ymin+ddd*i
+  col(i)=fix(colmin+(colmax-colmin)*(lev(i)-ymin)/(ymax-ymin))
+endfor
+contour,alog10(Nst),T,logp,/xlog,$
+    xrange=[700,3000],yrange=[1,-7],$
+    xminor=2,yminor=2,$
+    xticks=Nxticks-1,xtickv=xticks,$
+    yticks=Nyticks-1,ytickv=yticks,$
+    xticklen=0.03,yticklen=0.025,$
+    xtitle='!7T [K]',ytitle='!7log p [bar]',$
+    levels=lev, /fill, c_colors=col, position=pos,$
+    charthick=3.0,thick=5,xthick=6,ythick=6,charsize=1.7
+
+contour,lS,T,logp,/overplot,level=[0.0],c_annotation='S=1',$
+    c_linestyle=2,c_charsize=1.6,c_thick=10,color=white
+
+contour,Nst,T,logp,/overplot,level=[3.5,5],c_annotation=['3.5','N!L*!N=5'],$
+    c_linestyle=0,c_charsize=1.3,c_thick=5,color=black
+
+SKALA_VERT, ilev+1,lev,col,'!7log N!L*',[0.86,0.5,0.89,0.95]
+
+yr   = 3600.0*24.0*365.25
+taunuc = 1.E-14/(10.0^lJst/nH)/yr
+ymax = 10.0
+ymin = -1.0
+ilev = 80
+ddd  = (ymax-ymin)/ilev
+for i=0, ilev do begin
+  lev(i)=ymin+ddd*i
+  col(i)=fix(colmin+(colmax-colmin)*(lev(i)-ymin)/(ymax-ymin))
+endfor
+contour,alog10(taunuc),T,logp,/xlog,$
+    xrange=[700,3000],yrange=[1,-7],$
+    xminor=2,yminor=2,$
+    xticks=Nxticks-1,xtickv=xticks,$
+    yticks=Nyticks-1,ytickv=yticks,$
+    xticklen=0.03,yticklen=0.025,$
+    xtitle='!7T [K]',ytitle='!7log p [bar]',$
+    levels=lev, /fill, c_colors=col, position=pos,$
+    charthick=3.0,thick=5,xthick=6,ythick=6,charsize=1.7
+
+contour,lS,T,logp,/overplot,level=[0.0],c_annotation='S=1',$
+    c_linestyle=2,c_charsize=1.6,c_thick=10,color=white
+
+;contour,taunuc,T,logp,/overplot,level=[1000],c_annotation=['1000'],$
+;    c_linestyle=2,c_charsize=1.3,c_thick=10,color=black
+
+SKALA_VERT, ilev+1,lev,col,'!7log !9t!L!7nuc!N [yrs]',[0.86,0.5,0.89,0.95]
+
 
 device,/close
 set_plot,'x'
