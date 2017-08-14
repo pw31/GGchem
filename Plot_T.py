@@ -54,8 +54,9 @@ if (nHmax>nHmin*5):
   nHmax = nHmax*2.0
 sep = 20
 if (Tmax-Tmin>1500): sep=100
-if (Tmax-Tmin<500): sep=10
-Tmin  = Tmin*0.95
+if (Tmax-Tmin>1000): sep=50
+if (Tmax-Tmin<500): sep=20
+#Tmin  = Tmin*0.95
 Tmax  = Tmax*1.1
 styl  = ['-','-','-','-','-','-','-','--','--','--','--','--','--','--',':',':',':',':',':',':',':','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.']
 widt  = [ 2 , 2 , 2 , 2 , 2 , 2 , 2 ,  2 ,  2 ,  2 ,  2 ,  2 ,  2 ,  2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  ]
@@ -176,8 +177,10 @@ if (nmax>-99):
   plt.tick_params('both', length=3, width=1, which='minor')
   minorLocator = MultipleLocator(sep)
   ax.xaxis.set_minor_locator(minorLocator)
+  minorLocator = MultipleLocator(1.0)
+  ax.yaxis.set_minor_locator(minorLocator)
   sz = np.min([11,5+80.0/count])
-  sz = sz+3
+  sz = sz+1
   plt.legend(loc='lower right',fontsize=11,fancybox=True,
              handlelength=3,prop={'size':sz})
   plt.tight_layout()
@@ -222,7 +225,7 @@ if (nmax>-99):
   sz = np.min([11,4+90.0/count])
   col = 1
   if (count>30): 
-    sz = np.min([13,4+180.0/count])
+    sz = np.min([13,4+160.0/count])
     col = 2
   plt.legend(loc='lower right',fontsize=10,fancybox=True,
              handlelength=3,prop={'size':sz},ncol=col)
@@ -252,7 +255,7 @@ if (nmax>-99):
   plt.tick_params('both', length=6, width=1.5, which='major')
   plt.tick_params('both', length=3, width=1, which='minor')
   sz = np.min([13,4+90.0/count])
-  sz = sz+3
+  #sz = sz+3
   plt.legend(loc='lower right',fontsize=10,fancybox=True,
              handlelength=3,prop={'size':sz})
   minorLocator = MultipleLocator(sep)

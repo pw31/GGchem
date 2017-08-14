@@ -1,6 +1,132 @@
 dust species
 ============
-94
+100
+
+Ca2Al2SiO7[s]  GEHLENITE
+3.04
+4
+ 2 Ca
+ 2 Al
+ 1 Si
+ 7 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.53:
+  5  8.62597495e+05 -1.53345729e+01 -1.14305776e+02  1.63212847e-02 -1.83667817e-06 
+
+Ca3Al2Si3O12[s]   GROSSULAR
+3.59
+4
+ 3 Ca
+ 2 Al
+ 3 Si
+12 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.28:
+  5  1.45719987e+06 -3.04984323e+01 -1.69188305e+02  3.16436456e-02 -3.65778042e-06 
+
+Ca2SiO4[s]     LARNITE
+3.34
+3
+ 2 Ca
+ 1 Si
+ 4 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.23:
+  5  4.92571744e+05 -7.56137098e+00 -7.35021518e+01  8.81858864e-03 -9.61819037e-07 
+
+CaAl2SiO6[s]   Ca-TSCHERMAKS
+3.44
+4
+ 1 Ca
+ 2 Al
+ 1 Si
+ 6 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.57:
+  5  7.29279679e+05 -1.48894148e+01 -8.65985436e+01  1.58236563e-02 -1.81091331e-06 
+
+Ca3Si2O7[s]    RANKINITE
+ 3.01
+3
+ 3 Ca
+ 2 Si
+ 7 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.60:
+  5  8.53321852e+05 -1.38930604e+01 -1.21316096e+02  1.56422310e-02 -1.81419501e-06 
+
+CaMgSi2O6[s]   DIOPSIDE
+3.26
+4
+ 1 Ca
+ 1 Mg
+ 2 Si
+ 6 O
+# Sharp & Huebner (1990):
+# 1  1.36629E+05 -1.42281E+06  3.59968E+02 -4.70714E-03  1.67622E-07
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.62:
+  5  7.08708047e+05 -1.48463098e+01 -8.41922224e+01  1.55572218e-02 -1.79311436e-06 
+
+CaAl2Si2O8[s]  ANORTHITE
+2.73
+4
+ 1 Ca
+ 2 Al
+ 2 Si
+ 8 O
+# Sharp & Huebner (1990):
+# 1  1.32241E+05 -1.87815E+06  4.71591E+02 -6.08175E-03  1.10392E-07
+# Stock-fit to SUPCRTBL database, +/- 0.84:
+  5  9.52931762e+05 -2.00948890e+01 -1.04659272e+02  2.00006262e-02 -2.27761002e-06 
+
+NaAlSi3O8[s]   ALBITE
+2.60
+4
+ 1 Na
+ 1 Al
+ 3 Si
+ 8 O
+# Sharp & Huebner (1990):
+# 1  0.00000E+00 -1.83381E+06  4.49940E+02  0.00000E+00  0.00000E+00 
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.63:
+  5  9.23228348e+05 -2.01250674e+01 -1.03948380e+02  1.95386783e-02 -2.21736638e-06 
+
+KAlSi3O8[s]    ORTHOCLASE
+2.56
+4
+ 1 K
+ 1 Al
+ 3 Si
+ 8 O
+# Sharp & Huebner (1990):
+# 1  0.00000E+00 -1.83930E+06  4.49643Q+02  0.00000E+00  0.00000E+00 
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.60:
+  5  9.25843799e+05 -2.00266277e+01 -1.04497209e+02  1.92808024e-02 -2.15817662e-06 
+
+Ca3MgSi2O8[s]  MERWINITE
+3.15
+4
+ 3 Ca
+ 1 Mg
+ 2 Si
+ 8 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.68:
+  5  9.72854199e+05 -1.61874095e+01 -1.39244318e+02  1.80433321e-02 -2.02068016e-06 
+
+CaTiO3[s]      CA-TITANATE
+3.98
+3
+ 1 Ca
+ 1 Ti
+ 3 O
+# Sharp & Huebner (1990):
+  1  1.19107E+04 -7.30327E+05  1.75930E+02 -2.84630E-03  1.10392E-07
+
+CaSiO3[s]      WOLLASTONITE
+2.91
+3
+ 1 Ca
+ 1 Si
+ 3 O
+# Sharp & Huebner (1990):
+# 1  6.37937E+04 -7.21819E+05  1.77647E+02 -2.59254E-03  0.00000E+00 
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.26:
+  5  3.60349815e+05 -6.69046172e+00 -4.57723900e+01  7.14526467e-03 -8.10884052e-07 
 
 Al2O3[s]       CORUNDUM(alpha)
 3.97
@@ -39,66 +165,6 @@ MgAl2O4[l]     SPINEL(liquid)            2408.0
  4 O
 # dG-fit NIST-Janaf 298-4000K, +/- 0.28:
   2  4.87016E+06 -3.93827E+06  1.00592E+03 -2.80659E-02  1.70265E-06
-
-CaMgSi2O6[s]   DIOPSIDE
-3.26
-4
- 1 Ca
- 1 Mg
- 2 Si
- 6 O
-# Sharp & Huebner (1990):
-  1  1.36629E+05 -1.42281E+06  3.59968E+02 -4.70714E-03  1.67622E-07
-
-CaAl2Si2O8[s]  ANORTHITE
-2.73
-4
- 1 Ca
- 2 Al
- 2 Si
- 8 O
-# Sharp & Huebner (1990):
-# 1  1.32241E+05 -1.87815E+06  4.71591E+02 -6.08175E-03  1.10392E-07
-# Stock-fit to SUPCRTBL database, +/- 3.2:
-  5  9.5302056e+5 -1.8264682e+1 -1.1419467e+2 1.5962373e-2 -1.4058280e-6
-
-NaAlSi3O8[s]   ALBITE
-2.60
-4
- 1 Na
- 1 Al
- 3 Si
- 8 O
-# Sharp & Huebner (1990):
-  1  0.00000E+00 -1.83381E+06  4.49940E+02  0.00000E+00  0.00000E+00 
-
-KAlSi3O8[s]    ORTHOCLASE
-2.53
-4
- 1 K
- 1 Al
- 3 Si
- 8 O
-# Sharp & Huebner (1990):
-  1  0.00000E+00 -1.83930E+06  4.49643Q+02  0.00000E+00  0.00000E+00 
-
-CaTiO3[s]      CA-TITANATE
-3.98
-3
- 1 Ca
- 1 Ti
- 3 O
-# Sharp & Huebner (1990):
-  1  1.19107E+04 -7.30327E+05  1.75930E+02 -2.84630E-03  1.10392E-07
-
-CaSiO3[s]      CA-PEROVSKITE
-3.92
-3
- 1 Ca
- 1 Si
- 3 O
-# Sharp & Huebner (1990):
-  1  6.37937E+04 -7.21819E+05  1.77647E+02 -2.59254E-03  0.00000E+00 
 
 TiO2[s]        RUTILE
 4.23
@@ -206,7 +272,9 @@ Fe2SiO4[s]     FAYALITE
  1 Si
  4 O
 # Sharp & Huebner (1990):
-  1  6.84477E+04 -9.02146E+05  2.51045E+02 -4.44028E-03  0.00000E+00
+# 1  6.84477E+04 -9.02146E+05  2.51045E+02 -4.44028E-03  0.00000E+00
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.38:
+  5  4.49573704e+05 -9.27141132e+00 -6.61500048e+01  1.04125016e-02 -1.09203090e-06 
 
 FeS[s]         TROILITE 
 4.62
@@ -358,9 +426,9 @@ ZrSiO4[s]      ZR-SILICATE
  1 Si
  4 O
 # dG-fit NIST-Janaf 100-3000K, +/- 0.24:
-  2  1.30614E+06 -4.09193E+06  9.38120E+02 -1.28242E-02  1.42142E-06
-# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.26 kJ/mol
-# 5  4.90061109e+05 -8.78711378e+00 -5.52713896e+01  8.61307409e-03 -1.02724926e-06 
+# 2  1.30614E+06 -4.09193E+06  9.38120E+02 -1.28242E-02  1.42142E-06
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.26:
+  5  4.90061109e+05 -8.78711378e+00 -5.52713896e+01  8.61307409e-03 -1.02724926e-06 
 
 W[s]           TUNGSTEN 
 19.25
@@ -384,7 +452,7 @@ WO3[s]         W-TRIOXIDE
 # pvap-fit NIST-Janaf 100-3000K, +/- 0.014:
   3 -6.63560E+04  4.06161E+01 -2.83452E-03  6.33945E-07 -7.73057E-11
 
-WO3[l]         W-TRIOXIDE(liquid) 1745.0
+WO3[l]         W-TRIOXIDE(liquid)        1745.0
 7.0            estimated
 2
  1 W

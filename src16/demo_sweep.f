@@ -45,7 +45,7 @@
      &               ('S'//trim(short_name(i)),i=1,NDUST),
      &               ('n'//trim(short_name(i)),i=1,NDUST),
      &               ('eps'//trim(catm(i)),i=1,NELM),
-     &               'dust/gas','Nstar(W)','Jstar(W)'
+     &               'dust/gas','Jstar(W)','Nstar(W)'
 
       !--- TEA automated choice from dispol_large.dat ---
       species = "H_g He_ref C_g N_g O_g Si_g S_g Na_g "
@@ -234,7 +234,7 @@
      &  //"V_g VN_g VO2_g VO_g "                                           ! V
      &  //"Cr_g CrN_g CrO2_g CrO3_g CrO_g "                                ! Cr
      &  //"Mn_g "                                                          ! Mn
-     &  //"NiCl2_g NiCl_g Ni(CO)4_g Ni_g NiS_g "                           ! Ni (NiH,NiF missing)
+     &  //"NiCl2_g NiCl_g Ni(CO)4_g Ni_g NiS_g "                           ! Ni 
      &  //"ZrCl2_g ZrCl3_g ZrCl4_g ZrCl_g ZrF2_g ZrF3_g ZrF4_g ZrF_g "     ! Zr
      &  //"Zr_g ZrH_g ZrN_g ZrO2_g ZrO_g "
      &  //"O2W(OH)2_g OWCl4_g W3O8_g WCl2_g WCl4_g (WCl5)2_g WCl5_g "      ! W
