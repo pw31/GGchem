@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.ticker import MultipleLocator, FormatStrFormatter, ScalarFormatter
+from matplotlib.ticker import MultipleLocator, FormatStrFormatter, ScalarFormatter, LogLocator
 from matplotlib.backends.backend_pdf import PdfPages
 plt.rcParams['axes.linewidth'] = 1.5
 pp = PdfPages('ggchem.pdf')
@@ -126,6 +126,7 @@ plt.yscale('log')
 plt.tick_params(axis='both', labelsize=15)
 plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
+ax.yaxis.set_minor_locator(LogLocator(subs=[2,3,4,5,6,7,8,9]))
 minorLocator = MultipleLocator(sep)
 ax.xaxis.set_minor_locator(minorLocator)
 #fmt=ScalarFormatter(useOffset=False)

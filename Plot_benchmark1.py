@@ -5,7 +5,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 plt.rcParams['axes.linewidth'] = 2
 pp = PdfPages('ggchem.pdf')
 
-single_figures = 0
+single_figures = 1
 
 file   = 'Static_Conc.dat'
 data   = open(file)
