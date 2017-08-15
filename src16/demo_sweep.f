@@ -349,7 +349,7 @@
       write(*,frmt) trim(species)
 
  1000 format(4(' eps(',a2,') = ',1pD8.2))
- 1010 format(a4,0pF8.2,3(a6,1pE9.2),1(a11,1pE9.2))
- 2000 format(999(1x,a12))
- 2010 format(0pF13.4,2(1pE13.4),999(0pF13.5))
+ 1010 format(A4,0pF8.2,3(a6,1pE9.2),1(a11,1pE9.2))
+ 2000 format(999(1x,A14))
+ 2010 format(0pF15.4,2(1pE15.4),999(0pF15.5))
       end  
