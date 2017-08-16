@@ -45,7 +45,7 @@
       integer :: i,NELEM_read,NDUST_read
       logical :: ex
       real(kind=qp) :: eps0_read(NELEM)
-      character(len=15) :: dust_nam_read(NDUST)
+      character(len=20) :: dust_nam_read(NDUST)
       character(len=80) :: filename="database.dat"
 
       NDAT = 0
@@ -81,7 +81,7 @@
 **********************************************************************
       SUBROUTINE PUT_DATA(nH,T,eps,ddust,qbest,ibest,active)
 **********************************************************************
-      use dust_data,ONLY: NELEM,NDUST,eps0,dust_nam
+      use dust_data,ONLY: NELEM,NDUST
       use DATABASE,ONLY: qp,NDAT,DMAX,dbase
       implicit none
       real*8,intent(in) :: nH,T,qbest

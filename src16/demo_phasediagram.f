@@ -44,7 +44,8 @@
      &               (trim(cmol(i)),i=1,NMOLE),
      &               ('S'//trim(short_name(i)),i=1,NDUST),
      &               ('n'//trim(short_name(i)),i=1,NDUST),
-     &               ('eps'//trim(catm(i)),i=1,NELM),
+     &               ('eps'//trim(elnam(elnum(j))),j=1,el-1),
+     &               ('eps'//trim(elnam(elnum(j))),j=el+1,NELM),
      &               'dust/gas','Jstar(W)','Nstar(W)'
 
       !-------------------------------------
@@ -112,7 +113,8 @@
      &      (LOG10(MAX(1.Q-300, nmol(jj))),jj=1,NMOLE),
      &      (out(jj),jj=1,NDUST),
      &      (LOG10(MAX(1.Q-300, eldust(jj))),jj=1,NDUST),
-     &      (LOG10(eps(jj)),jj=1,NELM),
+     &      (LOG10(eps(elnum(jj))),jj=1,el-1),
+     &      (LOG10(eps(elnum(jj))),jj=el+1,NELM),
      &       LOG10(MAX(1.Q-300, rhod/rhog)),
      &       LOG10(MAX(1.Q-300, Jstar)), 
      &       MIN(999999.99999,Nstar)

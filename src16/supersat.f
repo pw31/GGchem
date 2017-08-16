@@ -109,6 +109,7 @@
             term   = nat(el)*kT/pst
             lbruch = lbruch + dust_nu(i,j)*LOG(term)
           enddo
+          !print*,dust_nam(i),T1,dGRT,lbruch
           Sat(i) = EXP(lbruch+dGRT)
 
         else if (fit(i)==6) then

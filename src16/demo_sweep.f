@@ -12,7 +12,7 @@
       real :: p,pe,Tg,rhog,rhod,nHges,nges,kT,pges
       real :: nTEA,pTEA,mu,muold,fac,Jstar,Nstar
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST),out(NDUST)
-      integer :: i,j,jj,l,iel,NOUT,ic,stindex
+      integer :: i,j,jj,l,iel,NOUT,iW,stindex
       character(len=5000) :: species,NISTspecies,elnames
       character(len=200) :: line
       character(len=20) :: frmt,name,short_name(NDUST),test1,test2
@@ -20,7 +20,7 @@
       character(len=2) :: test3
       character(len=1) :: char
       integer :: verbose=0
-      logical :: isOK
+      logical :: isOK,hasW
 
       !----------------------------
       ! ***  open output files  ***
@@ -44,7 +44,8 @@
      &               (trim(cmol(i)),i=1,NMOLE),
      &               ('S'//trim(short_name(i)),i=1,NDUST),
      &               ('n'//trim(short_name(i)),i=1,NDUST),
-     &               ('eps'//trim(catm(i)),i=1,NELM),
+     &               ('eps'//trim(elnam(elnum(j))),j=1,el-1),
+     &               ('eps'//trim(elnam(elnum(j))),j=el+1,NELM),
      &               'dust/gas','Jstar(W)','Nstar(W)'
 
       !--- TEA automated choice from dispol_large.dat ---
@@ -253,6 +254,9 @@
      &         (trim(elnam(elnum(j))),j=1,el-1),
      &         (trim(elnam(elnum(j))),j=el+1,NELM)
 
+      iW = stindex(dust_nam,NDUST,'W[s]')
+      hasW = (iW>0)
+
       !----------------------------------------
       ! ***  run chemistry on linear track  ***
       !----------------------------------------
@@ -293,9 +297,13 @@
 
         !--- compute supersat ratios and nucleation rates ---
         call SUPERSAT(Tg,nat,nmol,Sat)
-        ic = stindex(dust_nam,NDUST,'W[s]')
-        call NUCLEATION('W',Tg,dust_vol(ic),mass(W),
-     &                  nat(W),Sat(ic),Jstar,Nstar)
+        if (hasW) then
+          call NUCLEATION('W',Tg,dust_vol(iW),mass(W),
+     &                    nat(W),Sat(iW),Jstar,Nstar)
+        else
+          Jstar = 0
+          Nstar = 9.e+99
+        endif  
 
         !--- compute dust/gas density ratio ---
         rhog = nHges*muH
@@ -320,7 +328,8 @@
      &      (LOG10(MAX(1.Q-300, nmol(jj))),jj=1,NMOLE),
      &      (out(jj),jj=1,NDUST),
      &      (LOG10(MAX(1.Q-300, eldust(jj))),jj=1,NDUST),
-     &      (LOG10(eps(jj)),jj=1,NELM),
+     &      (LOG10(eps(elnum(jj))),jj=1,el-1),
+     &      (LOG10(eps(elnum(jj))),jj=el+1,NELM),
      &       LOG10(MAX(1.Q-300, rhod/rhog)),
      &       LOG10(MAX(1.Q-300, Jstar)), 
      &       MIN(999999.99999,Nstar)
@@ -350,6 +359,6 @@
 
  1000 format(4(' eps(',a2,') = ',1pD8.2))
  1010 format(A4,0pF8.2,3(a6,1pE9.2),1(a11,1pE9.2))
- 2000 format(999(1x,A14))
- 2010 format(0pF15.4,2(1pE15.4),999(0pF15.5))
+ 2000 format(999(1x,A19))
+ 2010 format(0pF20.6,2(1pE20.6),999(0pF20.7))
       end  

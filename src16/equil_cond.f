@@ -199,7 +199,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        !if (qread>1.Q-3.and.iread==385) verbose=2
+        !if (qread>1.Q-3.and.iread==230) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -285,7 +285,7 @@
               endif
             enddo
             Sat1(i)=Sat0(i)**(1.Q0/pot(i))
-            !print'(A15,0pF8.3)',dust_nam(i),pot(i)
+            !print'(A20,0pF8.3)',dust_nam(i),pot(i)
           enddo 
           Smax = 0.Q0
           imax = 0
@@ -296,17 +296,18 @@
             endif  
             if (Sat1(i)>1.Q0.and.(.not.active(i))) then
               turnon = Sat1(i)-1.Q0 
-              if (i==iMg2SiO4) turnon=turnon*10.0
+              !if (i==iMg2SiO4) turnon=turnon*10.0
               if (turnon>maxon.and..not.limited) then
                 maxon  = turnon
                 imaxon = i
               endif  
             endif  
           enddo  
-          if (verbose>0) print'("limited,Smax =",L2,1pE10.2,2x,A12)',
+          if (verbose>0) print'("limited=",L1,
+     >                   "  Smax=",1pE10.3,2x,A18)',
      >                   limited,Smax,dust_nam(imax)
           if (verbose>0.and.maxon>0.Q0) print'("  maxon =",
-     >                   1pE10.2,2x,A12)',maxon,dust_nam(imaxon)
+     >                   1pE10.2,2x,A18)',maxon,dust_nam(imaxon)
           active_save = active 
           Nact_save = Nact
           if (maxon>0.0*MAX(Smax-1.Q0,0.Q0)) then
@@ -328,6 +329,43 @@
           dust_save = ddust
           ioff = 0
           ok = .true.
+          if (active(iAl2O3).and.active(iCaAl2Si2O8).and.
+     >        active(iCaMgSi2O6).and.
+     >        active(iMgSiO3).and.active(iMg2SiO4)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iCaAl2Si2O8)>Sat0(iAl2O3)) then
+              ioff = iAl2O3
+              active(iAl2O3) = .false.
+              amount = ddust(iAl2O3)/4.Q0
+              call TRANSFORM(iAl2O3,iCaAl2Si2O8,amount,1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iAl2O3,iCaMgSi2O6,amount,-1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iAl2O3,iMgSiO3,amount,-1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iAl2O3,iMg2SiO4,amount,1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iCaAl2Si2O8
+              active(iCaAl2Si2O8) = .false.
+              amount = ddust(iCaAl2Si2O8)/4.Q0
+              call TRANSFORM(iCaAl2Si2O8,iAl2O3,amount,1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iCaAl2Si2O8,iCaMgSi2O6,amount,1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iCaAl2Si2O8,iMgSiO3,amount,1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iCaAl2Si2O8,iMg2SiO4,amount,-1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif  
+            !print*,eps(Ca),eps(Mg),eps(Si),eps(Al)
+            !print*,eps_save(Ca),eps_save(Mg),eps_save(Si),eps_save(Al)
+            eps(Al) = eps_save(Al)
+            eps(Mg) = eps_save(Mg)
+            eps(Si) = eps_save(Si)
+            eps(Ca) = eps_save(Ca)
+          endif  
           if (active(iMgAl2O4).and.active(iCaAl2Si2O8).and.
      >        active(iCaMgSi2O6).and.
      >        active(iMgSiO3).and.active(iMg2SiO4)) then
@@ -1535,7 +1573,7 @@
             rem = "  "
             if (active(i)) rem=" *"
             if (active(i).or.Sat0(i)>0.1) then
-              write(*,'(3x,A12,2(1pE11.3)1pE19.10,A2)') 
+              write(*,'(3x,A18,2(1pE11.3)1pE19.10,A2)') 
      >          dust_nam(i),ddust(i),ddust(i)/dscale(i),Sat0(i),rem
             endif  
           enddo
@@ -1612,6 +1650,16 @@
         !-------------------------------------
         ! ***  some explict special cases  ***
         !-------------------------------------
+        if (active(iMgTiO3).and.e_act(Si).and.(.not.e_act(Mg)).and.
+     >      e_num(Mg)>e_num(Si)) then
+          print*,"... exchanging Si for Mg"
+          e_act(Si) = .false.
+          e_act(Mg) = .true.
+          do i=1,Nind
+            if (Iindex(i)==Si) exit
+          enddo  
+          Iindex(i) = Mg
+        endif   
         if (active(iCaMgSi2O6).and.active(iCaAl2Si2O8).and.
      >      e_act(Si).and.(.not.e_act(Mg))) then
           print*,"... exchanging Si for Mg"
@@ -1963,7 +2011,7 @@
             !write(*,*) dust_nam(var(1:Nvar1)), 
      >      !           elnam(var(Nvar1+1:Nvar1+Nvar2))
             if (verbose>1) print'("solving",I2," equations with",I2,
-     >                 " unknowns ",99(A12))',Nunsolved,Nvar1+Nvar2,
+     >                 " unknowns ",99(A18))',Nunsolved,Nvar1+Nvar2,
      >                 dust_nam(var(1:Nvar1)), 
      >                 elnam(var(Nvar1+1:Nvar1+Nvar2))
             if (Nunsolved/=Nvar1+Nvar2) then
@@ -2184,7 +2232,7 @@
           do ii=1,Nsolve
             i  = act_to_dust(ii) 
             dk = Dindex(i)
-            print'(A12,99(1pE11.3))',dust_nam(dk),DF(ii,1:Nsolve),FF(ii)
+            print'(A18,99(1pE11.3))',dust_nam(dk),DF(ii,1:Nsolve),FF(ii)
           enddo  
         endif
 

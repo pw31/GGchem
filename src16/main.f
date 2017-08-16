@@ -161,6 +161,6 @@
  1010 format(a6,1pE9.3,a8,1pE9.3)
  4000 format(a7,1pE10.4,a5,1pE10.4)     
  4010 format(' n',a8,1pE12.4)
- 5000 format(1x,a10,' S=',1pE9.3)
+ 5000 format(1x,a20,' S=',1pE9.3)
       RETURN
       end      

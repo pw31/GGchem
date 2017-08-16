@@ -17,7 +17,7 @@
       integer :: NEPS                      ! number of affected elements
       
       character(len=2)  :: elnam(NELEM)       ! names of elements
-      character(len=15) :: dust_nam(NDUSTmax) ! names of dust species
+      character(len=20) :: dust_nam(NDUSTmax) ! names of dust species
       integer :: elnr(NELEM),elcode(NELEM)    ! element cross-indices
       real(kind=qp) :: eps0(NELEM)            ! element abundances
       real*8  :: mass(NELEM)                  ! element masses
@@ -28,8 +28,8 @@
       real*8  :: Tcorr(NDUSTmax)
       logical :: is_liquid(NDUSTmax)
       integer :: dust_nel(NDUSTmax)           ! no of elements in dust
-      integer :: dust_el(NDUSTmax,5)          ! indices of elements
-      integer :: dust_nu(NDUSTmax,5)          ! stoichiometric coeffs
+      integer :: dust_el(NDUSTmax,8)          ! indices of elements
+      integer :: dust_nu(NDUSTmax,8)          ! stoichiometric coeffs
       
       integer :: fit(NDUSTmax)                ! fit-formular identifier
       real*8  :: cfit(NDUSTmax,0:4)           ! pvap fit coefficients

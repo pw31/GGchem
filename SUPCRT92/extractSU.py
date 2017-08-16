@@ -382,8 +382,11 @@ for icond in range(0,Ncond):
     continue
   all = all+' '+form+' '
   file.write("\n")
-  file.write("%s%s%s\n" %(form,leer[len(form):],name))
-  file.write("%5.2f\n" % rho)
+  file.write("%s[s]%s%s\n" %(form,leer[len(form):],name))
+  if (rho==3.0):
+    file.write("%5.2f     (estimated)\n" % rho)
+  else:
+    file.write("%5.2f\n" % rho)
   file.write("%i\n" % Nel)
   for iel in range(0,Nel):
     file.write("%2d %s\n"% (int(num[iel]),el[iel]))

@@ -10,8 +10,9 @@
       implicit none
       integer :: i,imax,j,k,el,j1,j2
       real*8 :: dmass,prec(NDUSTmax)
+      character(len=10000) :: allcond
       character(len=200):: zeile,lastzeile
-      character(len=100) :: trivial(NDUSTmax),limit
+      character(len=100) :: trivial(NDUSTmax),limit,tmp
       character(len=2)  :: name
       logical :: is_atom,found,allfound
 
@@ -27,6 +28,7 @@
       read(12,1000) zeile
       read(12,*) imax
       read(12,1000) zeile
+      allcond = " "
       NDUST = 1
       do i=1,imax
         read(12,1000) zeile
@@ -70,9 +72,15 @@
           if (trim(zeile)=='') exit
           if (zeile(1:1)=='#') cycle
           read(zeile,*) fit(NDUST),cfit(NDUST,0:4)
+          prec(NDUST) = 0.0
           j1 = index(lastzeile,'+/-')
           j2 = index(lastzeile,':')
-          if (j1>0) read(lastzeile(j1+3:j2-1),*) prec(NDUST)
+          if (j1>0) then
+            tmp = lastzeile(j1+3:)
+            if (j2>j1) tmp=lastzeile(j1+3:j2-1)            
+            read(tmp,*) prec(NDUST)
+          endif  
+          !print*,trim(tmp),prec(NDUST)
           found = .true.
         enddo
         if (.not.found) then
@@ -80,16 +88,25 @@
      &         dust_nam(NDUST)
           stop
         endif  
+        j1 = index(allcond," "//trim(dust_nam(NDUST)))
+        if (j1>0) then
+          print*,"*** double condensate in DustChem.dat"
+          print*,dust_nam(NDUST)
+          stop
+        endif  
         if (allfound) then
           dust_mass(NDUST) = dmass
           dust_vol(NDUST) = dmass/dust_rho(NDUST)
-          write(*,1060) dust_nam(NDUST),dust_rho(NDUST),dust_vol(NDUST), 
-     &    (dust_nu(NDUST,j),elnam(dust_el(NDUST,j)),j=1,dust_nel(NDUST))
+          write(*,1060) NDUST,dust_nam(NDUST),dust_rho(NDUST),
+     &                  dust_vol(NDUST), (dust_nu(NDUST,j),
+     &                  elnam(dust_el(NDUST,j)),j=1,dust_nel(NDUST))
+          allcond = " "//trim(allcond)//" "//trim(dust_nam(NDUST))
           NDUST = NDUST+1
         endif
       enddo
       NDUST=NDUST-1
-
+      write(*,*) NDUST," condensed species"
+      write(*,*)
       write(*,*) '--- involved elements ---'
       NEPS=0
       elcode(:)=0
@@ -128,9 +145,15 @@
       !  else if (Tcorr(i)>0) then
       !    write(limit,'("$<$",I4,"K")') int(Tcorr(i))
       !  endif  
-      !  write(1,3000)
-     &!    dust_nam(i),trivial(i),fit(i),limit,cfit(i,0:4),
-     &!    prec(i),dust_rho(i)
+      !  if (prec(i)>0.0) then
+      !    write(1,3000)
+     &!      dust_nam(i),trivial(i),fit(i),limit,cfit(i,0:4),
+     &!      prec(i),dust_rho(i)
+      !  else  
+      !    write(1,3001)
+     &!      dust_nam(i),trivial(i),fit(i),limit,cfit(i,0:4),
+     &!      dust_rho(i)
+      !  endif  
       !enddo  
       !close(1)
       !stop
@@ -142,13 +165,16 @@
  1030 format(i2,1x,a2)
  1040 format(i2,1x,a10)
  1050 format(1x,a10,i4,' mass=',0pf7.3," amu")
- 1060 format(1x,a14," rhod=",0pf6.3," V0=",1pe11.3,2x,99(i1,"x",A2,1x))
+ 1060 format(I4,1x,a20," rhod=",0pf6.3," V0=",1pe11.3,2x,
+     &       99(i2,"x",A2,1x))
  1070 format(1x,a10,99(i1,"x",i2,1x))
  2011 format(1(I2,1x,a8),22x,'->',I2,1x,a10,99(I2,1x,a8))
  2021 format(2(I2,1x,a8),11x,'->',I2,1x,a10,99(I2,1x,a8))
  2031 format(3(I2,1x,a8)    ,'->',I2,1x,a10,99(I2,1x,a8))
- 3000 format(A15," & ",A25," & ",I2," & ",A8," & ",
-     &       5(1pE12.5," & "),"$\pm$",0pF4.2," & ",0pF5.2)
+ 3000 format(A20," & ",A25," & ",I2," & ",A8," & ",
+     &       5(1pE12.5," & "),"$\pm$",0pF4.2," & ",0pF5.2,"\\")
+ 3001 format(A20," & ",A25," & ",I2," & ",A8," & ",
+     &       5(1pE12.5," & "),9x," & ",0pF5.2,"\\")
       end 
 
 ***********************************************************************
@@ -189,6 +215,7 @@
           endif  
         endif
       enddo  
+      if (Ncheck==0) return
 
       !-------------------------------
       ! ***  check melting points  ***
@@ -196,8 +223,8 @@
       print*
       print*,'auto-correction for spurious liquid <-> solid '//
      &       'phase transitions ...'
-      nat = 1.d0
-      nmol = 1.d0
+      nat = 1.Q-100
+      nmol = 1.Q-100
       do iT=100,10000
         T = DBLE(iT) 
         call SUPERSAT(T,nat,nmol,Sat)

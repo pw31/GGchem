@@ -26,7 +26,6 @@ data.close()
 dat = np.loadtxt(file,skiprows=3)
 keyword = np.array(header.split())
 NPOINT = len(dat[0:])
-print NPOINT
 
 bar   = 1.E+6                    # 1 bar in dyn/cm2 
 Tg    = dat[:,0]                 # T [K]
@@ -37,8 +36,9 @@ Tmin  = np.min(Tg)
 Tmax  = np.max(Tg)
 #if (Tmax>4*Tmin): Tmax=4*Tmin
 #if (Tmin<Tmax/3): Tmin=Tmax/3
-#Tmin  = 1100
-#Tmax  = 2500
+#Tmin  = 250
+#Tmax  = 480
+delT  = (Tmax-Tmin)*0.35
 iii   = np.where((Tg>Tmin) & (Tg<Tmax))[0]
 pmin  = np.min(press[iii])/bar
 pmax  = np.max(press[iii])/bar
@@ -57,11 +57,12 @@ if (nHmax>nHmin*5):
 sep = 20
 if (Tmax-Tmin>1500): sep=100
 if (Tmax-Tmin>1000): sep=50
-if (Tmax-Tmin<500): sep=20
+if (Tmax-Tmin<600): sep=20
+if (Tmax-Tmin<400): sep=10
 #Tmin  = Tmin*0.95
 #Tmax  = Tmax*1.1
-styl  = ['-','-','-','-','-','-','-','--','--','--','--','--','--','--',':',':',':',':',':',':',':','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.']
-widt  = [ 2 , 2 , 2 , 2 , 2 , 2 , 2 ,  2 ,  2 ,  2 ,  2 ,  2 ,  2 ,  2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  ]
+styl  = ['-','-','-','-','-','-','-','--','--','--','--','--','--','--',':',':',':',':',':',':',':','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.']
+widt  = [ 2 , 2 , 2 , 2 , 2 , 2 , 2 ,  2 ,  2 ,  2 ,  2 ,  2 ,  2 ,  2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  ]
 
 
 #================== temperature-pressure structure ====================
@@ -123,7 +124,7 @@ log10_dust_gas = dat[:,ind]
 plt.plot(Tg,10**log10_dust_gas,lw=4)
 plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
 plt.ylabel(r'$\mathrm{dust/gas}$',fontsize=20)
-plt.xlim(Tmin,Tmax)
+plt.xlim(Tmin,Tmax+0.3*delT)
 plt.ylim(1.E-10,0.1)
 plt.yscale('log')
 plt.tick_params(axis='both', labelsize=15)
@@ -135,6 +136,32 @@ ax.xaxis.set_minor_locator(minorLocator)
 #fmt=ScalarFormatter(useOffset=False)
 #fmt.set_scientific(False)
 #ax.yaxis.set_major_formatter(fmt)
+plt.tight_layout()
+plt.savefig(pp,format='pdf')
+plt.clf()
+
+#================ the gas phase element abundances ===================
+fig,ax = plt.subplots()
+count = 0
+for i in range(4+NELEM+NMOLE+2*NDUST,4+NELEM+NMOLE+2*NDUST+NELEM,1):
+  elm = keyword[i]
+  element = elm[3:]
+  yy = dat[:,i]               # log10 eps
+  if (np.max(yy)>-20):
+    plt.plot(Tg,yy,ls=styl[count],lw=widt[count],label=element)
+    count = count+1
+plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
+plt.ylabel(r'$\log\,\epsilon_{\rm gas}$',fontsize=20)
+plt.xlim(Tmin,Tmax+0.3*delT)
+plt.ylim(-19,1)
+plt.tick_params(axis='both', labelsize=15)
+plt.tick_params('both', length=6, width=1.5, which='major')
+plt.tick_params('both', length=3, width=1, which='minor')
+minorLocator = MultipleLocator(sep)
+ax.xaxis.set_minor_locator(minorLocator)
+minorLocator = MultipleLocator(1)
+ax.yaxis.set_minor_locator(minorLocator)
+plt.legend(loc='lower right',fontsize=11,fancybox=True)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
 plt.clf()
@@ -172,8 +199,8 @@ if (nmax>-99):
   plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
   plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{solid}/n_\mathrm{\langle H\rangle}$',fontsize=20)
   #plt.xscale('log')
-  plt.xlim(Tmin,Tmax)
-  plt.ylim(nmax-9,nmax+0.5)
+  plt.xlim(Tmin,Tmax+delT)
+  plt.ylim(-13,-3)
   plt.tick_params(axis='both', labelsize=14)
   plt.tick_params('both', length=6, width=1.5, which='major')
   plt.tick_params('both', length=3, width=1, which='minor')
@@ -181,10 +208,10 @@ if (nmax>-99):
   ax.xaxis.set_minor_locator(minorLocator)
   minorLocator = MultipleLocator(1.0)
   ax.yaxis.set_minor_locator(minorLocator)
-  sz = np.min([11,5+80.0/count])
-  sz = sz+1
+  sz = np.min([11,5+100.0/count])
+  #sz = sz+1
   plt.legend(loc='lower right',fontsize=11,fancybox=True,
-             handlelength=3,prop={'size':sz})
+             handlelength=2.5,prop={'size':sz})
   plt.tight_layout()
   #plt.show()
   plt.savefig(pp,format='pdf')
@@ -217,17 +244,17 @@ if (nmax>-99):
   plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
   plt.ylabel(r'$\mathrm{log}_{10}\ S$',fontsize=20)
   #plt.xscale('log')
-  plt.xlim(Tmin,Tmax)
+  plt.xlim(Tmin,Tmax+1.5*delT)
   plt.ylim(-7,0.5)
   plt.tick_params(axis='both', labelsize=14)
   plt.tick_params('both', length=6, width=1.5, which='major')
   plt.tick_params('both', length=3, width=1, which='minor')
   minorLocator = MultipleLocator(sep)
   ax.xaxis.set_minor_locator(minorLocator)
-  sz = np.min([11,4+90.0/count])
+  sz = np.min([11,3+95.0/count])
   col = 1
   if (count>30): 
-    sz = np.min([13,4+160.0/count])
+    sz = np.min([13,3+170.0/count])
     col = 2
   plt.legend(loc='lower right',fontsize=10,fancybox=True,
              handlelength=3,prop={'size':sz},ncol=col)
@@ -251,7 +278,7 @@ if (nmax>-99):
   plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
   plt.ylabel(r'$S$',fontsize=20)
   #plt.xscale('log')
-  plt.xlim(Tmin,Tmax)
+  plt.xlim(Tmin,Tmax+delT)
   plt.ylim(0,1.05)
   plt.tick_params(axis='both', labelsize=14)
   plt.tick_params('both', length=6, width=1.5, which='major')
@@ -289,14 +316,18 @@ for i in range(3,4+NELEM+NMOLE):
 plt.title('important molecules',fontsize=20)
 plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
 plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{tot}$',fontsize=20)
-plt.xscale('log')
 plt.xlim(Tmin,Tmax)
-plt.ylim(-6,0.1)
+plt.ylim(-6.2,0.2)
 plt.tick_params(axis='both', labelsize=14)
 plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
-#minorLocator = MultipleLocator(sep)
-#ax.xaxis.set_minor_locator(minorLocator)
+if (Tmax/Tmin>10):
+  plt.xscale('log')
+else:  
+  minorLocator = MultipleLocator(sep)
+  ax.xaxis.set_minor_locator(minorLocator)
+minorLocator = MultipleLocator(0.2)
+ax.yaxis.set_minor_locator(minorLocator)
 plt.legend(loc='lower right',fontsize=11,fancybox=True)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
@@ -359,21 +390,21 @@ for i in range(0,30):
   plt.title(titel,fontsize=20)
   plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
   plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{\langle H\rangle}$',fontsize=20)
-  plt.xscale('log')
   plt.xlim(Tmin,Tmax)
   plt.ylim(nmin,nmax+1)
   plt.tick_params(axis='both', labelsize=14)
   plt.tick_params('both', length=6, width=1.5, which='major')
   plt.tick_params('both', length=3, width=1, which='minor')
-  #minorLocator = MultipleLocator(sep)
-  #ax.xaxis.set_minor_locator(minorLocator)
-  sz = np.min([11,5+80.0/count])
-  if (el=='el'):
-    plt.legend(loc='lower right',fontsize=10,fancybox=True,
-               handlelength=3,prop={'size':sz})
+  if (Tmax/Tmin>10):
+    plt.xscale('log')
   else:  
-    plt.legend(loc='lower left',fontsize=10,fancybox=True,
-               handlelength=3,prop={'size':sz})
+    minorLocator = MultipleLocator(sep)
+    ax.xaxis.set_minor_locator(minorLocator)
+  minorLocator = MultipleLocator(1.0)
+  ax.yaxis.set_minor_locator(minorLocator)
+  sz = np.min([11,5+80.0/count])
+  plt.legend(loc='lower right',fontsize=10,fancybox=True,
+             handlelength=3,prop={'size':sz})
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
   plt.clf()
