@@ -147,12 +147,12 @@
       !  endif  
       !  if (prec(i)>0.0) then
       !    write(1,3000)
-     &!      dust_nam(i),trivial(i),fit(i),limit,cfit(i,0:4),
-     &!      prec(i),dust_rho(i)
+     &!      i,dust_nam(i),trivial(i),dust_rho(i),
+     &!      fit(i),limit,cfit(i,0:4),prec(i)
       !  else  
       !    write(1,3001)
-     &!      dust_nam(i),trivial(i),fit(i),limit,cfit(i,0:4),
-     &!      dust_rho(i)
+     &!      i,dust_nam(i),trivial(i),dust_rho(i),
+     &!      fit(i),limit,cfit(i,0:4)
       !  endif  
       !enddo  
       !close(1)
@@ -171,10 +171,10 @@
  2011 format(1(I2,1x,a8),22x,'->',I2,1x,a10,99(I2,1x,a8))
  2021 format(2(I2,1x,a8),11x,'->',I2,1x,a10,99(I2,1x,a8))
  2031 format(3(I2,1x,a8)    ,'->',I2,1x,a10,99(I2,1x,a8))
- 3000 format(A20," & ",A25," & ",I2," & ",A8," & ",
-     &       5(1pE12.5," & "),"$\pm$",0pF4.2," & ",0pF5.2,"\\")
- 3001 format(A20," & ",A25," & ",I2," & ",A8," & ",
-     &       5(1pE12.5," & "),9x," & ",0pF5.2,"\\")
+ 3000 format(I3," & ",A20," & ",A25," & ",0pF5.2," & ",I2," & ",A8,
+     &       " & ",5(1pE12.5," & "),"$\pm$",0pF4.2,"\\")
+ 3001 format(I3," & ",A20," & ",A25," & ",0pF5.2," & ",I2," & ",A8,
+     &       " & ",5(1pE12.5," & "),9x,"\\")
       end 
 
 ***********************************************************************

@@ -36,9 +36,9 @@ Tmin  = np.min(Tg)
 Tmax  = np.max(Tg)
 #if (Tmax>4*Tmin): Tmax=4*Tmin
 #if (Tmin<Tmax/3): Tmin=Tmax/3
-#Tmin  = 250
-#Tmax  = 480
-delT  = (Tmax-Tmin)*0.35
+#Tmin  = 100
+#Tmax  = 460
+delT  = (Tmax-Tmin)*0.34
 iii   = np.where((Tg>Tmin) & (Tg<Tmax))[0]
 pmin  = np.min(press[iii])/bar
 pmax  = np.max(press[iii])/bar
@@ -61,9 +61,12 @@ if (Tmax-Tmin<600): sep=20
 if (Tmax-Tmin<400): sep=10
 #Tmin  = Tmin*0.95
 #Tmax  = Tmax*1.1
-styl  = ['-','-','-','-','-','-','-','--','--','--','--','--','--','--',':',':',':',':',':',':',':','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.']
-widt  = [ 2 , 2 , 2 , 2 , 2 , 2 , 2 ,  2 ,  2 ,  2 ,  2 ,  2 ,  2 ,  2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  ]
-
+colo = ['blue','darkgray','darkgoldenrod','darkgreen','darkmagenta','red','darkorange','darkorchid','aqua','cadetblue','darkolivegreen','bisque','burlywood','chartreuse','chocolate','coral','cornflowerblue','crimson','darkcyan','darkkhaki']
+#'aquamarine','beige' too light
+Ncolor = len(colo)
+colo = colo*10
+styl = ['-']*Ncolor + ['--']*Ncolor + [':']*Ncolor + ['-.']*Ncolor*7 
+widt = [2]*Ncolor*10
 
 #================== temperature-pressure structure ====================
 fig,ax = plt.subplots()
@@ -124,7 +127,7 @@ log10_dust_gas = dat[:,ind]
 plt.plot(Tg,10**log10_dust_gas,lw=4)
 plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
 plt.ylabel(r'$\mathrm{dust/gas}$',fontsize=20)
-plt.xlim(Tmin,Tmax+0.3*delT)
+plt.xlim(Tmin,Tmax)
 plt.ylim(1.E-10,0.1)
 plt.yscale('log')
 plt.tick_params(axis='both', labelsize=15)
@@ -148,12 +151,12 @@ for i in range(4+NELEM+NMOLE+2*NDUST,4+NELEM+NMOLE+2*NDUST+NELEM,1):
   element = elm[3:]
   yy = dat[:,i]               # log10 eps
   if (np.max(yy)>-20):
-    plt.plot(Tg,yy,ls=styl[count],lw=widt[count],label=element)
+    plt.plot(Tg,yy,c=colo[count],ls=styl[count],lw=widt[count],label=element)
     count = count+1
 plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
 plt.ylabel(r'$\log\,\epsilon_{\rm gas}$',fontsize=20)
-plt.xlim(Tmin,Tmax+0.3*delT)
-plt.ylim(-19,1)
+plt.xlim(Tmin,Tmax)
+plt.ylim(-13,1)
 plt.tick_params(axis='both', labelsize=15)
 plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
@@ -170,6 +173,8 @@ plt.clf()
 solids = []
 smean = []
 nmax = float(-100)
+ymin = -7.6  #-12.5
+ymax = -3.3  #-4.2 #-4
 for i in range(4+NELEM+NMOLE,4+NELEM+NMOLE+NDUST,1):
   solid = keyword[i]
   solids.append(solid[1:])
@@ -192,15 +197,15 @@ if (nmax>-99):
     ind = ind[0]
     yy = dat[:,ind]               # log10 nsolid/n<H>
     nmax = np.max([nmax,np.max(yy[iii])])
-    if (np.max(yy[iii])>nmax-20):
-      plt.plot(Tg,yy,ls=styl[count],lw=widt[count],label=solid)
+    if (np.max(yy[iii])>ymin):
+      plt.plot(Tg[iii],yy[iii],c=colo[count],ls=styl[count],lw=widt[count],label=solid)
       count = count + 1
   #plt.title('condensates',fontsize=20)
   plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
   plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{solid}/n_\mathrm{\langle H\rangle}$',fontsize=20)
   #plt.xscale('log')
   plt.xlim(Tmin,Tmax+delT)
-  plt.ylim(-13,-3)
+  plt.ylim(ymin,ymax)
   plt.tick_params(axis='both', labelsize=14)
   plt.tick_params('both', length=6, width=1.5, which='major')
   plt.tick_params('both', length=3, width=1, which='minor')
@@ -238,7 +243,7 @@ if (nmax>-99):
     #print solid,ind
     logS = dat[:,ind]              # log10 S
     if (np.max(logS[iii])>-6):
-      plt.plot(Tg,logS,ls=styl[count],lw=widt[count],label=solid)
+      plt.plot(Tg,logS,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
       count = count + 1
   plt.title('supersaturation ratios',fontsize=20)
   plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
@@ -272,7 +277,7 @@ if (nmax>-99):
     #print solid,ind
     S = 10**dat[:,ind]              # S
     if (np.max(S[iii])>0.7):
-      plt.plot(Tg,S,ls=styl[count],lw=widt[count],label=solid)
+      plt.plot(Tg,S,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
       count = count + 1
   #plt.title('supersaturation ratios',fontsize=20)
   plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
@@ -311,7 +316,7 @@ for i in range(3,4+NELEM+NMOLE):
   if (np.size(ind)>0): crit=-5
   #print i,mol,ind,np.size(ind)
   if (np.max(yy[iii])>crit):
-    plt.plot(Tg,yy,ls=styl[count],lw=widt[count],label=mol)
+    plt.plot(Tg,yy,c=colo[count],ls=styl[count],lw=widt[count],label=mol)
     count = count + 1
 plt.title('important molecules',fontsize=20)
 plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
@@ -385,7 +390,7 @@ for i in range(0,30):
     yy = yy - lognH                # log10 nmol/n<H>
     if (np.max(yy[iii]-maxy[iii])>-limit or molname=='el'):
       print molname,abu
-      plt.plot(Tg,yy,ls=styl[count],lw=widt[count],label=molname)
+      plt.plot(Tg,yy,c=colo[count],ls=styl[count],lw=widt[count],label=molname)
       count = count + 1
   plt.title(titel,fontsize=20)
   plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)

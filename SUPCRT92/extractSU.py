@@ -394,8 +394,8 @@ for icond in range(0,Ncond):
         % (Tmin1,Tmax1,qual))
   file.write("  5 %15.8e %15.8e %15.8e %15.8e %15.8e \n" \
         % (coeff[0],coeff[1],coeff[2],coeff[3],coeff[4]))
-  file2.write(" %15s & %20s & %5.1f & 5 & %13.6e & %13.6e & %13.6e & %13.6e & %13.6e & $\pm$%4.2f%s \n" \
-              % (form,name,sortq/1000,coeff[0],coeff[1],coeff[2],coeff[3],coeff[4],qual,'\\\\'))
+  file2.write(" %3i & %15s & %20s & %5.1f & 5 & %13.6e & %13.6e & %13.6e & %13.6e & %13.6e & $\pm$%4.2f%s \n" \
+              % (icond+1,form,name,sortq/1000,coeff[0],coeff[1],coeff[2],coeff[3],coeff[4],qual,'\\\\'))
 
   sys.stdout.write(".")
   sys.stdout.flush()

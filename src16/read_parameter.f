@@ -7,7 +7,7 @@
       use CHEMISTRY,ONLY: NewChemIt,NewBackIt,NewFullIt,dispol_file
       use DUST_DATA,ONLY: bar
       implicit none
-      integer :: iarg,iline,i
+      integer :: iarg,iline,i,dispol_set
       character(len=200) :: ParamFile,line
 
       !-------------------------
@@ -46,6 +46,7 @@
       call getarg(1,ParamFile)
       open(unit=1,file=ParamFile,status='old')
       iline = 0
+      dispol_set = 0
       do 
         read(1,'(A200)',end=100) line
         if (line(1:1).eq.'#') cycle           ! ignore comment lines
@@ -91,15 +92,19 @@
         else if (index(line,"! dispol_file2")>0) then 
           i = index(line,"!")
           read(line(1:i-1),*) dispol_file(2)
+          dispol_set = 2
         else if (index(line,"! dispol_file3")>0) then 
           i = index(line,"!")
           read(line(1:i-1),*) dispol_file(3)
+          dispol_set = 3
         else if (index(line,"! dispol_file4")>0) then 
           i = index(line,"!")
           read(line(1:i-1),*) dispol_file(4)
+          dispol_set = 4
         else if (index(line,"! dispol_file")>0) then 
           i = index(line,"!")
           read(line(1:i-1),*) dispol_file(1)
+          dispol_set = 1
         else
           print*,"*** syntax error in "//trim(ParamFile)//":"
           print*,trim(line)
@@ -107,4 +112,7 @@
         endif  
       enddo  
  100  continue
+      if (dispol_set>0.and.dispol_set<4) dispol_file(4)=""
+      if (dispol_set>0.and.dispol_set<3) dispol_file(3)=""
+      if (dispol_set>0.and.dispol_set<2) dispol_file(2)=""
       end
