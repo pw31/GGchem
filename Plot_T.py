@@ -36,7 +36,7 @@ Tmin  = np.min(Tg)
 Tmax  = np.max(Tg)
 #if (Tmax>4*Tmin): Tmax=4*Tmin
 #if (Tmin<Tmax/3): Tmin=Tmax/3
-#Tmin  = 100
+#Tmin  = 1200
 #Tmax  = 460
 delT  = (Tmax-Tmin)*0.34
 iii   = np.where((Tg>Tmin) & (Tg<Tmax))[0]
@@ -61,8 +61,8 @@ if (Tmax-Tmin<600): sep=20
 if (Tmax-Tmin<400): sep=10
 #Tmin  = Tmin*0.95
 #Tmax  = Tmax*1.1
-colo = ['blue','darkgray','darkgoldenrod','darkgreen','darkmagenta','red','darkorange','darkorchid','aqua','cadetblue','darkolivegreen','bisque','burlywood','chartreuse','chocolate','coral','cornflowerblue','crimson','darkcyan','darkkhaki']
-#'aquamarine','beige' too light
+colo = ['blue','darkgray','darkgoldenrod','darkgreen','darkmagenta','red','yellow','darkorchid','aqua','cadetblue','darkolivegreen','burlywood','chartreuse','chocolate','coral','cornflowerblue','black','darkkhaki','pink','moccasin']
+#'aquamarine','beige','darkorange','crimson','darkcyan','bisque'
 Ncolor = len(colo)
 colo = colo*10
 styl = ['-']*Ncolor + ['--']*Ncolor + [':']*Ncolor + ['-.']*Ncolor*7 
@@ -173,8 +173,8 @@ plt.clf()
 solids = []
 smean = []
 nmax = float(-100)
-ymin = -7.6  #-12.5
-ymax = -3.3  #-4.2 #-4
+ymin = -12.5  #-7.6  #-12.5
+ymax = -3.3   #-4.2  #-4
 for i in range(4+NELEM+NMOLE,4+NELEM+NMOLE+NDUST,1):
   solid = keyword[i]
   solids.append(solid[1:])
@@ -204,7 +204,7 @@ if (nmax>-99):
   plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
   plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{solid}/n_\mathrm{\langle H\rangle}$',fontsize=20)
   #plt.xscale('log')
-  plt.xlim(Tmin,Tmax+delT)
+  plt.xlim(Tmin,Tmax) #+delT)
   plt.ylim(ymin,ymax)
   plt.tick_params(axis='both', labelsize=14)
   plt.tick_params('both', length=6, width=1.5, which='major')
@@ -213,7 +213,7 @@ if (nmax>-99):
   ax.xaxis.set_minor_locator(minorLocator)
   minorLocator = MultipleLocator(1.0)
   ax.yaxis.set_minor_locator(minorLocator)
-  sz = np.min([11,5+100.0/count])
+  sz = np.min([11,1+195.0/count])
   #sz = sz+1
   plt.legend(loc='lower right',fontsize=11,fancybox=True,
              handlelength=2.5,prop={'size':sz})
@@ -256,10 +256,10 @@ if (nmax>-99):
   plt.tick_params('both', length=3, width=1, which='minor')
   minorLocator = MultipleLocator(sep)
   ax.xaxis.set_minor_locator(minorLocator)
-  sz = np.min([11,3+95.0/count])
+  sz = np.min([13,1+195.0/count])
   col = 1
   if (count>30): 
-    sz = np.min([13,3+170.0/count])
+    sz = np.min([13,1+195.0/count*2])
     col = 2
   plt.legend(loc='lower right',fontsize=10,fancybox=True,
              handlelength=3,prop={'size':sz},ncol=col)
@@ -288,7 +288,7 @@ if (nmax>-99):
   plt.tick_params(axis='both', labelsize=14)
   plt.tick_params('both', length=6, width=1.5, which='major')
   plt.tick_params('both', length=3, width=1, which='minor')
-  sz = np.min([13,4+90.0/count])
+  sz = np.min([13,1+195.0/count])
   #sz = sz+3
   plt.legend(loc='lower right',fontsize=10,fancybox=True,
              handlelength=3,prop={'size':sz})
@@ -406,8 +406,11 @@ for i in range(0,30):
     minorLocator = MultipleLocator(sep)
     ax.xaxis.set_minor_locator(minorLocator)
   minorLocator = MultipleLocator(1.0)
+  if (nmax-nmin>50): minorLocator = MultipleLocator(2.0)
+  if (nmax-nmin>100): minorLocator = MultipleLocator(5.0)
+  if (nmax-nmin>200): minorLocator = MultipleLocator(10.0)
   ax.yaxis.set_minor_locator(minorLocator)
-  sz = np.min([11,5+80.0/count])
+  sz = np.min([11,1+195.0/count])
   plt.legend(loc='lower right',fontsize=10,fancybox=True,
              handlelength=3,prop={'size':sz})
   plt.tight_layout()

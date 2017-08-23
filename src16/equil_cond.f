@@ -81,7 +81,8 @@
       integer,save :: iKFe3AlSi3O12H2=0,iMg3Si2O9H4=0,iFe3Si2O9H4=0
       integer,save :: iMgCr2O4=0,iCr2O3=0,iMn3Al2Si3O12=0,iMn2SiO4=0
       integer,save :: iKAlSi2O6=0,iCa3Al2Si3O12=0,iFeAl2SiO7H2=0
-      integer,save :: iNaMg3AlSi3O12H2=0,iNaAlSiO4=0
+      integer,save :: iNaMg3AlSi3O12H2=0,iNaAlSiO4=0,iCa2MgSi2O7=0
+      integer,save :: iCaTiSiO5=0
       integer,save :: it_tot=0, sit_tot=0, fail_tot=0
       real*8 :: time0,time1,qread
 
@@ -181,6 +182,8 @@
           if (dust_nam(i).eq.'Cr2O3[s]')      iCr2O3=i
           if (dust_nam(i).eq.'Mn2SiO4[s]')    iMn2SiO4=i
           if (dust_nam(i).eq.'NaAlSiO4[s]')   iNaAlSiO4=i
+          if (dust_nam(i).eq.'CaTiSiO5[s]')   iCaTiSiO5=i
+          if (dust_nam(i).eq.'Ca2MgSi2O7[s]') iCa2MgSi2O7=i
           if (dust_nam(i).eq.'Ca3Al2Si3O12[s]') iCa3Al2Si3O12=i
           if (dust_nam(i).eq.'Mn3Al2Si3O12[s]') iMn3Al2Si3O12=i
           if (dust_nam(i).eq.'FeAl2SiO7H2[s]')  iFeAl2SiO7H2=i
@@ -221,7 +224,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        !if (qread>1.Q-3.and.iread==126) verbose=2
+        !if (qread>1.Q-3.and.iread==87) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -1050,24 +1053,6 @@
             eps(Fe) = eps_save(Fe)
             eps(Si) = eps_save(Si)
           endif   
-          if (active(iFeO_l).and.active(iFe_l).and..false.) then
-            changed = .true.
-            !--- decide ---
-            if (Sat0(iFe_l).gt.Sat0(iFeO_l)) then
-              ioff = iFeO_l
-              active(iFeO_l) = .false.  
-              amount = ddust(iFeO_l)
-              call TRANSFORM(iFeO_l,iFe_l,amount,1.Q0,
-     >                       ddust,eps,dscale,active,ok)
-            else  
-              ioff = iFe_l
-              active(iFe_l) = .false.  
-              amount = ddust(iFe_l)
-              call TRANSFORM(iFe_l,iFeO_l,amount,1.Q0,
-     >                       ddust,eps,dscale,active,ok)
-            endif  
-            eps(Fe) = eps_save(Fe)
-          endif   
           if (active(iSiO).and.active(iMgSiO3).and.
      >        active(iMg2SiO4).and..false.) then
             changed = .true.
@@ -1451,6 +1436,25 @@
             eps(O) = eps_save(O)
             eps(H) = eps_save(H)
           endif   
+          if (active(iTiO).and.active(iTiO_l)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iTiO).gt.Sat0(iTiO_l)) then
+              ioff = iTiO_l
+              active(iTiO_l) = .false.  
+              amount = ddust(iTiO_l)
+              call TRANSFORM(iTiO_l,iTiO,amount,1.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iTiO
+              active(iTiO) = .false.  
+              amount = ddust(iTiO)
+              call TRANSFORM(iTiO,iTiO_l,amount,1.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif  
+            eps(Ti) = eps_save(Ti)
+            eps(O)  = eps_save(O)
+          endif   
           if (active(iFe).and.active(iFe_l)) then
             changed = .true.
             !--- decide ---
@@ -1582,25 +1586,6 @@
             endif  
             eps(Fe) = eps_save(Fe)
             eps(S)  = eps_save(S)
-          endif   
-          if (active(iFeO).and.active(iFeO_l)) then
-            changed = .true.
-            !--- decide ---
-            if (Sat0(iFeO).gt.Sat0(iFeO_l)) then
-              ioff = iFeO_l
-              active(iFeO_l) = .false.  
-              amount = ddust(iFeO_l)
-              call TRANSFORM(iFeO_l,iFeO,amount,1.Q0,
-     >                       ddust,eps,dscale,active,ok)
-            else  
-              ioff = iFeO
-              active(iFeO) = .false.  
-              amount = ddust(iFeO)
-              call TRANSFORM(iFeO,iFeO_l,amount,1.Q0,
-     >                       ddust,eps,dscale,active,ok)
-            endif  
-            eps(Fe) = eps_save(Fe)
-            eps(O)  = eps_save(O)
           endif   
           if (active(iLiCl).and.active(iLiCl_l)) then
             changed = .true.
@@ -2219,6 +2204,29 @@
           Iindex(Nact) = Mg
           e_act(Mg) = .true.
         endif   
+        if (active(iNaAlSi3O8).and..not.e_act(Na).and.e_num(Na)==1) then
+          print*,"... exchanging "//elnam(Iindex(Nact))//" for Na"
+          e_act(Iindex(Nact)) = .false.
+          Iindex(Nact) = Na
+          e_act(Na) = .true.
+        endif   
+        if (active(iCaSiO3).and.active(iCa2MgSi2O7).and.
+     >      active(iCaAl2Si2O8).and..not.e_act(Mg)) then
+          print*,"... exchanging "//elnam(Iindex(Nact))//" for Mg"
+          e_act(Iindex(Nact)) = .false.
+          Iindex(Nact) = Mg
+          e_act(Mg) = .true.
+        endif  
+        if (active(iCaTiO3).and.active(iCaTiSiO5).and.e_act(Ca).and.
+     >      active(iCaAl2Si2O8).and..not.e_act(Si)) then
+          print*,"... exchanging Ca for Si"
+          do i=1,Nind
+            if (Iindex(i)==Ca) exit
+          enddo  
+          Iindex(i) = Si
+          e_act(Ca) = .false.
+          e_act(Si) = .true.
+        endif  
         if (verbose>1) print*,"solving for ... ",
      >                      (elnam(Iindex(i))//" ",i=1,Nind)
         if (verbose>1) print'(99(1pE11.3))',(Iabund(i),i=1,Nind)
