@@ -8,7 +8,7 @@
 *****  INPUT:  species = name of nucleating species             *****
 *****          T  = Gastemperatur [K]                           *****
 *****          V0 = monomer volume [cm-3]                       *****
-*****          mass = mass of monomer [amu]                     *****
+*****          mass = mass of monomer [g]                       *****
 *****          n1 = monomer particle density [cm-3]             *****
 *****          SS = supersaturation ratio                       ***** 
 *****                                                           *****

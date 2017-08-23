@@ -82,7 +82,7 @@
       integer,save :: iMgCr2O4=0,iCr2O3=0,iMn3Al2Si3O12=0,iMn2SiO4=0
       integer,save :: iKAlSi2O6=0,iCa3Al2Si3O12=0,iFeAl2SiO7H2=0
       integer,save :: iNaMg3AlSi3O12H2=0,iNaAlSiO4=0,iCa2MgSi2O7=0
-      integer,save :: iCaTiSiO5=0,iNaAlSi2O6=0
+      integer,save :: iCaTiSiO5=0,iNaAlSi2O6=0,iKAlSiO4=0
       integer,save :: it_tot=0, sit_tot=0, fail_tot=0
       real*8 :: time0,time1,qread
 
@@ -175,6 +175,7 @@
           if (dust_nam(i).eq.'Ni[l]')         iNi_l=i 
           if (dust_nam(i).eq.'ZrO2[s]')       iZrO2=i 
           if (dust_nam(i).eq.'ZrSiO4[s]')     iZrSiO4=i 
+          if (dust_nam(i).eq.'KAlSiO4[s]')    iKAlSiO4=i
           if (dust_nam(i).eq.'Ni3S2[s]')      iNi3S2=i
           if (dust_nam(i).eq.'Mg3Si2O9H4[s]') iMg3Si2O9H4=i
           if (dust_nam(i).eq.'Fe3Si2O9H4[s]') iFe3Si2O9H4=i
@@ -225,7 +226,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        !if (qread>1.Q-3.and.iread==222) verbose=2
+        if (qread>1.Q-3.and.iread==73) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -632,6 +633,46 @@
             eps(Si) = eps_save(Si)
             eps(O)  = eps_save(O)
           endif    
+          if (active(iKMg3AlSi3O12H2).and.active(iKAlSiO4).and.
+     >        active(iMg2SiO4).and.active(iFe2SiO4).and.
+     >        active(iFe)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iKMg3AlSi3O12H2).gt.Sat0(iKAlSiO4)) then
+              ioff = iKAlSiO4
+              active(iKAlSiO4) = .false.  
+              amount = ddust(iKAlSiO4)/4.Q0
+              call TRANSFORM(iKAlSiO4,iKMg3AlSi3O12H2,amount,1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iKAlSiO4,iMg2SiO4,amount,-1.5Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iKAlSiO4,iFe2SiO4,amount,-0.5Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iKAlSiO4,iFe,amount,1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iKMg3AlSi3O12H2
+              active(iKMg3AlSi3O12H2) = .false.  
+              amount = ddust(iKMg3AlSi3O12H2)/4.Q0
+              call TRANSFORM(iKMg3AlSi3O12H2,iKAlSiO4,amount,1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iKMg3AlSi3O12H2,iMg2SiO4,amount,1.5Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iKMg3AlSi3O12H2,iFe2SiO4,amount,0.5Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+              call TRANSFORM(iKMg3AlSi3O12H2,iFe,amount,-1.Q0*4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif  
+            !print*,eps(Al),eps(Mg),eps(Si),eps(Fe),eps(Kalium)
+            !print*,eps_save(Al),eps_save(Mg),eps_save(Si),
+     >      !       eps_save(Fe),eps_save(Kalium)
+            eps(Al) = eps_save(Al)
+            eps(Mg) = eps_save(Mg)
+            eps(Si) = eps_save(Si)
+            eps(Fe) = eps_save(Fe)
+            eps(Kalium) = eps_save(Kalium)
+            eps(O)  = eps_save(O)
+          endif  
           if (active(iKMg3AlSi3O12H2).and.active(iKAlSi3O8).and.
      >        active(iMg2SiO4).and.active(iFe2SiO4).and.
      >        active(iFe3O4)) then
