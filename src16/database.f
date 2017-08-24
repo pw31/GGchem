@@ -4,8 +4,8 @@
       use dust_data,ONLY: NELEM,NDUSTmax,eps0,dust_nam
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
-      integer,parameter :: DMAX = 10**5
-      integer :: NDAT=0
+      integer,parameter :: DMAX = 2*10**5
+      integer :: NDAT=0,NLAST=0
       TYPE ENTRY
         real*8 :: ln
         real*8 :: lT
@@ -19,28 +19,40 @@
       SUBROUTINE SAVE_DBASE
 **********************************************************************
       use dust_data,ONLY: NELEM,NDUST,eps0,dust_nam
-      use DATABASE,ONLY: NDAT,dbase
+      use DATABASE,ONLY: NDAT,NLAST,dbase
       implicit none
       integer :: i
       character(len=80) :: filename="database.dat"
-      open(unit=11,file=filename,form='unformatted',status='replace')
-      write(11) NELEM,NDUST,NDAT
-      write(11) eps0
-      write(11) dust_nam
-      do i=1,NDAT
-        write(11) dbase(i)%ln 
-        write(11) dbase(i)%lT
-        write(11) dbase(i)%eps
-        write(11) dbase(i)%ddust(1:NDUST)
-      enddo 
-      close(11)
+      if (NLAST==0) then
+        open(unit=11,file=filename,form='unformatted',status='replace')
+        write(11) NELEM,NDUST
+        write(11) eps0
+        write(11) dust_nam
+        do i=1,NDAT
+          write(11) dbase(i)%ln 
+          write(11) dbase(i)%lT
+          write(11) dbase(i)%eps
+          write(11) dbase(i)%ddust(1:NDUST)
+        enddo 
+        close(11)
+      else if (NDAT>NLAST) then 
+        open(unit=11,file=filename,form='unformatted',position='append')
+        do i=NLAST+1,NDAT
+          write(11) dbase(i)%ln 
+          write(11) dbase(i)%lT
+          write(11) dbase(i)%eps
+          write(11) dbase(i)%ddust(1:NDUST)
+        enddo 
+        close(11)
+      endif  
+      NLAST = NDAT
       end
 
 **********************************************************************
       SUBROUTINE LOAD_DBASE
 **********************************************************************
       use dust_data,ONLY: NELEM,NDUST,eps0,dust_nam
-      use DATABASE,ONLY: qp,NDAT,dbase
+      use DATABASE,ONLY: qp,NDAT,NLAST,dbase
       implicit none
       integer :: i,NELEM_read,NDUST_read
       logical :: ex
@@ -49,12 +61,13 @@
       character(len=80) :: filename="database.dat"
 
       NDAT = 0
+      NLAST = 0
       inquire(file=filename,exist=ex)
-      if (.not.ex) goto 100
+      if (.not.ex) goto 200
       open(unit=11,file=filename,form="unformatted",status="old")
-      read(11) NELEM_read,NDUST_read,NDAT
-      if (NELEM_read.ne.NELEM) goto 100
-      if (NDUST_read.ne.NDUST) goto 100
+      read(11) NELEM_read,NDUST_read
+      if (NELEM_read.ne.NELEM) goto 200
+      if (NDUST_read.ne.NDUST) goto 200
       read(11) eps0_read
       do i=1,NELEM
         if (eps0(i).ne.eps0_read(i)) goto 100
@@ -63,18 +76,20 @@
       do i=1,NDUST
         if (dust_nam(i).ne.dust_nam_read(i)) goto 100
       enddo
-      do i=1,NDAT
-        read(11) dbase(i)%ln 
+      do i=1,999999
+        read(11,end=100) dbase(i)%ln 
         read(11) dbase(i)%lT
         read(11) dbase(i)%eps
         read(11) dbase(i)%ddust(1:NDUST)
+        NDAT = NDAT+1
         !print*,i,EXP(dbase(i)%ln),EXP(dbase(i)%lT)
       enddo 
+ 100  continue
       close(11)
       print*,"... having read ",NDAT," datasets." 
+      NLAST = NDAT
       return
- 100  close(11)
-      NDAT = 0
+ 200  close(11)
       print*,"... no / unsuitable database."
       end
 
@@ -82,13 +97,12 @@
       SUBROUTINE PUT_DATA(nH,T,eps,ddust,qbest,ibest,active)
 **********************************************************************
       use dust_data,ONLY: NELEM,NDUST
-      use DATABASE,ONLY: qp,NDAT,DMAX,dbase
+      use DATABASE,ONLY: qp,NDAT,NLAST,DMAX,dbase
       implicit none
       real*8,intent(in) :: nH,T,qbest
       integer,intent(in) :: ibest
       real(kind=qp),intent(in) :: eps(NELEM),ddust(NDUST)
       logical,intent(in) :: active(0:NDUST)
-      integer,save :: Nlast=0
       integer :: i,j
       
       if (qbest<1.d-8) then
@@ -114,10 +128,9 @@
         dbase(i)%ddust(j) = ddust(j)
         if (.not.active(j)) dbase(i)%ddust(j)=0.Q0
       enddo  
-      if (NDAT>Nlast+10) then
+      if (NDAT>NLAST+10) then
         call SAVE_DBASE
         print*,"... saved ",NDAT," datasets."
-        Nlast = NDAT
       endif  
       end
 

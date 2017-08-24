@@ -226,7 +226,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        if (qread>1.Q-3.and.iread==73) verbose=2
+        !if (qread>1.Q-3.and.iread==88) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -2076,7 +2076,8 @@
           Iindex(i) = Mg
         endif   
         if (active(iCaMgSi2O6).and.active(iCaAl2Si2O8).and.
-     >      e_act(Si).and.(.not.e_act(Mg))) then
+     >      (.not.active(iCaTiSiO5)).and.e_act(Si).and.
+     >      (.not.e_act(Mg))) then
           print*,"... exchanging Si for Mg"
           e_act(Si) = .false.
           e_act(Mg) = .true.
@@ -2291,16 +2292,6 @@
           e_act(Iindex(Nact)) = .false.
           Iindex(Nact) = Mg
           e_act(Mg) = .true.
-        endif  
-        if (active(iCaTiO3).and.active(iCaTiSiO5).and.e_act(Ca).and.
-     >      active(iCaAl2Si2O8).and..not.e_act(Si)) then
-          print*,"... exchanging Ca for Si"
-          do i=1,Nind
-            if (Iindex(i)==Ca) exit
-          enddo  
-          Iindex(i) = Si
-          e_act(Ca) = .false.
-          e_act(Si) = .true.
         endif  
         if (verbose>1) print*,"solving for ... ",
      >                      (elnam(Iindex(i))//" ",i=1,Nind)
