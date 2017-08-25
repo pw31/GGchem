@@ -5,7 +5,7 @@
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       integer,parameter :: DMAX = 2*10**5
-      integer :: NDAT=0,NLAST=0
+      integer :: NDAT=0,NLAST=0,NMODI=0,NPICK1=0,NPICK2=0
       TYPE ENTRY
         real*8 :: ln
         real*8 :: lT
@@ -97,7 +97,7 @@
       SUBROUTINE PUT_DATA(nH,T,eps,ddust,qbest,ibest,active)
 **********************************************************************
       use dust_data,ONLY: NELEM,NDUST
-      use DATABASE,ONLY: qp,NDAT,NLAST,DMAX,dbase
+      use DATABASE,ONLY: qp,NDAT,NLAST,NMODI,DMAX,dbase
       implicit none
       real*8,intent(in) :: nH,T,qbest
       integer,intent(in) :: ibest
@@ -127,7 +127,8 @@
       do j=1,NDUST
         dbase(i)%ddust(j) = ddust(j)
         if (.not.active(j)) dbase(i)%ddust(j)=0.Q0
-      enddo  
+      enddo
+      NMODI = i
       if (NDAT>NLAST+10) then
         call SAVE_DBASE
         print*,"... saved ",NDAT," datasets."
@@ -139,7 +140,7 @@
       subroutine GET_DATA(nH,T,eps,ddust,qbest,ibest,active)
 **********************************************************************
       use dust_data,ONLY: NELEM,NDUST
-      use DATABASE,ONLY: qp,NDAT,DMAX,dbase
+      use DATABASE,ONLY: qp,NDAT,NMODI,NPICK1,NPICK2,DMAX,dbase
       implicit none
       real*8,intent(in) :: nH,T
       real*8,intent(out) :: qbest
@@ -161,6 +162,39 @@
       qbest  = 9.d+99
       ibest  = 0
       pot    = -0.03
+      !--- try last entry modified first ---
+      if (NMODI>0) then
+        i=NMODI
+        lnread = dbase(i)%ln 
+        lTread = dbase(i)%lT
+        qual = 0.05*ABS(lnread-ln)+ABS((lTread-lT)+pot*(lnread-ln))
+        qbest = qual
+        ibest = i
+        if (qbest<1.d-3) goto 100
+      endif  
+      !--- try around entry picked last time ---  
+      do i=MAX(1,NPICK1-1),MIN(NDAT,NPICK1+1)
+        lnread = dbase(i)%ln 
+        lTread = dbase(i)%lT
+        qual = 0.05*ABS(lnread-ln)+ABS((lTread-lT)+pot*(lnread-ln))
+        if (qual<qbest) then 
+          qbest = qual
+          ibest = i
+          if (qbest<1.d-3) goto 100
+        endif  
+      enddo
+      do i=MAX(1,NPICK2-1),MIN(NDAT,NPICK2+1)
+        lnread = dbase(i)%ln 
+        lTread = dbase(i)%lT
+        qual = 0.05*ABS(lnread-ln)+ABS((lTread-lT)+pot*(lnread-ln))
+        if (qual<qbest) then 
+          qbest = qual
+          ibest = i
+          if (qbest<1.d-3) goto 100
+        endif  
+      enddo
+      write(*,*) "entering full search ..."
+      !--- check them all ---  
       do i=NDAT,1,-1
         lnread = dbase(i)%ln 
         lTread = dbase(i)%lT
@@ -168,17 +202,18 @@
         if (qual<qbest) then 
           qbest = qual
           ibest = i
-          if (qbest<1.d-3) exit
+          if (qbest<1.d-3) goto 100
         endif  
       enddo
-      active = .false.
+ 100  active = .false.
       if (ibest>0) then
         eps    = dbase(ibest)%eps
         ddust  = dbase(ibest)%ddust(1:NDUST)
         do i=1,NDUST
           if (ddust(i)>0.Q0) active(i)=.true.
         enddo
-
+        NPICK2 = NPICK1
+        NPICK1 = ibest
         write(*,'(" ... found best dataset (",I6,
      >          ")  nH,T,qual=",3(1pE13.5))')
      >     ibest,EXP(dbase(ibest)%ln),EXP(dbase(ibest)%lT),qbest
