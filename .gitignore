@@ -9,8 +9,10 @@ src16/*.mod
 src16/makefile
 src16/ggchem16
 src16/*~
-Static_Conc*.dat
+Static_*.dat
+Static_*.bak
 database.dat
+database.bak
 instructions*
 paper
 TEA
@@ -29,3 +31,4 @@ kp.pdf
 logfile
 perform.dat
 out.ps
+phase*.png
