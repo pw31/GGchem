@@ -339,12 +339,13 @@ header = ''
 NELM = 0
 NMOL = 0
 NDUST = 0
+Npoints = 0L
 openr,1,filename
 readf,1,text
 readf,1,NELM,NMOL,NDUST,Npoints
 readf,1,header
 close,1
-data = READ_TABLE(filename,head=3,/double)
+data = READ_TABLE(filename,head=3,nrows=Npoints*(Npoints*1L),/double)
 quant = strsplit(header,/EXTRACT)
 iT  = where(quant EQ 'Tg')
 ip  = where(quant EQ 'pges')
@@ -359,7 +360,7 @@ lJst = dblarr(Npoints,Npoints)
 Nst  = dblarr(Npoints,Npoints)
 lS   = dblarr(Npoints,Npoints)
 nH   = dblarr(Npoints,Npoints)
-ii = 0
+ii = 0L
 for iy=0,Npoints-1 do begin
   for ix=0,Npoints-1 do begin
     T(ix,iy)    = data(iT,ii)
@@ -368,7 +369,7 @@ for iy=0,Npoints-1 do begin
     Nst(ix,iy)  = data(iq2,ii)     ; Nstar
     nH(ix,iy)   = data(inH,ii)     ; n<H> [1/cm3]
     lS(ix,iy)   = data(iS,ii)      ; log10 Sat(W)
-    ii = ii+1
+    ii = ii+1L
   endfor
 endfor
 yy   = lJst - ALOG10(nH)          ; log10 Jstar/n<H> [1/s]
@@ -378,7 +379,7 @@ Tmax = max(T)
 pmin = min(logp)
 pmax = max(logp)
 ymax = max(yy)
-ymin = ymax-30.0
+ymin = ymax-25.0
 ilev = 80
 ddd  = (ymax-ymin)/ilev
 lev=dblarr(ilev+1)
@@ -439,8 +440,8 @@ SKALA_VERT, ilev+1,lev,col,'!7log N!L*',[0.86,0.5,0.89,0.95]
 
 yr   = 3600.0*24.0*365.25
 taunuc = 1.E-14/(10.0^lJst/nH)/yr
-ymax = 10.0
-ymin = -1.0
+ymax = 9.0
+ymin = -3.0
 ilev = 80
 ddd  = (ymax-ymin)/ilev
 for i=0, ilev do begin
@@ -460,8 +461,8 @@ contour,alog10(taunuc),T,logp,/xlog,$
 contour,lS,T,logp,/overplot,level=[0.0],c_annotation='S=1',$
     c_linestyle=2,c_charsize=1.6,c_thick=10,color=white
 
-;contour,taunuc,T,logp,/overplot,level=[1000],c_annotation=['1000'],$
-;    c_linestyle=2,c_charsize=1.3,c_thick=10,color=black
+contour,taunuc,T,logp,/overplot,level=[1,1000],c_annotation=['1yr','1000yr'],$
+    c_linestyle=2,c_charsize=1.3,c_thick=10,color=black
 
 SKALA_VERT, ilev+1,lev,col,'!7log !9t!L!7nuc!N [yrs]',[0.86,0.5,0.89,0.95]
 

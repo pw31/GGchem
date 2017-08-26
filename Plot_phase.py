@@ -8,7 +8,7 @@ plt.rcParams['axes.linewidth'] = 1.5
 single_figures = 1
 if (single_figures==0): pp=PdfPages('ggchem.pdf')
 
-file   = 'Static_Conc_2D.bak'
+file   = 'Static_Conc_2D.dat'
 data   = open(file)
 dummy  = data.readline()
 dimens = data.readline()
@@ -45,8 +45,8 @@ for sp in range(3,4+NELEM+NMOLE):
   dat[:,sp] = dat[:,sp]-lognH[:]    # log(nmol) -> log(nmol/n<H>) for molecules 
 dat = np.array(dat)
 
-colo = ['gold','cadetblue','coral','blue','darkgoldenrod','darkgreen','red','darkorchid','aqua','burlywood','chartreuse','chocolate','black','darkkhaki','pink','moccasin','cornflowerblue','darkgray']
-#'aquamarine','beige','darkorange','crimson','darkcyan','bisque','darkmagenta','darkolivegreen'
+colo = ['gold','cadetblue','coral','blue','beige','chartreuse','darkgreen','red','darkorchid','aqua','burlywood','chocolate','black','darkkhaki','pink','moccasin','cornflowerblue','darkgray']
+#'aquamarine','darkgoldenrod','darkorange','crimson','darkcyan','bisque','darkmagenta','darkolivegreen'
 Ncolor = len(colo)
 
 #================== where are the elements? ================
@@ -66,7 +66,7 @@ for iy in range(0,NPOINT):
   yl[iy] = pmax+(pmin-pmax)*np.max([0,iy-0.5])/(NPOINT-1)
   yr[iy] = pmax+(pmin-pmax)*np.min([NPOINT-1,iy+0.5])/(NPOINT-1)
 
-for i in range(21,22):
+for i in range(0,30):
   el = ellist[i]
   al = allist[i]
   ex = exlist[i]
@@ -160,8 +160,8 @@ for i in range(21,22):
   leg.get_frame().set_alpha(0.7)
   plt.tight_layout()
   if (single_figures==0): plt.savefig(pp,format='pdf')
-  if (single_figures==0): plt.clf()
   if (single_figures==1): fig.savefig('phase_'+titel+'.png')
+  plt.clf()
 
 if (single_figures==0): pp.close()
 if (single_figures==0): print '... written output to ggchem.pdf.'
