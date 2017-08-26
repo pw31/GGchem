@@ -298,8 +298,8 @@
         !--- compute supersat ratios and nucleation rates ---
         call SUPERSAT(Tg,nat,nmol,Sat)
         if (hasW) then
-          call NUCLEATION('W',Tg,dust_vol(iW),mass(W),
-     &                    nat(W),Sat(iW),Jstar,Nstar)
+          call NUCLEATION('W',Tg,dust_vol(iW),nat(W),
+     &                    Sat(iW),Jstar,Nstar)
         else
           Jstar = 0
           Nstar = 9.e+99

@@ -3,6 +3,7 @@
 ***********************************************************************
       use PARAMETERS,ONLY: model_dim,model_struc
       use EXCHANGE,ONLY: chemcall,chemiter,ieqcond,itransform
+      use DATABASE,ONLY: NLAST
 
       call READ_PARAMETER
       call INIT
@@ -31,6 +32,7 @@
       print'("eq condensation calls = ",I7)',ieqcond
       print'("      transform calls = ",I7)',itransform
 
+      NLAST=0         ! also save replaced database entries
       call SAVE_DBASE
       end
 

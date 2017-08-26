@@ -88,8 +88,8 @@
           !--- compute supersat ratios and nucleation rates ---
           call SUPERSAT(Tg,nat,nmol,Sat)
           ic = stindex(dust_nam,NDUST,'W[s]')
-          call NUCLEATION('W',Tg,dust_vol(ic),dust_mass(ic),
-     &                    nat(W),Sat(ic),Jstar,Nstar)
+          call NUCLEATION('W',Tg,dust_vol(ic),nat(W),
+     &                    Sat(ic),Jstar,Nstar)
 
           !--- compute dust/gas density ratio ---
           rhog = nHges*muH
