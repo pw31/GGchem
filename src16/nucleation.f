@@ -93,7 +93,7 @@
       alpha = 1.d0
       vth   = SQRT(bk*T/(2.d0*pi*mass(iel)))
       beta  = alpha*nat(iel)*vth
-      print*,elnam(iel),nat(iel),mass(iel)/amu
+      !print*,elnam(iel),nat(iel),mass(iel)/amu
       do i=1,NMOLE
         m = 0.d0
         stoich = 0.0
