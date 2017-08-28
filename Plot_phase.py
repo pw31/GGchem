@@ -66,7 +66,7 @@ for iy in range(0,NPOINT):
   yl[iy] = pmax+(pmin-pmax)*np.max([0,iy-0.5])/(NPOINT-1)
   yr[iy] = pmax+(pmin-pmax)*np.min([NPOINT-1,iy+0.5])/(NPOINT-1)
 
-for i in range(28,29):
+for i in range(0,30):
   el = ellist[i]
   al = allist[i]
   ex = exlist[i]
@@ -91,9 +91,7 @@ for i in range(28,29):
         if (next2!='MN' and next2!='ZN'):
           text1 = spname[ind+len(el):]
           text2 = ''
-          k=0
           for c in text1:
-            k=k+1
             if c.isdigit(): 
               text2=text2+c
             else:
@@ -102,7 +100,7 @@ for i in range(28,29):
           if (len(text2)>0): stoich = float(text2)
           j1=str.find(spname,'(')
           j2=str.find(spname,')')
-          if (j2>0 and j1<k and k<=j2):
+          if (j1>=0 and j1<ind and ind<j2):
             text2=spname[j2+1:j2+2]
             stoich=stoich*float(text2)
           print el,spname,stoich
