@@ -55,7 +55,11 @@
               found = .true.
             endif
           enddo
-          if (.not.found) stop 'Element in dust species not found'
+          if (.not.found) then
+            print*,trim(dust_nam(NDUST)),name
+            print*,elnam(1:NELEM)
+            stop 'Element in dust species not found'
+          endif  
           found = .false.
           do k=1,NELM
             if (catm(k).eq.name) then

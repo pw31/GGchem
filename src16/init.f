@@ -17,7 +17,7 @@
      >                   As,Se,Br,Kr,Rb,Sr,Y,Zr,W
       implicit none
       integer :: i,nr
-      real*8 :: m,abund(NELEM,4)
+      real*8 :: m,abund(74,4)
       character(len=2) :: el
       character(len=20) :: elname
       character(len=20) :: source(4)
@@ -247,11 +247,19 @@
         do i=1,5
           read(1,'(A200)') line
         enddo  
-        do i=1,NELEM
+        do i=1,74
           read(1,*) nr,elname,el,m,abund(nr,1:4)
-          mass(nr)  = m*amu
-          elnam(nr) = el
-          eps(nr) = MAX(1.e-99,abund(nr,abund_pick)/abund(1,abund_pick))
+          if (nr<=40) then
+            mass(nr)  = m*amu
+            elnam(nr) = el
+            eps(nr)   = MAX(1.e-99,abund(nr,abund_pick)
+     &                            /abund(1,abund_pick))
+          else if (trim(el)=='W') then
+            mass(W)  = m*amu
+            elnam(W) = el
+            eps(W)   = MAX(1.e-99,abund(nr,abund_pick)
+     &                           /abund(1,abund_pick))
+          endif  
         enddo  
         close(1)
       endif  
