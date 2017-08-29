@@ -20,7 +20,7 @@
       character(len=2) :: test3
       character(len=1) :: char
       integer :: verbose=0
-      logical :: isOK,hasW
+      logical :: isOK,hasW,TEAinterface=.false.
 
       !----------------------------
       ! ***  open output files  ***
@@ -48,6 +48,7 @@
      &               ('eps'//trim(elnam(elnum(j))),j=el+1,NELM),
      &               'dust/gas','Jstar(W)','Nstar(W)'
 
+      if (TEAinterface) then
       !--- TEA automated choice from dispol_large.dat ---
       species = "H_g He_ref C_g N_g O_g Si_g S_g Na_g "
      &        //"Ca_g Cl_g Ti_g K_g Al_g Mg_g Fe_g Li_g "
@@ -253,6 +254,7 @@
       write(71,'(A10,A8,99(A18))') "#Pressure ","Temp",
      &         (trim(elnam(elnum(j))),j=1,el-1),
      &         (trim(elnam(elnum(j))),j=el+1,NELM)
+      endif
 
       iW = stindex(dust_nam,NDUST,'W[s]')
       hasW = (iW>0)
@@ -334,19 +336,22 @@
      &       LOG10(MAX(1.Q-300, Jstar)), 
      &       MIN(999999.99999,Nstar)
 
-        nTEA = 0.0                           ! no electrons
-        do j=1,NELEM
-          nTEA = nTEA + nat(j)               ! atoms
-        enddo
-        do j=1,NMOLE
-          if (index(cmol(j),"+")>0) cycle    ! no ions
-          if (index(cmol(j),"-")>0) cycle    ! no cations
-          nTEA = nTEA + nmol(j)              ! molecules
-        enddo
-        pTEA = nTEA*bk*Tg
-        write(71,'(1pE10.4,0pF8.2,99(1pE18.11))') pTEA/bar,Tg,
-     &      (eps(elnum(jj)),jj=1,el-1),
-     &      (eps(elnum(jj)),jj=el+1,NELM)
+        if (TEAinterface) then
+          nTEA = 0.0                           ! no electrons
+          do j=1,NELEM
+            nTEA = nTEA + nat(j)               ! atoms
+          enddo
+          do j=1,NMOLE
+            if (index(cmol(j),"+")>0) cycle    ! no ions
+            if (index(cmol(j),"-")>0) cycle    ! no cations
+            nTEA = nTEA + nmol(j)              ! molecules
+          enddo
+          pTEA = nTEA*bk*Tg
+          write(71,'(1pE10.4,0pF8.2,99(1pE18.11))') pTEA/bar,Tg,
+     &        (eps(elnum(jj)),jj=1,el-1),
+     &        (eps(elnum(jj)),jj=el+1,NELM)
+        endif
+  
         if (verbose>0) read(*,'(a1)') char
 
       enddo  
@@ -355,7 +360,7 @@
       close(71)
 
       write(*,*)
-      write(*,frmt) trim(species)
+      if (TEAinterface) write(*,frmt) trim(species)
 
  1000 format(4(' eps(',a2,') = ',1pD8.2))
  1010 format(A4,0pF8.2,3(a6,1pE9.2),1(a11,1pE9.2))

@@ -51,7 +51,7 @@ if (Tmax-Tmin>1500): sep=100
 Tmin  = Tmin*0.85
 Tmax  = Tmax*1.05
 
-file   = 'TEAoutBench1/results/TEAoutBench1.tea'
+file   = 'results/TEAoutBench1/results/TEAoutBench1.tea'
 data   = open(file)
 dum    = data.readline()
 dum    = data.readline()
@@ -94,8 +94,12 @@ nOH_tea   = dat2[:,np.where(sp_tea == 'OH_g')[0]]
 Tind1 = np.where((Tg<Tmax)    & (Tg>Tmin))[0]
 Tind2 = np.where((T_tea<Tmax) & (T_tea>TEAmin))[0]
 
-styl = ['-','-','-','-','-','-','-','--','--','--','--','--','--','--',':',':',':',':',':',':',':','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.','-.']
-widt  = [ 2 , 2 , 2 , 2 , 2 , 2 , 2 ,  2 ,  2 ,  2 ,  2 ,  2 ,  2 ,  2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  , 2  ]
+colo = ['blue','cornflowerblue','green','red','cyan','darkmagenta','gold','black','chocolate']
+#'blue','silver','darkgoldenrod','darkgreen','darkmagenta','red','darkorange','gold','darkorchid','aqua','cadetblue','darkolivegreen','burlywood','chartreuse','chocolate','coral','cornflowerblue','black','darkkhaki','pink','moccasin','limegreen'
+Ncolor = len(colo)
+colo = colo*10
+styl = ['-']*Ncolor + ['--']*Ncolor + [':']*Ncolor + ['-.']*Ncolor*7 
+widt = [2]*Ncolor*10
 
 #================== temperature-pressure structure ====================
 fig,ax = plt.subplots()
@@ -242,7 +246,7 @@ for i in range(0,30):
     yy = yy - lognn                    # log10 nmol/ntot
     if (np.max(yy[Tind1]-maxy[Tind1])>-limit):
       print molname,np.max(yy[Tind1]-maxy[Tind1])
-      plt.plot(Tg,yy,ls=styl[count],lw=4,label=molname)
+      plt.plot(Tg,yy,c=colo[count],ls=styl[count],lw=4,label=molname)
       count = count + 1
 
   if (al<>' '): el=al
@@ -287,7 +291,8 @@ for i in range(0,30):
   plt.tick_params('both', length=5, width=1, which='minor')
   #minorLocator = MultipleLocator(sep)
   #ax.xaxis.set_minor_locator(minorLocator)
-  plt.legend(loc='lower left',fontsize=10,fancybox=True)
+  leg = plt.legend(loc='lower left',fontsize=10,fancybox=True)
+  leg.get_frame().set_alpha(0.7)
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
   if (single_figures==0): plt.clf()

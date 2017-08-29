@@ -365,6 +365,7 @@ file2 = open('DustChemSUPCRTBL.tex','w')
 index = np.argsort(lq1)
 all   = ''
 iplot = 0
+Nout  = 0
 for icond in range(0,Ncond): 
   i = index[icond]
   name = lname[i]
@@ -380,6 +381,7 @@ for icond in range(0,Ncond):
   if (all.find(' '+form+' ')>=0): 
     print form,name,"omitted"
     continue
+  Nout = Nout+1
   all = all+' '+form+' '
   file.write("\n")
   file.write("%s[s]%s%s\n" %(form,leer[len(form):],name))
@@ -395,7 +397,7 @@ for icond in range(0,Ncond):
   file.write("  5 %15.8e %15.8e %15.8e %15.8e %15.8e \n" \
         % (coeff[0],coeff[1],coeff[2],coeff[3],coeff[4]))
   file2.write(" %3i & %15s & %20s & %5.1f & 5 & %13.6e & %13.6e & %13.6e & %13.6e & %13.6e & $\pm$%4.2f%s \n" \
-              % (icond+1,form,name,sortq/1000,coeff[0],coeff[1],coeff[2],coeff[3],coeff[4],qual,'\\\\'))
+              % (Nout,form,name,sortq/1000,coeff[0],coeff[1],coeff[2],coeff[3],coeff[4],qual,'\\\\'))
 
   sys.stdout.write(".")
   sys.stdout.flush()
