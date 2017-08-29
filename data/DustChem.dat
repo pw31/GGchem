@@ -1,6 +1,6 @@
 dust species
 ============
-196
+199
 
 Al2O3[s]       CORUNDUM(alpha)
 3.97
@@ -749,6 +749,30 @@ VO[l]          V-MONOXIDE(liquid)   2063.0
  1 O
 # pvap-fit NIST-Janaf 298-3500K, +/- 0.006:
   3 -6.01063E+04  3.45413E+01 -2.64854E-03  4.70724E-07 -3.85068E-11
+
+V2O3[s]        KARELIANITE
+4.95
+2
+ 2 V
+ 3 O
+# dG-Stock-fit NIST-Janaf 100-2800K, +/- 0.32:
+  5  3.59474E+05 -4.09857E+00 -6.48556E+01  4.73778E-03 -3.36133E-07
+
+V2O4[s]        PARAMONTROSEITE
+4.09
+2
+ 2 V
+ 4 O
+# dG-Stock-fit NIST-Janaf 100-2200K, +/- 0.53:
+  5  4.14455E+05 -2.22575E+00 -9.36637E+01  3.73856E-03 -2.64367E-07
+
+V2O5[s]        SHCHERBINAITE
+3.37
+2
+ 2 V
+ 5 O
+# dG-Stock-fit NIST-Janaf 100-2800K, +/- 0.51:
+  5  4.58651E+05 -6.83064E+00 -8.22840E+01  6.02078E-03  0.00000E+00
 
 CaS[s]         CALCIUM-SULFIDE
 2.59

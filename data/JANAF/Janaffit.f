@@ -319,6 +319,9 @@
       write(*,*) '300 = Cr_cr'
       write(*,*) '301 = Cr_l'
       write(*,*) '302 = CrN_cr pvap'
+      write(*,*) '303 = V2O3_cr'
+      write(*,*) '304 = V2O4_cr'
+      write(*,*) '305 = V2O5_cr'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -2377,6 +2380,27 @@
         call READ_DATEI('CrN.txt'    ,dG,T,Nmax,N,S,2) 
         Edzahl = 1
         stoich(2) = 1.D0
+      elseif (specie.eq.303) then
+        call READ_DATEI('V2O3_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('V.txt'    ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('O.txt'    ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 2.D0
+        stoich(3) = 3.D0
+      elseif (specie.eq.304) then
+        call READ_DATEI('V2O4_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('V.txt'    ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('O.txt'    ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 2.D0
+        stoich(3) = 4.D0
+      elseif (specie.eq.305) then
+        call READ_DATEI('V2O5_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('V.txt'    ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('O.txt'    ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 2.D0
+        stoich(3) = 5.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop

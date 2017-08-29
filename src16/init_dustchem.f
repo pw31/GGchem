@@ -156,7 +156,6 @@
       !  endif  
       !enddo  
       !close(1)
-      !stop
 
       RETURN 
  1000 format(a200)

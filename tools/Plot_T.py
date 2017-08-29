@@ -36,9 +36,9 @@ Tmin  = np.min(Tg)
 Tmax  = np.max(Tg)
 #if (Tmax>4*Tmin): Tmax=4*Tmin
 #if (Tmin<Tmax/3): Tmin=Tmax/3
-#Tmin  = 1200
 #Tmax  = 460
-delT  = (Tmax-Tmin)*0.34
+#Tmin  = 100
+delT  = (Tmax-Tmin)*0.30  #0.47
 iii   = np.where((Tg>Tmin) & (Tg<Tmax))[0]
 pmin  = np.min(press[iii])/bar
 pmax  = np.max(press[iii])/bar
@@ -61,7 +61,7 @@ if (Tmax-Tmin<600): sep=20
 if (Tmax-Tmin<400): sep=10
 #Tmin  = Tmin*0.95
 #Tmax  = Tmax*1.1
-colo = ['blue','darkgray','darkgoldenrod','darkgreen','darkmagenta','red','yellow','darkorchid','aqua','cadetblue','darkolivegreen','burlywood','chartreuse','chocolate','coral','cornflowerblue','black','darkkhaki','pink','moccasin']
+colo = ['blue','silver','darkgoldenrod','darkgreen','darkmagenta','red','darkorange','gold','darkorchid','aqua','cadetblue','darkolivegreen','burlywood','chartreuse','chocolate','coral','cornflowerblue','black','darkkhaki','pink','moccasin','limegreen']
 #'aquamarine','beige','darkorange','crimson','darkcyan','bisque'
 Ncolor = len(colo)
 colo = colo*10
@@ -124,24 +124,25 @@ plt.clf()
 fig,ax = plt.subplots()
 ind = np.where(keyword=='dust/gas')[0][0]
 log10_dust_gas = dat[:,ind]
-plt.plot(Tg,10**log10_dust_gas,lw=4)
-plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
-plt.ylabel(r'$\mathrm{dust/gas}$',fontsize=20)
-plt.xlim(Tmin,Tmax)
-plt.ylim(1.E-10,0.1)
-plt.yscale('log')
-plt.tick_params(axis='both', labelsize=15)
-plt.tick_params('both', length=6, width=1.5, which='major')
-plt.tick_params('both', length=3, width=1, which='minor')
-ax.yaxis.set_minor_locator(LogLocator(subs=[2,3,4,5,6,7,8,9]))
-minorLocator = MultipleLocator(sep)
-ax.xaxis.set_minor_locator(minorLocator)
-#fmt=ScalarFormatter(useOffset=False)
-#fmt.set_scientific(False)
-#ax.yaxis.set_major_formatter(fmt)
-plt.tight_layout()
-plt.savefig(pp,format='pdf')
-plt.clf()
+if (np.max(log10_dust_gas)>-10):
+  plt.plot(Tg,10**log10_dust_gas,lw=4)
+  plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
+  plt.ylabel(r'$\mathrm{dust/gas}$',fontsize=20)
+  plt.xlim(Tmin,Tmax)
+  plt.ylim(1.E-10,0.1)
+  plt.yscale('log')
+  plt.tick_params(axis='both', labelsize=15)
+  plt.tick_params('both', length=6, width=1.5, which='major')
+  plt.tick_params('both', length=3, width=1, which='minor')
+  ax.yaxis.set_minor_locator(LogLocator(subs=[2,3,4,5,6,7,8,9]))
+  minorLocator = MultipleLocator(sep)
+  ax.xaxis.set_minor_locator(minorLocator)
+  #fmt=ScalarFormatter(useOffset=False)
+  #fmt.set_scientific(False)
+  #ax.yaxis.set_major_formatter(fmt)
+  plt.tight_layout()
+  plt.savefig(pp,format='pdf')
+  plt.clf()
 
 #================ the gas phase element abundances ===================
 fig,ax = plt.subplots()
@@ -164,7 +165,8 @@ minorLocator = MultipleLocator(sep)
 ax.xaxis.set_minor_locator(minorLocator)
 minorLocator = MultipleLocator(1)
 ax.yaxis.set_minor_locator(minorLocator)
-plt.legend(loc='lower right',fontsize=11,fancybox=True)
+sz = np.min([11,1+195.0/count])
+plt.legend(loc='lower right',fontsize=sz,fancybox=True)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
 plt.clf()
@@ -173,8 +175,8 @@ plt.clf()
 solids = []
 smean = []
 nmax = float(-100)
-ymin = -12.5  #-7.6  #-12.5
-ymax = -3.3   #-4.2  #-4
+ymin = -12.5  #-7.6
+ymax = -4.0   #-3.3  #-4.3
 for i in range(4+NELEM+NMOLE,4+NELEM+NMOLE+NDUST,1):
   solid = keyword[i]
   solids.append(solid[1:])
@@ -411,8 +413,12 @@ for i in range(0,30):
   if (nmax-nmin>200): minorLocator = MultipleLocator(10.0)
   ax.yaxis.set_minor_locator(minorLocator)
   sz = np.min([11,1+195.0/count])
+  col = 1
+  if (count>30): 
+    sz = np.min([9,1+195.0/count*2])
+    col = 2
   plt.legend(loc='lower right',fontsize=10,fancybox=True,
-             handlelength=3,prop={'size':sz})
+             handlelength=3,prop={'size':sz},ncol=col)
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
   plt.clf()

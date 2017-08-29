@@ -58,7 +58,7 @@ SHcoeff = np.loadtxt('SharpHuebner.dat',skiprows=0,usecols=[1,2,3,4,5])
 #==========================================================================
 # read GGChem data
 #==========================================================================
-f = open('../DustChem.dat','r')
+f = open('../../data/DustChem.dat','r')
 lines = f.readlines()[:]
 f.close
 i = 0
@@ -100,8 +100,8 @@ GGcoeff = np.array(lfit)
 #==========================================================================
 # read SLOP16 database
 #==========================================================================
-elnam  = np.loadtxt('../Abundances.dat',skiprows=5,usecols=[2],dtype='str')
-elmass = np.loadtxt('../Abundances.dat',skiprows=5,usecols=[3])
+elnam  = np.loadtxt('../../data/Abundances.dat',skiprows=5,usecols=[2],dtype='str')
+elmass = np.loadtxt('../../data/Abundances.dat',skiprows=5,usecols=[3])
 elnam  = np.array(elnam,dtype='str')
 elmass = np.array(elmass,dtype='float')
 amu = 1.66055E-24              # atomar mass unit [g]

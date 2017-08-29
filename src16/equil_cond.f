@@ -21,7 +21,7 @@
      >                    eps0,elnam,elcode
       use CONVERSION,ONLY: Nind,Ndep,Iindex,Dindex,is_dust,conv
       use EXCHANGE,ONLY: Fe,Mg,Si,Al,Ca,Ti,O,S,Na,Cl,H,Li,Mn,W,Ni,Cr,
-     >                   Kalium=>K,Zr,itransform,ieqcond
+     >                   Kalium=>K,Zr,V,itransform,ieqcond
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       real*8,intent(in) :: nHtot                ! H nuclei density [cm-3]
@@ -77,6 +77,7 @@
       integer,save :: iS_l=0,iK2SiO3=0,iK2SiO3_l=0,iTiC_l=0,iTi=0
       integer,save :: iTi_l=0,iTiO=0,iTiO_l=0,iSiS2_l=0,iLiOH=0
       integer,save :: iLiOH_l=0,iMnS=0,iW=0,iW_l=0,iZrO2=0,iZrSiO4=0
+      integer,save :: iVO=0,iV2O3=0
       integer,save :: iNi=0,iNi_l,iNi3S2=0,iFe3O4=0,iKMg3AlSi3O12H2=0
       integer,save :: iKFe3AlSi3O12H2=0,iMg3Si2O9H4=0,iFe3Si2O9H4=0
       integer,save :: iMgCr2O4=0,iCr2O3=0,iMn3Al2Si3O12=0,iMn2SiO4=0
@@ -193,6 +194,8 @@
           if (dust_nam(i).eq.'KMg3AlSi3O12H2[s]') iKMg3AlSi3O12H2=i
           if (dust_nam(i).eq.'KFe3AlSi3O12H2[s]') iKFe3AlSi3O12H2=i
           if (dust_nam(i).eq.'NaMg3AlSi3O12H2[s]') iNaMg3AlSi3O12H2=i
+          if (dust_nam(i).eq.'VO[s]')         iVO=i
+          if (dust_nam(i).eq.'V2O3[s]')       iV2O3=i
         enddo
         firstCall = .false. 
       endif
@@ -227,7 +230,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        !if (qread>1.Q-3.and.iread==80288) verbose=2
+        !if (qread>1.Q-3.and.iread==278) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -357,6 +360,24 @@
           dust_save = ddust
           ioff = 0
           ok = .true.
+          if (active(iVO).and.active(iV2O3)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iVO).gt.Sat0(iV2O3)) then
+              ioff = iV2O3
+              active(iV2O3) = .false.  
+              amount = ddust(iV2O3)/1.Q0
+              call TRANSFORM(iV2O3,iVO,amount,2.0*1.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else
+              ioff = iVO
+              active(iVO) = .false.  
+              amount = ddust(iVO)/1.Q0
+              call TRANSFORM(iVO,iV2O3,amount,0.5*1.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif
+            eps(V) = eps_save(V)
+          endif  
           if (active(iMg3Si2O9H4).and.active(iMg3Si4O12H2).and.
      >        active(iMgSiO3).and.active(iMg2SiO4)) then
             changed = .true.

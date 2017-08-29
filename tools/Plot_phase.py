@@ -8,7 +8,7 @@ plt.rcParams['axes.linewidth'] = 1.5
 single_figures = 1
 if (single_figures==0): pp=PdfPages('ggchem.pdf')
 
-file   = 'Static_Conc_2D.dat'
+file   = 'Static_Conc_2D.bak'
 data   = open(file)
 dummy  = data.readline()
 dimens = data.readline()
