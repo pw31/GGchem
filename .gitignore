@@ -1,9 +1,6 @@
 *~
 fort.*
 GIT.commands
-EarthCrust.dat
-abundances.pro
-Abundances.dat.ps
 src16/*.o
 src16/*.mod
 src16/makefile
@@ -13,7 +10,6 @@ Static_*.dat
 Static_*.bak
 database.dat
 database.bak
-instructions*
 paper
 TEA
 TEA.*
@@ -21,13 +17,13 @@ TEAout*old
 ggchem*.atm
 ggchem*.pdf
 Summer*
-JANAF/a.out
-JANAF/*~
-JANAF/fitout*
-JANAF/*.pdf
-JANAF/*fitdata*
+data/JANAF/a.out
+data/JANAF/*~
+data/JANAF/fitout*
+data/JANAF/*.pdf
+data/JANAF/*fitdata*
+tools/kp.pdf
 model_*.in
-kp.pdf
 logfile
 perform.dat
 out.ps

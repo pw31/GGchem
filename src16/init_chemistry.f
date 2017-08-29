@@ -88,6 +88,7 @@
       do loop=1,4
         filename = trim(dispol_file(loop))
         if (filename=='') exit
+        filename = 'data/'//trim(filename)
         write(*,*)
         write(*,*) 'reading molecules and kp-data from '
      &             //trim(filename)//" ..."

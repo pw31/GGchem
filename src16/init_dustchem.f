@@ -21,7 +21,7 @@
       write(*,*) "========================"
       trivial(:)=' '
 
-      open(12, file='DustChem.dat', status='old')
+      open(12, file='data/DustChem.dat', status='old')
  
       write(*,*) '--- dust species ---'
       read(12,1000) zeile

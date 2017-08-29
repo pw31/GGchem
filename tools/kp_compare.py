@@ -12,7 +12,7 @@ atm = 1.013E+6  # 1 atm in dyn/cm2
 R   = 8.3144598 # J/mol/K
 Rcal= 1.987     # cal/mol
 
-f = open('dispol_BarklemCollet.dat','r')
+f = open('../data/dispol_BarklemCollet.dat','r')
 header = f.readline()
 lines = f.readlines()[:]
 f.close
@@ -27,7 +27,7 @@ for i in range(0,NBC*2,2):
     BCdat[i/2,j] = float(tmp[j])
 print "BC species",BCname
 
-f = open('dispol_GGchem.dat','r')
+f = open('../data/dispol_GGchem.dat','r')
 header = f.readline()
 lines = f.readlines()[:]
 f.close
@@ -44,7 +44,7 @@ for i in range(0,NGG*2,2):
     GGdat[i/2,j] = float(dat[j])
 print "GG species",GGname
 
-f = open('dispol_StockKitzmann.dat','r')
+f = open('../data/dispol_StockKitzmann.dat','r')
 header = f.readline()
 lines = f.readlines()[:]
 f.close
@@ -59,7 +59,7 @@ for i in range(0,NSK*2,2):
     SKdat[i/2,j] = float(dat[j])
 print "SK species",SKname
 
-f = open('dispol_Tsuji.dat','r')
+f = open('../data/dispol_Tsuji.dat','r')
 header = f.readline()
 lines = f.readlines()[:]
 f.close
@@ -74,7 +74,7 @@ for i in range(0,NT*2,2):
     Tdat[i/2,j] = float(dat[j])
 print "Tsuji species",Tname
 
-f = open('dispol_SharpHuebner.dat','r')
+f = open('../data/dispol_SharpHuebner.dat','r')
 header = f.readline()
 lines = f.readlines()[:]
 f.close

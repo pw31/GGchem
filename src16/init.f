@@ -243,7 +243,7 @@
         write(*,*)
         write(*,*) "replacing from file Abundances.dat ("
      &             //trim(source(abund_pick))//") ..."
-        open(1,file='Abundances.dat',status='old')
+        open(1,file='data/Abundances.dat',status='old')
         do i=1,5
           read(1,'(A200)') line
         enddo  

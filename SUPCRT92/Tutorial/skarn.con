@@ -1,7 +1,0 @@
- Line 1 (free format): isat, iopt, iplot, univar, noninc
- Line 2 (free format): isomin, isomax, isoinc
- Line 3 (free format): v2min, v2max, v2inc
-******************************************************************
-   0   2   1   0   0
-   1000.0000000000000        1000.0000000000000        0.0000000000000000     
-   100.00000000000000        500.00000000000000        50.000000000000000     
