@@ -48,12 +48,11 @@ if (Tmax-Tmin>1500): sep=100
 Tmin  = Tmin*0.85
 Tmax  = Tmax*1.05
 
-file   = 'TEAoutLowPress/results/TEAoutLowPress.tea'
-#file   = 'TEAoutOrich/results/TEAoutOrich.tea'
-#file   = 'TEAoutCrich/results/TEAoutCrich.tea'
-#file   = 'TEAoutEarthCrust/results/TEAoutEarthCrust.tea'
-#file   = 'TEAoutOcean/results/TEAoutOcean.tea'
-#file   = 'TEAoutMeteorites/results/TEAoutMeteorites.tea'
+file   = 'results/TEAoutOrich/results/TEAoutOrich.tea'
+#file   = 'results/TEAoutCrich/results/TEAoutCrich.tea'
+#file   = 'results/TEAoutEarthCrust/results/TEAoutEarthCrust.tea'
+#file   = 'results/TEAoutOcean/results/TEAoutOcean.tea'
+#file   = 'results/TEAoutMeteorites/results/TEAoutMeteorites.tea'
 data   = open(file)
 dum    = data.readline()
 dum    = data.readline()
