@@ -56,7 +56,7 @@ SHnam   = np.loadtxt('SharpHuebner.dat',skiprows=0,usecols=[0],dtype='str')
 SHcoeff = np.loadtxt('SharpHuebner.dat',skiprows=0,usecols=[1,2,3,4,5])
 
 #==========================================================================
-# read GGChem data
+# read GGchem data
 #==========================================================================
 f = open('../../data/DustChem.dat','r')
 lines = f.readlines()[:]
@@ -443,7 +443,7 @@ for icond in range(0,Ncond):
     print form,"has GGchem data"
     dG_gg = (a0/T2 + a1 + a2*T2 + a3*T2**2 + a4*T2**3)          # J/mol @ 1bar
     dGmean = dGmean + dG_gg
-    plt.plot(T2,dG_gg/1000,c='green',lw=1.5,label='GGchem')
+    plt.plot(T2,dG_gg/1000,c='green',lw=1.5,label='old GGchem')
     
   plt.plot(T2,dG_su_fit/1000  ,c='blue',lw=2.0,label='SUPCRTBL fit')
   plt.plot(T1,dG_su/1000 ,c='black',ls='--',lw=3.5,label='SUPCRTBL data')
