@@ -20,7 +20,7 @@
       real*8 :: m,abund(74,4)
       character(len=2) :: el
       character(len=20) :: elname
-      character(len=20) :: source(4)
+      character(len=10) :: source(4)
       character(len=200) :: line
 
       write(*,*) 
@@ -239,7 +239,7 @@
 *     ***  read abundances from file?  ***      
 *     ------------------------------------
       if (abund_pick.ne.3) then
-        source = (/'EarthCrust','Ocean','Solar','Meteorites'/)
+        source = (/'EarthCrust','Ocean     ','Solar     ','Meteorites'/)
         write(*,*)
         write(*,*) "replacing from file Abundances.dat ("
      &             //trim(source(abund_pick))//") ..."
