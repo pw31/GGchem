@@ -9,6 +9,25 @@ condensation down to 100K.
 Many thanks to the following St Andrews' students:
 George Turner, Glen Hunter, Megan Worters, Drew Millard.
 
+Please cite 
+"Equilibrium chemistry down to 100 K. 
+ Impact of silicates and phyllosilicates on carbon/oxygen ratio"
+P. Woitke, Ch. Helling, G.H. Hunter, J.D. Millard, G. Turner, 
+M. Worters, J. Blecic 
+Astronomy & Astrophysics, submitted 27/10/2017
+
+------------------------------------------------------------------------
+We would be interested to hear from you for what kind of applications
+you would like to use ggchem, please keep us informed and email
+
+               Peter Woitke (pw31@st-and.ac.uk) 
+
+if you have any questions or problems. 
+
+------------------------------------------------------------------------
+If your research results in any publications, please cite the above
+article and consider to give us co-author-ship.
+
 ------------------------------------------------------------------------
 To checkout the git repository and compile the code, use 
 
@@ -23,10 +42,8 @@ you want to compile e.g. with gfortran.
 ------------------------------------------------------------------------
 To run the code, type e.g.
 
-> cd ../input
-> cp default.in MyModel.in
 > cd ..
-> ./ggchem input/MyModel.in
+> ./ggchem input/default.in
 
 It will create the output file "Static_Conc.dat", which contains all
 computed molecular, atom and ion particle densities, the electron
@@ -40,7 +57,7 @@ To visualise the results, use e.g.
 > evince ggchem.pdf &
 
 ------------------------------------------------------------------------
-Customise MyModel.in to tell GGchem what it should do.  Select or
+Customise default.in to tell GGchem what it should do.  Select or
 deselect elements by modifying the first line, default choice is
 
  H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li F P V Cr Mn Ni Zr W el
@@ -60,7 +77,7 @@ al.(2009). There are additional pre-installed options to use data from
 src16/init.f.
 
 ------------------------------------------------------------------------
-Choose source for equilibrium constant kp(T)-data, default choice is 
+Choose sources for equilibrium constants kp(T)-data, default choice is 
 dispol_new.dat. There are 6 different fit-formulas implemented, see
 details in src16/smchem16.f (function gk). Data files having kp-data
 are in folder data:
