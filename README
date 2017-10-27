@@ -6,23 +6,21 @@
 Fast thermo-chemical equilibrium code with or without equilibrium
 condensation down to 100K.
 
-Many thanks to the following St Andrews' students:
-George Turner, Glen Hunter, Megan Worters, Drew Millard.
-
+------------------------------------------------------------------------
 Please cite 
 "Equilibrium chemistry down to 100 K. 
- Impact of silicates and phyllosilicates on carbon/oxygen ratio"
-P. Woitke, Ch. Helling, G.H. Hunter, J.D. Millard, G. Turner, 
-M. Worters, J. Blecic 
+ Impact of silicates and phyllosilicates on carbon/oxygen ratio",
+P. Woitke, Ch. Helling, G. H. Hunter, J. D. Millard, 
+G. E. Turner, M. Worters, J. Blecic, 
 Astronomy & Astrophysics, submitted 27/10/2017
 
 ------------------------------------------------------------------------
-We would be interested to hear from you for what kind of applications
-you would like to use ggchem, please keep us informed and email
+We would be interested to hear from you about what kind of applications
+you would like to use ggchem for, please let us know via email
 
                Peter Woitke (pw31@st-and.ac.uk) 
 
-if you have any questions or problems. 
+as well as if you have any questions or problems. 
 
 ------------------------------------------------------------------------
 If your research results in any publications, please cite the above
@@ -57,8 +55,9 @@ To visualise the results, use e.g.
 > evince ggchem.pdf &
 
 ------------------------------------------------------------------------
-Customise default.in to tell GGchem what it should do.  Select or
-deselect elements by modifying the first line, default choice is
+Make a copy of default.in and customize it to tell GGchem what it should 
+do.  Select or deselect elements by modifying the first line, default 
+choice is
 
  H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li F P V Cr Mn Ni Zr W el
 
