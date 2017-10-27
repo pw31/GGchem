@@ -1,5 +1,5 @@
 # selected elements
-H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li V Cr Mn Ni Zr W F P el
+H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li F P V Cr Mn Ni Zr W el
 
 # name of files with molecular kp-data
 dispol_BarklemCollet.dat                ! dispol_file
@@ -16,10 +16,10 @@ dispol_WoitkeRefit.dat                  ! dispol_file3
 2                     ! model_dim  (0,1,2)
 .true.                ! model_pconst
 .false.               ! model_struc 
-6000.0                ! Tmax [K]
+5000.0                ! Tmax [K]
 100.0                 ! Tmin [K]      
 10.0                  ! pmax [bar]    
-1.E-9                 ! pmin [bar]
+1.E-7                 ! pmin [bar]
 200                   ! Npoints       
 .true.                ! NewChemIt
 5                     ! NewBackIt  
