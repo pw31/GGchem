@@ -144,19 +144,20 @@ for i in range(0,30):
   print implist
 
   plt.title(titel,fontsize=20)
-  plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
-  plt.ylabel(r'$\mathrm{log}_{10}\ p\ \mathrm{[bar]}$',fontsize=20)
+  plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=22)
+  plt.ylabel(r'$\mathrm{log}_{10}\ p\ \mathrm{[bar]}$',fontsize=22)
   plt.xlim(Tmin,Tmax)
   plt.ylim(pmax,pmin)
-  plt.tick_params(axis='both', labelsize=14)
-  plt.tick_params('both', length=6, width=1.5, which='major')
-  plt.tick_params('both', length=3, width=1, which='minor')
   if (Tmax/Tmin>10):
     plt.xscale('log')
   else:  
     minorLocator = MultipleLocator(sep)
     ax.xaxis.set_minor_locator(minorLocator)
-  minorLocator = MultipleLocator(1.0)
+  ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
+  plt.tick_params(axis='both', labelsize=18)
+  plt.tick_params('both', length=11, width=2, which='major')
+  plt.tick_params('both', length=8, width=1.5, which='minor')
+  #minorLocator = MultipleLocator(1.0)
   #if (nmax-nmin>50): minorLocator = MultipleLocator(2.0)
   #if (nmax-nmin>100): minorLocator = MultipleLocator(5.0)
   #if (nmax-nmin>200): minorLocator = MultipleLocator(10.0)

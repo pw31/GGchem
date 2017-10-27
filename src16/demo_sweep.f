@@ -9,7 +9,7 @@
       use EXCHANGE,ONLY: nel,nat,nion,nmol,H,C,N,O,W
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
-      real :: p,pe,Tg,rhog,rhod,nHges,nges,kT,pges
+      real :: p,pe,Tg,rhog,rhod,dustV,nHges,nges,kT,pges
       real :: nTEA,pTEA,mu,muold,fac,Jstar,Nstar
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST),out(NDUST)
       integer :: i,j,jj,l,iel,NOUT,iW,stindex
@@ -46,7 +46,7 @@
      &               ('n'//trim(short_name(i)),i=1,NDUST),
      &               ('eps'//trim(elnam(elnum(j))),j=1,el-1),
      &               ('eps'//trim(elnam(elnum(j))),j=el+1,NELM),
-     &               'dust/gas','Jstar(W)','Nstar(W)'
+     &               'dust/gas','dustVol/H','Jstar(W)','Nstar(W)'
 
       if (TEAinterface) then
       !--- TEA automated choice from dispol_large.dat ---
@@ -308,10 +308,12 @@
         endif  
 
         !--- compute dust/gas density ratio ---
-        rhog = nHges*muH
-        rhod = 0.0
+        rhog  = nHges*muH
+        rhod  = 0.0
+        dustV = 0.0
         do jj=1,NDUST
-          rhod = rhod + nHges*eldust(jj)*dust_mass(jj)
+          rhod  = rhod  + nHges*eldust(jj)*dust_mass(jj)
+          dustV = dustV + eldust(jj)*dust_Vol(jj)
           out(jj) = LOG10(MIN(1.Q+300,MAX(1.Q-300,Sat(jj))))
           if (ABS(Sat(jj)-1.Q0)<1.E-10) out(jj)=0.Q0
         enddo  
@@ -333,6 +335,7 @@
      &      (LOG10(eps(elnum(jj))),jj=1,el-1),
      &      (LOG10(eps(elnum(jj))),jj=el+1,NELM),
      &       LOG10(MAX(1.Q-300, rhod/rhog)),
+     &       LOG10(MAX(1.Q-300, dustV)),
      &       LOG10(MAX(1.Q-300, Jstar)), 
      &       MIN(999999.99999,Nstar)
 
