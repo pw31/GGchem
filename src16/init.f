@@ -16,12 +16,13 @@
      >                   Ar,K,Ca,Sc,Ti,V,Cr,Mn,Fe,Co,Ni,Cu,Zn,Ga,Ge,
      >                   As,Se,Br,Kr,Rb,Sr,Y,Zr,W
       implicit none
-      integer :: i,nr
-      real*8 :: m,abund(74,4)
+      integer :: i,j,nr
+      real*8 :: m,val,abund(74,4),eps0(NELEM),epsH
       character(len=2) :: el
       character(len=20) :: elname
       character(len=10) :: source(4)
       character(len=200) :: line
+      logical :: found
 
       write(*,*) 
       write(*,*) "elemental abundances and masses ..."
@@ -238,7 +239,35 @@
 *     ------------------------------------
 *     ***  read abundances from file?  ***      
 *     ------------------------------------
-      if (abund_pick.ne.3) then
+      if (abund_pick.eq.0) then
+        write(*,*)
+        write(*,*) "read element abundances from abundances.in ..."
+        open(1,file='abundances.in',status='old')
+        eps0 = eps
+        do i=1,999
+          read(1,*,end=1000) el,val
+          found = .false.
+          do j=1,NELEM
+            if (el==elnam(j)) then
+              eps(j) = val
+              found = .true.
+              !print*,el,elnam(j),j
+              exit
+            endif  
+          enddo  
+          if (.not.found) then
+            write(*,*) "*** element "//el//" not found." 
+            stop
+          endif  
+        enddo  
+ 1000   close(1)
+        epsH = eps(H)
+        do i=1,NELEM
+          eps(i) = 10.Q0 ** (eps(i)-epsH)
+          write(*,'(A2,": ",1pE10.3," ->",1pE10.3)') 
+     &          elnam(i),eps0(i),eps(i)
+        enddo        
+      else if (abund_pick.ne.3) then
         source = (/'EarthCrust','Ocean     ','Solar     ','Meteorites'/)
         write(*,*)
         write(*,*) "replacing from file Abundances.dat ("
@@ -271,6 +300,7 @@
         muH = muH + mass(i)*eps(i)
       enddo
       write(*,'("rho = n<H> *",1pE12.4," amu")') muH/amu
+      write(*,'("C/O =",0pF6.3)') eps(C)/eps(O)
 
       RETURN
       end
