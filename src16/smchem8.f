@@ -1108,7 +1108,7 @@ c     g(TiC)   : siehe oben!
             all_to_act(e) = Nact
             act_to_all(Nact) = e
             pbefore(e) = anmono(e)
-            anmono(e) = anmono(e)*pcorr(ido,e)  ! use corrections from last call
+            anmono(e) = anmono(e)*pcorr(enew,e)  ! use corrections from last call
           endif
         enddo
         if (verbose>1) print'(99(A3))',(trim(catm(eseq(j))),j=1,ido)
@@ -1188,12 +1188,14 @@ c     g(TiC)   : siehe oben!
           print*,eact(eseq(1:ido))
           stop
         endif  
-        pcorr(ido,:) = 1.d0
+        pcorr(enew,:) = 1.d0
         do ii=1,Nact
           i = act_to_all(ii)
-          pcorr(ido,i) = anmono(i)/pbefore(i)    ! save after/before for next run
-        enddo  
-        if (verbose>1) read(*,'(A1)') char
+          pcorr(enew,i) = anmono(i)/pbefore(i)    ! save after/before for next run
+        enddo 
+        if (verbose>1) print'("corr",99(1pE11.2))',
+     >                 pcorr(enew,act_to_all(1:Nact))
+        if (verbose>1) read(*,'(A1)') char 
       enddo  
       endif
 *

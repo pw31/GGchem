@@ -1105,13 +1105,13 @@ c     g(TiC)   : siehe oben!
             all_to_act(e) = Nact
             act_to_all(Nact) = e
             pbefore(e) = anmono(e)
-            anmono(e) = anmono(e)*pcorr(ido,e) 
+            anmono(e) = anmono(e)*pcorr(enew,e) 
           endif
         enddo
         if (verbose>1) print*,catm(eseq(1:ido))
         if (verbose>1) print*,eact(eseq(1:ido))
         if (verbose>1) print'("corr",99(1pE11.2))',
-     >                 pcorr(ido,act_to_all(1:Nact))
+     >                 pcorr(enew,act_to_all(1:Nact))
         do it=1,99
           do ii=1,Nact
             i = act_to_all(ii) 
@@ -1185,15 +1185,18 @@ c     g(TiC)   : siehe oben!
           print*,"Tg=",Tg
           print*,catm(eseq(1:ido))
           print*,eact(eseq(1:ido))
+          write(98,*) Tg,anHges
+          write(98,*) eps
+          write(98,*) catm
           stop
         endif  
-        pcorr(ido,:) = 1.Q0
+        pcorr(enew,:) = 1.Q0
         do ii=1,Nact
           i = act_to_all(ii)
-          pcorr(ido,i) = anmono(i)/pbefore(i)    ! save after/before for next run
+          pcorr(enew,i) = anmono(i)/pbefore(i)    ! save after/before for next run
         enddo 
         if (verbose>1) print'("corr",99(1pE11.2))',
-     >                 pcorr(ido,act_to_all(1:Nact))
+     >                 pcorr(enew,act_to_all(1:Nact))
         if (verbose>1) read(*,'(A1)') char
       enddo  
       endif

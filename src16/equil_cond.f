@@ -77,7 +77,7 @@
       integer,save :: iS_l=0,iK2SiO3=0,iK2SiO3_l=0,iTiC_l=0,iTi=0
       integer,save :: iTi_l=0,iTiO=0,iTiO_l=0,iSiS2_l=0,iLiOH=0
       integer,save :: iLiOH_l=0,iMnS=0,iW=0,iW_l=0,iZrO2=0,iZrSiO4=0
-      integer,save :: iVO=0,iV2O3=0
+      integer,save :: iVO=0,iV2O3=0,iCr=0
       integer,save :: iNi=0,iNi_l,iNi3S2=0,iFe3O4=0,iKMg3AlSi3O12H2=0
       integer,save :: iKFe3AlSi3O12H2=0,iMg3Si2O9H4=0,iFe3Si2O9H4=0
       integer,save :: iMgCr2O4=0,iCr2O3=0,iMn3Al2Si3O12=0,iMn2SiO4=0
@@ -182,6 +182,7 @@
           if (dust_nam(i).eq.'Mg3Si4O12H2[s]') iMg3Si4O12H2=i
           if (dust_nam(i).eq.'Fe3Si2O9H4[s]') iFe3Si2O9H4=i
           if (dust_nam(i).eq.'MgCr2O4[s]')    iMgCr2O4=i
+          if (dust_nam(i).eq.'Cr[s]')         iCr=i
           if (dust_nam(i).eq.'Cr2O3[s]')      iCr2O3=i
           if (dust_nam(i).eq.'Mn2SiO4[s]')    iMn2SiO4=i
           if (dust_nam(i).eq.'NaAlSi2O6[s]')  iNaAlSi2O6=i
@@ -230,7 +231,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        if (qread>1.Q-3.and.iread==70) verbose=2
+        if (qread>1.Q-3.and.iread==154) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -365,7 +366,7 @@
           if (active(iVO).and.active(iV2O3)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iVO).gt.Sat0(iV2O3)) then
+            if (Sat0(iVO)>Sat0(iV2O3)) then
               ioff = iV2O3
               active(iV2O3) = .false.  
               amount = ddust(iV2O3)/1.Q0
@@ -384,7 +385,7 @@
      >        active(iMgSiO3).and.active(iMg2SiO4)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iMg3Si2O9H4).gt.Sat0(iMg3Si4O12H2)) then
+            if (Sat0(iMg3Si2O9H4)>Sat0(iMg3Si4O12H2)) then
               ioff = iMg3Si4O12H2
               active(iMg3Si4O12H2) = .false.  
               amount = ddust(iMg3Si4O12H2)/3.Q0
@@ -413,7 +414,7 @@
      >        active(iMg2SiO4).and.active(iMgSiO3)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iNaAlSiO4).gt.Sat0(iNaAlSi2O6)) then
+            if (Sat0(iNaAlSiO4)>Sat0(iNaAlSi2O6)) then
               ioff = iNaAlSi2O6
               active(iNaAlSi2O6) = .false.  
               amount = ddust(iNaAlSi2O6)/3.Q0
@@ -447,7 +448,7 @@
      >        active(iFe)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iNaMg3AlSi3O12H2).gt.Sat0(iNaAlSiO4)) then
+            if (Sat0(iNaMg3AlSi3O12H2)>Sat0(iNaAlSiO4)) then
               ioff = iNaAlSiO4
               active(iNaAlSiO4) = .false.  
               amount = ddust(iNaAlSiO4)/4.Q0
@@ -486,7 +487,7 @@
      >        active(iFe3O4).and.active(iMg3Si2O9H4)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iCa3Al2Si3O12).gt.Sat0(iCaMgSi2O6)) then
+            if (Sat0(iCa3Al2Si3O12)>Sat0(iCaMgSi2O6)) then
               if (ddust(iCaMgSi2O6)/3<ddust(iFeAl2SiO7H2)) then
                 ioff = iCaMgSi2O6
                 active(iCaMgSi2O6) = .false.  
@@ -544,7 +545,7 @@
      >        active(iMgSiO3).and.active(iMg2SiO4)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iKAlSi3O8).gt.Sat0(iKAlSi2O6)) then
+            if (Sat0(iKAlSi3O8)>Sat0(iKAlSi2O6)) then
               ioff = iKAlSi2O6
               active(iKAlSi2O6) = .false.  
               amount = ddust(iKAlSi2O6)/3.Q0
@@ -579,7 +580,7 @@
      >        active(iMgSiO3).and.active(iMg2SiO4)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iMn3Al2Si3O12).gt.Sat0(iMn2SiO4)) then
+            if (Sat0(iMn3Al2Si3O12)>Sat0(iMn2SiO4)) then
               ioff = iMn2SiO4
               active(iMn2SiO4) = .false.  
               amount = ddust(iMn2SiO4)/5.Q0
@@ -622,7 +623,7 @@
      >        active(iMg3Si2O9H4).and.active(iFe3Si2O9H4)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iKMg3AlSi3O12H2).gt.Sat0(iKFe3AlSi3O12H2)) then
+            if (Sat0(iKMg3AlSi3O12H2)>Sat0(iKFe3AlSi3O12H2)) then
               ioff = iKFe3AlSi3O12H2
               active(iKFe3AlSi3O12H2) = .false.  
               amount = ddust(iKFe3AlSi3O12H2)/3.Q0
@@ -654,11 +655,31 @@
             eps(O)  = eps_save(O)
             eps(H)  = eps_save(H)
           endif  
+          if (active(iCr).and.active(iCr2O3)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iCr)>Sat0(iCr2O3)) then
+              ioff = iCr2O3
+              active(iCr2O3) = .false.  
+              amount = ddust(iCr2O3)/1.Q0
+              call TRANSFORM(iCr2O3,iCr,amount,2.Q0*1.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iCr
+              active(iCr) = .false.  
+              amount = ddust(iCr)/1.Q0
+              call TRANSFORM(iCr,iCr2O3,amount,0.5Q0*1.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif 
+            !print*,eps(Cr),eps(Mg),eps(Si),eps(O)
+            !print*,eps_save(Cr),eps_save(Mg),eps_save(Si),eps_save(O)
+            eps(Cr) = eps_save(Cr)
+          endif    
           if (active(iMgCr2O4).and.active(iCr2O3).and.
      >        active(iMg2SiO4).and.active(iMgSiO3)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iMgCr2O4).gt.Sat0(iCr2O3)) then
+            if (Sat0(iMgCr2O4)>Sat0(iCr2O3)) then
               ioff = iCr2O3
               active(iCr2O3) = .false.  
               amount = ddust(iCr2O3)/3.Q0
@@ -691,7 +712,7 @@
      >        active(iFe)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iKMg3AlSi3O12H2).gt.Sat0(iKAlSiO4)) then
+            if (Sat0(iKMg3AlSi3O12H2)>Sat0(iKAlSiO4)) then
               ioff = iKAlSiO4
               active(iKAlSiO4) = .false.  
               amount = ddust(iKAlSiO4)/4.Q0
@@ -731,7 +752,7 @@
      >        active(iFe3O4)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iKMg3AlSi3O12H2).gt.Sat0(iKAlSi3O8)) then
+            if (Sat0(iKMg3AlSi3O12H2)>Sat0(iKAlSi3O8)) then
               ioff = iKAlSi3O8
               active(iKAlSi3O8) = .false.  
               amount = ddust(iKAlSi3O8)/4.Q0
@@ -770,7 +791,7 @@
      >        active(iNi3S2).and.active(iNi)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iNi).gt.Sat0(iNi3S2)) then
+            if (Sat0(iNi)>Sat0(iNi3S2)) then
               ioff = iNi3S2
               active(iNi3S2) = .false.  
               amount = ddust(iNi3S2)/3.Q0
@@ -1139,7 +1160,7 @@
           if (active(iFeO).and.active(iFe2SiO4).and.active(iSiO2)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iFe2SiO4).gt.Sat0(iFeO)) then
+            if (Sat0(iFe2SiO4)>Sat0(iFeO)) then
               ioff = iFeO
               active(iFeO) = .false.  
               amount = ddust(iFeO)/2.Q0
@@ -1163,7 +1184,7 @@
      >        active(iSiO2)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iFe2SiO4).gt.Sat0(iFeO_l)) then
+            if (Sat0(iFe2SiO4)>Sat0(iFeO_l)) then
               ioff = iFeO_l
               active(iFeO_l) = .false.  
               amount = ddust(iFeO_l)/2.Q0
@@ -1187,7 +1208,7 @@
      >        active(iSiO2_l)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iFe2SiO4).gt.Sat0(iFeO_l)) then
+            if (Sat0(iFe2SiO4)>Sat0(iFeO_l)) then
               ioff = iFeO_l
               active(iFeO_l) = .false.  
               amount = ddust(iFeO_l)/2.Q0
@@ -1208,10 +1229,10 @@
             eps(Si) = eps_save(Si)
           endif   
           if (active(iSiO).and.active(iMgSiO3).and.
-     >        active(iMg2SiO4).and..false.) then
+     >        active(iMg2SiO4).and.active(iC)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iMgSiO3).gt.Sat0(iSiO)) then
+            if (Sat0(iMgSiO3)>Sat0(iSiO)) then
               ioff = iSiO
               active(iSiO) = .false.  
               amount = ddust(iSiO)/2.Q0
@@ -1234,7 +1255,7 @@
      >        active(iMg2SiO4)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iMgSiO3).gt.Sat0(iSiO2)) then
+            if (Sat0(iMgSiO3)>Sat0(iSiO2)) then
               ioff = iSiO2
               active(iSiO2) = .false.  
               amount = ddust(iSiO2)/2.Q0
@@ -1258,7 +1279,7 @@
      >        active(iMg2SiO4)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iSiO2_l)<Sat0(iMgSiO3_l)) then
+            if (Sat0(iMgSiO3_l)>Sat0(iSiO2_l)) then
               ioff = iSiO2_l
               active(iSiO2_l) = .false.  
               amount = ddust(iSiO2_l)/2.Q0
@@ -1284,7 +1305,7 @@
      >        active(iMg2SiO4)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iSiO2_l)<Sat0(iMgSiO3)) then
+            if (Sat0(iMgSiO3)>Sat0(iSiO2_l)) then
               ioff = iSiO2_l
               active(iSiO2_l) = .false.  
               amount = ddust(iSiO2_l)/2.Q0
@@ -1310,7 +1331,7 @@
      >        active(iCaMgSi2O6).and.(.not.active(iMg2SiO4))) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iCaTiO3).gt.Sat0(iTi4O7)) then
+            if (Sat0(iCaTiO3)>Sat0(iTi4O7)) then
               ioff = iTi4O7
               active(iTi4O7) = .false.  
               amount = ddust(iTi4O7)/2.Q0
@@ -1334,7 +1355,7 @@
      >        active(iMgSiO3_l)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iCaMgSi2O6).gt.Sat0(iMgSiO3_l)) then
+            if (Sat0(iCaMgSi2O6)>Sat0(iMgSiO3_l)) then
               if (ddust(iMgSiO3_l)<ddust(iCaSiO3)) then 
                 ioff = iMgSiO3_l
                 active(iMgSiO3_l) = .false.  
@@ -1392,7 +1413,7 @@
           if (active(iTi4O7).and.active(iTiO2)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iTi4O7).gt.Sat0(iTiO2)) then
+            if (Sat0(iTi4O7)>Sat0(iTiO2)) then
               ioff = iTiO2
               active(iTiO2) = .false.  
               amount = ddust(iTiO2)
@@ -1410,7 +1431,7 @@
           if (active(iTi4O7_l).and.active(iTiO2)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iTi4O7_l).gt.Sat0(iTiO2)) then
+            if (Sat0(iTi4O7_l)>Sat0(iTiO2)) then
               ioff = iTiO2
               active(iTiO2) = .false.  
               amount = ddust(iTiO2)
@@ -1429,7 +1450,7 @@
      >        active(iMgSiO3).and.active(iMg2SiO4)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iMgTi2O5).gt.Sat0(iTiO2)) then
+            if (Sat0(iMgTi2O5)>Sat0(iTiO2)) then
               ioff = iTiO2
               active(iTiO2) = .false.  
               amount = ddust(iTiO2)/3.Q0
@@ -1458,7 +1479,7 @@
      >        active(iSiO2).and.active(iMg2SiO4)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iMgTi2O5).gt.Sat0(iTiO2)) then
+            if (Sat0(iMgTi2O5)>Sat0(iTiO2)) then
               ioff = iTiO2
               active(iTiO2) = .false.  
               amount = ddust(iTiO2)/3.Q0
@@ -1488,7 +1509,7 @@
      >        active(iMgAl2O4)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iNa2SiO3).gt.Sat0(iNaAlSi3O8)) then
+            if (Sat0(iNa2SiO3)>Sat0(iNaAlSi3O8)) then
               if (3.Q0*ddust(iNaAlSi3O8)<ddust(iMg2SiO4)) then 
                 ioff = iNaAlSi3O8
                 active(iNaAlSi3O8) = .false.  
@@ -1536,7 +1557,7 @@
      >        active(iAl2O3_l).and.active(iSiO2)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iNa2SiO3_l).gt.Sat0(iNaAlSi3O8)) then
+            if (Sat0(iNa2SiO3_l)>Sat0(iNaAlSi3O8)) then
               ioff = iNaAlSi3O8
               active(iNaAlSi3O8) = .false.  
               amount = ddust(iNaAlSi3O8)/3.Q0
@@ -1567,7 +1588,7 @@
      >        active(iAl2O3_l).and.active(iSiO2_l)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iNa2SiO3_l).gt.Sat0(iNaAlSi3O8)) then
+            if (Sat0(iNa2SiO3_l)>Sat0(iNaAlSi3O8)) then
               ioff = iNaAlSi3O8
               active(iNaAlSi3O8) = .false.  
               amount = ddust(iNaAlSi3O8)/3.Q0
@@ -1597,7 +1618,7 @@
           if (active(iH2O).and.active(iH2O_l)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iH2O).gt.Sat0(iH2O_l)) then
+            if (Sat0(iH2O)>Sat0(iH2O_l)) then
               ioff = iH2O_l
               active(iH2O_l) = .false.  
               amount = ddust(iH2O_l)
@@ -1616,7 +1637,7 @@
           if (active(iTiO).and.active(iTiO_l)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iTiO).gt.Sat0(iTiO_l)) then
+            if (Sat0(iTiO)>Sat0(iTiO_l)) then
               ioff = iTiO_l
               active(iTiO_l) = .false.  
               amount = ddust(iTiO_l)
@@ -1635,7 +1656,7 @@
           if (active(iFe).and.active(iFe_l)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iFe).gt.Sat0(iFe_l)) then
+            if (Sat0(iFe)>Sat0(iFe_l)) then
               ioff = iFe_l
               active(iFe_l) = .false.  
               amount = ddust(iFe_l)
@@ -1653,7 +1674,7 @@
           if (active(iNi).and.active(iNi_l)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iNi).gt.Sat0(iNi_l)) then
+            if (Sat0(iNi)>Sat0(iNi_l)) then
               ioff = iNi_l
               active(iNi_l) = .false.  
               amount = ddust(iNi_l)
@@ -1671,7 +1692,7 @@
           if (active(iFeO).and.active(iFeO_l)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iFeO).gt.Sat0(iFeO_l)) then
+            if (Sat0(iFeO)>Sat0(iFeO_l)) then
               ioff = iFeO_l
               active(iFeO_l) = .false.  
               amount = ddust(iFeO_l)
@@ -1690,7 +1711,7 @@
           if (active(iAl2O3).and.active(iAl2O3_l)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iAl2O3).gt.Sat0(iAl2O3_l)) then
+            if (Sat0(iAl2O3)>Sat0(iAl2O3_l)) then
               ioff = iAl2O3_l
               active(iAl2O3_l) = .false.  
               amount = ddust(iAl2O3_l)
@@ -1709,7 +1730,7 @@
           if (active(iMgAl2O4).and.active(iMgAl2O4_l)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iMgAl2O4).gt.Sat0(iMgAl2O4_l)) then
+            if (Sat0(iMgAl2O4)>Sat0(iMgAl2O4_l)) then
               ioff = iMgAl2O4_l
               active(iMgAl2O4_l) = .false.  
               amount = ddust(iMgAl2O4_l)
@@ -1729,7 +1750,7 @@
           if (active(iSiO2).and.active(iSiO2_l)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iSiO2).gt.Sat0(iSiO2_l)) then
+            if (Sat0(iSiO2)>Sat0(iSiO2_l)) then
               ioff = iSiO2_l
               active(iSiO2_l) = .false.  
               amount = ddust(iSiO2_l)
@@ -1748,7 +1769,7 @@
           if (active(iFeS).and.active(iFeS_l)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iFeS).gt.Sat0(iFeS_l)) then
+            if (Sat0(iFeS)>Sat0(iFeS_l)) then
               ioff = iFeS_l
               active(iFeS_l) = .false.  
               amount = ddust(iFeS_l)
@@ -1767,7 +1788,7 @@
           if (active(iLiCl).and.active(iLiCl_l)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iLiCl).gt.Sat0(iLiCl_l)) then
+            if (Sat0(iLiCl)>Sat0(iLiCl_l)) then
               ioff = iLiCl_l
               active(iLiCl_l) = .false.  
               amount = ddust(iLiCl_l)
@@ -1786,7 +1807,7 @@
           if (active(iNaCl).and.active(iNaCl_l)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iNaCl).gt.Sat0(iNaCl_l)) then
+            if (Sat0(iNaCl)>Sat0(iNaCl_l)) then
               ioff = iNaCl_l
               active(iNaCl_l) = .false.  
               amount = ddust(iNaCl_l)
@@ -1805,7 +1826,7 @@
           if (active(iW).and.active(iW_l)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iW).gt.Sat0(iW_l)) then
+            if (Sat0(iW)>Sat0(iW_l)) then
               ioff = iW_l
               active(iW_l) = .false.  
               amount = ddust(iW_l)
@@ -1823,7 +1844,7 @@
           if (active(iMg2SiO4).and.active(iMg2SiO4_l)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iMg2SiO4).gt.Sat0(iMg2SiO4_l)) then
+            if (Sat0(iMg2SiO4)>Sat0(iMg2SiO4_l)) then
               ioff = iMg2SiO4_l
               active(iMg2SiO4_l) = .false.  
               amount = ddust(iMg2SiO4_l)
@@ -1919,7 +1940,7 @@
      >        active(iMgSiO3_l).and.active(iSiO2_l)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iMgTi2O5)<Sat0(iTiO2)) then
+            if (Sat0(iTiO2)>Sat0(iMgTi2O5)) then
               ioff = iMgTi2O5
               active(iMgTi2O5) = .false.
               amount = ddust(iMgTi2O5)/3.Q0
@@ -1951,7 +1972,7 @@
      >        active(iSiO2_l)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iMgTi2O5)<Sat0(iTiO2)) then
+            if (Sat0(iTiO2)>Sat0(iMgTi2O5)) then
               ioff = iMgTi2O5
               active(iMgTi2O5) = .false.
               amount = ddust(iMgTi2O5)/4.Q0
@@ -1988,7 +2009,7 @@
      >        active(iMg2SiO4)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iMgTi2O5)<Sat0(iCaTiO3)) then
+            if (Sat0(iCaTiO3)>Sat0(iMgTi2O5)) then
               ioff = iMgTi2O5
               active(iMgTi2O5) = .false.
               amount = ddust(iMgTi2O5)/4.Q0
@@ -2025,7 +2046,7 @@
      >        active(iSiO2_l)) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iAl2O3)<Sat0(iMgAl2O4)) then
+            if (Sat0(iMgAl2O4)>Sat0(iAl2O3)) then
               ioff = iAl2O3
               active(iAl2O3) = .false.
               amount = ddust(iAl2O3)/4.Q0
@@ -2057,10 +2078,11 @@
             eps(Mg) = eps_save(Mg)
             eps(Si) = eps_save(Si)
           endif 
-          if (active(iSiO).and.active(iSiC).and.active(iC)) then
+          if (active(iSiO).and.active(iSiC).and.active(iC)
+     >        .and..false.) then
             changed = .true.
             !--- decide ---
-            if (Sat0(iSiO)<Sat0(iSiC)) then
+            if (Sat0(iSiC)>Sat0(iSiO)) then
               ioff = iSiO
               active(iSiO) = .false.
               amount = ddust(iSiO)/2.Q0
@@ -3066,7 +3088,7 @@
       !----------------------------------------------
       ! ***  compute chemistry & supersaturation  ***
       !----------------------------------------------
-      call GGCHEM(nHtot,T,eps1,.true.,0)
+      call GGCHEM(nHtot,T,eps1,.false.,0)
       call SUPERSAT(T,nat,nmol,Sat)
       
       end
