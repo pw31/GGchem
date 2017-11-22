@@ -17,6 +17,7 @@
 ! ***  eps(NELEM) and ddust(NDUST) are changed by dx(NELEM) separately ***
 ! ***  to avoid numerical problems close to complete condensation      ***
 !-------------------------------------------------------------------------
+      use PARAMETERS,ONLY: Tfast
       use DUST_DATA,ONLY: NELEM,NDUST,dust_nam,dust_nel,dust_nu,dust_el,
      >                    eps0,elnam,elcode
       use CONVERSION,ONLY: Nind,Ndep,Iindex,Dindex,is_dust,conv
@@ -32,12 +33,12 @@
       integer,intent(inout) :: verbose
       real(kind=qp),dimension(NELEM) :: eps00,epsread,check,FF,Fsav,dx
       real(kind=qp),dimension(NELEM) :: eps_save,vec,xstep,Iabund,work
-      real(kind=qp),dimension(NELEM) :: scale
+      real(kind=qp),dimension(NELEM) :: scale,save_eps
       real(kind=qp),dimension(NDUST) :: ddustread,dscale,pot,dust_save
-      real(kind=qp),dimension(NDUST) :: Sat0,Sat1,Sat2
+      real(kind=qp),dimension(NDUST) :: Sat0,Sat1,Sat2,save_ddust
       real(kind=qp),dimension(NELEM,NELEM) :: DF,DFsav,emat,vecs
       real(kind=qp),dimension(NDUST,NELEM) :: mat
-      real(kind=qp) :: worst,xmin,Smax,qual,SQUAL,del
+      real(kind=qp) :: worst,xmin,Smax,qual,SQUAL,del,save_qual
       real(kind=qp) :: turnon,turnoff,maxon,minoff,fac,fac2,amount
       real(kind=qp) :: deps1,deps2,deps
       real(kind=qp) :: det(2),converge(500,NELEM),crit,cbest
@@ -54,7 +55,8 @@
       integer :: act_to_elem(NELEM),act_to_dust(NELEM)
       integer :: Nzero,Ntrivial,etrivial(NELEM),dtrivial(NELEM)
       logical,dimension(NELEM) :: e_resolved,e_act,e_taken,is_esolved
-      logical,dimension(0:NDUST) :: active,act_read,act_old,active_save
+      logical,dimension(0:NDUST) :: active,act_read,act_old
+      logical,dimension(0:NDUST) :: save_active,active_save
       logical,dimension(NDUST) :: is_dsolved,d_resolved
       logical :: action,changed,solved,limited,ok,conserved
       character(len=1) :: char1,txt0
@@ -231,7 +233,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        if (qread>1.Q-3.and.iread==154) verbose=2
+        if (qread>1.Q-3.and.iread==134) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -292,6 +294,13 @@
 
       do it=1,itmax
         
+        !-------------------------
+        ! ***  fall-back copy  ***
+        !-------------------------
+        !save_active = active
+        !save_eps = eps
+        !save_ddust = ddust
+
         !---------------------------------------
         ! ***  selection of solids to solve  ***
         !---------------------------------------
@@ -347,6 +356,7 @@
           if (maxon>0.0*MAX(Smax-1.Q0,0.Q0)) then
             if (imaxon.ne.iminoff) then 
               active(imaxon) = .true.
+              print*,"switch on ",trim(dust_nam(imaxon))
             endif  
           endif  
           Nact = 0
@@ -1387,7 +1397,8 @@
             eps(Si) = eps_save(Si)
             eps(O)  = eps_save(O)
           endif  
-          if (active(iTi4O7).and.active(iTiC).and.active(iC)) then
+          if (active(iTi4O7).and.active(iTiC).and.active(iC)
+     >        .and..false.) then
             changed = .true.
             !--- decide ---
             if (Sat0(iTi4O7)>Sat0(iTiC)) then
@@ -2222,6 +2233,19 @@
         !-------------------------------------
         ! ***  some explict special cases  ***
         !-------------------------------------
+        if (active(iCaS).and.active(iMnS).and.e_act(Ca).and.e_act(S)
+     >      .and.e_act(Mn).and.(e_num(Ca)+e_num(S)+e_num(Mn)==4)
+     >      .and.(Nall>Nact)) then
+          print*,"... exchanging S for "//elnam(Iindex(Nact+1))
+          do i=1,Nind
+            if (Iindex(i)==S) exit
+          enddo  
+          swap = Iindex(Nact+1) 
+          Iindex(Nact+1) = S
+          Iindex(i) = swap
+          e_act(S) = .false.
+          e_act(swap) = .true.
+        endif
         if (active(iCaS).and.e_act(Ca).and.e_act(S).and.
      >      (e_num(Ca)==1).and.(e_num(S)==1)) then
           do i=1,Nind
@@ -2867,8 +2891,12 @@
           jj = jj+1
           act_to_elem(jj) = j
           el = Iindex(j) 
-          deps1 = +1.Q-3*eps(el)            ! limited by el abundance
-          deps2 = -1.Q-3*eps(el)            ! limited by el abundance
+          deps1 = +1.Q-6*eps(el)            ! limited by el abundance
+          deps2 = -1.Q-6*eps(el)            ! limited by el abundance
+          if (T<Tfast) then
+            deps1 = +1.Q-12*eps(el)         ! quadrupole precision chemistry calls
+            deps2 = -1.Q-12*eps(el) 
+          endif  
           do i=1,Ndep
             if (conv(i,j)==0.Q0) cycle
             if (is_dust(i)) cycle
@@ -2969,6 +2997,12 @@
           print*,"switch off ",dust_nam(iminoff) 
           active(iminoff) = .false.
           lastit = -99
+          !if (iminoff.eq.laston) then
+          !  print*,"=> fall back"
+          !  active = save_active
+          !  eps = save_eps
+          !  ddust = save_ddust
+          !endif  
         endif
 
         !------------------------------------
@@ -2977,13 +3011,13 @@
         do ii=1,Nsolve
           i = act_to_elem(ii) 
           el = Iindex(i)
-          eps(el) = eps(el) + dx(ii)     ! direct effect
+          eps(el) = eps(el) + dx(ii)          ! direct effect
         enddo  
         do j=1,Ndep
           del = 0.Q0 
           do ii=1,Nsolve
             i = act_to_elem(ii) 
-            del = del + conv(j,i)*dx(ii) ! effect of indep.element i
+            del = del + conv(j,i)*dx(ii)      ! effect of indep.element i
           enddo 
           if (is_dust(j)) then
             dk = Dindex(j)
@@ -3088,7 +3122,7 @@
       !----------------------------------------------
       ! ***  compute chemistry & supersaturation  ***
       !----------------------------------------------
-      call GGCHEM(nHtot,T,eps1,.false.,0)
+      call GGCHEM(nHtot,T,eps1,.true.,0)
       call SUPERSAT(T,nat,nmol,Sat)
       
       end
