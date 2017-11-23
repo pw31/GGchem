@@ -4,7 +4,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter, ScalarFormatter
 plt.rcParams['axes.linewidth'] = 1.5
 
-single_figures = 0
+single_figures = 1
 
 # units are cgs
 bar = 1.E+6     # 1 bar in dyn/cm2
@@ -128,7 +128,7 @@ if (len(ind2)>0):
   dGRT  = a[0]/T + a[1]*np.log(T) + a[2] + a[3]*T + a[4]*T**2
   lnkp2 = dGRT + (1-Natom)*np.log(bar)
   print "S&K",SKname[ind2[0]],a
-  plt.plot(T,lnkp2/ln10,c='green',lw=3.5,label='Stock & Kitzmann')
+  plt.plot(T,lnkp2/ln10,c='green',lw=3.5,label='Stock')
   kpmean = kpmean+lnkp2
   Nmean = Nmean+1
 
@@ -196,7 +196,7 @@ if (len(ind1)>0):
   print "GG",ymin,ymax
 
 if (len(ind2)>0):
-  plt.plot(T,(lnkp2-kpmean)/ln10,c='green',lw=3.5,label='Stock & Kitzmann')
+  plt.plot(T,(lnkp2-kpmean)/ln10,c='green',lw=3.5,label='Stock')
   ymin = np.min([ymin,np.min(lnkp2[iT]-kpmean[iT])])
   ymax = np.max([ymax,np.max(lnkp2[iT]-kpmean[iT])])
   print "SK",ymin,ymax
@@ -252,7 +252,7 @@ if (len(ind2)>0):
   dG  = ((1-Natom)*np.log(bar) - lnkp2)*R*T/1000
   Gmean = Gmean+dG
   Nmean = Nmean+1
-  plt.plot(T,dG,c='green',lw=3.5,label='Stock & Kitzmann')
+  plt.plot(T,dG,c='green',lw=3.5,label='Stock')
 
 if (len(ind4)>0):
   dG = ((1-Natom)*np.log(bar) - lnkp4)*R*T/1000
@@ -304,7 +304,7 @@ if (len(ind1)>0):
 
 if (len(ind2)>0):
   dG = ((1-Natom)*np.log(bar) - lnkp2)*R*T/1000
-  plt.plot(T,dG-Gmean,c='green',lw=3.5,label='Stock & Kitzmann')
+  plt.plot(T,dG-Gmean,c='green',lw=3.5,label='Stock')
   ymin = np.min([ymin,np.min(dG[iT]-Gmean[iT])])
   ymax = np.max([ymax,np.max(dG[iT]-Gmean[iT])])
   print "SK",ymin,ymax

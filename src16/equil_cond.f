@@ -58,7 +58,7 @@
       logical,dimension(0:NDUST) :: active,act_read,act_old
       logical,dimension(0:NDUST) :: save_active,active_save
       logical,dimension(NDUST) :: is_dsolved,d_resolved
-      logical :: action,changed,solved,limited,ok,conserved
+      logical :: action,changed,solved,limited,ok,conserved,exch
       character(len=1) :: char1,txt0
       character(len=2) :: rem
       character(len=500) :: txt,txt1,txt2,text,filename
@@ -236,7 +236,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        !if (qread>1.Q-3.and.iread==43) verbose=2
+        !if (qread>1.Q-3.and.iread==50655) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -1268,7 +1268,7 @@
             eps(Si) = eps_save(Si)
           endif   
           if (active(iSiO).and.active(iMgSiO3).and.
-     >        active(iMg2SiO4).and.active(iC)) then
+     >        active(iMg2SiO4).and.active(iC).and..false.) then
             changed = .true.
             !--- decide ---
             if (Sat0(iMgSiO3)>Sat0(iSiO)) then
@@ -2262,18 +2262,23 @@
         !-------------------------------------
         ! ***  some explict special cases  ***
         !-------------------------------------
-        if (active(iCaS).and.active(iMnS).and.e_act(Ca).and.e_act(S)
-     >      .and.e_act(Mn).and.(e_num(Ca)+e_num(S)+e_num(Mn)==4)
-     >      .and.(Nall>Nact)) then
-          print*,"... exchanging S for "//elnam(Iindex(Nact+1))
-          do i=1,Nind
-            if (Iindex(i)==S) exit
-          enddo  
-          swap = Iindex(Nact+1) 
-          Iindex(Nact+1) = S
-          Iindex(i) = swap
-          e_act(S) = .false.
-          e_act(swap) = .true.
+        if (active(iCaS).and.active(iMnS).and.(Nall>Nact)
+     >      .and.e_act(Ca).and.e_act(S).and.e_act(Mn)) then
+          exch = (e_num(Ca)+e_num(S)+e_num(Mn)==4)
+     >      .or.((e_num(Ca)+e_num(S)+e_num(Mn)==5).and.(e_num(Al)==1))
+     >      .or.((e_num(Ca)+e_num(S)+e_num(Mn)==5).and.(e_num(Al)==2)
+     >           .and.(e_num(Na)==1).and.active(iNaAlSi3O8))
+          if (exch) then       
+            print*,"... exchanging S for "//elnam(Iindex(Nact+1))
+            do i=1,Nind
+              if (Iindex(i)==S) exit
+            enddo  
+            swap = Iindex(Nact+1) 
+            Iindex(Nact+1) = S
+            Iindex(i) = swap
+            e_act(S) = .false.
+            e_act(swap) = .true.
+          endif  
         endif
         if (active(iCaS).and.e_act(Ca).and.e_act(S).and.
      >      (e_num(Ca)==1).and.(e_num(S)==1)) then

@@ -5,10 +5,12 @@ from matplotlib.ticker import MultipleLocator, FormatStrFormatter, ScalarFormatt
 from matplotlib.backends.backend_pdf import PdfPages
 plt.rcParams['axes.linewidth'] = 1.5
 
-single_figures = 1
+single_figures = 0
 if (single_figures==0): pp=PdfPages('ggchem.pdf')
 
-file   = 'Static_Conc_2D.bak'
+#file   = 'Static_Conc_2D.dat'
+file   = 'results/Static_Conc_2D_nocond.dat'
+#file   = 'results/Static_Conc_2D_eqcond.dat'
 data   = open(file)
 dummy  = data.readline()
 dimens = data.readline()
