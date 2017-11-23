@@ -8,8 +8,8 @@ plt.rcParams['axes.linewidth'] = 1.5
 single_figures = 0
 if (single_figures==0): pp=PdfPages('ggchem.pdf')
 
-#file   = 'Static_Conc_2D.dat'
-file   = 'results/Static_Conc_2D_nocond.dat'
+file   = 'Static_Conc_2D.dat'
+#file   = 'results/Static_Conc_2D_nocond.dat'
 #file   = 'results/Static_Conc_2D_eqcond.dat'
 data   = open(file)
 dummy  = data.readline()

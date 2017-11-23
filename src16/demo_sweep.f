@@ -20,7 +20,7 @@
       character(len=2) :: test3
       character(len=1) :: char
       integer :: verbose=0
-      logical :: isOK,hasW,TEAinterface=.false.
+      logical :: isOK,hasW,same,TEAinterface=.false.
 
       !----------------------------
       ! ***  open output files  ***
@@ -266,12 +266,19 @@
       do i=1,Npoints
         fac = REAL(i-1)/REAL(Npoints-1) 
         Tg  = EXP(LOG(Tmax)+fac*LOG(Tmin/Tmax))
+        same = (Tmin==Tmax)
         if (model_pconst) then
           p = EXP(LOG(pmax)+fac*LOG(pmin/pmax))
+          same = same.and.(pmin==pmax)
         else  
           nHges = EXP(LOG(nHmax)+fac*LOG(nHmin/nHmax))
+          same = same.and.(nHmin==nHmax)
         endif  
-        eldust = 0.0
+        if (same) then
+          eps(C) = eps(O) * (0.3+1.1*fac) 
+          print*,"C/O=",eps(C)/eps(O)
+        endif   
+        eldust = 0.Q0
 
         !--- run chemistry (+phase equilibrium)    ---
         !--- iterate to achieve requested pressure ---

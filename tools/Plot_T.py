@@ -36,7 +36,7 @@ Tmin  = np.min(Tg)
 Tmax  = np.max(Tg)
 #if (Tmax>4*Tmin): Tmax=4*Tmin
 #if (Tmin<Tmax/3): Tmin=Tmax/3
-Tmax  = 2000
+#Tmax  = 2800
 Tmin  = 800
 delT  = (Tmax-Tmin)*0.30  #0.47
 iii   = np.where((Tg>Tmin) & (Tg<Tmax))[0]
@@ -61,8 +61,9 @@ if (Tmax-Tmin<600): sep=20
 if (Tmax-Tmin<400): sep=10
 #Tmin  = Tmin*0.95
 #Tmax  = Tmax*1.1
-colo = ['blue','silver','darkgoldenrod','darkgreen','darkmagenta','red','darkorange','gold','darkorchid','aqua','cadetblue','darkolivegreen','burlywood','chartreuse','chocolate','coral','cornflowerblue','black','darkkhaki','pink','moccasin','limegreen']
-#'aquamarine','beige','darkorange','crimson','darkcyan','bisque'
+colo = ['blue','black','silver','red','darkorange','gold','darkorchid','aqua','cadetblue','cornflowerblue','chartreuse','limegreen','darkgreen','chocolate','darkgoldenrod','darkkhaki','pink','moccasin']
+#'darkolivegreen','darkmagenta','aquamarine','coral','burlywood',
+#'beige','darkorange','crimson','darkcyan','bisque'
 Ncolor = len(colo)
 colo = colo*10
 styl = ['-']*Ncolor + ['--']*Ncolor + [':']*Ncolor + ['-.']*Ncolor*7 
@@ -156,7 +157,7 @@ for i in range(4+NELEM+NMOLE+2*NDUST,4+NELEM+NMOLE+2*NDUST+NELEM,1):
     count = count+1
 plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
 plt.ylabel(r'$\log\,\epsilon_{\rm gas}$',fontsize=20)
-plt.xlim(Tmin,Tmax)
+plt.xlim(Tmin,Tmax*1.1)
 plt.ylim(-13,1)
 plt.tick_params(axis='both', labelsize=15)
 plt.tick_params('both', length=6, width=1.5, which='major')
@@ -176,7 +177,7 @@ solids = []
 smean = []
 nmax = float(-100)
 ymin = -12.5  #-7.6
-ymax = -4.0   #-3.3  #-4.3
+ymax = -3.0  #-4.0   #-3.3  #-4.3
 for i in range(4+NELEM+NMOLE,4+NELEM+NMOLE+NDUST,1):
   solid = keyword[i]
   solids.append(solid[1:])
