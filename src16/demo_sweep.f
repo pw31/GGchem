@@ -277,9 +277,9 @@
         if (same) then
           CzuOvari = .true. 
           eps0(C) = eps0(O) * (0.3+1.1*fac) 
-          eps0(C) = eps0(O) * (0.79+0.02*fac) 
-          !eps0(C) = eps0(O) * 0.80661724343197687Q+0
+          !eps0(C) = eps0(O) * 0.940133779264213931270433022291400Q+0
           eps(C)  = eps0(C)
+          eps(O)  = eps0(O)
           print*,"C/O=",eps(C)/eps(O)
         endif   
         eldust = 0.Q0

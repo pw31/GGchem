@@ -85,6 +85,7 @@
       integer,save :: iMgCr2O4=0,iCr2O3=0,iMn3Al2Si3O12=0,iMn2SiO4=0
       integer,save :: iKAlSi2O6=0,iCa3Al2Si3O12=0,iFeAl2SiO7H2=0
       integer,save :: iNaMg3AlSi3O12H2=0,iNaAlSiO4=0,iCa2MgSi2O7=0
+      integer,save :: iCa2Al2SiO7=0
       integer,save :: iCaTiSiO5=0,iNaAlSi2O6=0,iKAlSiO4=0,iMg3Si4O12H2=0
       integer,save :: iCa3MgSi2O8=0,iCaMgSiO4=0
       integer,save :: it_tot=0, sit_tot=0, fail_tot=0
@@ -115,6 +116,7 @@
           if (dust_nam(i).eq.'CaTiO3[s]')     iCaTiO3=i 
           if (dust_nam(i).eq.'CaMgSi2O6[s]')  iCaMgSi2O6=i
           if (dust_nam(i).eq.'CaAl2Si2O8[s]') iCaAl2Si2O8=i
+          if (dust_nam(i).eq.'Ca2Al2SiO7[s]') iCa2Al2SiO7=i
           if (dust_nam(i).eq.'NaAlSi3O8[s]')  iNaAlSi3O8=i
           if (dust_nam(i).eq.'MgAl2O4[s]')    iMgAl2O4=i
           if (dust_nam(i).eq.'MgAl2O4[l]')    iMgAl2O4_l=i
@@ -243,7 +245,7 @@
           write(*,*) trim(text)
         endif  
       endif
-      verbose=2
+      !verbose=2
   
       !----------------------------------------------------
       ! ***  recompute eps00 from initial state,        ***
@@ -1469,6 +1471,24 @@
             endif  
             eps(Ti) = eps_save(Ti)
           endif   
+          if (active(iTi4O7).and.active(iTiO)) then
+            changed = .true.
+            !--- decide ---
+            if (Sat0(iTi4O7)>Sat0(iTiO)) then
+              ioff = iTiO
+              active(iTiO) = .false.  
+              amount = ddust(iTiO)
+              call TRANSFORM(iTiO,iTi4O7,amount,0.25Q0,
+     >                       ddust,eps,dscale,active,ok)
+            else  
+              ioff = iTi4O7
+              active(iTi4O7) = .false.  
+              amount = ddust(iTi4O7)
+              call TRANSFORM(iTi4O7,iTiO,amount,4.Q0,
+     >                       ddust,eps,dscale,active,ok)
+            endif  
+            eps(Ti) = eps_save(Ti)
+          endif   
           if (active(iTi4O7_l).and.active(iTiO2)) then
             changed = .true.
             !--- decide ---
@@ -2281,41 +2301,63 @@
             e_act(swap) = .true.
           endif  
         endif
-        if (active(iCaS).and.e_act(Ca).and.e_act(S).and.
-     >      (e_num(Ca)==1).and.(e_num(S)==1)) then
-          do i=1,Nind
-            if (Iindex(i)==Ca) exit
-          enddo  
-          do j=1,Nind
-            if (Iindex(j)==S) exit
-          enddo  
-          if (i>j) then
-            e_act(Iindex(i)) = .false.
-            j=i
-          else
-            e_act(Iindex(j)) = .false.
-            i=j
-          endif
-          print*,"... exchanging "//elnam(Iindex(i))//
-     >                     " for "//elnam(Iindex(Nact+1))
-          swap = Iindex(i)
-          Iindex(i) = Iindex(Nact+1) 
-          Iindex(Nact+1) = swap
-          e_act(Iindex(i)) = .true.
+        if (active(iCaS).and.e_act(Ca).and.e_act(S).and.Nall>Nact) then
+          exch = ((e_num(Ca)==1).and.(e_num(S)==1)) 
+          exch = ((e_num(Ca)==2).and.(e_num(S)==1).and.
+     >            (e_num(Al)==2).and.(e_num(Si)==1).and. 
+     >            active(iCa2Al2SiO7).and.active(iAl2O3).and.
+     >            e_act(Si))
+          if (exch) then
+            do i=1,Nind
+              if (Iindex(i)==Ca) exit
+            enddo  
+            do j=1,Nind
+              if (Iindex(j)==S) exit
+            enddo  
+            if (i>j) then
+              e_act(Iindex(i)) = .false.
+              j=i
+            else
+              e_act(Iindex(j)) = .false.
+              i=j
+            endif
+            print*,"... exchanging "//elnam(Iindex(i))//
+     >                       " for "//elnam(Iindex(Nact+1))
+            swap = Iindex(i)
+            Iindex(i) = Iindex(Nact+1) 
+            Iindex(Nact+1) = swap
+            e_act(Iindex(i)) = .true.
+          endif  
         endif
-        if (active(iMgTiO3).and.e_act(Si).and.(.not.e_act(Mg)).and.
-     >      e_num(Mg)>e_num(Si)) then
-          print*,"... exchanging Si for Mg"
+        if (active(iCa2Al2SiO7).and.
+     >      e_act(Ca).and.e_act(Al).and.(.not.e_act(Si)).and.
+     >      (e_num(Ca)==1).and.(e_num(Al)==1)) then
+          print*,"... exchanging Al for Si"
+          do i=1,Nind
+            if (Iindex(i)==Al) exit
+          enddo  
+          do j=Nind+1,Nall
+            if (Iindex(j)==Si) exit
+          enddo  
+          Iindex(i) = Si
+          Iindex(j) = Al
+          e_act(Al) = .false.
+          e_act(Si) = .true.
+        endif   
+        if (active(iTi4O7).and.active(iTiC).and.active(iCa2Al2SiO7).and.
+     >      (e_num(Ti)==2).and.(e_num(Ca)==1).and.(e_num(Si)==1).and.
+     >      e_act(Si).and.(.not.e_act(O)).and.(.not.e_act(C))) then
+          print*,"... exchanging Si for O"
           do i=1,Nind
             if (Iindex(i)==Si) exit
           enddo  
           do j=Nind+1,Nall
-            if (Iindex(j)==Mg) exit
+            if (Iindex(j)==O) exit
           enddo  
-          Iindex(i) = Mg
+          Iindex(i) = O
           Iindex(j) = Si
           e_act(Si) = .false.
-          e_act(Mg) = .true.
+          e_act(O) = .true.
         endif   
         if (active(iCaMgSi2O6).and.active(iCaAl2Si2O8).and.
      >      (.not.active(iCaTiSiO5)).and.e_act(Si).and.
