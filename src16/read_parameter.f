@@ -2,7 +2,7 @@
       subroutine READ_PARAMETER
 ************************************************************************
       use PARAMETERS,ONLY: elements,abund_pick,model_dim,model_pconst,
-     >                     model_struc,model_eqcond,Npoints,
+     >                     model_struc,model_eqcond,Npoints,CzuOvari,
      >                     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax
       use CHEMISTRY,ONLY: NewChemIt,NewBackIt,NewFullIt,dispol_file
       use DUST_DATA,ONLY: bar
@@ -34,6 +34,7 @@
       NewChemIt    = .true.
       NewBackIt    = 5
       NewFullIt    = .true.
+      CzuOvari     = .false.
 
       !-------------------------------------------
       ! ***  change parameters via input file  ***

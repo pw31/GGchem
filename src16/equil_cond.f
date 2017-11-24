@@ -17,7 +17,7 @@
 ! ***  eps(NELEM) and ddust(NDUST) are changed by dx(NELEM) separately ***
 ! ***  to avoid numerical problems close to complete condensation      ***
 !-------------------------------------------------------------------------
-      use PARAMETERS,ONLY: Tfast
+      use PARAMETERS,ONLY: Tfast,CzuOvari
       use DUST_DATA,ONLY: NELEM,NDUST,dust_nam,dust_nel,dust_nu,dust_el,
      >                    eps0,elnam,elcode
       use CONVERSION,ONLY: Nind,Ndep,Iindex,Dindex,is_dust,conv
@@ -222,7 +222,7 @@
       !--------------------------------------------
       call GET_DATA(nHtot,T,epsread,ddustread,qread,iread,act_read)
       Nact = 0
-      if (qread.lt.0.5) then
+      if (qread.lt.0.5.and.(.not.CzuOvari)) then
         eps    = epsread
         ddust  = ddustread
         active = act_read
@@ -243,6 +243,7 @@
           write(*,*) trim(text)
         endif  
       endif
+      verbose=2
   
       !----------------------------------------------------
       ! ***  recompute eps00 from initial state,        ***
@@ -341,11 +342,11 @@
             if (Sat1(i)>1.Q0.and.(.not.active(i))) then
               turnon = Sat1(i)-1.Q0 
               !if (i==iMg2SiO4) turnon=turnon*10.0
-              if (turnon>maxon.and..not.limited) then
-                if (.not.(NDUST>0.and.qual>1.E+10)) then 
+              if (turnon>maxon.and.(.not.limited)) then
+                !if (.not.(Nact>0.and.qual>1.E+10)) then 
                   maxon  = turnon
                   imaxon = i
-                endif  
+                !endif  
               endif  
             endif  
           enddo  
@@ -3104,7 +3105,7 @@
       !----------------------------------
       ! ***  save result to database  ***
       !----------------------------------
-      if (qual<1.Q-10) then
+      if (qual<1.Q-10.and.(.not.CzuOvari)) then
         call PUT_DATA(nHtot,T,eps,ddust,qread,iread,active)
       endif  
       it_tot  = it_tot + it

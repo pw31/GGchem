@@ -3,8 +3,8 @@
 ************************************************************************
       character(len=200) :: elements
       integer :: abund_pick,model_dim,Npoints
-      logical :: model_eqcond,model_pconst,model_struc
-      real*8  :: Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax 
+      logical :: model_eqcond,model_pconst,model_struc,CzuOvari 
+      real*8  :: Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax
       end
 
 ************************************************************************
