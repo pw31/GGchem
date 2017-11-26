@@ -1,5 +1,7 @@
 F90          = ifort
 F90LINKER    = ifort
+#F90          = gfortran
+#F90LINKER    = gfortran
 
 # for IFORT-Compiler
 #===================
@@ -12,7 +14,7 @@ LFLAGS    = $(FFLAGS)
 # for gfortran-Compiler
 #======================
 #DEFS      = 
-#FFLAGS    = -fdefault-real-8 -fdefault-double-8 -fbounds-check -fbacktrace -g 
+##FFLAGS   = -fdefault-real-8 -fdefault-double-8 -fbounds-check -fbacktrace -g 
 #FFLAGS    = -fdefault-real-8 -fdefault-double-8 -g -O5
 #INCLUDES  = 
 #LFLAGS    = $(FFLAGS)
@@ -33,6 +35,7 @@ OBJECTS  = datamod.o \
 	   ggchem.o \
            gauss16.o \
            gauss8.o \
+	   gauss_nm.o \
 	   linpack_q.o \
 	   slatec_routines.o \
            smchem16.o \
@@ -40,7 +43,7 @@ OBJECTS  = datamod.o \
            supersat.o \
 	   stindex.o \
            upper.o \
-	   nucleation.o \
+           nucleation.o \
            main.o
 
 .SUFFIXES : .o .f .F .f90

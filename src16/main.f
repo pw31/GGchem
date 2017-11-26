@@ -33,7 +33,7 @@
       print'("      transform calls = ",I7)',itransform
 
       NLAST=0         ! also save replaced database entries
-      call SAVE_DBASE
+      if (ieqcond) call SAVE_DBASE
       end
 
 
