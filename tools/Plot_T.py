@@ -37,7 +37,7 @@ Tmax  = np.max(Tg)
 #if (Tmax>4*Tmin): Tmax=4*Tmin
 #if (Tmin<Tmax/3): Tmin=Tmax/3
 #Tmax  = 2800
-Tmin  = 800
+#Tmin  = 2000
 delT  = (Tmax-Tmin)*0.30  #0.47
 iii   = np.where((Tg>Tmin) & (Tg<Tmax))[0]
 pmin  = np.min(press[iii])/bar
@@ -88,12 +88,12 @@ cH2O   = [  29.8605, -3.1522E+03, -7.3037E+00,  2.4247E-09,  1.8090E-06,  273,  
 cFe    = [  11.5549, -1.9538E+04, -6.2549E-01, -2.7182E-09,  1.9086E-13, 1808, 3008 ]
 cNH3   = [  37.1575, -2.0277E+03, -1.1601E+01,  7.4625E-03, -9.5811E-12,  195,  406 ]
 cCO2   = [  35.0187, -1.5119E+03, -1.1335E+01,  9.3383E-03,  7.7626E-10,  216,  305 ]
-cc = cCO2
-Tyaws1 = cc[5]
-Tyaws2 = cc[6]
-Tyaws  = np.arange(Tyaws1, Tyaws2, 0.1)
-pvap   = yaws(Tyaws,*cc[0:5])
-plt.plot(Tyaws,pvap/bar,lw=2)
+#cc = cCO2
+#Tyaws1 = cc[5]
+#Tyaws2 = cc[6]
+#Tyaws  = np.arange(Tyaws1, Tyaws2, 0.1)
+#pvap   = yaws(Tyaws,*cc[0:5])
+#plt.plot(Tyaws,pvap/bar,lw=2)
 #fmt=ScalarFormatter(useOffset=False)
 #fmt.set_scientific(False)
 #ax.yaxis.set_major_formatter(fmt)
@@ -125,12 +125,13 @@ plt.clf()
 fig,ax = plt.subplots()
 ind = np.where(keyword=='dust/gas')[0][0]
 log10_dust_gas = dat[:,ind]
-if (np.max(log10_dust_gas)>-10):
+ymax = np.max(log10_dust_gas)
+if (ymax>-10):
   plt.plot(Tg,10**log10_dust_gas,lw=4)
   plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
   plt.ylabel(r'$\mathrm{dust/gas}$',fontsize=20)
   plt.xlim(Tmin,Tmax)
-  plt.ylim(1.E-10,0.1)
+  plt.ylim(1.E-10,10**np.max(log10_dust_gas)*3)
   plt.yscale('log')
   plt.tick_params(axis='both', labelsize=15)
   plt.tick_params('both', length=6, width=1.5, which='major')
@@ -148,17 +149,19 @@ if (np.max(log10_dust_gas)>-10):
 #================ the gas phase element abundances ===================
 fig,ax = plt.subplots()
 count = 0
+ymax = -100.0
 for i in range(4+NELEM+NMOLE+2*NDUST,4+NELEM+NMOLE+2*NDUST+NELEM,1):
   elm = keyword[i]
   element = elm[3:]
   yy = dat[:,i]               # log10 eps
+  ymax=np.max([ymax,np.max(yy)])            
   if (np.max(yy)>-20):
     plt.plot(Tg,yy,c=colo[count],ls=styl[count],lw=widt[count],label=element)
     count = count+1
 plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
 plt.ylabel(r'$\log\,\epsilon_{\rm gas}$',fontsize=20)
 plt.xlim(Tmin,Tmax*1.1)
-plt.ylim(-13,1)
+plt.ylim(ymax-10,ymax+0.3)
 plt.tick_params(axis='both', labelsize=15)
 plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
@@ -175,9 +178,7 @@ plt.clf()
 #================== solid particle densities ===================
 solids = []
 smean = []
-nmax = float(-100)
-ymin = -12.5  #-7.6
-ymax = -3.0  #-4.0   #-3.3  #-4.3
+ymax = -100.0
 for i in range(4+NELEM+NMOLE,4+NELEM+NMOLE+NDUST,1):
   solid = keyword[i]
   solids.append(solid[1:])
@@ -186,9 +187,10 @@ for i in range(4+NELEM+NMOLE,4+NELEM+NMOLE+NDUST,1):
   if (np.size(ind) == 0): continue
   ind = ind[0]
   yy = dat[:,ind]               # log10 nsolid/n<H>
-  nmax = np.max([nmax,np.max(yy[iii])])
+  ymax = np.max([ymax,np.max(yy[iii])])
   #print solid[1:],ind,np.max(yy[iii])
-if (nmax>-99):
+  ymin = ymax-10
+if (ymax>-99):
   print solids
   fig,ax = plt.subplots()
   indices = np.argsort(smean)
@@ -199,7 +201,7 @@ if (nmax>-99):
     if (np.size(ind) == 0): continue
     ind = ind[0]
     yy = dat[:,ind]               # log10 nsolid/n<H>
-    nmax = np.max([nmax,np.max(yy[iii])])
+    ymax = np.max([ymax,np.max(yy[iii])])
     if (np.max(yy[iii])>ymin):
       plt.plot(Tg[iii],yy[iii],c=colo[count],ls=styl[count],lw=widt[count],label=solid)
       count = count + 1
@@ -208,7 +210,7 @@ if (nmax>-99):
   plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{solid}/n_\mathrm{\langle H\rangle}$',fontsize=20)
   #plt.xscale('log')
   plt.xlim(Tmin,Tmax) #+delT)
-  plt.ylim(ymin,ymax)
+  plt.ylim(ymin,ymax+0.3)
   plt.tick_params(axis='both', labelsize=14)
   plt.tick_params('both', length=6, width=1.5, which='major')
   plt.tick_params('both', length=3, width=1, which='minor')

@@ -9,18 +9,12 @@
       use EXCHANGE,ONLY: nel,nat,nion,nmol,H,C,N,O,W
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
-      real :: p,pe,Tg,rho,nHges,nges,kT,pges,mu,muold,fac
+      real :: p,Tg,nHges,nges,kT,pges,mu,muold,fac
       real :: rhog,rhod,Jstar,Nstar
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST),out(NDUST)
       integer :: i,ii,j,jj,NOUT,ic,stindex
-      character(len=5000) :: species,NISTspecies,elnames
-      character(len=200) :: line
-      character(len=20) :: frmt,name,short_name(NDUST),test1,test2
-      character(len=4) :: sup
-      character(len=2) :: test3
-      character(len=1) :: char
+      character(len=20) :: name,short_name(NDUST)
       integer :: verbose=0
-      logical :: isOK
 
       !----------------------------
       ! ***  open output files  ***

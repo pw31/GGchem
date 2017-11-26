@@ -13,7 +13,7 @@
       character(len=2) :: cel(40),elnam
       character(len=20) :: molname,upper,leer='                    '
       character(len=200) :: line,filename
-      logical :: found,allfound,charged
+      logical :: found,charged
       real*8 :: fiterr
 
       cel(:) = '.'

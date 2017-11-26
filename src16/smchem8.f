@@ -56,10 +56,10 @@
 *  ist, die in die Dissoziationspolynome eingesetzt werden darf.
       real*8,parameter :: tdispol=300.d0
 *-----------------------------------------------------------------------
-      integer stindex,at,info,ipvt(nel),Nconv,switch,ido,iredo
+      integer stindex,info,ipvt(nel),Nconv,switch,ido,iredo
       integer Nact,all_to_act(nel),act_to_all(nel),switchoff(nel)
-      integer e,i,j,j1,ii,jj,kk,l,it,m1,m2,piter,iraus,itry
-      integer Nseq,imin,imax,pot,enew,eseq(nel)
+      integer e,i,j,j1,ii,jj,kk,l,it,m1,m2,piter
+      integer Nseq,imin,imax,enew,eseq(nel)
       integer,parameter :: itmax=200,Ncmax=16
       real*8,parameter :: finish=1.d-12
       real*8 :: ppp,qqq
@@ -67,18 +67,17 @@
       real*8 :: work(nel*(nel+1))
       integer:: ind,indx(nel)
       real*8 :: condnum1,work2(nel)
-      real*8 :: kT,kT1,nelek,ng,Sa,Nenner,fak,lth,arg,term
-      real*8 :: f0,f1,f2,f3,ff1,ff2,ff3,f,fs
+      real*8 :: kT,kT1,nelek,ng,Sa,fak,lth,arg,term,f,fs
       real*8 :: VIETA,VIETA2
-      real*8 :: pH,pHe,pC,pN,pO,pSi,pMg,pAl,pFe,pS,pNa,pK,pTi,pCa
-      real*8 :: pLi,pCl,pel,worst
-      real*8 :: pHges,pHeges,pCges,pNges,pOges,pSiges,pMgges,
+      real*8 :: pH,pC,pN,pO,pSi,pMg,pAl,pFe,pS,pNa,pK,pTi,pCa
+      real*8 :: pLi,pCl,pel
+      real*8 :: pHges,pCges,pNges,pOges,pSiges,pMgges,
      &          pAlges,pFeges,pSges,pNages,pKges,pTiges,pCages,
      &          pLiges,pClges,pHalt,pCalt,pOalt,pNalt,
-     &          pNaalt,pCaalt,pClalt,pKalt,pTialt,pSialt,pSalt
-      real*8 :: aa,bb,cc,dd,ee,gg,hh,a2,a3,delta,pat,dpat
+     &          pNaalt,pCaalt,pClalt,pTialt,pSialt,pSalt
+      real*8 :: aa,bb,cc,dd,ee,delta,pat
       real*8 :: nges(nel),pmono1(nel),coeff(-1:Ncmax),atmax,atfrac
-      real*8 :: DF(nel,nel),dp(nel),FF(nel),pmol,q0,qq,crit
+      real*8 :: DF(nel,nel),dp(nel),FF(nel),pmol,crit
       real*8 :: DF0(nel,nel),FF0(nel),scale(nel),conv(0:500,nel)
       real*8 :: converge(0:500),delp,nold,soll,haben,abw,sum
       real*8 :: dpp(4),func(4),dfunc(4,4),sca(4)
@@ -88,7 +87,7 @@
       logical :: from_merk,eact(nel),done(nel),redo(nel)
       logical :: IS_NAN,isOK,affect,known
       character(len=5000) :: mols
-      character(len=100) :: txt,line
+      character(len=100) :: txt
       character(len=1) :: char
       integer,save :: ilauf=0 
       integer,save :: Al2O,AlH,AlO2H,AlOH,C2,C3,C2H,C3H,C2H2,CH4,CN,CO

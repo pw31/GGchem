@@ -42,17 +42,16 @@
 ***********************************************************************
       use PARAMETERS,ONLY: nHmax,Tmax,model_eqcond
       use CHEMISTRY,ONLY: NMOLE,NELM,m_kind,elnum,cmol,el
-      use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,
-     >                    dust_nam,dust_mass,dust_Vol
+      use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,
+     >                    dust_nam,dust_mass,dust_Vol,dust_nel,dust_el
       use EXCHANGE,ONLY: nel,nat,nion,nmol
       implicit none
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST)
       real(kind=qp) :: nges,kT,nmax,threshold
-      real*8  :: Tg,nHges,Vtot,mtot
-      integer :: i,imol,iraus,e,j,verbose
+      real*8  :: Tg,nHges
+      integer :: i,imol,iraus,e,j,verbose,dk
       logical :: included,haeufig,raus(NMOLE)
-      character(len=2) :: search 
       character(len=10) :: sp
 
       Tg    = Tmax
@@ -73,6 +72,12 @@
      >      elnam(i),nHges*eps(i),eps(i)/eps0(i)
       enddo  
 
+      write(*,*) '----- condensates -----'
+      do i=1,NDUST
+        if (eldust(i)<=0.Q0) cycle 
+        write(*,1020) ' n'//trim(dust_nam(i))//'=',eldust(i)*nHges
+      enddo
+  
       write(*,*) '----- atoms and ions -----'
       write(*,1000) ' nel=',nel
       do e=1,NELM
@@ -93,7 +98,7 @@
           nmax  = nmol(i)
         endif
       enddo
-      haeufig = (nmax.gt.nHges*1.Q-8)
+      haeufig = (nmax.gt.nHges*1.Q-5)
       if (haeufig) then
         write(*,4010) cmol(iraus), nmol(iraus)
         raus(iraus) = .true.
@@ -108,13 +113,22 @@
           write(*,'(1x,A10,1pE11.4)') "nel       ",nel
           threshold = 1.Q-3*nel
         else   
-          write(*,'("Element ",A2,1pE12.4)') elnam(i),eps(i)*nHges 
-          threshold = eps(i)*nHges*1.D-3
-          if (nat(i).gt.eps(i)*nHges*1.D-3) then
+          write(*,'("Element ",A2,1pE12.4)') elnam(i),eps0(i)*nHges 
+          threshold = eps(i)*nHges*1.D-2
+          if (nat(i).gt.eps(i)*nHges*1.D-2) then
             write(*,'(1x,A10,1pE11.4)') 
      >       "n"//trim(elnam(i))//"       ", nat(i) 
           endif  
         endif  
+        do dk=1,NDUST
+          if (eldust(dk)<=0.Q0) cycle 
+          do j=1,dust_nel(dk)
+            if (i==dust_el(dk,j)) then
+              write(*,'(" n",A16,1pE12.4)') 
+     >              dust_nam(dk),eldust(dk)*nHges 
+            endif
+          enddo  
+        enddo  
         raus = .false.
         do 
           iraus = 0
@@ -148,7 +162,8 @@
       do i=1,NMOLE
         nges = nges + nmol(i)
       enddo
-      write(*,1010) 'pe=',nel*kT,' pges=',nges*kT
+      write(*,'("pges[bar]=",1pE10.3,"  pe[bar]=",1pE10.3)') 
+     >      nges*kT/bar,nel*kT/bar
      
 *     ------------------------------
       call SUPERSAT(Tg,nat,nmol,Sat)
@@ -156,11 +171,13 @@
       write(*,*)
       write(*,*) '----- supersaturation ratios -----'
       do i=1,NDUST
+        if (Sat(i)<1.Q-2) cycle 
         write(*,5000) dust_nam(i),Sat(i) 
       enddo  
 
  1000 format(a6,1pE9.3)
  1010 format(a6,1pE9.3,a8,1pE9.3)
+ 1020 format(a16,1pE9.3)
  4000 format(a7,1pE10.4,a5,1pE10.4)     
  4010 format(' n',a8,1pE12.4)
  5000 format(1x,a20,' S=',1pE9.3)

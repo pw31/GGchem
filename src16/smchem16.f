@@ -57,26 +57,25 @@
 *  ist, die in die Dissoziationspolynome eingesetzt werden darf.
       real(kind=qp),parameter :: tdispol=100.Q0
 *-----------------------------------------------------------------------
-      integer stindex,at,info,ipvt(nel),Nconv,switch,iredo,ido
+      integer stindex,Nconv,switch,iredo,ido
       integer Nact,all_to_act(nel),act_to_all(nel),switchoff(nel)
-      integer e,i,j,j1,ii,jj,kk,l,it,m1,m2,piter,iraus,itry
-      integer Nseq,imin,imax,enew,e2,eseq(nel)
+      integer e,i,j,j1,ii,jj,kk,l,it,m1,m2,piter
+      integer Nseq,imin,imax,enew,eseq(nel)
       integer,parameter :: itmax=200,Ncmax=16
       real(kind=qp) :: finish
       real(kind=qp) :: ppp,qqq
-      real(kind=qp) :: g(0:nml),limit,condnum1,work(nel)
-      real(kind=qp) :: kT,kT1,nelek,ng,Sa,Nenner,fak,lth,arg,term
-      real(kind=qp) :: f0,f1,f2,f3,ff1,ff2,ff3,f,fs
-      real(kind=qp) :: VIETA,VIETA2
-      real(kind=qp) :: pH,pHe,pC,pN,pO,pSi,pMg,pAl,pFe,pS,pNa,pK,pTi,pCa
-      real(kind=qp) :: pLi,pCl,pel,worst
-      real(kind=qp) :: pHges,pHeges,pCges,pNges,pOges,pSiges,pMgges,
+      real(kind=qp) :: g(0:nml),limit
+      real(kind=qp) :: kT,kT1,nelek,ng,Sa,fak,lth,arg,term
+      real(kind=qp) :: f,fs,VIETA,VIETA2
+      real(kind=qp) :: pH,pC,pN,pO,pSi,pMg,pAl,pFe,pS,pNa,pK,pTi,pCa
+      real(kind=qp) :: pLi,pCl,pel
+      real(kind=qp) :: pHges,pCges,pNges,pOges,pSiges,pMgges,
      &                 pAlges,pFeges,pSges,pNages,pKges,pTiges,pCages,
      &                 pLiges,pClges,pHalt,pCalt,pOalt,pNalt,
-     &                 pNaalt,pCaalt,pClalt,pKalt,pTialt,pSialt,pSalt
-      real(kind=qp) :: aa,bb,cc,dd,ee,gg,hh,a2,a3,delta,pat,dpat,atfrac
+     &                 pNaalt,pCaalt,pClalt,pTialt,pSialt,pSalt
+      real(kind=qp) :: aa,bb,cc,dd,ee,delta,pat,atfrac
       real(kind=qp) :: nges(nel),pmono1(nel),coeff(-1:Ncmax),atmax
-      real(kind=qp) :: DF(nel,nel),dp(nel),FF(nel),pmol,q0,qq,crit
+      real(kind=qp) :: DF(nel,nel),dp(nel),FF(nel),pmol,crit
       real(kind=qp) :: DF0(nel,nel),FF0(nel),scale(nel),conv(0:500,nel)
       real(kind=qp) :: converge(0:500),delp,nold,soll,haben,abw,sum
       real(kind=qp) :: dpp(4),func(4),dfunc(4,4),sca(4)
@@ -84,7 +83,7 @@
       real(kind=qp) :: pbefore(nel)
       real(kind=qp) :: emax,pges,pwork
       logical :: from_merk,eact(nel),redo(nel),done(nel),affect,known
-      character(len=100) :: txt,line
+      character(len=100) :: txt
       character(len=1) :: char
       integer,save :: ilauf=0 
       integer,save :: Al2O,AlH,AlO2H,AlOH,C2,C3,C2H,C3H,C2H2,CH4,CN,CO

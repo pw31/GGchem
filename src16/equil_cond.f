@@ -54,14 +54,12 @@
       integer :: e_num(NELEM),e_num_save(NELEM)
       integer :: Nunsolved,unsolved(NELEM),Nvar1,Nvar2,var(NELEM)
       integer :: Nsolve,ebest,dbest,nonzero,itrivial,iread,ioff
-      integer :: ifail,Nact_save,Nall,imax,swap,irow,erow,Eact
-      integer :: Nlin
+      integer :: ifail,Nall,imax,swap,irow,erow,Eact,Nlin
       integer :: act_to_elem(NELEM),act_to_dust(NELEM)
       integer :: Nzero,Ntrivial,etrivial(NELEM),dtrivial(NELEM)
       logical,dimension(NELEM) :: e_resolved,e_act,e_taken,is_esolved
       logical,dimension(NELEM) :: e_eliminated
       logical,dimension(0:NDUST) :: active,act_read,act_old
-      logical,dimension(0:NDUST) :: active_save
       logical,dimension(NDUST) :: is_dsolved,d_resolved,d_eliminated
       logical,dimension(NDUST) :: itried
       logical :: action,changed,solved,limited,ok,conserved,exch
@@ -246,7 +244,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        !if (qread>1.Q-3.and.iread==147) verbose=2
+        if (qread>1.Q-3.and.iread==145) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -354,8 +352,7 @@
      >                   limited,Smax,dust_nam(imax)
           if (verbose>0.and.maxon>0.Q0) print'("  maxon =",
      >                   1pE10.2,2x,A18)',maxon,dust_nam(imaxon)
-          active_save = active 
-          Nact_save = Nact
+
           if (maxon>0.0*MAX(Smax-1.Q0,0.Q0)) then
             if (imaxon.ne.iminoff) then 
               active(imaxon) = .true.
@@ -478,6 +475,7 @@
                 call TRANSFORM(ioff,dk,amount,-slin(dk)/slin(ioff)*Nt,
      >                         ddust,eps,dscale,active,ok)
               enddo  
+              ddust(ioff) = 0.Q0
               eps = eps_save
             endif  
           endif
@@ -655,23 +653,56 @@
             do j=Nact+1,Nall 
               el = Iindex(j)
               if (e_num(el)>0) then
-                print*,"... exchanging "//elnam(Iindex(i))//
-     >                 " for "//elnam(Iindex(j))
-                swap = Iindex(i)   
-                Iindex(i) = Iindex(j)
-                Iindex(j) = swap
-                e_act(Iindex(i)) = .true.
-                e_act(Iindex(j)) = .false.
-                found=.true. 
+                found=.true.
                 exit
               endif
             enddo  
+            if (found) then
+              print*,"... exchanging "//elnam(Iindex(i))//
+     >               " for "//elnam(Iindex(j))
+              swap = Iindex(i)   
+              Iindex(i) = Iindex(j)
+              Iindex(j) = swap
+              e_act(Iindex(i)) = .true.
+              e_act(Iindex(j)) = .false.
+            endif
             if (.not.found) then
               print*,"*** no alternative element selection found."
               stop 
             endif   
             goto 200 
-          endif   
+          endif 
+          !--- is there an unselected element with e_num=1?
+          found = .false.
+          if (Nall>Nact+1) then
+            do i=Nact+1,Nall
+              el = Iindex(i)
+              if (e_num(el)==1) then
+                found = .true. 
+                exit
+              endif   
+            enddo          
+          endif  
+          if (found) then
+            found = .false. 
+            do j=Nact,1,-1
+              el = Iindex(j)
+              if (e_num(el)>0) then 
+                found = .true.
+                exit
+              endif 
+            enddo
+            if (found) then
+              print*,"... exchanging "//elnam(Iindex(j))//
+     >               " for "//elnam(Iindex(i))
+              swap = Iindex(i)   
+              Iindex(i) = Iindex(j)
+              Iindex(j) = swap
+              e_act(Iindex(i)) = .true.
+              e_act(Iindex(j)) = .false.
+              goto 200 
+            endif  
+          endif  
         endif   
 
         if (verbose>1) print*,"solving for ... ",

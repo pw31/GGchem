@@ -14,7 +14,7 @@
       character(len=200):: zeile,lastzeile
       character(len=100) :: trivial(NDUSTmax),limit,tmp
       character(len=2)  :: name
-      logical :: is_atom,found,allfound
+      logical :: found,allfound
 
       write(*,*) 
       write(*,*) "reading DustChem.dat ..."
