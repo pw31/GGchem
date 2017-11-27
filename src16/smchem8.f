@@ -58,7 +58,7 @@
 *-----------------------------------------------------------------------
       integer stindex,info,ipvt(nel),Nconv,switch,ido,iredo
       integer Nact,all_to_act(nel),act_to_all(nel),switchoff(nel)
-      integer e,i,j,j1,ii,jj,kk,l,it,m1,m2,piter
+      integer e,i,j,j1,ii,jj,kk,l,it,m1,m2,piter,ifatal
       integer Nseq,imin,imax,enew,eseq(nel)
       integer,parameter :: itmax=200,Ncmax=16
       real*8,parameter :: finish=1.d-12
@@ -109,6 +109,7 @@
 *-----------------------------------------------------------------------      
 
       ilauf = ilauf + 1
+      ifatal = 0
       if ( ilauf .eq. 1 ) then        
         TiC = stindex(cmol,nml,'TIC    ')
         if (.not.NewChemIt) then
@@ -1101,7 +1102,7 @@ c     g(TiC)   : siehe oben!
         Nact = 0
         do iredo=MAX(1,ido-NewBackIt),ido
           e = eseq(iredo)
-          if (eps(e)<100*eps(enew)) then
+          if (eps(e)<1000*eps(enew)) then
             eact(e) = .true. 
             Nact = Nact+1
             all_to_act(e) = Nact
@@ -1414,17 +1415,20 @@ c     g(TiC)   : siehe oben!
           write(*,*) '*** keine Konvergenz in SMCHEM8!'
           write(*,*) 'it, converge, ind =',it,converge(it),limit
           write(*,*) '  n<H>, T =',anhges,Tg
-          if (from_merk) then
+          open(unit=12,file='fatal.abu')
+          write(12,*) anhges,Tg
+          do i=1,nel
+            write(12,'(A2,1x,0pF30.26)') catm(i),12+log10(eps(i))
+          enddo  
+          close(12)
+          if (ifatal==0) then
             chemiter  = chemiter + it
             from_merk = .false.
+            ifatal  = 1
             verbose = 2             
             goto 100                   ! try again from scratch before giving up
           endif  
-          do ii=1,nact
-            i = act_to_all(ii)
-            write(*,*) catm(i),eps(i),-dp(ii)/(anmono(i)*kT) 
-          enddo  
-          stop                         ! give up.
+          stop "***  giving up."
         endif
         if (it>=5) then
           j = 0 

@@ -2,8 +2,9 @@
       subroutine READ_PARAMETER
 ************************************************************************
       use PARAMETERS,ONLY: elements,abund_pick,model_dim,model_pconst,
-     >                     model_struc,model_eqcond,Npoints,CzuOvari,
-     >                     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax
+     >                     model_struc,model_eqcond,Npoints,useDatabase,
+     >                     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,
+     >                     abund_file
       use CHEMISTRY,ONLY: NewChemIt,NewBackIt,NewFullIt,dispol_file
       use DUST_DATA,ONLY: bar
       implicit none
@@ -34,7 +35,7 @@
       NewChemIt    = .true.
       NewBackIt    = 5
       NewFullIt    = .true.
-      CzuOvari     = .false.
+      UseDataBase  = .true.
 
       !-------------------------------------------
       ! ***  change parameters via input file  ***
@@ -55,9 +56,10 @@
         iline = iline+1
         print*,trim(line)
         if (iline.eq.1) then
-          elements = ' '//trim(line)//' '     ! selection of element 
+          elements = ' '//trim(line)//' '     ! selection of elements
         else if (index(line,"! abund_pick")>0) then   
           read(line,*) abund_pick
+          if (abund_pick==0) read(1,'(A200)',end=100) abund_file
         else if (index(line,"! model_eqcond")>0) then   
           read(line,*) model_eqcond
         else if (index(line,"! model_dim")>0) then   
@@ -90,6 +92,8 @@
           read(line,*) NewBackIt
         else if (index(line,"! NewFullIt")>0) then 
           read(line,*) NewFullIt
+        else if (index(line,"! useDatabase")>0) then 
+          read(line,*) useDatabase
         else if (index(line,"! dispol_file2")>0) then 
           i = index(line,"!")
           read(line(1:i-1),*) dispol_file(2)

@@ -10,7 +10,7 @@
 *****   - wie in Tsuji-Chemie                                    *****
 *****                                                            *****
 **********************************************************************
-      use PARAMETERS,ONLY: abund_pick
+      use PARAMETERS,ONLY: abund_pick,abund_file
       use DUST_DATA,ONLY: NELEM,eps=>eps0,mass,muH,elnam,amu
       use EXCHANGE,ONLY: H,He,Li,Be,B,C,N,O,F,Ne,Na,Mg,Al,Si,P,S,Cl,
      >                   Ar,K,Ca,Sc,Ti,V,Cr,Mn,Fe,Co,Ni,Cu,Zn,Ga,Ge,
@@ -241,9 +241,11 @@
 *     ------------------------------------
       if (abund_pick.eq.0) then
         write(*,*)
-        write(*,*) "read element abundances from abundances.in ..."
-        open(1,file='abundances.in',status='old')
+        write(*,*) "read element abundances from "//
+     &             trim(abund_file)//" ..."
+        open(1,file=abund_file,status='old')
         eps0 = eps
+        eps  = LOG10(eps)+12.Q0
         do i=1,999
           read(1,*,end=1000) el,val
           found = .false.

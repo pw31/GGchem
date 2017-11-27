@@ -1,7 +1,7 @@
 ***********************************************************************
       SUBROUTINE DEMO_SWEEP
 ***********************************************************************
-      use PARAMETERS,ONLY: Tmin,Tmax,pmin,pmax,nHmin,nHmax,CzuOvari,
+      use PARAMETERS,ONLY: Tmin,Tmax,pmin,pmax,nHmin,nHmax,useDatabase,
      >                     model_eqcond,model_pconst,Npoints
       use CHEMISTRY,ONLY: NELM,NMOLE,elnum,cmol,catm,el,charge
       use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,muH,
@@ -274,9 +274,8 @@
           same = same.and.(nHmin==nHmax)
         endif  
         if (same) then
-          CzuOvari = .true. 
+          useDatabase = .false.
           eps0(C) = eps0(O) * (0.3+1.1*fac) 
-          !eps0(C) = eps0(O) * 0.940133779264213931270433022291400Q+0
           eps(C)  = eps0(C)
           eps(O)  = eps0(O)
           print*,"C/O=",eps(C)/eps(O)

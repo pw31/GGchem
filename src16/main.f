@@ -4,6 +4,7 @@
       use PARAMETERS,ONLY: model_dim,model_struc
       use EXCHANGE,ONLY: chemcall,chemiter,ieqcond,itransform
       use DATABASE,ONLY: NLAST
+      implicit none
 
       call READ_PARAMETER
       call INIT
@@ -26,14 +27,14 @@
       endif   
       
       print*
-      print'("         smchem calls = ",I7)',chemcall
-      print'("      iterations/call = ",0pF7.2)',
+      print'("         smchem calls = ",I8)',chemcall
+      print'("      iterations/call = ",0pF8.2)',
      >                     REAL(chemiter)/REAL(chemcall)
-      print'("eq condensation calls = ",I7)',ieqcond
-      print'("      transform calls = ",I7)',itransform
+      print'("eq condensation calls = ",I8)',ieqcond
+      print'("      transform calls = ",I8)',itransform
 
       NLAST=0         ! also save replaced database entries
-      if (ieqcond) call SAVE_DBASE
+      if (ieqcond>0) call SAVE_DBASE
       end
 
 
@@ -57,6 +58,7 @@
       Tg    = Tmax
       nHges = nHmax
       eps   = eps0
+      eldust  = 0.Q0
       verbose = 2
 
 *     ------------------------------------------------------------------
@@ -160,7 +162,7 @@
         nges = nges + nat(i)
       enddo
       do i=1,NMOLE
-        nges = nges + nmol(i)
+        nges = nges + nmol(i)  ! includes atomic ions
       enddo
       write(*,'("pges[bar]=",1pE10.3,"  pe[bar]=",1pE10.3)') 
      >      nges*kT/bar,nel*kT/bar

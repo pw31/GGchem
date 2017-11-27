@@ -59,7 +59,7 @@
 *-----------------------------------------------------------------------
       integer stindex,Nconv,switch,iredo,ido
       integer Nact,all_to_act(nel),act_to_all(nel),switchoff(nel)
-      integer e,i,j,j1,ii,jj,kk,l,it,m1,m2,piter
+      integer e,i,j,j1,ii,jj,kk,l,it,m1,m2,piter,ifatal
       integer Nseq,imin,imax,enew,eseq(nel)
       integer,parameter :: itmax=200,Ncmax=16
       real(kind=qp) :: finish
@@ -83,6 +83,7 @@
       real(kind=qp) :: pbefore(nel)
       real(kind=qp) :: emax,pges,pwork
       logical :: from_merk,eact(nel),redo(nel),done(nel),affect,known
+      character(len=5000) :: mols
       character(len=100) :: txt
       character(len=1) :: char
       integer,save :: ilauf=0 
@@ -105,6 +106,7 @@
 *-----------------------------------------------------------------------      
 
       ilauf = ilauf + 1
+      ifatal = 0
       if ( ilauf .eq. 1 ) then
         TiC = stindex(cmol,nml,'TIC    ')
         if (.not.NewChemIt) then
@@ -1031,6 +1033,7 @@ c     g(TiC)   : siehe oben!
         ! store coeff for Sum_l coeff(l) p^l = pges 
         !-------------------------------------------
         coeff(:) = 0.Q0          
+        mols = ''
         do i=1,nml
           affect = .false. 
           known  = .true. 
@@ -1057,6 +1060,7 @@ c     g(TiC)   : siehe oben!
           enddo  
           if (.not.affect) cycle  
           if (.not.known) cycle
+          mols = trim(mols)//" "//cmol(i)
           coeff(l) = coeff(l) + l*pmol
           !------------------------------------
           ! for initial guess, consider this 
@@ -1067,6 +1071,7 @@ c     g(TiC)   : siehe oben!
             !if (verbose>1) print'(A10,1pE10.3)',cmol(i),pwork
           endif  
         enddo  
+        if (verbose>1) print*,trim(mols)
         !----------------------------------------------
         ! solve 1d equation above with Newton's method 
         !----------------------------------------------
@@ -1098,7 +1103,7 @@ c     g(TiC)   : siehe oben!
         Nact = 0
         do iredo=MAX(1,ido-NewBackIt),ido
           e = eseq(iredo)
-          if (eps(e)<100*eps(enew)) then
+          if (eps(e)<1000*eps(enew)) then
             eact(e) = .true. 
             Nact = Nact+1
             all_to_act(e) = Nact
@@ -1107,10 +1112,13 @@ c     g(TiC)   : siehe oben!
             anmono(e) = anmono(e)*pcorr(enew,e) 
           endif
         enddo
-        if (verbose>1) print*,catm(eseq(1:ido))
-        if (verbose>1) print*,eact(eseq(1:ido))
-        if (verbose>1) print'("corr",99(1pE11.2))',
-     >                 pcorr(enew,act_to_all(1:Nact))
+        if (verbose>1) then
+          print*,catm(eseq(1:ido))
+          print*,eact(eseq(1:ido))
+          print'("corr",99(1pE11.2))',
+     >         pcorr(enew,act_to_all(1:Nact))
+          print'(I3,99(1pE12.4))',0,anmono(act_to_all(1:Nact))*kT
+        endif  
         do it=1,99
           do ii=1,Nact
             i = act_to_all(ii) 
@@ -1400,17 +1408,20 @@ c     g(TiC)   : siehe oben!
           write(*,*) '*** keine Konvergenz in SMCHEM16!'
           write(*,*) 'it, converge, ind =',it,converge(it),limit
           write(*,*) '  n<H>, T =',anhges,Tg
-          !if (from_merk) then
+          open(unit=12,file='fatal.abu')
+          write(12,*) anhges,Tg
+          do i=1,nel
+            write(12,'(A2,1x,0pF30.26)') catm(i),12+log10(eps(i))
+          enddo  
+          close(12)
+          if (ifatal==0) then
             chemiter  = chemiter + it
             from_merk = .false.
+            ifatal  = 1
             verbose = 2             
-            goto 100                   ! try again from scratch before giving up
-          !endif  
-          do ii=1,nact
-            i = act_to_all(ii)
-            write(*,*) catm(i),eps(i),-dp(ii)/(anmono(i)*kT) 
-          enddo  
-          stop                         ! give up.
+            goto 100        ! try again from scratch before giving up
+          endif  
+          stop "***  giving up."
         endif
         if (it>=5) then
           j = 0 
@@ -1501,8 +1512,8 @@ c     g(TiC)   : siehe oben!
             switch = switchoff(i)
             if (switch==0) switch=it-1
             if (verbose>1) then
-              print'(A7,2(1pE14.6),0pF14.9)',catm(i),anmono(i),
-     >                               conv(switch,i),badness(i)
+              print'(A7,3(1pE14.6))',catm(i),anmono(i),
+     >                       conv(switch,i),badness(i)
             endif  
           enddo
           if (ilauf==1) write(99,'(A9,A10,A4,99(A10))') 

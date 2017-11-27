@@ -1,9 +1,9 @@
 ************************************************************************
       module PARAMETERS
 ************************************************************************
-      character(len=200) :: elements
+      character(len=200) :: elements,abund_file
       integer :: abund_pick,model_dim,Npoints
-      logical :: model_eqcond,model_pconst,model_struc,CzuOvari 
+      logical :: model_eqcond,model_pconst,model_struc,useDataBase
       real*8  :: Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax
       end
 

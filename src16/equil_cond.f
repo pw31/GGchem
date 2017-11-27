@@ -17,7 +17,7 @@
 ! ***  eps(NELEM) and ddust(NDUST) are changed by dx(NELEM) separately ***
 ! ***  to avoid numerical problems close to complete condensation      ***
 !-------------------------------------------------------------------------
-      use PARAMETERS,ONLY: Tfast,CzuOvari
+      use PARAMETERS,ONLY: Tfast,useDatabase
       use DUST_DATA,ONLY: NELEM,NDUST,dust_nam,dust_nel,dust_nu,dust_el,
      >                    eps0,elnam,elcode
       use CONVERSION,ONLY: Nind,Ndep,Iindex,Dindex,is_dust,conv
@@ -41,7 +41,7 @@
       real(kind=qp),dimension(NELEM,NDUST) :: AA
       real(kind=qp) :: worst,xmin,Smax,Smin,qual,SQUAL,del
       real(kind=qp) :: turnon,turnoff,maxon,minoff,fac,fac2,amount,Nt
-      real(kind=qp) :: deps1,deps2,deps
+      real(kind=qp) :: deps1,deps2,deps,esum,emax
       real(kind=qp) :: det(2),converge(500,NELEM),crit,cbest
       real(kind=qp) :: small=1.Q-30
       integer,parameter :: itmax=5000
@@ -230,7 +230,7 @@
       !--------------------------------------------
       call GET_DATA(nHtot,T,epsread,ddustread,qread,iread,act_read)
       Nact = 0
-      if (qread.lt.0.5.and.(.not.CzuOvari)) then
+      if (qread.lt.0.5.and.useDatabase) then
         eps    = epsread
         ddust  = ddustread
         active = act_read
@@ -296,7 +296,7 @@
       xstep(:) = 0.Q0             
       call SUPER(nHtot,T,xstep,eps,Sat0)
       qual = SQUAL(Sat0,active)
-      print'("it=",I3," qual=",1pE12.4)',0,qual
+      print'("it=",I4," qual=",1pE11.4)',0,qual
       act_old = active
       lastit = -99
       iminoff = 0
@@ -320,17 +320,19 @@
           imaxon  = 0
           do i=1,NDUST
             xmin = 9.Q+99 
-            pot(i) = 0.Q0
+            esum = 0.Q0
+            emax = 0.Q0
             do j=1,dust_nel(i)
               el = dust_el(i,j)
-              !if (el.ne.O) pot(i)=pot(i)+dust_nu(i,j)
+              esum = esum + dust_nu(i,j)
               if (eps(el)/REAL(dust_nu(i,j),kind=qp).lt.xmin) then    
                 xmin = eps(el)/REAL(dust_nu(i,j),kind=qp)
-                pot(i) = 1.Q0/REAL(dust_nu(i,j),kind=qp)
+                emax = REAL(dust_nu(i,j),kind=qp)
               endif
             enddo
-            Sat1(i)=Sat0(i)**(1.Q0/pot(i))
-            !print'(A20,0pF8.3)',dust_nam(i),pot(i)
+            pot(i)  = 1.0/(0.0*emax+1.0*esum)
+            Sat1(i) = Sat0(i)**pot(i)
+            !print'(A20,99(0pF8.3))',dust_nam(i),emax,esum,pot(i)
           enddo 
           Smax = 0.Q0
           imax = 0
@@ -497,7 +499,7 @@
           xstep(:)= 0.Q0             
           call SUPER(nHtot,T,xstep,eps,Sat0)
           qual = SQUAL(Sat0,active)
-          print'("it=",I3," qual=",1pE12.4)',it,qual
+          print'("it=",I4," qual=",1pE11.4)',it,qual
           lastit = it
         endif
         if (verbose>0) then
@@ -1104,10 +1106,10 @@
         do ii=1,Nsolve
           i  = act_to_elem(ii) 
           el = Iindex(i)
-          if (eps(el)+dx(ii)<0.3*eps(el)) then
-            fac2 = (-0.7*eps(el))/dx(ii)        ! eps+fac*dx = 0.3*eps
-            if (verbose>0) print*,"*** limiting element "
-     >                            //elnam(el),REAL(fac2)
+          if (eps(el)+dx(ii)<0.1*eps(el)) then
+            fac2 = (-0.8*eps(el))/dx(ii)        ! eps+fac*dx = 0.2*eps
+            if (verbose>0) print'(" *** limiting element1 ",A2,
+     >        " eps=",1pE9.2,"  fac=",1pE9.2)',elnam(el),eps(el),fac2
             if (fac2<fac) then
               fac = fac2 
             endif
@@ -1132,10 +1134,10 @@
             endif  
           else  
             el = Dindex(j)
-            if (eps(el)+del<0.01*eps(el)) then
-              fac2 = (-0.99*eps(el))/del        ! eps+fac*dx = 0.1*eps
-              if (verbose>0) print*,"*** limiting element "
-     >                              //elnam(el),REAL(fac2)
+            if (eps(el)+del<0.05*eps(el)) then
+              fac2 = (-0.8*eps(el))/del        ! eps+fac*dx = 0.2*eps
+              if (verbose>0) print'(" *** limiting element2 ",A2,
+     >        " eps=",1pE9.2,"  fac=",1pE9.2)',elnam(el),eps(el),fac2
               if (fac2<fac) then
                 fac = fac2 
               endif  
@@ -1201,7 +1203,7 @@
         xstep(:) = 0.Q0
         call SUPER(nHtot,T,xstep,eps,Sat0)
         qual = SQUAL(Sat0,active)
-        print'("it=",I3," qual=",1pE12.4)',it,qual
+        print'("it=",I4," qual=",1pE11.4)',it,qual
         if (qual<1.Q-20) exit
         if (verbose>0) read(*,'(a1)') char1
 
@@ -1222,7 +1224,7 @@
       !----------------------------------
       ! ***  save result to database  ***
       !----------------------------------
-      if (qual<1.Q-10.and.(.not.CzuOvari)) then
+      if (qual<1.Q-10.and.useDatabase) then
         call PUT_DATA(nHtot,T,eps,ddust,qread,iread,active)
       endif  
       it_tot  = it_tot + it
