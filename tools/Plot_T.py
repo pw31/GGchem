@@ -131,7 +131,7 @@ if (ymax>-10):
   plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
   plt.ylabel(r'$\mathrm{dust/gas}$',fontsize=20)
   plt.xlim(Tmin,Tmax)
-  plt.ylim(1.E-10,10**np.max(log10_dust_gas)*3)
+  plt.ylim(10**(ymax-8),10**ymax*3)
   plt.yscale('log')
   plt.tick_params(axis='both', labelsize=15)
   plt.tick_params('both', length=6, width=1.5, which='major')
@@ -161,7 +161,7 @@ for i in range(4+NELEM+NMOLE+2*NDUST,4+NELEM+NMOLE+2*NDUST+NELEM,1):
 plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
 plt.ylabel(r'$\log\,\epsilon_{\rm gas}$',fontsize=20)
 plt.xlim(Tmin,Tmax*1.1)
-plt.ylim(ymax-10,ymax+0.3)
+plt.ylim(ymax-12,ymax+0.3)
 plt.tick_params(axis='both', labelsize=15)
 plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
@@ -189,7 +189,7 @@ for i in range(4+NELEM+NMOLE,4+NELEM+NMOLE+NDUST,1):
   yy = dat[:,ind]               # log10 nsolid/n<H>
   ymax = np.max([ymax,np.max(yy[iii])])
   #print solid[1:],ind,np.max(yy[iii])
-  ymin = ymax-10
+  ymin = ymax-8
 if (ymax>-99):
   print solids
   fig,ax = plt.subplots()

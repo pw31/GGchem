@@ -44,7 +44,7 @@
       real(kind=qp) :: deps1,deps2,deps
       real(kind=qp) :: det(2),converge(500,NELEM),crit,cbest
       real(kind=qp) :: small=1.Q-30
-      integer,parameter :: itmax=200
+      integer,parameter :: itmax=5000
       integer,dimension(NELEM) :: elem,Nslot,eind
       integer,dimension(NDUST) :: dind,dlin
       integer,dimension(NELEM,NDUST) :: dustkind,stoich
@@ -1132,8 +1132,8 @@
             endif  
           else  
             el = Dindex(j)
-            if (eps(el)+del<0.1*eps(el)) then
-              fac2 = (-0.9*eps(el))/del        ! eps+fac*dx = 0.1*eps
+            if (eps(el)+del<0.01*eps(el)) then
+              fac2 = (-0.99*eps(el))/del        ! eps+fac*dx = 0.1*eps
               if (verbose>0) print*,"*** limiting element "
      >                              //elnam(el),REAL(fac2)
               if (fac2<fac) then

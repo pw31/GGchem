@@ -4,7 +4,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter, ScalarFormatter
 plt.rcParams['axes.linewidth'] = 1.5
 
-single_figures = 1
+single_figures = 0
 
 # units are cgs
 bar = 1.E+6     # 1 bar in dyn/cm2
