@@ -5,7 +5,8 @@
      >                     model_struc,model_eqcond,Npoints,useDatabase,
      >                     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,
      >                     abund_file
-      use CHEMISTRY,ONLY: NewChemIt,NewBackIt,NewFullIt,dispol_file
+      use CHEMISTRY,ONLY: NewChemIt,NewBackIt,NewFullIt,NewBackFac,
+     >                    NewFastLevel,dispol_file
       use DUST_DATA,ONLY: bar
       implicit none
       integer :: iarg,iline,i,dispol_set
@@ -32,10 +33,12 @@
       pmax         = 1.d0*bar
       nHmin        = 4.d+19
       nHmax        = 4.d+19
-      NewChemIt    = .true.
-      NewBackIt    = 5
-      NewFullIt    = .true.
       UseDataBase  = .true.
+      NewChemIt    = .true.
+      NewFullIt    = .true.
+      NewBackIt    = 5
+      NewBackFac   = 1.E+2
+      NewFastLevel = 0
 
       !-------------------------------------------
       ! ***  change parameters via input file  ***
@@ -90,8 +93,12 @@
           read(line,*) NewChemIt
         else if (index(line,"! NewBackIt")>0) then 
           read(line,*) NewBackIt
+        else if (index(line,"! NewBackFac")>0) then 
+          read(line,*) NewBackFac
         else if (index(line,"! NewFullIt")>0) then 
           read(line,*) NewFullIt
+        else if (index(line,"! NewFastLevel")>0) then 
+          read(line,*) NewFastLevel
         else if (index(line,"! useDatabase")>0) then 
           read(line,*) useDatabase
         else if (index(line,"! dispol_file2")>0) then 

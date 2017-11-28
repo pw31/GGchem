@@ -20,6 +20,7 @@
       use PARAMETERS,ONLY: Tfast,useDatabase
       use DUST_DATA,ONLY: NELEM,NDUST,dust_nam,dust_nel,dust_nu,dust_el,
      >                    eps0,elnam,elcode
+      use CHEMISTRY,ONLY: NewFastLevel
       use CONVERSION,ONLY: Nind,Ndep,Iindex,Dindex,is_dust,conv
       use EXCHANGE,ONLY: Fe,Mg,Si,Al,Ca,Ti,C,O,S,Na,Cl,H,Li,Mn,W,Ni,Cr,
      >                   Kalium=>K,Zr,V,itransform,ieqcond
@@ -289,12 +290,11 @@
           el = dust_el(i,j)
           xmin = min(xmin,eps00(el)/REAL(dust_nu(i,j),kind=qp))    
         enddo
-        dscale(i) = xmin                        ! max dust abundances
+        dscale(i) = xmin                         ! max dust abundances
       enddo   
 
-      call GGCHEM(nHtot,T,eps,.false.,0)  ! one call from scratch
       xstep(:) = 0.Q0             
-      call SUPER(nHtot,T,xstep,eps,Sat0)
+      call SUPER(nHtot,T,xstep,eps,Sat0,.false.) ! from scratch
       qual = SQUAL(Sat0,active)
       print'("it=",I4," qual=",1pE11.4)',0,qual
       act_old = active
@@ -368,7 +368,7 @@
             if (active(i)) Nact=Nact+1
           enddo
 
-          if (changed.and.imaxon>0.and.Nact>1) then
+          if (imaxon>0.and.Nact>1) then
             !----------------------------------------
             ! ***  eliminate linear combinations  ***
             !----------------------------------------
@@ -479,6 +479,7 @@
               enddo  
               ddust(ioff) = 0.Q0
               eps = eps_save
+              print*,"switch off ",dust_nam(ioff) 
             endif  
           endif
         endif  
@@ -497,7 +498,7 @@
             if (active(i)) Nact=Nact+1
           enddo
           xstep(:)= 0.Q0             
-          call SUPER(nHtot,T,xstep,eps,Sat0)
+          call SUPER(nHtot,T,xstep,eps,Sat0,NewFastLevel<1)
           qual = SQUAL(Sat0,active)
           print'("it=",I4," qual=",1pE11.4)',it,qual
           lastit = it
@@ -1066,7 +1067,7 @@
           xstep(:) = 0.Q0
           xstep(j) = deps
           scale(j) = eps(el)
-          call SUPER(nHtot,T,xstep,eps,Sat2)
+          call SUPER(nHtot,T,xstep,eps,Sat2,.true.)
           do ii=1,Nsolve
             i  = act_to_dust(ii) 
             dk = Dindex(i)
@@ -1106,8 +1107,8 @@
         do ii=1,Nsolve
           i  = act_to_elem(ii) 
           el = Iindex(i)
-          if (eps(el)+dx(ii)<0.1*eps(el)) then
-            fac2 = (-0.8*eps(el))/dx(ii)        ! eps+fac*dx = 0.2*eps
+          if (eps(el)+dx(ii)<0.05*eps(el)) then
+            fac2 = (-0.95*eps(el))/dx(ii)        ! eps+fac*dx = 0.05*eps
             if (verbose>0) print'(" *** limiting element1 ",A2,
      >        " eps=",1pE9.2,"  fac=",1pE9.2)',elnam(el),eps(el),fac2
             if (fac2<fac) then
@@ -1135,7 +1136,7 @@
           else  
             el = Dindex(j)
             if (eps(el)+del<0.05*eps(el)) then
-              fac2 = (-0.8*eps(el))/del        ! eps+fac*dx = 0.2*eps
+              fac2 = (-0.95*eps(el))/del        ! eps+fac*dx = 0.05*eps
               if (verbose>0) print'(" *** limiting element2 ",A2,
      >        " eps=",1pE9.2,"  fac=",1pE9.2)',elnam(el),eps(el),fac2
               if (fac2<fac) then
@@ -1201,7 +1202,7 @@
         if (worst>1.Q-8) stop
 
         xstep(:) = 0.Q0
-        call SUPER(nHtot,T,xstep,eps,Sat0)
+        call SUPER(nHtot,T,xstep,eps,Sat0,NewFastLevel<1)
         qual = SQUAL(Sat0,active)
         print'("it=",I4," qual=",1pE11.4)',it,qual
         if (qual<1.Q-20) exit
@@ -1234,7 +1235,7 @@
             
 
 !-------------------------------------------------------------------------
-      subroutine SUPER(nHtot,T,xx,eps,Sat)
+      subroutine SUPER(nHtot,T,xx,eps,Sat,merk)
 !-------------------------------------------------------------------------
       use DUST_DATA,ONLY: NELEM,NDUST,dust_nel,dust_nu,dust_el,
      >                    dust_nam,elnam
@@ -1245,6 +1246,7 @@
       real*8,intent(in)  :: nHtot,T
       real(kind=qp),intent(in) :: xx(NELEM),eps(NELEM)
       real(kind=qp),intent(out) :: Sat(NDUST)
+      logical,intent(in) :: merk
       real(kind=qp) :: eps1(NELEM),dx
       integer :: i,j,el
 
@@ -1276,7 +1278,7 @@
       !----------------------------------------------
       ! ***  compute chemistry & supersaturation  ***
       !----------------------------------------------
-      call GGCHEM(nHtot,T,eps1,.true.,0)
+      call GGCHEM(nHtot,T,eps1,merk,0)
       call SUPERSAT(T,nat,nmol,Sat)
       
       end

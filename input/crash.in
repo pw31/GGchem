@@ -8,7 +8,7 @@ dispol_WoitkeRefit.dat                  ! dispol_file3
 
 # abundance options 0=custom 1=EarthCrust, 2=Ocean, 3=Solar, 4=Meteorites
 0                     ! abund_pick
-fatal.out
+fatal.case
 
 # equilibrium condensation?
 .false.               ! model_eqcond
@@ -17,8 +17,10 @@ fatal.out
 0                     ! model_dim  (0,1,2)
 .false.               ! model_pconst
 .false.               ! model_struc 
-1000.0                ! Tmax [K]
+900.0                 ! Tmax [K]
 3.E+18                ! nHmax
 .true.                ! NewChemIt
-10                    ! NewBackIt  
+12                    ! NewBackIt  
+1.E+4                 ! NewBackFac
 1100.0                ! Tfast
+.false.               ! useDatabase

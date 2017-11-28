@@ -20,7 +20,7 @@
 *     anmol  : vektor mit den dichten der molekuele falls relevant     *
 *                                                                      *
 ************************************************************************
-      use CHEMISTRY,ONLY: NewChemIt,NewBackIt,NewFullIt,
+      use CHEMISTRY,ONLY: NewChemIt,NewBackIt,NewFullIt,NewBackFac,
      >                    nml=>NMOLE,nel=>NELM,cmol,catm,
      >                    m_kind,m_anz,a,natom,charge,elion,
      >                    He,el,H,C,N,O,Si,Mg,Al,Fe,S,Na,K,Ti,Ca,Li,Cl,
@@ -1102,7 +1102,7 @@ c     g(TiC)   : siehe oben!
         Nact = 0
         do iredo=MAX(1,ido-NewBackIt),ido
           e = eseq(iredo)
-          if (eps(e)<1000*eps(enew)) then
+          if (eps(e)<NewBackFac*eps(enew)) then
             eact(e) = .true. 
             Nact = Nact+1
             all_to_act(e) = Nact

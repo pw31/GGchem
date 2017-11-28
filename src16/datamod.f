@@ -48,7 +48,8 @@
       use DUST_DATA,ONLY: NELEM
       character(len=200) :: dispol_file(4)
       logical :: NewChemIt,NewFullIt
-      integer :: NewBackIt
+      integer :: NewBackIt,NewFastLevel
+      real*8  :: NewBackFac
       integer :: NMOLdim         ! max number of molecules
       integer :: NMOLE           ! number of molecules found
       integer :: NELM            ! number of elements found
