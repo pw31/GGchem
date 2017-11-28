@@ -1133,7 +1133,7 @@ c     g(TiC)   : siehe oben!
           qual0 = qual 
           pullmax = 1
           if (it>30) pullmax=10
-          do ipull=1,pullmax
+          do ipull=1,pullmax    ! pullback if quality gets worse
             !--- make a step ---
             do ii=1,Nact
               i = act_to_all(ii)
@@ -1195,8 +1195,8 @@ c     g(TiC)   : siehe oben!
             enddo  
             if (qual<qual0) exit
             if (ipull==pullmax) exit
-            print'("pullback",2(1pE11.3))',qual0,qual
-            fak = 0.5*fak
+            print'("pullback",3(1pE11.3))',fak,qual0,qual
+            fak = 0.5*fak   ! reduce NR-step
           enddo  
           if (verbose>1) print'(I4,99(1pE11.3))',
      >                   it,anmono(act_to_all(1:Nact))*kT,qual
@@ -1208,14 +1208,15 @@ c     g(TiC)   : siehe oben!
             dp(ii) = dp(ii)*scale(i)
           enddo
           null = anmono
+          !--- limit step physically, keep direction ---
           fak = 1.Q0
           do ii=1,Nact
             i = act_to_all(ii)
-            if (anmono(i)*kT-fak*dp(ii)>5.Q0*anmono(i)*kT) then
-              fak=MIN(fak,-4.Q0*anmono(i)*kT/dp(ii))
+            if (null(i)*kT-fak*dp(ii)>5.Q0*null(i)*kT) then
+              fak=MIN(fak,-4.Q0*null(i)*kT/dp(ii))
             endif
-            if (anmono(i)*kT-fak*dp(ii)<0.2Q0*anmono(i)*kT) then
-              fak=MIN(fak,0.8Q0*anmono(i)*kT/dp(ii))
+            if (null(i)*kT-fak*dp(ii)<0.2Q0*null(i)*kT) then
+              fak=MIN(fak,0.8Q0*null(i)*kT/dp(ii))
             endif
           enddo
         enddo  
@@ -1378,6 +1379,7 @@ c     g(TiC)   : siehe oben!
 
 *       ! limit NR-step and check convergence
 *       =====================================
+        fak = 5.Q0
         limit = 1.Q0                                   ! limit step, keep direction
         converge(it) = 0.Q0
         Nconv = 0
@@ -1395,13 +1397,18 @@ c     g(TiC)   : siehe oben!
               Nconv = Nconv+1 
               txt = trim(txt)//" "//catm(i)
             endif  
-            !if (delp.gt.0.Q0) then
-            !  limit = min(limit,(fak-1.Q0)/delp)       ! such that xnew=xold*fac 
-            !else if (delp.lt.0.Q0) then
-            !  limit = min(limit,(1.Q0/fak-1.Q0)/delp)  ! such that xnew=xold/fac
-            !endif
+            if (1.Q0+delp>fak) then
+              limit = min(limit,(fak-1.Q0)/delp)       ! such that xnew=xold*fac 
+            else if (1.Q0+delp<1.Q0/fak) then
+              limit = min(limit,(1.Q0/fak-1.Q0)/delp)  ! such that xnew=xold/fac
+            endif
           endif  
         enddo
+        if (it<=10) then
+          limit = 1.Q0
+        else
+          dp = dp*limit
+        endif  
         if (verbose>1.and.it==0) then
           write(*,*) 
           print'(7x,A14,A14,A14)',"natom","dnatom","badness" 
@@ -1414,7 +1421,6 @@ c     g(TiC)   : siehe oben!
         
 *       ! apply limited NR step
 *       =======================
-        fak = 5.Q0
         !fak = 1.Q0+4.Q0*EXP(-(MAX(0,it-20))/13.Q0)
         do ii=1,nact
           i = act_to_all(ii)
@@ -1431,14 +1437,13 @@ c     g(TiC)   : siehe oben!
           enddo  
         endif  
         crit = MAXVAL(converge(MAX(0,it-1):it))
-        !if (verbose>1) print'(99(1pE36.28E3))',
-     >  !                  anmono(act_to_all(1:nact))
         if (verbose>1) print'(i3,i3,2(1pE9.1)," converged(",i2,"):",
      >                    A50)',it,Nact,converge(it),limit,Nconv,txt
         if (it==itmax) then 
           write(*,*) '*** keine Konvergenz in SMCHEM16!'
           write(*,*) 'it, converge, ind =',it,converge(it),limit
           write(*,*) '  n<H>, T =',anhges,Tg
+          goto 1000
           if (ifatal==0) then
             chemiter  = chemiter + it
             from_merk = .false.

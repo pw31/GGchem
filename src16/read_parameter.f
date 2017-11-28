@@ -38,7 +38,7 @@
       NewFullIt    = .true.
       NewBackIt    = 5
       NewBackFac   = 1.E+2
-      NewFastLevel = 0
+      NewFastLevel = 1
 
       !-------------------------------------------
       ! ***  change parameters via input file  ***
