@@ -23,7 +23,7 @@
       use CHEMISTRY,ONLY: NewFastLevel
       use CONVERSION,ONLY: Nind,Ndep,Iindex,Dindex,is_dust,conv
       use EXCHANGE,ONLY: Fe,Mg,Si,Al,Ca,Ti,C,O,S,Na,Cl,H,Li,Mn,W,Ni,Cr,
-     >                   Kalium=>K,Zr,V,itransform,ieqcond
+     >                   Kalium=>K,Zr,V,itransform,ieqcond,ieqconditer
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       real*8,intent(in) :: nHtot                ! H nuclei density [cm-3]
@@ -95,7 +95,6 @@
       integer,save :: iCa2Al2SiO7=0
       integer,save :: iCaTiSiO5=0,iNaAlSi2O6=0,iKAlSiO4=0,iMg3Si4O12H2=0
       integer,save :: iCa3MgSi2O8=0,iCaMgSiO4=0
-      integer,save :: it_tot=0, sit_tot=0, fail_tot=0
       real*8 :: time0,time1,qread
 
       if (firstCall) then
@@ -245,7 +244,7 @@
         Nact = Nact_read
         verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
-        if (qread>1.Q-3.and.iread==162) verbose=2
+        if (qread>1.Q-3.and.iread==207) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
@@ -705,7 +704,25 @@
               e_act(Iindex(j)) = .false.
               goto 200 
             endif  
-          endif  
+          endif
+          !--- special cases ---
+          found = (Nall==Nact+1.and.Iindex(Nall)==H.and.Iindex(Nact)==O)
+     >       .and.active(iFe3O4).and.active(iFe2SiO4)
+     >       .and.active(iFeAl2SiO7H2).and.active(iMg3Si2O9H4)
+     >       .and.active(iCaMgSi2O6).and.active(iCa3Al2Si3O12)     
+          if (found) then
+            ! there is a linear-combination disregarding hydrogen
+            i = Nall
+            j = Nact
+            print*,"... exchanging "//elnam(Iindex(j))//
+     >             " for "//elnam(Iindex(i))
+            swap = Iindex(i)   
+            Iindex(i) = Iindex(j)
+            Iindex(j) = swap
+            e_act(Iindex(i)) = .true.
+            e_act(Iindex(j)) = .false.
+            goto 200 
+          endif   
         endif   
 
         if (verbose>1) print*,"solving for ... ",
@@ -1218,7 +1235,6 @@
       else
         write(*,'("*** EQUIL_COND failed after ",I3," iter,  time =",
      >            0pF9.4," CPU sec.")') it,time1-time0 
-        fail_tot = fail_tot+1
         stop
       endif   
 
@@ -1228,8 +1244,8 @@
       if (qual<1.Q-10.and.useDatabase) then
         call PUT_DATA(nHtot,T,eps,ddust,qread,iread,active)
       endif  
-      it_tot  = it_tot + it
-      ieqcond = ieqcond+1
+      ieqcond = ieqcond + 1
+      ieqconditer = ieqconditer + it
 
       end
             

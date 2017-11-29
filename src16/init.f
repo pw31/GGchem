@@ -248,6 +248,7 @@
         eps  = LOG10(eps)+12.Q0
         do i=1,999
           read(1,*,end=1000) el,val
+          if (el=='el') exit
           found = .false.
           do j=1,NELEM
             if (el==elnam(j)) then

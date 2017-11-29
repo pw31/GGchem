@@ -73,17 +73,18 @@
      &                 pAlges,pFeges,pSges,pNages,pKges,pTiges,pCages,
      &                 pLiges,pClges,pHalt,pCalt,pOalt,pNalt,
      &                 pNaalt,pCaalt,pClalt,pTialt,pSialt,pSalt
-      real(kind=qp) :: aa,bb,cc,dd,ee,delta,pat,atfrac
-      real(kind=qp) :: nges(nel),pmono1(nel),coeff(-1:Ncmax),atmax
+      real(kind=qp) :: aa,bb,cc,dd,ee,delta,pat,atfrac,atmax
+      real(kind=qp) :: nges(nel),pmono1(nel),coeff(-1:Ncmax)
       real(kind=qp) :: DF(nel,nel),dp(nel),FF(nel),pmol,crit
       real(kind=qp) :: DF0(nel,nel),FF0(nel),scale(nel),conv(0:500,nel)
-      real(kind=qp) :: converge(0:500),delp,nold,null(nel)
+      real(kind=qp) :: converge(0:500),delp,nold,null(nel),nsave(nel)
       real(kind=qp) :: soll,haben,abw,sum
       real(kind=qp) :: dpp(4),func(4),dfunc(4,4),sca(4)
       real(kind=qp) :: pbefore1(4),pbefore2(4),pbefore3(2),pbefore4(2)
       real(kind=qp) :: pbefore(nel)
       real(kind=qp) :: emax,pges,pwork
       logical :: from_merk,eact(nel),redo(nel),done(nel),affect,known
+      logical :: ptake
       character(len=5000) :: mols
       character(len=100) :: txt
       character(len=1) :: char
@@ -100,7 +101,7 @@
       real(kind=qp),allocatable,save :: amerk(:),ansave(:)
       real(kind=qp),allocatable,save :: badness(:),pcorr(:,:) 
       real(kind=qp),save :: pcorr1(4),pcorr2(4),pcorr3(2),pcorr4(2)
-      integer,allocatable,save :: ecorr(:,:)
+      integer,allocatable,save :: pkey(:)
 *-----------------------------------------------------------------------
 *  Die Formelfunktion zur Loesung quadratische Gleichungen mit Vieta
       VIETA(ppp,qqq)  = qqq/(-ppp/2.Q0-SQRT(ppp**2/4.Q0-qqq))
@@ -215,7 +216,7 @@
           TiOCL2 = stindex(cmol,nml,'TIOCL2 ')
           SiC4H12= stindex(cmol,nml,'SI(CH3)4')
         endif  
-        allocate(badness(nel),pcorr(nel,nel),ecorr(nel,nel),
+        allocate(badness(nel),pcorr(nel,nel),pkey(nel),
      >           amerk(nel),ansave(nel))
         badness = 1.d0
         pcorr1  = 1.d0
@@ -1015,6 +1016,7 @@ c     g(TiC)   : siehe oben!
       if (charge) done(el)=.true.      ! ... except for the electrons      
       if (charge) Nseq=nel-1
       eseq(:) = 0                      ! hirachical sequence of elements
+      ptake = .true.
       do ido=1,Nseq
         !---------------------------------------------------------
         ! search for the most abundant element not yet considered 
@@ -1025,9 +1027,10 @@ c     g(TiC)   : siehe oben!
           if (done(e)) cycle   
           if (eps(e)<emax) cycle
           emax = eps(e)
-          enew = e                     
+          enew = e
         enddo  
         if (verbose>1) print*,'estimate p'//trim(catm(enew))//' ...'
+        if (enew.ne.pkey(ido)) ptake=.false.
         done(enew) = .true.
         eseq(ido) = enew               ! add to hirachical sequence 
         pges = eps(enew)*anHges*kT
@@ -1098,10 +1101,13 @@ c     g(TiC)   : siehe oben!
           goto 1000
         endif  
         anmono(enew) = pwork*kT1
+
         !-----------------------------------------------------------
         ! take into account feedback on elements considered before,
         ! unless they are much more abundant, with Newton-Raphson 
         !-----------------------------------------------------------
+        nsave = anmono
+ 150    continue
         eact(:) = .false.
         Nact = 0
         do iredo=MAX(1,ido-NewBackIt),ido
@@ -1112,7 +1118,7 @@ c     g(TiC)   : siehe oben!
             all_to_act(e) = Nact
             act_to_all(Nact) = e
             pbefore(e) = anmono(e)
-            if (NewFastLevel<3.and.ecorr(enew,Nact)==e) then
+            if (NewFastLevel<3.and.ptake) then
               anmono(e) = anmono(e)*pcorr(enew,e) 
             else
               pcorr(enew,e) = 1.Q0 
@@ -1122,8 +1128,7 @@ c     g(TiC)   : siehe oben!
         if (verbose>1) then
           print*,catm(eseq(1:ido))
           print*,eact(eseq(1:ido))
-          print'("corr",99(1pE11.2))',
-     >         pcorr(enew,act_to_all(1:Nact))
+          print'("corr",99(1pE11.2))',pcorr(enew,act_to_all(1:Nact))
         endif
         qual  = 9.Q+99
         dp(:) = 0.Q0
@@ -1195,7 +1200,7 @@ c     g(TiC)   : siehe oben!
             enddo  
             if (qual<qual0) exit
             if (ipull==pullmax) exit
-            print'("pullback",3(1pE11.3))',fak,qual0,qual
+            if (verbose>1) print'("pullback",3(1pE11.3))',fak,qual0,qual
             fak = 0.5*fak   ! reduce NR-step
           enddo  
           if (verbose>1) print'(I4,99(1pE11.3))',
@@ -1221,18 +1226,26 @@ c     g(TiC)   : siehe oben!
           enddo
         enddo  
         if (qual>1.Q-4) then
+          if (ptake) then
+            anmono = nsave 
+            ptake = .false.
+            goto 150
+          endif  
           write(*,*) "*** no convergence in NR pre-it "
           print*,"Tg=",Tg
           print*,catm(eseq(1:ido))
           print*,eact(eseq(1:ido))
           print*,pcorr(enew,act_to_all(1:Nact))
+          verbose=2
+          goto 150
           goto 1000
         endif  
+        !--- save ratio after/before for next run ---
+        pkey(ido) = enew
         pcorr(enew,:) = 1.Q0
         do ii=1,Nact
           i = act_to_all(ii)
-          ecorr(enew,ii) = i
-          pcorr(enew,i) = anmono(i)/pbefore(i)    ! save after/before for next run
+          pcorr(enew,i) = anmono(i)/pbefore(i)    
         enddo 
         if (verbose>1) print'("corr",99(1pE11.2))',
      >                 pcorr(enew,act_to_all(1:Nact))
@@ -1627,13 +1640,14 @@ c     g(TiC)   : siehe oben!
       return
 
  1000 continue
-      open(unit=12,file='fatal.abu')
-      write(12,*) anhges,Tg
+      open(unit=12,file='fatal.case')
       do i=1,nel
         write(12,'(A2,1x,0pF30.26)') catm(i),12+log10(eps(i))
       enddo  
+      write(12,*) anhges,Tg
       close(12)
       stop "***  giving up."
+
 
       CONTAINS       ! internal functions - not visible to other units 
 ************************************************************************

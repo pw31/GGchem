@@ -2,7 +2,8 @@
       PROGRAM EQ_CHEMISTRY
 ***********************************************************************
       use PARAMETERS,ONLY: model_dim,model_struc
-      use EXCHANGE,ONLY: chemcall,chemiter,ieqcond,itransform
+      use EXCHANGE,ONLY: chemcall,chemiter,ieqcond,ieqconditer,
+     >                   itransform
       use DATABASE,ONLY: NLAST
       implicit none
 
@@ -30,11 +31,15 @@
       print'("         smchem calls = ",I8)',chemcall
       print'("      iterations/call = ",0pF8.2)',
      >                     REAL(chemiter)/REAL(chemcall)
-      print'("eq condensation calls = ",I8)',ieqcond
-      print'("      transform calls = ",I8)',itransform
+      if (ieqcond) then
+        print'("eq condensation calls = ",I8)',ieqcond
+        print'("   eq iterations/call = ",0pF8.2)',
+     >                   REAL(ieqconditer)/REAL(ieqcond)
+        print'("      transform calls = ",I8)',itransform
+        NLAST=0         ! also save replaced database entries
+        call SAVE_DBASE
+      endif
 
-      NLAST=0         ! also save replaced database entries
-      if (ieqcond>0) call SAVE_DBASE
       end
 
 
@@ -60,6 +65,7 @@
       eps   = eps0
       eldust  = 0.Q0
       verbose = 2
+      if (model_eqcond) verbose=0
 
 *     ------------------------------------------------------------------
       if (model_eqcond) call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
