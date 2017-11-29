@@ -37,7 +37,7 @@
       real(kind=qp),intent(in)  :: eps(nel)
       real(kind=qp),intent(out) :: anmono(nel),anmol(nml)
       integer,intent(inout) :: verbose
-      real(kind=qp),parameter :: bk=1.380662d-16
+      real(kind=qp),parameter :: bk=1.380662Q-16
 *-----------------------------------------------------------------------
 *  Die Variable "alle" entscheidet, ob die nicht unmittelbar 
 *  beruecksichtigten Molekuele dennoch inkonsistent mitgerechnet werden. 
@@ -57,16 +57,15 @@
 *  ist, die in die Dissoziationspolynome eingesetzt werden darf.
       real(kind=qp),parameter :: tdispol=100.Q0
 *-----------------------------------------------------------------------
-      integer stindex,Nconv,switch,iredo,ido
+      integer stindex,Nconv,switch,ido,iredo
       integer Nact,all_to_act(nel),act_to_all(nel),switchoff(nel)
       integer e,i,j,j1,ii,jj,kk,l,it,m1,m2,piter,ifatal,ipull,pullmax
       integer Nseq,imin,imax,enew,eseq(nel)
       integer,parameter :: itmax=200,Ncmax=16
-      real(kind=qp) :: finish,qual0,qual
-      real(kind=qp) :: ppp,qqq
+      real(kind=qp) :: finish,qual0,qual,ppp,qqq
       real(kind=qp) :: g(0:nml),limit
-      real(kind=qp) :: kT,kT1,nelek,ng,Sa,fak,lth,arg,term
-      real(kind=qp) :: f,fs,VIETA,VIETA2
+      real(kind=qp) :: kT,kT1,nelek,ng,Sa,fak,lth,arg,term,f,fs
+      real(kind=qp) :: VIETA,VIETA2
       real(kind=qp) :: pH,pC,pN,pO,pSi,pMg,pAl,pFe,pS,pNa,pK,pTi,pCa
       real(kind=qp) :: pLi,pCl,pel
       real(kind=qp) :: pHges,pCges,pNges,pOges,pSiges,pMgges,
@@ -215,7 +214,7 @@
           K2Cl2  = stindex(cmol,nml,'K2CL2  ')
           TiOCL2 = stindex(cmol,nml,'TIOCL2 ')
           SiC4H12= stindex(cmol,nml,'SI(CH3)4')
-        endif  
+        endif
         allocate(badness(nel),pcorr(nel,nel),pkey(nel),
      >           amerk(nel),ansave(nel))
         badness = 1.d0
@@ -1073,7 +1072,7 @@ c     g(TiC)   : siehe oben!
           ! molecule to have all of element e2 
           !------------------------------------
           if (pmol>0.Q0) then
-            pwork = MIN(pwork,(pges/(l*pmol))**(1.d0/REAL(l)))
+            pwork = MIN(pwork,(pges/(l*pmol))**(1.Q0/REAL(l,kind=qp)))
             !if (verbose>1) print'(A10,1pE10.3)',cmol(i),pwork
           endif  
         enddo  
@@ -1236,8 +1235,6 @@ c     g(TiC)   : siehe oben!
           print*,catm(eseq(1:ido))
           print*,eact(eseq(1:ido))
           print*,pcorr(enew,act_to_all(1:Nact))
-          verbose=2
-          goto 150
           goto 1000
         endif  
         !--- save ratio after/before for next run ---
@@ -1314,8 +1311,8 @@ c     g(TiC)   : siehe oben!
               enddo
             endif
           enddo
-  	  anmol(i) = pmol*kT1
-	enddo
+          anmol(i) = pmol*kT1
+        enddo
         if (verbose>1) then
           imin = MINLOC(g(1:nml),1) 
           imax = MAXLOC(g(1:nml),1) 
@@ -1456,7 +1453,6 @@ c     g(TiC)   : siehe oben!
           write(*,*) '*** keine Konvergenz in SMCHEM16!'
           write(*,*) 'it, converge, ind =',it,converge(it),limit
           write(*,*) '  n<H>, T =',anhges,Tg
-          goto 1000
           if (ifatal==0) then
             chemiter  = chemiter + it
             from_merk = .false.
@@ -1536,7 +1532,7 @@ c     g(TiC)   : siehe oben!
             pat = pat-delta
             if (verbose>1) print'(A2,1pE25.15,1pE10.2)',
      >                            catm(e),pat,delta/pat
-            if (ABS(delta/pat)<finish) exit 
+            if (ABS(delta)<finish*ABS(pat)) exit 
           enddo  
           if (piter>=99) then
             write(*,*) "*** no convergence in post-it "//catm(e)
@@ -1600,7 +1596,8 @@ c     g(TiC)   : siehe oben!
             nges(j1) = nges(j1) + m_anz(j,i)*anmol(i)
           enddo
         enddo
-        do e=3,nel
+        do e=1,nel
+          if (e==el) cycle 
           soll  = anHges * eps(e)
           haben = nges(e)
           abw   = ABS(soll-haben)/MAX(soll,haben)
@@ -1625,6 +1622,7 @@ c     g(TiC)   : siehe oben!
             endif  
             from_merk = .false.
             ansave = anmono
+            verbose=2
             goto 200
           endif
         enddo

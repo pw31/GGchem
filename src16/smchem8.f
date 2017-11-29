@@ -21,7 +21,7 @@
 *                                                                      *
 ************************************************************************
       use CHEMISTRY,ONLY: NewChemIt,NewBackIt,NewFullIt,NewBackFac,
-     >                    nml=>NMOLE,nel=>NELM,cmol,catm,
+     >                    NewFastLevel,nml=>NMOLE,nel=>NELM,cmol,catm,
      >                    m_kind,m_anz,a,natom,charge,elion,
      >                    He,el,H,C,N,O,Si,Mg,Al,Fe,S,Na,K,Ti,Ca,Li,Cl,
      >                    th1,th2,th3,th4,fit,TT1,TT2,TT3
@@ -58,11 +58,11 @@
 *-----------------------------------------------------------------------
       integer stindex,info,ipvt(nel),Nconv,switch,ido,iredo
       integer Nact,all_to_act(nel),act_to_all(nel),switchoff(nel)
-      integer e,i,j,j1,ii,jj,kk,l,it,m1,m2,piter,ifatal
+      integer e,i,j,j1,ii,jj,kk,l,it,m1,m2,piter,ifatal,ipull,pullmax
       integer Nseq,imin,imax,enew,eseq(nel)
       integer,parameter :: itmax=200,Ncmax=16
       real*8,parameter :: finish=1.d-12
-      real*8 :: ppp,qqq
+      real*8 :: ppp,qqq,qual0,qual
       real*8 :: g(0:nml),limit
       real*8 :: work(nel*(nel+1))
       integer:: ind,indx(nel)
@@ -75,17 +75,18 @@
      &          pAlges,pFeges,pSges,pNages,pKges,pTiges,pCages,
      &          pLiges,pClges,pHalt,pCalt,pOalt,pNalt,
      &          pNaalt,pCaalt,pClalt,pTialt,pSialt,pSalt
-      real*8 :: aa,bb,cc,dd,ee,delta,pat
-      real*8 :: nges(nel),pmono1(nel),coeff(-1:Ncmax),atmax,atfrac
+      real*8 :: aa,bb,cc,dd,ee,delta,pat,atmax,atfrac
+      real*8 :: nges(nel),pmono1(nel),coeff(-1:Ncmax)
       real*8 :: DF(nel,nel),dp(nel),FF(nel),pmol,crit
       real*8 :: DF0(nel,nel),FF0(nel),scale(nel),conv(0:500,nel)
-      real*8 :: converge(0:500),delp,nold,soll,haben,abw,sum
+      real*8 :: converge(0:500),delp,nold,null(nel),nsave(nel)
+      real*8 :: soll,haben,abw,sum
       real*8 :: dpp(4),func(4),dfunc(4,4),sca(4)
       real*8 :: pbefore1(4),pbefore2(4),pbefore3(2)
       real*8 :: pbefore(nel)
       real*8 :: emax,pges,pwork
-      logical :: from_merk,eact(nel),done(nel),redo(nel)
-      logical :: IS_NAN,isOK,affect,known
+      logical :: from_merk,eact(nel),redo(nel),done(nel),affect,known
+      logical :: ptake,IS_NAN,isOK
       character(len=5000) :: mols
       character(len=100) :: txt
       character(len=1) :: char
@@ -102,6 +103,7 @@
       real*8,allocatable,save :: amerk(:),ansave(:)
       real*8,allocatable,save :: badness(:),pcorr(:,:) 
       real*8,save :: pcorr1(4),pcorr2(4),pcorr3(2)
+      integer,allocatable,save :: pkey(:)
 *-----------------------------------------------------------------------
 *  Die Formelfunktion zur Loesung quadratische Gleichungen mit Vieta
       VIETA(ppp,qqq)  = qqq/(-ppp/2.d0-SQRT(ppp**2/4.d0-qqq))
@@ -216,7 +218,8 @@
           TiOCL2 = stindex(cmol,nml,'TIOCL2 ')
           SiC4H12= stindex(cmol,nml,'SI(CH3)4')
         endif
-        allocate(badness(nel),pcorr(nel,nel),amerk(nel),ansave(nel))
+        allocate(badness(nel),pcorr(nel,nel),pkey(nel),
+     >           amerk(nel),ansave(nel))
         badness = 1.d0
         pcorr1  = 1.d0
         pcorr2  = 1.d0
@@ -1001,7 +1004,7 @@ c     g(TiC)   : siehe oben!
       anmol(LiOH)  = g(LiOH)  * pLi * pO * pH / kT
       anmol(LiCl)  = g(LiCl)  * pLi * pCl / kT
 
-      else 
+      else
 *
 *     ! estimate atomic pressures: new method
 *     =======================================
@@ -1013,6 +1016,7 @@ c     g(TiC)   : siehe oben!
       if (charge) done(el)=.true.      ! ... except for the electrons      
       if (charge) Nseq=nel-1
       eseq(:) = 0                      ! hirachical sequence of elements
+      ptake = .true.
       do ido=1,Nseq
         !---------------------------------------------------------
         ! search for the most abundant element not yet considered 
@@ -1023,9 +1027,10 @@ c     g(TiC)   : siehe oben!
           if (done(e)) cycle   
           if (eps(e)<emax) cycle
           emax = eps(e)
-          enew = e                     
+          enew = e
         enddo  
         if (verbose>1) print*,'estimate p'//trim(catm(enew))//' ...'
+        if (enew.ne.pkey(ido)) ptake=.false.
         done(enew) = .true.
         eseq(ido) = enew               ! add to hirachical sequence 
         pges = eps(enew)*anHges*kT
@@ -1067,8 +1072,10 @@ c     g(TiC)   : siehe oben!
           ! for initial guess, consider this 
           ! molecule to have all of element e2 
           !------------------------------------
-          !print*,trim(cmol(i)),l,g(i),pmol
-          pwork = MIN(pwork,(pges/(l*pmol))**(1.d0/REAL(l)))
+          if (pmol>0.d0) then
+            pwork = MIN(pwork,(pges/(l*pmol))**(1.d0/REAL(l)))
+            !if (verbose>1) print'(A10,1pE10.3)',cmol(i),pwork
+          endif  
         enddo  
         if (verbose>1) print*,trim(mols)
         !----------------------------------------------
@@ -1089,15 +1096,18 @@ c     g(TiC)   : siehe oben!
           if (ABS(delta)<1.E-4*ABS(pwork)) exit 
         enddo  
         if (piter>=99) then
-          write(*,*) "*** no convergence in pre-it "//catm(enew)
+          write(*,*) "*** no convergence in 1D pre-it "//catm(enew)
           write(*,*) coeff
-          stop
+          goto 1000
         endif  
         anmono(enew) = pwork*kT1
+
         !-----------------------------------------------------------
         ! take into account feedback on elements considered before,
         ! unless they are much more abundant, with Newton-Raphson 
         !-----------------------------------------------------------
+        nsave = anmono
+ 150    continue
         eact(:) = .false.
         Nact = 0
         do iredo=MAX(1,ido-NewBackIt),ido
@@ -1108,94 +1118,136 @@ c     g(TiC)   : siehe oben!
             all_to_act(e) = Nact
             act_to_all(Nact) = e
             pbefore(e) = anmono(e)
-            anmono(e) = anmono(e)*pcorr(enew,e)  ! use corrections from last call
+            if (NewFastLevel<3.and.ptake) then
+              anmono(e) = anmono(e)*pcorr(enew,e) 
+            else
+              pcorr(enew,e) = 1.d0 
+            endif  
           endif
         enddo
-        if (verbose>1) print'(99(A3))',(trim(catm(eseq(j))),j=1,ido)
-        if (verbose>1) print'(99(L3))',eact(eseq(1:ido))
+        if (verbose>1) then
+          print*,catm(eseq(1:ido))
+          print*,eact(eseq(1:ido))
+          print'("corr",99(1pE11.2))',pcorr(enew,act_to_all(1:Nact))
+        endif
+        qual  = 9.d+99
+        dp(:) = 0.d0
+        fak   = 1.d0
+        null  = anmono
         do it=1,99
-          do ii=1,Nact
-            i = act_to_all(ii) 
-            FF(ii) = anHges*eps(i)*kT - anmono(i)*kT
-            scale(i) = anmono(i)  
-            DF(ii,:) = 0.d0
-            DF(ii,ii) = -scale(i)
-            pmono1(i) = scale(i) / (anmono(i)*kT)
-          enddo	
-          do i=1,nml
-            affect = .false. 
-            known  = .true.
-            do j=1,m_kind(0,i)
-              if (.not.done(m_kind(j,i))) then
-                known = .false.
-                exit
-              endif
-              if (eact(m_kind(j,i))) affect=.true.
+          qual0 = qual 
+          pullmax = 1
+          if (it>30) pullmax=10
+          do ipull=1,pullmax    ! pullback if quality gets worse
+            !--- make a step ---
+            do ii=1,Nact
+              i = act_to_all(ii)
+              anmono(i) = null(i)-fak*dp(ii)*kT1
             enddo  
-            if (known.and.affect) then
-              pmol = g(i)
+            !--- determine new FF and DF ---
+            do ii=1,Nact
+              i = act_to_all(ii) 
+              FF(ii) = anHges*eps(i)*kT - anmono(i)*kT
+              scale(i) = anmono(i)  
+              DF(ii,:) = 0.d0
+              DF(ii,ii) = -scale(i)
+              pmono1(i) = scale(i) / (anmono(i)*kT)
+            enddo
+            do i=1,nml
+              affect = .false. 
+              known  = .true.
               do j=1,m_kind(0,i)
-                pat = anmono(m_kind(j,i))*kT
-                if (m_anz(j,i).gt.0) then
-                  do kk=1,m_anz(j,i)
-                    pmol = pmol*pat
-                  enddo
-                else
-                  do kk=1,-m_anz(j,i)
-                    pmol = pmol/pat
-                  enddo
+                if (.not.done(m_kind(j,i))) then
+                  known = .false.
+                  exit
                 endif
-              enddo
-              do j=1,m_kind(0,i)
-                m1 = m_kind(j,i)
-                if (.not.eact(m1)) cycle
-                m1 = all_to_act(m1)
-                term   = m_anz(j,i) * pmol
-                FF(m1) = FF(m1) - term
-                do l=1,m_kind(0,i)
-                  m2 = m_kind(l,i)
-                  if (.not.eact(m2)) cycle
-                  jj = all_to_act(m2)
-                  DF(m1,jj) = DF(m1,jj) - m_anz(l,i)*term*pmono1(m2)
-                enddo	    
-              enddo
-              !if (it==1) print'(A12,1pE12.4)',cmol(i),pmol
-            endif  
-          enddo
+                if (eact(m_kind(j,i))) affect=.true.
+              enddo  
+              if (known.and.affect) then
+                pmol = g(i)
+                do j=1,m_kind(0,i)
+                  pat = anmono(m_kind(j,i))*kT
+                  if (m_anz(j,i).gt.0) then
+                    do kk=1,m_anz(j,i)
+                      pmol = pmol*pat
+                    enddo
+                  else
+                    do kk=1,-m_anz(j,i)
+                      pmol = pmol/pat
+                    enddo
+                  endif
+                enddo
+                do j=1,m_kind(0,i)
+                  m1 = m_kind(j,i)
+                  if (.not.eact(m1)) cycle
+                  m1 = all_to_act(m1)
+                  term   = m_anz(j,i) * pmol
+                  FF(m1) = FF(m1) - term
+                  do l=1,m_kind(0,i)
+                    m2 = m_kind(l,i)
+                    if (.not.eact(m2)) cycle
+                    jj = all_to_act(m2)
+                    DF(m1,jj) = DF(m1,jj) - m_anz(l,i)*term*pmono1(m2)
+                  enddo	    
+                enddo
+              endif  
+            enddo
+            !--- determine new quality ---
+            qual = 0.d0
+            do ii=1,Nact
+              i = act_to_all(ii)           
+              qual = qual + (FF(ii)/(anHges*eps(i)*kT))**2
+            enddo  
+            if (qual<qual0) exit
+            if (ipull==pullmax) exit
+            if (verbose>1) print'("pullback",3(1pE11.3))',fak,qual0,qual
+            fak = 0.5*fak   ! reduce NR-step
+          enddo  
+          if (verbose>1) print'(I4,99(1pE11.3))',
+     >                   it,anmono(act_to_all(1:Nact))*kT,qual
+          if (qual<1.d-4) exit
+          !--- determine new NR-vector ---
           call GAUSS8(nel,Nact,DF,dp,FF)
           do ii=1,Nact
             i = act_to_all(ii) 
             dp(ii) = dp(ii)*scale(i)
           enddo
-          fak = 1.d0+4.d0*EXP(-(MAX(0,it-20))/13.d0)
-          delta = 0.d0
+          null = anmono
+          !--- limit step physically, keep direction ---
+          fak = 1.d0
           do ii=1,Nact
             i = act_to_all(ii)
-            delp = -dp(ii)/(anmono(i)*kT)
-            delta = MAX(delta,ABS(delp))
-            delp = -dp(ii)*kT1
-            nold = anmono(i)
-            anmono(i) = MAX(nold/fak,MIN(nold*fak,nold+delp))
+            if (null(i)*kT-fak*dp(ii)>5.d0*null(i)*kT) then
+              fak=MIN(fak,-4.d0*null(i)*kT/dp(ii))
+            endif
+            if (null(i)*kT-fak*dp(ii)<0.2d0*null(i)*kT) then
+              fak=MIN(fak,0.8d0*null(i)*kT/dp(ii))
+            endif
           enddo
-          if (verbose>1) print'(I3,99(1pE12.4))',
-     >                   it,anmono(act_to_all(1:Nact))*kT,delta
-          if (delta<1.d-4) exit
         enddo  
-        if (delta>1.d-4) then
+        if (qual>1.d-4) then
+          if (ptake) then
+            anmono = nsave 
+            ptake = .false.
+            goto 150
+          endif  
           write(*,*) "*** no convergence in NR pre-it "
           print*,"Tg=",Tg
           print*,catm(eseq(1:ido))
           print*,eact(eseq(1:ido))
-          stop
+          print*,pcorr(enew,act_to_all(1:Nact))
+          goto 1000
         endif  
-        pcorr(enew,:) = 1.d0
+        !--- save ratio after/before for next run ---
+        pkey(ido) = enew
+        pcorr(enew,:) = 1.Q0
         do ii=1,Nact
           i = act_to_all(ii)
-          pcorr(enew,i) = anmono(i)/pbefore(i)    ! save after/before for next run
+          pcorr(enew,i) = anmono(i)/pbefore(i)    
         enddo 
         if (verbose>1) print'("corr",99(1pE11.2))',
      >                 pcorr(enew,act_to_all(1:Nact))
-        if (verbose>1) read(*,'(A1)') char 
+        if (verbose>1) read(*,'(A1)') char
       enddo  
       endif
 *
@@ -1226,12 +1278,12 @@ c     g(TiC)   : siehe oben!
         pel = SQRT(coeff(-1)/(1.d0+coeff(+1)))     ! 0 = pel - a/pel + b*pel
         anmono(el) = pel/kT
       endif  
-      
-*     ! use memory of deviations between predicted atomic pressures 
-*     ! and converged atomic pressures to improve the predictions
+
+*     ! use memory of deviations between predicted atom pressures 
+*     ! and converged atom pressures to improve the predictions
 *     ============================================================
       ansave = anmono
-      anmono = anmono*badness
+      if (NewFastLevel<3) anmono = anmono*badness
 *     
 *-----------------------------------------------------------------------
  200  continue
@@ -1355,6 +1407,7 @@ c     g(TiC)   : siehe oben!
 
 *       ! limit NR-step and check convergence
 *       =====================================
+        fak = 5.d0
         limit = 1.d0                                   ! limit step, keep direction
         converge(it) = 0.d0
         Nconv = 0
@@ -1372,28 +1425,31 @@ c     g(TiC)   : siehe oben!
               Nconv = Nconv+1 
               txt = trim(txt)//" "//catm(i)
             endif  
-            !if (delp.gt.0.d0) then
-            !  limit = min(limit,(fak-1.d0)/delp)       ! such that xnew=xold*fac 
-            !else if (delp.lt.0.d0) then
-            !  limit = min(limit,(1.d0/fak-1.d0)/delp)  ! such that xnew=xold/fac
-            !endif
+            if (1.d0+delp>fak) then
+              limit = min(limit,(fak-1.d0)/delp)       ! such that xnew=xold*fac 
+            else if (1.d0+delp<1.d0/fak) then
+              limit = min(limit,(1.d0/fak-1.d0)/delp)  ! such that xnew=xold/fac
+            endif
           endif  
         enddo
+        if (it<=10) then
+          limit = 1.d0
+        else
+          dp = dp*limit
+        endif  
         if (verbose>1.and.it==0) then
           write(*,*) 
           print'(7x,A14,A14,A14)',"natom","dnatom","badness" 
           do ii=1,Nact
             i = act_to_all(ii) 
-            print'(A7,2(1pE14.6),0pF14.9)',catm(i),anmono(i),
-     >                      -dp(ii)/(anmono(i)*kT),badness(i)
+            print'(A7,3(1pE14.6))',catm(i),anmono(i),
+     >           -dp(ii)/(anmono(i)*kT),badness(i)
           enddo
         endif
         
 *       ! apply limited NR step
 *       =======================
-        !fak = REAL(MAX(0,it-20))/REAL(itmax-20)
-        !fak = 1.d0+4.d0*exp(fak*LOG(finish)-2.d0)
-        fak = 5.d0
+        !fak = 1.Q0+4.Q0*EXP(-(MAX(0,it-20))/13.Q0)
         do ii=1,nact
           i = act_to_all(ii)
           delp = -dp(ii)*kT1
@@ -1402,33 +1458,27 @@ c     g(TiC)   : siehe oben!
         enddo
         if (it>itmax-10) then
           verbose=2
-          do ii=1,nact
+          do ii=1,Nact
             i = act_to_all(ii) 
-            print'(A3,1pE20.14,1pE12.3)',catm(i),
+            print'(A3,2(1pE12.3))',catm(i),
      >           anmono(i),-dp(ii)/(anmono(i)*kT) 
           enddo  
         endif  
         crit = MAXVAL(converge(MAX(0,it-1):it))
-        if (verbose>0) print'(i3,i3,2(1pE9.1)," converged(",i2,"):",
-     >                    A50)',it,Nact,converge(it),fak-1.d0,Nconv,txt
+        if (verbose>1) print'(i3,i3,2(1pE9.1)," converged(",i2,"):",
+     >                    A50)',it,Nact,converge(it),limit,Nconv,txt
         if (it==itmax) then 
           write(*,*) '*** keine Konvergenz in SMCHEM8!'
           write(*,*) 'it, converge, ind =',it,converge(it),limit
           write(*,*) '  n<H>, T =',anhges,Tg
-          open(unit=12,file='fatal.abu')
-          write(12,*) anhges,Tg
-          do i=1,nel
-            write(12,'(A2,1x,0pF30.26)') catm(i),12+log10(eps(i))
-          enddo  
-          close(12)
           if (ifatal==0) then
             chemiter  = chemiter + it
             from_merk = .false.
             ifatal  = 1
             verbose = 2             
-            goto 100                   ! try again from scratch before giving up
+            goto 100        ! try again from scratch before giving up
           endif  
-          stop "***  giving up."
+          goto 1000
         endif
         if (it>=5) then
           j = 0 
@@ -1519,8 +1569,8 @@ c     g(TiC)   : siehe oben!
             switch = switchoff(i)
             if (switch==0) switch=it-1
             if (verbose>1) then
-              print'(A7,2(1pE14.6),0pF14.9)',catm(i),anmono(i),
-     >                               conv(switch,i),badness(i)
+              print'(A7,3(1pE14.6))',catm(i),anmono(i),
+     >              conv(switch,i),badness(i)
             endif  
           enddo
           if (ilauf==1) write(99,'(A9,A10,A4,99(A10))') 
@@ -1572,6 +1622,7 @@ c     g(TiC)   : siehe oben!
           if (abw>1.d-5) then
             if (verbose>1) then
               print'("*** element conservation error ",A2)',catm(e)
+              print'(A12,1pE14.7)',catm(e),anmono(e)/(eps(e)*anHges)
             endif  
             sum = anmono(e)/(eps(e)*anHges)
             do i=1,nml
@@ -1589,7 +1640,6 @@ c     g(TiC)   : siehe oben!
             endif  
             from_merk = .false.
             ansave = anmono
-            anmono(e)=anmono(e)/sum
             verbose=2
             goto 200
           endif
@@ -1603,6 +1653,16 @@ c     g(TiC)   : siehe oben!
 
       chemcall = chemcall + 1
       chemiter = chemiter + it
+      return
+
+ 1000 continue
+      open(unit=12,file='fatal.case')
+      do i=1,nel
+        write(12,'(A2,1x,0pF30.26)') catm(i),12+log10(eps(i))
+      enddo  
+      write(12,*) anhges,Tg
+      close(12)
+      stop "***  giving up."
 
 
       CONTAINS       ! internal functions - not visible to other units 

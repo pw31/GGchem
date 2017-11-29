@@ -1,7 +1,7 @@
 ***********************************************************************
       PROGRAM EQ_CHEMISTRY
 ***********************************************************************
-      use PARAMETERS,ONLY: model_dim,model_struc
+      use PARAMETERS,ONLY: model_dim,model_struc,model_eqcond
       use EXCHANGE,ONLY: chemcall,chemiter,ieqcond,ieqconditer,
      >                   itransform
       use DATABASE,ONLY: NLAST
@@ -31,7 +31,7 @@
       print'("         smchem calls = ",I8)',chemcall
       print'("      iterations/call = ",0pF8.2)',
      >                     REAL(chemiter)/REAL(chemcall)
-      if (ieqcond) then
+      if (model_eqcond) then
         print'("eq condensation calls = ",I8)',ieqcond
         print'("   eq iterations/call = ",0pF8.2)',
      >                   REAL(ieqconditer)/REAL(ieqcond)
