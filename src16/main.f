@@ -117,26 +117,42 @@
       do e=1,NELM
         i = elnum(e)
         if (e==el) then
-          write(*,'("Element ",A2,1pE12.4)') 'el',0.Q0
-          write(*,'(1x,A10,1pE11.4)') "nel       ",nel
+          write(*,'("    Element ",A2,1pE16.3)') 'el',0.Q0
+          write(*,'(1x,A18,1pE11.3)') "nel",nel
           threshold = 1.Q-3*nel
         else   
-          write(*,'("Element ",A2,1pE12.4)') elnam(i),eps0(i)*nHges 
+          write(*,'("    Element ",A2,1pE16.3)') elnam(i),eps0(i)*nHges 
           threshold = eps(i)*nHges*1.D-2
           if (nat(i).gt.eps(i)*nHges*1.D-2) then
-            write(*,'(1x,A10,1pE11.4)') 
-     >       "n"//trim(elnam(i))//"       ", nat(i) 
+            write(*,'(1x,A18,1pE11.3)') "n"//trim(elnam(i)), nat(i) 
           endif  
         endif  
-        do dk=1,NDUST
-          if (eldust(dk)<=0.Q0) cycle 
-          do j=1,dust_nel(dk)
-            if (i==dust_el(dk,j)) then
-              write(*,'(" n",A16,1pE12.4)') 
-     >              dust_nam(dk),eldust(dk)*nHges 
+
+        raus = .false.
+        do 
+          iraus = 0
+          nmax  = 0.Q0
+          do dk=1,NDUST
+            if (eldust(dk)<=0.Q0) cycle 
+            included = .false. 
+            do j=1,dust_nel(dk)
+              if (i==dust_el(dk,j)) then
+                included = .true.
+              endif
+            enddo  
+            if (included) then
+              if ((eldust(dk).gt.nmax).and.(.not.raus(dk))) then
+                iraus = dk
+                raus(dk) = .true.
+                nmax = eldust(dk)
+              endif  
             endif
           enddo  
+          if (nmax==0.Q0) exit
+          write(*,'(1x,A18,1pE11.3)') 
+     >          "n"//trim(dust_nam(iraus)),eldust(iraus)*nHges 
         enddo  
+
         raus = .false.
         do 
           iraus = 0
@@ -156,7 +172,7 @@
           enddo  
           haeufig = (nmax.gt.threshold)
           if (.not.haeufig) exit
-          write(*,4010) cmol(iraus), nmol(iraus)
+          write(*,'(1x,A18,1pE11.3)') "n"//trim(cmol(iraus)),nmol(iraus)
           raus(iraus) = .true.
         enddo
       enddo  
