@@ -84,7 +84,7 @@
       real*8 :: dpp(4),func(4),dfunc(4,4),sca(4)
       real*8 :: pbefore1(4),pbefore2(4),pbefore3(2)
       real*8 :: pbefore(nel)
-      real*8 :: emax,pges,pwork
+      real*8 :: emax,pges,pwork,peest
       logical :: from_merk,eact(nel),redo(nel),done(nel),affect,known
       logical :: ptake,IS_NAN,isOK
       character(len=5000) :: mols
@@ -102,7 +102,7 @@
       integer,save :: AlCl,AlCl2,AlCl3,Na2CL2,K2CL2,TiOCl2
       real*8,allocatable,save :: amerk(:),ansave(:)
       real*8,allocatable,save :: badness(:),pcorr(:,:) 
-      real*8,save :: pcorr1(4),pcorr2(4),pcorr3(2)
+      real*8,save :: pcorr1(4),pcorr2(4),pcorr3(2),pecorr
       integer,allocatable,save :: pkey(:)
 *-----------------------------------------------------------------------
 *  Die Formelfunktion zur Loesung quadratische Gleichungen mit Vieta
@@ -225,6 +225,7 @@
         pcorr2  = 1.d0
         pcorr3  = 1.d0
         pcorr   = 1.d0
+        pecorr  = 1.d0
       endif
 
 *-----------------------------------------------------------------------
@@ -404,7 +405,11 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
         anmono(el) = nelek
         pel = nelek*kT
       endif  
-*
+      peest = pel
+      pel = pecorr*pel
+      anmono(el) = pecorr*anmono(el) 
+
+
 *-----------------------------------------------------------------------
 
       if (.not.NewChemIt) then
@@ -1277,13 +1282,15 @@ c     g(TiC)   : siehe oben!
         enddo
         pel = SQRT(coeff(-1)/(1.d0+coeff(+1)))     ! 0 = pel - a/pel + b*pel
         anmono(el) = pel/kT
+        pecorr = pel/peest
+        !print'("-- pecorr =",1pE10.3)',pecorr
       endif  
 
 *     ! use memory of deviations between predicted atom pressures 
 *     ! and converged atom pressures to improve the predictions
 *     ============================================================
       ansave = anmono
-      if (NewFastLevel<3) anmono = anmono*badness
+      if (NewFastLevel<2.and.ptake) anmono = anmono*badness
 *     
 *-----------------------------------------------------------------------
  200  continue

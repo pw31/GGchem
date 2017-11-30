@@ -6,7 +6,7 @@ F90LINKER    = ifort
 # for IFORT-Compiler
 #===================
 DEFS      = -D IFORT -diag-disable 8290,8291 
-#FFLAGS   = -r8 -g -traceback -fpe0 -check all,noarg_temp_created
+#FFLAGS   = -r8 -g -traceback -check all,noarg_temp_created -fpe0
 FFLAGS    = -r8 -g -traceback -O3 -xHOST -prec-div -fp-model source
 INCLUDES  = 
 LFLAGS    = $(FFLAGS)
@@ -51,7 +51,7 @@ OBJECTS  = datamod.o \
 default: ggchem
 
 ggchem:  $(OBJECTS)
-	 $(F90LINKER) -o $(EXECS) $(OBJECTS) $(LFLAGS) 
+	 $(F90LINKER) $(LFLAGS) $(OBJECTS) -o $(EXECS) 
 
 clean:
 	rm -f *.o 

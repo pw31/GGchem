@@ -43,7 +43,7 @@
       real(kind=qp) :: worst,xmin,Smax,Smin,qual,SQUAL,del
       real(kind=qp) :: turnon,turnoff,maxon,minoff,fac,fac2,amount,Nt
       real(kind=qp) :: deps1,deps2,deps,esum,emax
-      real(kind=qp) :: det(2),converge(500,NELEM),crit,cbest
+      real(kind=qp) :: det(2),converge(5000,NELEM),crit,cbest
       real(kind=qp) :: small=1.Q-30
       integer,parameter :: itmax=5000
       integer,dimension(NELEM) :: elem,Nslot,eind
@@ -1386,19 +1386,19 @@
       !-------------------------------------
       ! ***  check element conservation  ***
       !-------------------------------------
-      check = eps
-      do i=1,NDUST
-        do j=1,dust_nel(i)
-          el = dust_el(i,j)
-          check(el) = check(el) + ddust(i)*dust_nu(i,j)    
-        enddo
-      enddo
-      worst = 0.d0
-      do i=1,NELEM
-        worst = MAX(worst,ABS(1.Q0-check(i)/eps0(i)))
-      enddo
-      write(*,*) "element conservation error 3:",worst
-      if (worst>1.Q-8) stop
+      !check = eps
+      !do i=1,NDUST
+      !  do j=1,dust_nel(i)
+      !    el = dust_el(i,j)
+      !    check(el) = check(el) + ddust(i)*dust_nu(i,j)    
+      !  enddo
+      !enddo
+      !worst = 0.d0
+      !do i=1,NELEM
+      !  worst = MAX(worst,ABS(1.Q0-check(i)/eps0(i)))
+      !enddo
+      !write(*,*) "element conservation error 3:",worst
+      !if (worst>1.Q-8) stop
 
       end
 

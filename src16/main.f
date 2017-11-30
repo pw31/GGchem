@@ -48,7 +48,7 @@
 ***********************************************************************
       use PARAMETERS,ONLY: nHmax,Tmax,model_eqcond
       use CHEMISTRY,ONLY: NMOLE,NELM,m_kind,elnum,cmol,el
-      use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,
+      use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,muH,
      >                    dust_nam,dust_mass,dust_Vol,dust_nel,dust_el
       use EXCHANGE,ONLY: nel,nat,nion,nmol
       implicit none
@@ -72,6 +72,9 @@
       call GGCHEM(nHges,Tg,eps,.false.,verbose)
 *     ------------------------------------------------------------------
 
+      write(*,*)
+      write(*,'("Tg=",0pF8.2,"  rho=",1pE10.3,"  n<H>=",1pE10.3)') 
+     >        Tg,nHges*muH,nHges
       write(*,*) '----- total particle densities -----'
       do e=1,NELM
         if (e==el) cycle
@@ -81,9 +84,21 @@
       enddo  
 
       write(*,*) '----- condensates -----'
-      do i=1,NDUST
-        if (eldust(i)<=0.Q0) cycle 
-        write(*,1020) ' n'//trim(dust_nam(i))//'=',eldust(i)*nHges
+      raus = .false.
+      do 
+        iraus = 0
+        nmax  = 0.Q0
+        do i=1,NDUST
+          if (raus(i).or.eldust(i)<=0.Q0) cycle 
+          if (eldust(i)>nmax) then
+            iraus = i
+            nmax = eldust(i)
+          endif
+        enddo
+        if (iraus==0) exit
+        raus(iraus) = .true.
+        write(*,1020) ' n'//trim(dust_nam(iraus))//'=',
+     >                eldust(iraus)*nHges
       enddo
   
       write(*,*) '----- atoms and ions -----'
@@ -97,34 +112,33 @@
   
       write(*,*) '----- some abundant molecules -----'
       raus = .false.
- 200  continue
-      iraus = 0
-      nmax  = 0.Q0
-      do i=1,NMOLE
-        if ((nmol(i).gt.nmax).and.(.not.raus(i))) then
-          iraus = i
-          nmax  = nmol(i)
-        endif
-      enddo
-      haeufig = (nmax.gt.nHges*1.Q-5)
-      if (haeufig) then
-        write(*,4010) cmol(iraus), nmol(iraus)
+      do
+        iraus = 0
+        nmax  = 0.Q0
+        do i=1,NMOLE
+          if ((nmol(i).gt.nmax).and.(.not.raus(i))) then
+            iraus = i
+            nmax  = nmol(i)
+          endif
+        enddo
+        haeufig = (nmax.gt.nHges*1.Q-5)
+        if (.not.haeufig) exit
         raus(iraus) = .true.
-        goto 200
-      endif     
-
+        write(*,4010) cmol(iraus), nmol(iraus)
+      enddo
+  
       write(*,*) '-----  where are the elements?  -----'
       do e=1,NELM
         i = elnum(e)
         if (e==el) then
-          write(*,'("    Element ",A2,1pE16.3)') 'el',0.Q0
-          write(*,'(1x,A18,1pE11.3)') "nel",nel
+          write(*,'("    Element ",A2,1pE15.3)') 'el',0.Q0
+          write(*,'(1x,A18,1pE10.3)') "nel",nel
           threshold = 1.Q-3*nel
         else   
-          write(*,'("    Element ",A2,1pE16.3)') elnam(i),eps0(i)*nHges 
+          write(*,'("    Element ",A2,1pE15.3)') elnam(i),eps0(i)*nHges 
           threshold = eps(i)*nHges*1.D-2
           if (nat(i).gt.eps(i)*nHges*1.D-2) then
-            write(*,'(1x,A18,1pE11.3)') "n"//trim(elnam(i)), nat(i) 
+            write(*,'(1x,A18,1pE10.3)') "n"//trim(elnam(i)), nat(i) 
           endif  
         endif  
 
@@ -149,7 +163,7 @@
             endif
           enddo  
           if (nmax==0.Q0) exit
-          write(*,'(1x,A18,1pE11.3)') 
+          write(*,'(1x,A18,1pE10.3)') 
      >          "n"//trim(dust_nam(iraus)),eldust(iraus)*nHges 
         enddo  
 
@@ -172,7 +186,7 @@
           enddo  
           haeufig = (nmax.gt.threshold)
           if (.not.haeufig) exit
-          write(*,'(1x,A18,1pE11.3)') "n"//trim(cmol(iraus)),nmol(iraus)
+          write(*,'(1x,A18,1pE10.3)') "n"//trim(cmol(iraus)),nmol(iraus)
           raus(iraus) = .true.
         enddo
       enddo  
@@ -201,7 +215,7 @@
 
  1000 format(a6,1pE9.3)
  1010 format(a6,1pE9.3,a8,1pE9.3)
- 1020 format(a16,1pE9.3)
+ 1020 format(a20,1pE9.3)
  4000 format(a7,1pE10.4,a5,1pE10.4)     
  4010 format(' n',a8,1pE12.4)
  5000 format(1x,a20,' S=',1pE9.3)

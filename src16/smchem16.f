@@ -81,7 +81,7 @@
       real(kind=qp) :: dpp(4),func(4),dfunc(4,4),sca(4)
       real(kind=qp) :: pbefore1(4),pbefore2(4),pbefore3(2),pbefore4(2)
       real(kind=qp) :: pbefore(nel)
-      real(kind=qp) :: emax,pges,pwork
+      real(kind=qp) :: emax,pges,pwork,peest
       logical :: from_merk,eact(nel),redo(nel),done(nel),affect,known
       logical :: ptake
       character(len=5000) :: mols
@@ -100,6 +100,7 @@
       real(kind=qp),allocatable,save :: amerk(:),ansave(:)
       real(kind=qp),allocatable,save :: badness(:),pcorr(:,:) 
       real(kind=qp),save :: pcorr1(4),pcorr2(4),pcorr3(2),pcorr4(2)
+      real(kind=qp),save :: pecorr
       integer,allocatable,save :: pkey(:)
 *-----------------------------------------------------------------------
 *  Die Formelfunktion zur Loesung quadratische Gleichungen mit Vieta
@@ -217,12 +218,13 @@
         endif
         allocate(badness(nel),pcorr(nel,nel),pkey(nel),
      >           amerk(nel),ansave(nel))
-        badness = 1.d0
-        pcorr1  = 1.d0
-        pcorr2  = 1.d0
-        pcorr3  = 1.d0
-        pcorr4  = 1.d0
-        pcorr   = 1.d0
+        badness = 1.Q0
+        pcorr1  = 1.Q0
+        pcorr2  = 1.Q0
+        pcorr3  = 1.Q0
+        pcorr4  = 1.Q0
+        pcorr   = 1.Q0
+        pecorr  = 1.Q0
       endif
 *-----------------------------------------------------------------------
 *     ! zu niedrige Temperaturen abfangen und
@@ -401,10 +403,15 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
         anmono(el) = nelek
         pel = nelek*kT
       endif  
+      peest = pel
+      pel = pecorr*pel
+      anmono(el) = pecorr*anmono(el) 
+
+
+*-----------------------------------------------------------------------
 
       if (.not.NewChemIt) then
-*
-*-----------------------------------------------------------------------
+
 *     ! He: atomar
 *     ============
       anmono(He) = anHges * eps(He) 
@@ -1133,10 +1140,10 @@ c     g(TiC)   : siehe oben!
         dp(:) = 0.Q0
         fak   = 1.Q0
         null  = anmono
-        do it=1,99
+        do it=1,199
           qual0 = qual 
           pullmax = 1
-          if (it>30) pullmax=10
+          if (it>60) pullmax=10
           do ipull=1,pullmax    ! pullback if quality gets worse
             !--- make a step ---
             do ii=1,Nact
@@ -1276,13 +1283,15 @@ c     g(TiC)   : siehe oben!
         enddo
         pel = SQRT(coeff(-1)/(1.Q0+coeff(+1)))     ! 0 = pel - a/pel + b*pel
         anmono(el) = pel/kT
+        pecorr = pel/peest
+        !print'("-- pecorr =",1pE10.3)',pecorr
       endif  
 
 *     ! use memory of deviations between predicted atom pressures 
 *     ! and converged atom pressures to improve the predictions
 *     ============================================================
       ansave = anmono
-      if (NewFastLevel<3) anmono = anmono*badness
+      if (NewFastLevel<2.and.ptake) anmono = anmono*badness
 *     
 *-----------------------------------------------------------------------
  200  continue

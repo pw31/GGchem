@@ -279,7 +279,7 @@
         do i=1,5
           read(1,'(A200)') line
         enddo  
-        do i=1,74
+        do i=1,72
           read(1,*) nr,elname,el,m,abund(nr,1:4)
           if (nr<=40) then
             mass(nr)  = m*amu
