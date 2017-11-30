@@ -24,7 +24,8 @@ dispol_WoitkeRefit.dat                  ! dispol_file3
 4.E+19                ! nHmin [cm-3]
 300                   ! Npoints       (if not model_struc)
 .true.                ! NewChemIt
-5                     ! NewBackIt  
+10                    ! NewBackIt  
+1000.0                ! NewBackFac
 1                     ! NewFastLevel
 1000.0                ! Tfast
 
