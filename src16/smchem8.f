@@ -20,7 +20,7 @@
 *     anmol  : vektor mit den dichten der molekuele falls relevant     *
 *                                                                      *
 ************************************************************************
-      use CHEMISTRY,ONLY: NewChemIt,NewBackIt,NewFullIt,NewBackFac,
+      use CHEMISTRY,ONLY: NewBackIt,NewFullIt,NewBackFac,
      >                    NewFastLevel,nml=>NMOLE,nel=>NELM,cmol,catm,
      >                    m_kind,m_anz,a,natom,charge,elion,
      >                    He,el,H,C,N,O,Si,Mg,Al,Fe,S,Na,K,Ti,Ca,Li,Cl,
@@ -28,7 +28,6 @@
       use EXCHANGE,ONLY: HII,CII,NII,OII,NaII,MgII,AlII,KII,TiII,SII,
      >                   SiII,FeII,CaII,LiII,ClII,HeII,chemcall,chemiter
       implicit none
-      real*8,parameter :: bk=1.380662d-16
 *-----------------------------------------------------------------------
 *  Dimensionierung fuer die Molekuel- und Atom Felder. Hier ist auf
 *  Konsistenz mit dem aufrufenden Programm zu achten.
@@ -37,6 +36,7 @@
       real*8,intent(in)  :: eps(nel)
       real*8,intent(out) :: anmono(nel),anmol(nml)
       integer,intent(inout) :: verbose
+      real*8,parameter :: bk=1.380662d-16
 *-----------------------------------------------------------------------
 *  Die Variable "alle" entscheidet, ob die nicht unmittelbar 
 *  beruecksichtigten Molekuele dennoch inkonsistent mitgerechnet werden. 
@@ -62,27 +62,18 @@
       integer Nseq,imin,imax,enew,eseq(nel)
       integer,parameter :: itmax=200,Ncmax=16
       real*8,parameter :: finish=1.d-12
-      real*8 :: ppp,qqq,qual0,qual
+      real*8 :: qual0,qual
       real*8 :: g(0:nml),limit
       real*8 :: work(nel*(nel+1))
       integer:: ind,indx(nel)
       real*8 :: condnum1,work2(nel)
-      real*8 :: kT,kT1,nelek,ng,Sa,fak,lth,arg,term,f,fs
-      real*8 :: VIETA,VIETA2
-      real*8 :: pH,pC,pN,pO,pSi,pMg,pAl,pFe,pS,pNa,pK,pTi,pCa
-      real*8 :: pLi,pCl,pel
-      real*8 :: pHges,pCges,pNges,pOges,pSiges,pMgges,
-     &          pAlges,pFeges,pSges,pNages,pKges,pTiges,pCages,
-     &          pLiges,pClges,pHalt,pCalt,pOalt,pNalt,
-     &          pNaalt,pCaalt,pClalt,pTialt,pSialt,pSalt
-      real*8 :: aa,bb,cc,dd,ee,delta,pat,atmax,atfrac
+      real*8 :: kT,kT1,cc,nelek,ng,Sa,fak,lth,arg,term,f,fs
+      real*8 :: pel,delta,pat,atfrac,atmax
       real*8 :: nges(nel),pmono1(nel),coeff(-1:Ncmax)
       real*8 :: DF(nel,nel),dp(nel),FF(nel),pmol,crit
       real*8 :: DF0(nel,nel),FF0(nel),scale(nel),conv(0:500,nel)
       real*8 :: converge(0:500),delp,nold,null(nel),nsave(nel)
       real*8 :: soll,haben,abw,sum
-      real*8 :: dpp(4),func(4),dfunc(4,4),sca(4)
-      real*8 :: pbefore1(4),pbefore2(4),pbefore3(2)
       real*8 :: pbefore(nel)
       real*8 :: emax,pges,pwork,peest
       logical :: from_merk,eact(nel),redo(nel),done(nel),affect,known
@@ -91,139 +82,20 @@
       character(len=100) :: txt
       character(len=1) :: char
       integer,save :: ilauf=0 
-      integer,save :: Al2O,AlH,AlO2H,AlOH,C2,C3,C2H,C3H,C2H2,CH4,CN,CO
-      integer,save :: CO2,CS,NO,FeS,H2,H2O,H2S,HCN,HS,MgH,MgO,MgOH,MgS
-      integer,save :: N2,NH3,O2,OH,SO,SO2,Si2C,SiC,SiC2,SiH,SiH4,SiN
-      integer,save :: SiO,SiO2,SiS,SiC4H12,FeO,FeO2H2,TiO,TiO2,TiS,TiC
-      integer,save :: TiC2,TiCl,TiCl2,TiCl4,MGO2H2,NAOH,NA2O2H2,CaOH
-      integer,save :: CaO2H2,KOH,K2O2H2,CKN,C2K2N2,FeH,CaH,TiH,LiH
-      integer,save :: LiO,LiOH,LiCl,Li2Cl2,Li3Cl3,Li2O2H2,KCl,CaCl2
-      integer,save :: CaCl,NaCl,HCl,NaH,H2SO4,MgCl,MgCl2,FeCl,FeCl2
-      integer,save :: AlCl,AlCl2,AlCl3,Na2CL2,K2CL2,TiOCl2
+      integer,save :: TiC
       real*8,allocatable,save :: amerk(:),ansave(:)
       real*8,allocatable,save :: badness(:),pcorr(:,:) 
-      real*8,save :: pcorr1(4),pcorr2(4),pcorr3(2),pecorr
+      real*8,save :: pecorr
       integer,allocatable,save :: pkey(:)
-*-----------------------------------------------------------------------
-*  Die Formelfunktion zur Loesung quadratische Gleichungen mit Vieta
-      VIETA(ppp,qqq)  = qqq/(-ppp/2.d0-SQRT(ppp**2/4.d0-qqq))
-      VIETA2(ppp,qqq) = -ppp/2.d0+SQRT(ppp**2/4.d0-qqq)
 *-----------------------------------------------------------------------      
 
       ilauf = ilauf + 1
       ifatal = 0
       if ( ilauf .eq. 1 ) then        
-        TiC = stindex(cmol,nml,'TIC    ')
-        if (.not.NewChemIt) then
-          Al2O   = stindex(cmol,nml,'AL2O   ')
-          AlH    = stindex(cmol,nml,'ALH    ')
-          AlO2H  = stindex(cmol,nml,'ALO2H  ')
-          AlOH   = stindex(cmol,nml,'ALOH   ')
-          C2     = stindex(cmol,nml,'C2     ')
-          C3     = stindex(cmol,nml,'C3     ')
-          C2H    = stindex(cmol,nml,'C2H    ')
-          C3H    = stindex(cmol,nml,'C3H    ')
-          C2H2   = stindex(cmol,nml,'C2H2   ')
-          CH4    = stindex(cmol,nml,'CH4    ')
-          CN     = stindex(cmol,nml,'CN     ')
-          CO     = stindex(cmol,nml,'CO     ')
-          CO2    = stindex(cmol,nml,'CO2    ')
-          CS     = stindex(cmol,nml,'CS     ')
-          FeO    = stindex(cmol,nml,'FEO    ')
-          FeO2H2 = stindex(cmol,nml,'FE(OH)2')
-          FeS    = stindex(cmol,nml,'FES    ')
-          H2     = stindex(cmol,nml,'H2     ')
-          H2O    = stindex(cmol,nml,'H2O    ')
-          H2S    = stindex(cmol,nml,'H2S    ')
-          HCN    = stindex(cmol,nml,'HCN    ')
-          HS     = stindex(cmol,nml,'HS     ')
-          MgH    = stindex(cmol,nml,'MGH    ')
-          MgO    = stindex(cmol,nml,'MGO    ')
-          MgOH   = stindex(cmol,nml,'MGOH   ')
-          MgO2H2 = stindex(cmol,nml,'MG(OH)2')
-          MgS    = stindex(cmol,nml,'MGS    ')
-          N2     = stindex(cmol,nml,'N2     ')
-          NO     = stindex(cmol,nml,'NO     ')
-          NH3    = stindex(cmol,nml,'NH3    ')
-          O2     = stindex(cmol,nml,'O2     ')
-          OH     = stindex(cmol,nml,'OH     ')
-          SO     = stindex(cmol,nml,'SO     ')
-          SO2    = stindex(cmol,nml,'SO2    ')
-          Si2C   = stindex(cmol,nml,'SI2C   ')
-          SiC    = stindex(cmol,nml,'SIC    ')
-          SiC2   = stindex(cmol,nml,'SIC2   ')
-          SiH    = stindex(cmol,nml,'SIH    ')
-          SiH4   = stindex(cmol,nml,'SIH4   ')
-          SiN    = stindex(cmol,nml,'SIN    ')
-          SiO    = stindex(cmol,nml,'SIO    ')
-          SiO2   = stindex(cmol,nml,'SIO2   ')
-          SiS    = stindex(cmol,nml,'SIS    ')
-          TiO    = stindex(cmol,nml,'TIO    ')
-          TiO2   = stindex(cmol,nml,'TIO2   ')
-          TiS    = stindex(cmol,nml,'TIS    ')
-          TiC2   = stindex(cmol,nml,'TIC2   ')
-          TiCl   = stindex(cmol,nml,'TICL   ')
-          TiCl2  = stindex(cmol,nml,'TICL2  ')
-          TiCl4  = stindex(cmol,nml,'TICL4  ')
-          NaH    = stindex(cmol,nml,'NAH    ')
-          NaOH   = stindex(cmol,nml,'NAOH   ')
-          Na2O2H2= stindex(cmol,nml,'NA2O2H2')
-          CaOH   = stindex(cmol,nml,'CAOH   ')
-          CaO2H2 = stindex(cmol,nml,'CA(OH)2')
-          KOH    = stindex(cmol,nml,'KOH    ')
-          K2O2H2 = stindex(cmol,nml,'K2O2H2 ')
-          C2K2N2 = stindex(cmol,nml,'C2K2N2 ')
-          CKN    = stindex(cmol,nml,'CKN    ')
-          HeII   = stindex(cmol,nml,'HE+    ')
-          HII    = stindex(cmol,nml,'H+     ')
-          CII    = stindex(cmol,nml,'C+     ')
-          NII    = stindex(cmol,nml,'N+     ')
-          OII    = stindex(cmol,nml,'O+     ')
-          NaII   = stindex(cmol,nml,'NA+    ')
-          MgII   = stindex(cmol,nml,'MG+    ')
-          AlII   = stindex(cmol,nml,'AL+    ')
-          KII    = stindex(cmol,nml,'K+     ')
-          TiII   = stindex(cmol,nml,'TI+    ')
-          SII    = stindex(cmol,nml,'S+     ')
-          SiII   = stindex(cmol,nml,'SI+    ')
-          FeII   = stindex(cmol,nml,'FE+    ')
-          CaII   = stindex(cmol,nml,'CA+    ')
-          LiII   = stindex(cmol,nml,'LI+    ')
-          ClII   = stindex(cmol,nml,'CL+    ')
-          FeH    = stindex(cmol,nml,'FEH    ')
-          CaH    = stindex(cmol,nml,'CAH    ')
-          TiH    = stindex(cmol,nml,'TIH    ')
-          LiH    = stindex(cmol,nml,'LIH    ')
-          LiO    = stindex(cmol,nml,'LIO    ')
-          LiOH   = stindex(cmol,nml,'LIOH   ')
-          LiCl   = stindex(cmol,nml,'LICL   ')
-          Li2Cl2 = stindex(cmol,nml,'LI2CL2 ')
-          Li3Cl3 = stindex(cmol,nml,'LI3CL3 ')
-          Li2O2H2= stindex(cmol,nml,'LI2O2H2')
-          KCl    = stindex(cmol,nml,'KCL    ')
-          CaCl2  = stindex(cmol,nml,'CACL2  ')
-          CaCl   = stindex(cmol,nml,'CACL   ')
-          NaCl   = stindex(cmol,nml,'NACL   ')
-          HCl    = stindex(cmol,nml,'HCL    ')
-          H2SO4  = stindex(cmol,nml,'H2SO4  ')
-          MgCl   = stindex(cmol,nml,'MGCL   ')
-          MgCl2  = stindex(cmol,nml,'MGCL2  ')
-          FeCl   = stindex(cmol,nml,'FECL   ')
-          FeCl2  = stindex(cmol,nml,'FECL2  ')
-          AlCl   = stindex(cmol,nml,'ALCL   ')
-          AlCl2  = stindex(cmol,nml,'ALCL2  ')
-          AlCl3  = stindex(cmol,nml,'ALCL3  ')
-          Na2Cl2 = stindex(cmol,nml,'NA2CL2 ')
-          K2Cl2  = stindex(cmol,nml,'K2CL2  ')
-          TiOCL2 = stindex(cmol,nml,'TIOCL2 ')
-          SiC4H12= stindex(cmol,nml,'SI(CH3)4')
-        endif
         allocate(badness(nel),pcorr(nel,nel),pkey(nel),
      >           amerk(nel),ansave(nel))
+        TiC = stindex(cmol,nml,'TIC    ')
         badness = 1.d0
-        pcorr1  = 1.d0
-        pcorr2  = 1.d0
-        pcorr3  = 1.d0
         pcorr   = 1.d0
         pecorr  = 1.d0
       endif
@@ -275,110 +147,6 @@
      &                 + 1.56041*lth**2 - 0.93275*lth**3
         g(TiC) = EXP(MIN(700.d0,-2.30256*arg))
 
-*  Umrechnen der Tsuji-CaH-GG-Konstante in das Gail'sche System
-*  -log(10)*log Kp(Tsuji) = -2.30256*log Kp(Tsuji) = ln Kp(Gail)
-
-      !   arg = 1.13401E+01 
-      !&       -3.01442E+00*th1 
-      !&       +4.23487E-01*th2
-      !&       -6.14674E-02*th3
-      !&       +3.16392E-03*th4
-      !  g(CaH) = EXP(MIN(700.d0,-2.30256*arg))
-c
-      !   arg = 0.0
-      !   arg =  1.17824E+01
-      !&        -3.44431E+00*th1  ! this term differs between Tsuji 1073 paper and molecBP data file!  
-      !&        +3.27412E-01*th2 
-      !&        -4.84559E-02*th3  
-      !&        +2.53356E-03*th4
-      !   g(LiH) =  MIN(1.d+300, EXP(-2.30256*arg))
-c
-      !   arg = 0.0
-      !   arg =  1.23622E+01
-      !&        -4.54966E+00*th1
-      !&        +3.40687E-01*th2
-      !&        -5.00589E-02*th3
-      !&        +2.60132E-03*th4
-      !   g(LiO) =  MIN(1.d+300, EXP(-2.30256*arg))
-c
-      !   arg = 0.0
-      !   arg =  1.24491E+01
-      !&        -6.82101E+00*th1
-      !&        +2.85775E-01*th2
-      !&        -4.16715E-02*th3
-      !&        +2.15772E-03*th4
-      !   g(LiF) =  MIN(1.d+300, EXP(-2.30256*arg))
-c fit to Janaf tables made 27/02/2017
-      !   arg  = 0.0
-      !   arg  = 1.20145E+01
-      !&        -5.66908E+00*th1
-      !&        +2.55583E-01*th2
-      !&        -3.69367E-02*th3
-      !&        +1.90539E-03*th4
-      !   g(LiCl) =  MIN(1.d+300, EXP(-2.30256*arg))
-c  fit to Janaf tables made 27/02/2017  
-      !   arg  = 0.0
-      !   arg  = 2.51219E+01
-      !&        -1.06248E+01*th1
-      !&        +5.03575E-01*th2
-      !&        -7.21409E-02*th3
-      !&        +3.71830E-03*th4
-      !   g(LiOH) =  MIN(1.d+300, EXP(-2.30256*arg))
-
-*  Umrechnen der Burrow-FeH-deltaG polynome in das Gail'sche System
-*  lnKp = - DeltaG_Burrows/RcalT - lnPstd
-*  Achtung: [DeltaG_Burrows]= cal/mol ; [Rcal] = 1.987 cal/(mol K)
-*  Pstd = 1atm
-      !RcalT = Rcal*TT1
-      !  arg = (-3.87740E+04 
-      !&        +2.47290E+01*TT1
-      !&        -4.64016E-04*TT2
-      !&        +6.79410E-08*TT3)/RcalT
-      !  g(FeH) = EXP(MIN(700.d0,-arg))/atm
-
-c Sharp & Huebner 1990
-      !  arg = (-3.04561E+05/TT1 
-      !&        -4.91489E+04 
-      !&        +2.32539E+01*TT1 
-      !&        -1.56846E-04*TT2 
-      !&        +4.53896E-08*TT3)/RcalT
-      !  g(TiH) = EXP(MIN(700.d0,-arg))/atm
-c fit to Janaf tables made 27/02/2017
-      !   arg = ( 3.07543E+05/TT1 
-      !&         -1.00087E+05 
-      !&         +2.36342E+01*TT1 
-      !&         +1.24759E-05*TT2 
-      !&         +1.23522E-08*TT3)/RcalT
-      !   g(NaCl) = MIN(1.d+300, EXP(-arg)/atm)
-c fit to Janaf tables made 27/02/2017
-      !   arg = ( 4.57163e+05/TT1 
-      !&         -1.04386E+05 
-      !&         +2.38671E+01*TT1 
-      !&         -3.71773E-04*TT2 
-      !&         +6.22590E-08*TT3)/RcalT
-      !   g(KCl) = MIN(1.d+300, EXP(-arg)/atm)
-c fit to Janaf tables made 27/02/2017
-      !   arg = ( 2.89596e+05/TT1 
-      !&         -9.88707E+04 
-      !&         +2.13234E+01*TT1 
-      !&         -1.27956E-04*TT2 
-      !&         +4.49210E-08*TT3)/RcalT
-      !   g(CaCl) = MIN(1.d+300, EXP(-arg)/atm)
-c fit to Janaf tables made 27/02/2017
-      !   arg = ( 2.75428e+05/TT1 
-      !&         -2.15484E+05 
-      !&         +4.91645E+01*TT1 
-      !&         -4.41153E-04*TT2 
-      !&         +7.17853E-08*TT3)/RcalT
-      !   g(CaCl2) = MIN(1.d+300, EXP(-arg)/atm)
-c fit to Janaf tables made 27/02/2017
-      !   arg = ( 4.30684e+05/TT1 
-      !&         -1.06291E+05 
-      !&         +2.61097e+01*TT1 
-      !&         +4.66915E-04*TT2 
-      !&         -2.90088E-08*TT3)/RcalT
-      !   g(HCl) = MIN(1.d+300, EXP(-arg)/atm)
-
 *---------------------------------------------------------------------------
       if ((ilauf.gt.10).and.merk) then
 c       write(*,*) 'benutze Konzentrationen von vorher'
@@ -409,607 +177,7 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
       pel = pecorr*pel
       anmono(el) = pecorr*anmono(el) 
 
-
 *-----------------------------------------------------------------------
-
-      if (.not.NewChemIt) then
-
-*     ! He: atomar
-*     ============
-      anmono(He) = anHges * eps(He) 
-*
-*     ! Gleichgewicht zwischen H, H+, H2
-*     ==================================
-      g(HII)    = gk( HII )
-      g(H2)     = gk( H2 )
-      pHges     = eps(H) * anHges * kT
-      ppp       = ( 1.d0 + g(HII)/pel )  / (2.d0*g(H2))
-      qqq       = -pHges / (2.d0*g(H2))
-      pH        = vieta(ppp,qqq)
-*
-*     ! Gleichgewicht  H, H+, H2, O, O+, O2, H2O
-*     ==========================================
-      g(OII) = gk( OII )
-      g(O2)  = gk( O2  )
-      g(H2O) = gk( H2O )
-      pOges  = eps(O) * anHges * kT
-      if (Tg<500.d0) then
-        pOges = max(pOges*0.5,pOges-(eps(Fe)+eps(Mg))*anHges*kT)
-      endif  
-      aa  = 2.d0*g(H2)
-      bb  = g(H2O)
-      cc  = 1.d0 + g(HII)/pel
-      dd  = 1.d0 + g(OII)/pel
-      ee  = 2.d0*g(O2)
-      ppp = (dd + pH**2*bb) / ee
-      qqq = -pOges / ee
-      pO  = VIETA(ppp,qqq)
-      ppp = cc / (aa + 2.d0*pO*bb)
-      qqq = -pHges / (aa + 2.d0*pO*bb)
-      pH  = VIETA(ppp,qqq)
-      piter = 0
-      sca(1) = pHges
-      sca(2) = pOges
-      do
-        func(1)    = 2.d0*pH**2*pO*bb + pH**2*aa + pH*cc - pHges
-        dfunc(1,1) = 4.d0*pH*pO*bb + 2.d0*pH*aa + cc
-        dfunc(1,2) = 2.d0*pH**2*bb
-        func(2)    = pH**2*pO*bb + pO**2*ee + pO*dd - pOges
-        dfunc(2,1) = 2.d0*pH*pO*bb
-        dfunc(2,2) = pH**2*bb + 2.d0*pO*ee + dd 
-        dfunc(1:2,1) = dfunc(1:2,1)*sca(1)
-        dfunc(1:2,2) = dfunc(1:2,2)*sca(2)
-        call GAUSS8(4,2,dfunc,dpp,func)
-        pHalt = pH
-        pOalt = pO
-        fak = 100.d0
-        pH  = MAX(MIN(pH-dpp(1)*sca(1),pH*fak),pH/fak)
-        pO  = MAX(MIN(pO-dpp(2)*sca(2),pO*fak),pO/fak)
-        delta = MAX(ABS(pHalt/pH-1.d0),ABS(pOalt/pO-1.d0))
-        piter = piter + 1
-        if (verbose>1) write(*,'(a11,i3,3(1pE11.4))') 
-     &     'pH/pO-iter:',piter,pHalt,pOalt,delta
-        if ((piter>99).or.(delta<1.d-3)) exit
-      enddo
-      if (delta>1.d-3) print*,"*** no conv. pH/pO",delta
-*              
-*     ! Gleichgewicht  O, O+, C, C+, CO, CO2, H2O, C2H2, CH4
-*     ======================================================
-      g(OII) = gk( OII )
-      g(CII) = gk( CII )
-      g(CH4) = gk( CH4 )
-      g(C2H2)= gk( C2H2)
-      g(H2O) = gk( H2O )
-      g(CO)  = gk( CO  )
-      g(CO2) = gk( CO2 )
-      pCges  = eps(C) * anHges * kT
-      aa     = 1.d0 + g(OII)/pel + pH**2*g(H2O)
-      bb     = 1.d0 + g(CII)/pel + pH**4*g(CH4)
-      cc     = 2.d0*pH**2*g(C2H2)
-      ppp    = (bb+pO*g(CO)+pO**2*g(CO2))/cc
-      qqq    = -pCges/cc
-      pC     = VIETA(ppp,qqq)
-      sca(1) = pOges
-      sca(2) = pCges
-      pbefore3(1:2) = (/pC,pO/)
-      pC = pC * pcorr3(1)
-      pO = pO * pcorr3(2)
-      piter = 0
-      do 
-        func(1)    = 2.d0*pO**2*pC*g(CO2) + pO*(pC*g(CO)+aa) - pOges 
-        dfunc(1,1) = 4.d0*pO*pC*g(CO2) + (pC*g(CO)+aa)
-        dfunc(1,2) = 2.d0*pO**2*g(CO2) + pO*g(CO)
-        func(2)    = pC**2*cc + pC*(pO**2*g(CO2)+pO*g(CO)+bb) - pCges
-        dfunc(2,1) = pC*(2.d0*pO*g(CO2)+g(CO))
-        dfunc(2,2) = 2.d0*pC*cc + (pO**2*g(CO2)+pO*g(CO)+bb) 
-        dfunc(1:2,1) = dfunc(1:2,1)*sca(1)
-        dfunc(1:2,2) = dfunc(1:2,2)*sca(2)
-        call GAUSS8(4,2,dfunc,dpp,func)
-        pCalt = pC
-        pOalt = pO
-        fak = 100.d0
-        pO  = MAX(MIN(pO-dpp(1)*sca(1),pO*fak),pO/fak)
-        pC  = MAX(MIN(pC-dpp(2)*sca(2),pC*fak),pC/fak)        
-        delta = MAX(ABS(pCalt/pC-1.d0),ABS(pOalt/pO-1.d0))
-        piter = piter+1
-        if (verbose>1) write(*,'(a11,i3,3(1pE11.4))') 
-     &       'pC/pO-iter:',piter,pCalt,pOalt,delta
-        if ((piter>99).or.(delta<1.d-3)) exit
-      enddo  
-      if (delta>1.d-3) print*,"*** no conv. pC/pO",delta
-      pcorr3(1:2) = (/pC,pO/) / pbefore3(1:2)  
-      !write(98,'(0pF8.2,I4,4(1pE11.3))') Tg,piter,pcorr3
-
-*     ! Gleichgewicht N, N+, N2, CN, HCN, NH3, NO
-*     ===========================================
-      g(NII)     = gk(NII)
-      g(N2)      = gk(N2)
-      g(CN)      = gk(CN)
-      g(NO)      = gk(NO)
-      g(HCN)     = gk(HCN)
-      g(NH3)     = gk(NH3)
-      pNges      = eps(N) * anHges * kT
-      ppp        = (1.d0 + g(CN)*pC + g(NO)*pO + g(HCN)*pC*pH 
-     &              + g(NH3)*pH**3 + g(NII)/pel)/(2.d0*g(N2))
-      qqq        = -pNges / (2.d0*g(N2))
-      pN         = vieta(ppp,qqq)
-
-*     ! pH/pC/pO/pN-iteration:  H,H+,O,O+,H2,H2O,O2,CO,CO2,
-*     !                         C,C+,CH4,C2H2,C2H,C2,C3,C3H
-*     !                         N,N+,N2,CN,HCN,NH3,NO
-*     =====================================================
-      g(C2)  = gk( C2  )
-      g(C2H) = gk( C2H )
-      g(C3)  = gk( C3  )
-      g(C3H) = gk( C3H )
-      aa = 1.d0 + g(CII)/pel
-      bb = 1.d0 + g(OII)/pel
-      cc = 1.d0 + g(HII)/pel
-      dd = 1.d0 + g(NII)/pel
-      sca(1) = pCges
-      sca(2) = pOges
-      sca(3) = pHges
-      sca(4) = pNges
-      pbefore1(1:4) = (/pC,pO,pH,pN/)
-      pC = pC * pcorr1(1)
-      pO = pO * pcorr1(2)
-      pH = pH * pcorr1(3)
-      pN = pN * pcorr1(4)
-      piter = 0
-      do
-        !------------------------------------------------------------------------
-        func(1)    = 3.d0*pC**3*( g(C3) + pH*g(C3H) ) - pCges          ! carbon
-     &             + 2.d0*pC**2*( pH**2*g(C2H2) + pH*g(C2H) + g(C2) )
-     &             + pC*( aa + pO*g(CO) + pO**2*g(CO2) + pH**4*g(CH4) 
-     &                    + pN*g(CN) + pH*pN*g(HCN) )
-        dfunc(1,1) = 9.d0*pC**2*( g(C3) + pH*g(C3H) )
-     &             + 4.d0*pC*( pH**2*g(C2H2) + pH*g(C2H) + g(C2) )
-     &             + ( aa + pO*g(CO) + pO**2*g(CO2) + pH**4*g(CH4) 
-     &                    + pN*g(CN) + pH*pN*g(HCN) )
-        dfunc(1,2) = pC*( g(CO) + 2.d0*pO*g(CO2) )
-        dfunc(1,3) = 3.d0*pC**3*g(C3H)
-     &             + 2.d0*pC**2*( 2.d0*pH*g(C2H2) + g(C2H) )
-     &             + pC*( 4.d0*pH**3*g(CH4) + pN*g(HCN) )
-        dfunc(1,4) = pC*( g(CN) + pH*g(HCN) )
-        !------------------------------------------------------------------------
-        func(2)    = 2.d0*pO**2*( g(O2) + pC*g(CO2) ) - pOges          ! oxygen
-     &             + pO*( bb + pH**2*g(H2O) + pC*g(CO) +pN*g(NO) )               
-        dfunc(2,1) = 2.d0*pO**2*g(CO2)
-     &             + pO*g(CO) 
-        dfunc(2,2) = 4.d0*pO*( g(O2) + pC*g(CO2) )
-     &             + ( bb + pH**2*g(H2O) + pC*g(CO) + pN*g(NO) )
-        dfunc(2,3) = pO*2.d0*pH*g(H2O)
-        dfunc(2,4) = pO*g(NO)
-        !------------------------------------------------------------------------
-        func(3)    = 4.d0*pH**4*pC*g(CH4) - pHges                      ! hydrogen
-     &             + 3.d0*pH**3*pN*g(NH3)
-     &             + 2.d0*pH**2*( g(H2) + pO*g(H2O) + pC**2*g(C2H2) )
-     &             + pH*( cc + pC**2*g(C2H) + pC**3*g(C3H) 
-     &                       + pC*pN*g(HCN) )
-        dfunc(3,1) = 4.d0*pH**4*g(CH4)
-     &             + 2.d0*pH**2*( 2.d0*pC*g(C2H2) )
-     &             + pH*(2.d0*pC*g(C2H) + 3.d0*pC**2*g(C3H) + pN*g(HCN))
-        dfunc(3,2) = 2.d0*pH**2*g(H2O)
-        dfunc(3,3) = 16.d0*pH**3*pC*g(CH4)
-     &             + 9.d0*pH**2*pN*g(NH3)
-     &             + 4.d0*pH*( g(H2) + pO*g(H2O) + pC**2*g(C2H2) )
-     &             + ( cc + pC**2*g(C2H) + pC**3*g(C3H) + pC*pN*g(HCN) )
-        dfunc(3,4) = 3.d0*pH**3*g(NH3)
-     &             + pH*( pC*g(HCN) )
-        !------------------------------------------------------------------------
-        func(4)    = 2.d0*pN**2*g(N2) - pNges                          ! nitrogen
-     &             + pN*( dd + pC*g(CN) + pH*pC*g(HCN) + pH**3*g(NH3)
-     &                  + pO*g(NO) )
-        dfunc(4,1) = pN*( g(CN) + pH*g(HCN) )
-        dfunc(4,2) = pN*g(NO)
-        dfunc(4,3) = pN*( pC*g(HCN) + 3.d0*pH**2*g(NH3) )
-        dfunc(4,4) = 4.d0*pN*g(N2) 
-     &             + ( dd + pC*g(CN) + pH*pC*g(HCN) + pH**3*g(NH3)
-     &               + pO*g(NO) )
-        dfunc(1:4,1) = dfunc(1:4,1)*sca(1)
-        dfunc(1:4,2) = dfunc(1:4,2)*sca(2)
-        dfunc(1:4,3) = dfunc(1:4,3)*sca(3)
-        dfunc(1:4,4) = dfunc(1:4,4)*sca(4)
-
-        call GAUSS8(4,4,dfunc,dpp,func)
-        pCalt = pC
-        pOalt = pO
-        pHalt = pH
-        pNalt = pN
-        fak = 10.d0
-        pC  = MAX(MIN(pC-dpp(1)*sca(1),pC*fak),pC/fak)
-        pO  = MAX(MIN(pO-dpp(2)*sca(2),pO*fak),pO/fak)
-        pH  = MAX(MIN(pH-dpp(3)*sca(3),pH*fak),pH/fak)
-        pN  = MAX(MIN(pN-dpp(4)*sca(4),pN*fak),pN/fak)
-        delta = MAX(ABS(pCalt/pC-1.d0),ABS(pOalt/pO-1.d0),
-     &              ABS(pHalt/pH-1.d0),ABS(pNalt/pN-1.d0))          
-        piter = piter + 1
-        if (verbose>1.or.piter>80) write(*,'(a15,i3,5(1pE11.4))') 
-     &       'pC/pO/pH/pN-it:',piter,pCalt,pOalt,pHalt,pNalt,delta
-        if ((piter>99).or.(delta<1.d-3)) exit
-      enddo  
-      if (delta>1.d-3) print*,"*** no conv. pC/pO/pH/pN",delta 
-      pcorr1(1:4) = (/pC,pO,pH,pN/) / pbefore1(1:4)  
-      !write(98,'(0pF8.2,I4,4(1pE11.3))') Tg,piter,pcorr1
-      anmono(H)   = pH / kT
-      anmono(C)   = pC / kT
-      anmono(N)   = pN / kT
-      anmono(O)   = pO / kT
-      anmol(H2)   = g(H2)   * pH**2 / kT         
-      anmol(H2O)  = g(H2O)  * pH**2 * pO / kT
-      anmol(CO)   = g(CO)   * pC * pO / kT
-      anmol(CO2)  = g(CO2)  * pC * pO**2 / kT
-      anmol(O2)   = g(O2)   * pO**2 / kT
-      anmol(C2)   = g(C2)   * pC**2 / kT
-      anmol(C3)   = g(C3)   * pC**3 / kT
-      anmol(C2H)  = g(C2H)  * pC**2 * pH / kT
-      anmol(C3H)  = g(C3H)  * pC**3 * pH / kT
-      anmol(C2H2) = g(C2H2) * pC**2 * pH**2 / kT
-      anmol(CH4)  = g(CH4)  * pC * pH**4 / kT
-      anmol(N2)   = g(N2)   * pN**2 / kT
-      anmol(CN)   = g(CN)   * pC * pN / kT
-      anmol(HCN)  = g(HCN)  * pH * pC * pN / kT
-      anmol(NH3)  = g(NH3)  * pN * pH**3 / kT
-*
-*     ! Gleichgewicht Si,S,SiS,SiC,SiO,Si2C,SiC2,SiH,SiH4,SiN,CS,HS,H2S,SO,SO2,H2SO4
-*     ==============================================================================
-      g(SiII)  = gk( SiII )
-      g(SII)   = gk( SII )
-      g(SiS)   = gk( SiS )
-      g(SiC)   = gk( SiC )
-      g(SiO)   = gk( SiO )
-      g(SiO2)  = gk( SiO2 )
-      g(Si2C)  = gk( Si2C )
-      g(SiC2)  = gk( SiC2 )
-      g(SiH)   = gk( SiH )
-      g(SiH4)  = gk( SiH4 )
-      g(SiN)   = gk( SiN )
-      g(CS)    = gk( CS )
-      g(HS)    = gk( HS )
-      g(H2S)   = gk( H2S )
-      g(SO)    = gk( SO )
-      g(SO2)   = gk( SO2 )
-      g(H2SO4) = gk( H2SO4 )
-      g(SiC4H12) = gk( SiC4H12 )
-      pSiges   = eps(Si) * anHges * kT
-      pSges    = eps( S) * anHges * kT
-      aa       = 1.d0 + pC*g(SiC) + pC**2*g(SiC2) + pH*g(SiH) 
-     &         + pH**4*g(SiH4) + pN*g(SiN) + pO*g(SiO) + pO**2*g(SiO2)
-     &         + pC**4*pH**12*g(SiC4H12) + g(SiII)/pel
-      bb       = 1.d0 + pC*g(CS) + pH*g(HS) + pH**2*g(H2S) 
-     &         + pO*g(SO) + pO**2*g(SO2) + pH**2*pO**4*g(H2SO4)
-     &         + g(SII)/pel
-      ppp      = aa/g(SiS) + (pSiges-pSges)/bb
-      qqq      = -pSges * aa / bb / g(SiS)
-      fak      = SQRT(-qqq)
-      pS       = vieta(ppp/fak,-1.d0)*fak      
-      pSi      = pSiges / ( aa + pS * g(SiS) )
-*
-*     ! Nachiteration wegen Si2C
-*     ==========================                
-      sca(1) = pSiges
-      sca(2) = pSges
-      piter = 0
-      do 
-        func(1)    = 2.d0*pSi**2*pC*g(Si2C) + pSi*(pS*g(SiS)+aa)   ! Si
-     &             - pSiges
-        dfunc(1,1) = 4.d0*pSi*pC*g(Si2C) + (pS*g(SiS)+aa)
-        dfunc(1,2) = pSi*g(SiS) 
-        func(2)    = pS*(pSi*g(SiS)+bb) - pSges                    ! S
-        dfunc(2,1) = pS*g(SiS)
-        dfunc(2,2) = (pSi*g(SiS)+bb)
-        dfunc(1:2,1) = dfunc(1:2,1)*sca(1)
-        dfunc(1:2,2) = dfunc(1:2,2)*sca(2)
-        call GAUSS8(4,2,dfunc,dpp,func)
-        pSialt = pSi
-        pSalt  = pS
-        fak = 100.d0
-        pSi = MAX(MIN(pSi-dpp(1)*sca(1),pSi*fak),pSi/fak)
-        pS  = MAX(MIN(pS -dpp(2)*sca(2),pS *fak),pS /fak)        
-        delta = MAX(ABS(pSialt/pSi-1.d0),ABS(pSalt/pS-1.d0))
-        piter = piter+1
-        if (verbose>1) write(*,'(a11,i3,3(1pE11.4))') 
-     &       'pSi/pS-iter:',piter,pSialt,pSalt,delta
-        if ((piter>99).or.(delta<1.d-3)) exit
-      enddo  
-      if (delta>1.d-3) print*,"*** no conv. pSi/pS",delta
-      anmono(Si)  = pSi / kT
-      anmono(S)   = pS / kT
-      anmol(Si2C) = g(Si2C) * pSi**2 * pC    / kT
-      anmol(SiC2) = g(SiC2) * pSi    * pC**2 / kT
-      anmol(SiH)  = g(SiH)  * pSi    * pH    / kT
-      anmol(CS)   = g(CS)   * pS     * pC    / kT
-      anmol(HS)   = g(HS)   * pS     * pH    / kT
-      anmol(H2S)  = g(H2S)  * pS     * pH**2 / kT
-      anmol(SiS)  = g(SiS)  * pSi    * pS    / kT
-      anmol(SiC)  = g(SiC)  * pSi    * pC    / kT
-      anmol(SiH4) = g(SiH4) * pSi    * pH**4 / kT
-      anmol(SiO2) = g(SiO2) * pSi    * pO**2 / kT
-      anmol(SiN)  = g(SiN)  * pSi    * pN    / kT
-      anmol(SO)   = g(SO)   * pS     * pO / kT
-      anmol(SO2)  = g(SO2)  * pS     * pO**2 / kT
-      anmol(H2SO4)= g(H2SO4)* pS     * pH**2 * pO**4 / kT
-*
-*     ! Gleichgewicht Na, Na+, NaOH, (NaOH)2, NaH
-*                     Ca, Ca+, CaH, CaOH, Ca(OH)2
-*                     Cl, Cl+, HCl, NaCl, CaCl, CaCl2, Na2Cl2
-*                     Ti, Ti+, TiC2, TiS, TiO, TiO2, TiCl, TiCl2, TiCl4, TiOCl2
-*     =========================================================================
-      g(NaII)    = gk( NaII )
-      g(NaH)     = gk( NaH )
-      g(NaOH)    = gk( NaOH )
-      g(Na2O2H2) = gk( Na2O2H2 )
-      g(CaH)     = gk( CaH )
-      g(CaII)    = gk( CaII )
-      g(CaOH)    = gk( CaOH )
-      g(CaO2H2)  = gk( CaO2H2 )
-      g(ClII)    = gk( ClII )
-      g(NaCl)    = gk( NaCl )
-      g(Na2Cl2)  = gk( Na2Cl2 )
-      g(HCl)     = gk( HCl )
-      g(CaCl)    = gk( CaCl )
-      g(CaCl2)   = gk( CaCl2 )
-c     g(TiC)   : siehe oben!
-      g(TiH)     = gk( TiH )
-      g(TiII)    = gk( TiII )        
-      g(TiC2)    = gk( TiC2 )
-      g(TiS)     = gk( TiS )
-      g(TiO)     = gk( TiO )
-      g(TiO2)    = gk( TiO2 )
-      g(TiCl)    = gk( TiCl )
-      g(TiCl2)   = gk( TiCl2 )
-      g(TiCl4)   = gk( TiCl4 )
-      g(TiOCL2)  = gk( TiOCL2 )
-      pNages = eps(Na) * anHges * kT
-      pCages = eps(Ca) * anHges * kT
-      pClges = eps(Cl) * anHges * kT
-      pTiges = eps(Ti) * anHges * kT    
-      aa  = 1.d0 + g(ClII)/pel + pH*g(HCl)
-      bb  = 1.d0 + g(NaII)/pel + pO*pH*g(NaOH) + pH*g(NaH)
-      ppp = bb/g(NaCl) + (pNages-pClges)/aa
-      qqq = -pClges * bb / aa / g(NaCl)
-      if (ppp>0.d0) then
-        pCl = vieta(ppp,qqq)
-      else  
-        pCl = vieta2(ppp,qqq)
-      endif  
-      aa  = 2.d0*pO**2*pH**2*g(Na2O2H2)
-      ppp = (bb+pCl*g(NaCl))/aa
-      qqq = -pNages/aa
-      pNa = vieta(ppp,qqq)
-      pCa = pCages / ( 1.d0 + g(CaII)/pel + pO*pH*g(CaOH) 
-     &                 + pH*g(CaH) + pO**2*pH**2*g(CaO2H2) 
-     &                 + pCl*g(CaCl) + pCl**2*g(CaCl2) ) 
-      pTi = pTiges / ( 1.d0 + g(TiII)/pel + pC**2*g(TiC2) + pS*g(TiS) 
-     &               + pO*g(TiO) + pO**2*g(TiO2) + pCl*g(TiCl) 
-     &               + pCl**2*g(TiCl2) + pCl**4*g(TiCl4)
-     &               + pO*pCl**2*g(TiOCl2) ) 
-      aa  = 2.d0*(pTi*pO*g(TiOCl2)+pNa**2*g(Na2Cl2)+pCa*g(CaCl2))
-      ppp = (1.d0+g(ClII)/pel+pNa*g(NaCl)+pH*g(HCl))/aa
-      qqq = -pClges/aa
-      pCl = vieta(ppp,qqq)      
-      aa  = 1.d0 + g(NaII)/pel + pO*pH*g(NaOH) + pH*g(NaH)
-      bb  = 1.d0 + g(CaII)/pel + pO*pH*g(CaOH) + pH*g(CaH) 
-     &                         + pO**2*pH**2*g(CaO2H2) 
-      cc  = 1.d0 + g(ClII)/pel + pH*g(HCl)
-      dd  = 1.d0 + g(TiII)/pel + pC**2*g(TiC2) + pS*g(TiS) + pO*g(TiO)
-     &                         + pO**2*g(TiO2)
-      piter = 0
-      pbefore2(1:4) = (/pNa,pCa,pCl,pTi/)
-      pNa = pNa * pcorr2(1)
-      pCa = pCa * pcorr2(2)
-      pCl = pCl * pcorr2(3)
-      pTi = pTi * pcorr2(4)
-      sca(1) = pNages
-      sca(2) = pCages
-      sca(3) = pClges
-      sca(4) = pTiges
-      do
-        !-------------------------------------------------------------------------
-        func(1)    = 2.d0*pNa**2*( pCl**2*g(Na2Cl2)                       ! sodium
-     &                            +pO**2*pH**2*g(Na2O2H2) ) - pNages
-     &             + pNa*( aa + pCl*g(NaCl) )
-        dfunc(1,1) = 4.d0*pNa*(pCl**2*g(Na2Cl2)+pO**2*pH**2*g(Na2O2H2))
-     &             + ( aa + pCl*g(NaCl) )
-        dfunc(1,2) = 0.d0
-        dfunc(1,3) = 4.d0*pNa**2*pCl*g(Na2Cl2) + pNa*g(NaCl)
-        dfunc(1,4) = 0.d0
-        !-------------------------------------------------------------------------
-        func(2)    = pCa*( bb + pCl*g(CaCl) + pCl**2*g(CaCl2) ) - pCages ! calcium
-        dfunc(2,1) = 0.d0
-        dfunc(2,2) = ( bb + pCl*g(CaCl) + pCl**2*g(CaCl2) )
-        dfunc(2,3) = pCa*( g(CaCl) + 2.d0*pCl*g(CaCl2) )
-        dfunc(2,4) = 0.d0
-        !-------------------------------------------------------------------------
-        func(3)    = 4.d0*pCl**4*( pTi*g(TiCl4) ) - pClges               ! clorine
-     &             + 2.d0*pCl**2*( pTi*g(TiCl2) + pCa*g(CaCl2)
-     &                            +pNa**2*g(Na2Cl2) + pTi*pO*g(TiOCl2) )
-     &             + pCl*( cc + pNa*g(NaCl) + pCa*g(CaCl) + pTi*g(TiCl)) 
-        dfunc(3,1) = 4.d0*pCl**2*pNa*g(Na2Cl2) + pCl*g(NaCl)
-        dfunc(3,2) = 2.d0*pCl**2*g(CaCl2) + pCl*g(CaCl)
-        dfunc(3,3) = 16.d0*pCl**3*( pTi*g(TiCl4) )
-     &             + 4.d0*pCl*( pTi*g(TiCl2) + pCa*g(CaCl2)
-     &                         +pNa**2*g(Na2Cl2) + pTi*pO*g(TiOCl2) )
-     &             + ( cc + pNa*g(NaCl) + pCa*g(CaCl) + pTi*g(TiCl) ) 
-        dfunc(3,4) = 4.d0*pCl**4*g(TiCl4)
-     &             + 2.Q0*pCl**2*( g(TiCl2) + pO*g(TiOCl2) )
-     &             + pCl*g(TiCl)  
-        !-------------------------------------------------------------------------
-        func(4)    = pTi*( dd + pCl*g(TiCl) + pCl**2*g(TiCl2)              ! titan
-     &                   + pCl**4*g(TiCl4) + pO*pCl**2*g(TiOCl2) ) 
-     &             - pTiges
-        dfunc(4,1) = 0.d0
-        dfunc(4,2) = 0.d0
-        dfunc(4,3) = pTi*( g(TiCl) + 2.d0*pCl*g(TiCl2) 
-     &                   + 4.d0*pCl**3*g(TiCl4) + pO*2.d0*pCl*g(TiOCl2))
-        dfunc(4,4) = ( dd + pCl*g(TiCl) + pCl**2*g(TiCl2) 
-     &               + pCl**4*g(TiCl4) + pO*pCl**2*g(TiOCl2) )
-        dfunc(1:4,1) = dfunc(1:4,1)*sca(1)
-        dfunc(1:4,2) = dfunc(1:4,2)*sca(2)
-        dfunc(1:4,3) = dfunc(1:4,3)*sca(3)
-        dfunc(1:4,4) = dfunc(1:4,4)*sca(4)
-
-        call GAUSS8(4,4,dfunc,dpp,func)
-        pNaalt = pNa
-        pCaalt = pCa
-        pClalt = pCl
-        pTialt = pTi
-        fak = 5.0
-        pNa = MAX(MIN(pNa-dpp(1)*sca(1),pNa*fak),pNa/fak)
-        pCa = MAX(MIN(pCa-dpp(2)*sca(2),pCa*fak),pCa/fak)
-        pCl = MAX(MIN(pCl-dpp(3)*sca(3),pCl*fak),pCl/fak)
-        pTi = MAX(MIN(pTi-dpp(4)*sca(4),pTi*fak),pTi/fak)
-        delta = MAX(ABS(pNaalt/pNa-1.d0),ABS(pCaalt/pCa-1.d0),
-     &              ABS(pClalt/pCl-1.d0),ABS(pTialt/pTi-1.d0))
-        piter = piter + 1
-        if (verbose>1.or.piter>80) write(*,'(a19,i3,5(1pE11.4))') 
-     &       'pNa/pCa/pCl/pTi-it:',piter,pNaalt,pCaalt,
-     &                             pClalt,pTialt,delta
-        if ((piter>99).or.(delta<1.d-3)) exit
-      enddo  
-      if (delta>1.d-3) print*,"*** no conv. pNa/pCa/pCl/pTi",delta
-      pcorr2(1:4) = (/pNa,pCa,pCl,pTi/) / pbefore2(1:4)  
-      !write(98,'(0pF8.2,I4,4(1pE11.3))') Tg,piter,pcorr2
-      anmono(Na)     = pNa / kT
-      anmono(Ca)     = pCa / kT
-      anmono(Cl)     = pCl / kT 
-      anmono(Ti)     = pTi / kT
-      anmol(NaH)     = g(NaH)     * pNa * pH / kT
-      anmol(NaOH)    = g(NaOH)    * pNa * pO * pH / kT
-      anmol(Na2O2H2) = g(Na2O2H2) * pNa**2 * pO**2 * pH**2 / kT
-      anmol(CaH)     = g(CaH)     * pCa * pH / kT
-      anmol(CaOH)    = g(CaOH)    * pCa * pO * pH / kT
-      anmol(CaO2H2)  = g(CaO2H2)  * pCa * pO**2 * pH**2 / kT
-      anmol(NaCl)    = g(NaCl)    * pNa * pCl / kT
-      anmol(HCl)     = g(HCl)     * pCl * pH / kT
-      anmol(CaCl)    = g(CaCl)    * pCl * pCa / kT
-      anmol(CaCl2)   = g(CaCl2)   * pCl**2 * pCa / kT
-      anmol(TiH)     = g(TiH)     * pTi * pH / kT
-      anmol(TiC)     = g(TiC)     * pTi * pC / kT
-      anmol(TiC2)    = g(TiC2)    * pTi * pC**2 / kT
-      anmol(TiS)     = g(TiS)     * pTi * pS / kT
-      anmol(TiO)     = g(TiO)     * pTi * pO / kT 
-      anmol(TiO2)    = g(TiO2)    * pTi * pO**2 / kT 
-      anmol(TiCl)    = g(TiCl)    * pTi * pCl / kT
-      anmol(TiCl2)   = g(TiCl2)   * pTi * pCl**2 / kT
-      anmol(TiCl4)   = g(TiCl4)   * pTi * pCl**4 / kT
-*        
-*     ! Gleichgewicht Mg, MgH, MgO, MgOH, Mg(OH)2, MgS, Mg+, MgCl, MgCl2
-*     ==================================================================
-      g(MgII)   = gk( MgII )
-      g(MgO)    = gk( MgO )
-      g(MgOH)   = gk( MgOH )
-      g(MgO2H2) = gk( MgO2H2 )
-      g(MgH)    = gk( MgH )
-      g(MgS)    = gk( MgS )
-      g(MgCl)   = gk( MgCl )
-      g(MgCl2)  = gk( MgCl2 )
-      pMgges    = eps(Mg) * anHges * kT
-      pMg       = pMgges / ( 1.d0 + g(MgH)*pH + g(MgO)*pO + g(MgS)*pS 
-     &          + g(MgOH)*pH*pO + g(MgO2H2)*pO**2*pH**2 
-     &          + g(MgCl)*pCl + g(MgCl2)*pCl**2 + g(MgII)/pel )
-      anmono(Mg)    = pMg / kT
-      anmol(MgH)    = g(MgH)    * pMg * pH            / kT
-      anmol(MgO)    = g(MgO)    * pMg * pO            / kT
-      anmol(MgOH)   = g(MgOH)   * pMg * pO    * pH    / kT
-      anmol(MgO2H2) = g(MgO2H2) * pMg * pO**2 * pH**2 / kT
-      anmol(MgS)    = g(MgS)    * pMg * pS            / kT
-      anmol(MgCl)   = g(MgCl)   * pMg * pCl           / kT
-      anmol(MgCl2)  = g(MgCl2)  * pMg * pCl**2        / kT
-*
-*     ! Gleichgewicht  Fe, Fe+, FeO, FeS, FeH, Fe(OH)2, FeCl, FeCl2
-*     =============================================================
-      g(FeH)        = gk( FeH    )
-      g(FeII)       = gk( FeII   )
-      g(FeO)        = gk( FeO    )
-      g(FeS)        = gk( FeS    )
-      g(FeO2H2)     = gk( FeO2H2 )
-      g(FeCl)       = gk( FeCl   )
-      g(FeCl2)      = gk( FeCl2  )
-      pFeges        = eps(Fe) * anHges * kT
-      pFe           = pFeges / ( 1.d0 + pO*g(FeO) + g(FeII)/pel 
-     &                + pH**2*pO**2*g(FeO2H2) + pH*g(FeH) + pS*g(FeS)
-     &                + pCl*g(FeCl) + pCl**2*g(FeCl2) )
-      anmono(Fe)    = pFe / kT
-      anmol(FeO)    = g(FeO)    * pFe * pO / kT 
-      anmol(FeS)    = g(FeS)    * pFe * pS / kT 
-      anmol(FeH)    = g(FeH)    * pFe * pH / kT 
-      anmol(FeO2H2) = g(FeO2H2) * pFe * pO**2 * pH**2 / kT 
-      anmol(FeCl)   = g(FeCl)   * pFe * pCl / kT 
-      anmol(FeCl2)  = g(FeCl2)  * pFe * pCl**2 / kT 
-*
-*     ! Gleichgewicht Al, Al+, AlOH, AlO2H, Al2O, AlH, AlCl, AlCl2, AlCl3
-*     ===================================================================
-      g(AlII)  = gk( AlII  )
-      g(AlH)   = gk( AlH   )
-      g(AlOH)  = gk( AlOH  )
-      g(AlO2H) = gk( AlO2H )
-      g(Al2O)  = gk( Al2O  )
-      g(AlCl)  = gk( AlCl  )
-      g(AlCl2) = gk( AlCl2 )
-      g(AlCl3) = gk( AlCl3 )
-      pAlges   = eps(Al) * anHges * KT
-      ppp      = 1.d0 + g(AlII)/pel + pO*pH*g(AlOH) + pO**2*pH*g(AlO2H) 
-     &         + pCl*g(AlCl) + pCl**2*g(AlCl2) + pCl**3*g(AlCl3)  
-     &         + pH*g(AlH)
-      ppp      = ppp / pO / g(Al2O) / 2.d0
-      qqq      = -pAlges / pO / g(Al2O) / 2.d0
-      pAl      = vieta(ppp,qqq)
-      anmono(Al)   = pAl / kT
-      anmol(AlH)   = g(AlH)   * pAl * pH / kT
-      anmol(AlOH)  = g(AlOH)  * pAl * pO * pH / kT
-      anmol(AlO2H) = g(AlO2H) * pAl * pO**2 * pH / kT
-      anmol(Al2O)  = g(Al2O)  * pAl**2 * pO / kT
-      anmol(AlCl)  = g(AlCl)  * pAl * pCl / kT
-      anmol(AlCl2) = g(AlCl2) * pAl * pCl**2 / kT
-      anmol(AlCl3) = g(AlCl3) * pAl * pCl**3 / kT
-*
-*     ! Gleichgewicht  K, K+, KCl, KOH, (KOH)2, CKN, C2K2N2, K2Cl2
-*     ============================================================
-      g(KII)    = gk( KII )
-      g(KCl)    = gk( KCl )
-      g(KOH)    = gk( KOH )
-      g(K2O2H2) = gk( K2O2H2 )
-      g(CKN)    = gk( CKN )
-      g(C2K2N2) = gk( C2K2N2 )
-      g(K2CL2)  = gk( K2Cl2 )
-      pKges     = eps(K) * anHges * kT
-      aa  = 2.d0*( pO**2*pH**2*g(K2O2H2) + pC**2*pN**2*g(C2K2N2)
-     &            +pCl**2*g(K2Cl2) )
-      ppp = ( 1.d0 + g(KII)/pel + pCl*g(KCl) + pO*pH*g(KOH) 
-     &        + pC*pN*g(CKN) ) /aa 
-      qqq = -pKges/aa
-      pK  = VIETA(ppp,qqq)
-      anmono(K)     = pK / kT
-      anmol(KCl)    = g(KCl)    * pK * pCl / kT
-      anmol(KOH)    = g(KOH)    * pK * pO * pH / kT
-      anmol(K2O2H2) = g(K2O2H2) * (pK*pO*pH)**2 / kT
-      anmol(CKN)    = g(CKN)    * pK * pC * pN / kT
-      anmol(C2K2N2) = g(C2K2N2) * (pK*pC*pN)**2 / kT
-      anmol(KCl)    = g(KCl)    * pK * pCl / kT
-*
-*     ! Gleichgewicht  Li, LiO, LiH, LiOH, LiCl, Li2Cl2, Li2O2H2
-*     ==========================================================
-      g(LiII)    = gk( LiII )
-      g(LiH)     = gk( LiH  )
-      g(LiO)     = gk( LiO  )
-      g(LiCl)    = gk( LiCl )
-      g(Li2Cl2)  = gk( Li2Cl2 )
-      g(LiOH)    = gk( LiOH )
-      g(Li2O2H2) = gk( Li2O2H2 )
-      pLiges  = eps(Li) * anHges * kT
-      aa  = 2.d0*(pO**2*pH**2*g(Li2O2H2)+pCl**2*g(Li2Cl2))
-      ppp = ( 1.d0 + g(LiII)/pel + pH*g(LiH) + pCl*g(LiCl)
-     &        + pO*g(LiO)  + pO*pH*g(LiOH) )/aa
-      qqq = -pLiges/aa
-      pLi = VIETA(ppp,qqq)
-      anmono(Li)   = pLi / kT
-      anmol(LiH)   = g(LiH)   * pLi * pH / kT
-      anmol(LiO)   = g(LiO)   * pLi * pO / kT
-      anmol(LiOH)  = g(LiOH)  * pLi * pO * pH / kT
-      anmol(LiCl)  = g(LiCl)  * pLi * pCl / kT
-
-      else
 *
 *     ! estimate atomic pressures: new method
 *     =======================================
@@ -1162,11 +330,12 @@ c     g(TiC)   : siehe oben!
               affect = .false. 
               known  = .true.
               do j=1,m_kind(0,i)
-                if (.not.done(m_kind(j,i))) then
+                e = m_kind(j,i) 
+                if (.not.done(e)) then
                   known = .false.
                   exit
                 endif
-                if (eact(m_kind(j,i))) affect=.true.
+                if (eact(e)) affect=.true.
               enddo  
               if (known.and.affect) then
                 pmol = g(i)
@@ -1254,7 +423,6 @@ c     g(TiC)   : siehe oben!
      >                 pcorr(enew,act_to_all(1:Nact))
         if (verbose>1) read(*,'(A1)') char
       enddo  
-      endif
 *
 *     ! redo electron density
 *     =======================
@@ -1586,7 +754,7 @@ c     g(TiC)   : siehe oben!
      >          Tg,anHges,it,badness
         endif  
 
-      endif      ! NewFullIt
+      endif     ! NewFullIt
 
 *     ! final anmol determination
 *     ===========================

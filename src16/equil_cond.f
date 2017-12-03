@@ -41,7 +41,7 @@
       real(kind=qp),dimension(NDUST,NELEM) :: mat
       real(kind=qp),dimension(NELEM,NDUST) :: AA
       real(kind=qp) :: worst,xmin,Smax,Smin,qual,SQUAL,del
-      real(kind=qp) :: turnon,turnoff,maxon,minoff,fac,fac2,amount,Nt
+      real(kind=qp) :: turnon,maxon,minoff,fac,fac2,amount,Nt
       real(kind=qp) :: deps1,deps2,deps,esum,emax
       real(kind=qp) :: det(2),converge(5000,NELEM),crit,cbest
       real(kind=qp) :: small=1.Q-30
@@ -63,12 +63,12 @@
       logical,dimension(0:NDUST) :: active,act_read,act_old
       logical,dimension(NDUST) :: is_dsolved,d_resolved,d_eliminated
       logical,dimension(NDUST) :: itried
-      logical :: action,changed,solved,limited,ok,conserved,exch
+      logical :: action,changed,solved,limited,ok
       logical :: found
       character(len=1) :: char1,txt0
       character(len=2) :: rem,tnum
       character(len=6) :: dum6
-      character(len=500) :: txt,txt1,txt2,text,filename
+      character(len=500) :: txt,txt1,txt2,text
       logical,save :: firstCall=.true.
       integer,save :: iAl2O3=0,iFe=0,iFeS=0,iNa2SiO3=0,iMgSiO3=0
       integer,save :: iMg2SiO4=0,iTi4O7=0,iCaSiO3=0,iCaMgSi2O6=0
@@ -474,7 +474,7 @@
                 dk = dlin(i)
                 if (dk==ioff) cycle
                 call TRANSFORM(ioff,dk,amount,-slin(dk)/slin(ioff)*Nt,
-     >                         ddust,eps,dscale,active,ok)
+     >                         ddust,eps,dscale,ok)
               enddo  
               ddust(ioff) = 0.Q0
               eps = eps_save
@@ -1343,7 +1343,7 @@
       end
 
 !-------------------------------------------------------------------------
-      subroutine TRANSFORM(i1,i2,del,fac,ddust,eps,dscale,active,ok)
+      subroutine TRANSFORM(i1,i2,del,fac,ddust,eps,dscale,ok)
 !-------------------------------------------------------------------------
       use DUST_DATA,ONLY: NELEM,NDUST,dust_nel,dust_nu,dust_el,dust_nam,
      >                    eps0
@@ -1353,10 +1353,8 @@
       real(kind=qp),parameter :: dsmall=1.Q-30
       real(kind=qp),intent(inout) :: ddust(NDUST),eps(NELEM)
       real(kind=qp),intent(in) :: del,fac,dscale(NDUST)
-      real(kind=qp) :: check(NELEM),worst
-      logical,intent(inout) :: active(0:NDUST)
       logical,intent(inout) :: ok
-      integer :: i,j,el
+      integer :: j,el
       
       print*," ==>  transform "//trim(dust_nam(i1))//" -> "
      &       //trim(dust_nam(i2)),REAL(fac*del/dscale(i1))

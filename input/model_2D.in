@@ -21,7 +21,6 @@ dispol_WoitkeRefit.dat                  ! dispol_file3
 10.0                  ! pmax [bar]    
 1.E-7                 ! pmin [bar]
 200                   ! Npoints       
-.true.                ! NewChemIt
 5                     ! NewBackIt  
 1000.0                ! Tfast
 

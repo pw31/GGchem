@@ -5,7 +5,7 @@
      >                     model_struc,model_eqcond,Npoints,useDatabase,
      >                     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,
      >                     abund_file
-      use CHEMISTRY,ONLY: NewChemIt,NewBackIt,NewFullIt,NewBackFac,
+      use CHEMISTRY,ONLY: NewBackIt,NewFullIt,NewBackFac,
      >                    NewFastLevel,dispol_file
       use DUST_DATA,ONLY: bar
       implicit none
@@ -34,7 +34,6 @@
       nHmin        = 4.d+19
       nHmax        = 4.d+19
       UseDataBase  = .true.
-      NewChemIt    = .true.
       NewFullIt    = .true.
       NewBackIt    = 5
       NewBackFac   = 1.E+2
@@ -89,8 +88,6 @@
           read(line,*) nHmin
         else if (index(line,"! Npoints")>0) then 
           read(line,*) Npoints
-        else if (index(line,"! NewChemIt")>0) then 
-          read(line,*) NewChemIt
         else if (index(line,"! NewBackIt")>0) then 
           read(line,*) NewBackIt
         else if (index(line,"! NewBackFac")>0) then 

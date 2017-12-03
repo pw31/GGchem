@@ -10,17 +10,16 @@ dispol_WoitkeRefit.dat                  ! dispol_file3
 3                     ! abund_pick
 
 # equilibrium condensation?
-.true.                ! model_eqcond
+.false.               ! model_eqcond
 
 # model options
 0                     ! model_dim  (0,1,2)
 .false.               ! model_pconst
 .false.               ! model_struc 
-1500.0                ! Tmax [K]
+800.0                 ! Tmax [K]
 1.E+18                ! nHmax [cm-3]
-.true.                ! NewChemIt
-5                     ! NewBackIt  
-1.E+2                 ! NewBackFac
+10                    ! NewBackIt  
+1.E+4                 ! NewBackFac
 1                     ! NewFastLevel
 1000.0                ! Tfast
 .false.               ! useDatabase

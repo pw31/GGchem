@@ -17,9 +17,8 @@ fatal.case
 0                     ! model_dim  (0,1,2)
 .false.               ! model_pconst
 .false.               ! model_struc 
-600.0                 ! Tmax [K]
+700.0                 ! Tmax [K]
 3.E+18                ! nHmax
-.true.                ! NewChemIt
 12                    ! NewBackIt  
 1.E+4                 ! NewBackFac
 9000.0                ! Tfast

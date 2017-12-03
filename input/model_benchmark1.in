@@ -23,7 +23,6 @@ dispol_WoitkeRefit.dat                  ! dispol_file3
 4.E+19                ! nHmax [cm-3]  (if pconst=.false.)
 4.E+19                ! nHmin [cm-3]
 100                   ! Npoints       (if not model_struc)
-.true.                ! NewChemIt
 .true.                ! NewFullIt  
 6                     ! NewBackIt  
 1.E+3                 ! NewBackFac

@@ -12,7 +12,7 @@
       real*8 :: dmass,prec(NDUSTmax)
       character(len=10000) :: allcond
       character(len=200):: zeile,lastzeile
-      character(len=100) :: trivial(NDUSTmax),limit,tmp
+      character(len=100) :: trivial(NDUSTmax),tmp
       character(len=2)  :: name
       logical :: found,allfound
 
