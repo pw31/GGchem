@@ -73,8 +73,9 @@ choice is abund_pick=3 for solar abundances from Asplund et
 al.(2009). There are additional pre-installed options to use data from
 "Abundances.dat", including "EarthCrust" (abund_pick=1), "Ocean"
 (abund_pick=2) and "Meteorites" (abund_pick=4) as listed in
-"Abundances.dat".  If you want any other element abundances, change
-src16/init.f.
+"Abundances.dat".  If you want any other element abundances, use
+(abund_pick=0) followed by a name of a custom file with abundances,
+see, e.g. input/model_Crich.in.
 
 ------------------------------------------------------------------------
 Choose sources for equilibrium constants kp(T)-data, default choice is 
