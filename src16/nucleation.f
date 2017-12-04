@@ -26,7 +26,7 @@
       real*8 :: pi,bk,amu,a0,f0,sigma,Nf,alpha,slog
       real*8 :: thetun,thetaN,x0,x1,x2,x3,dgdn,nst,n1,SS
       real*8 :: zeldof,vth,beta,fNst,m,stoich
-      integer :: i,j,iel
+      integer :: i,j,iel,el
       logical :: found
       data pi/3.14159265358979D+0/, bk/1.38066D-16/, amu/1.66055D-24/
 
@@ -99,9 +99,12 @@
         stoich = 0.0
         found = .false.
         do j=1,m_kind(0,i)
-          m = m + m_anz(j,i)*mass(elnum(m_kind(j,i)))
-          !print*,cmol(i),m_anz(j,i),elnam(elnum(m_kind(j,i)))
-          if (iel==elnum(m_kind(j,i))) then
+          el = elnum(m_kind(j,i))
+          if (el>0) then
+            !print*,cmol(i),m_anz(j,i),elnam(el)
+            m = m + m_anz(j,i)*mass(el)
+          endif  
+          if (iel==el) then
             stoich = m_anz(j,i)
             found = .true.
           endif

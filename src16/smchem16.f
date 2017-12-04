@@ -57,10 +57,10 @@
 *  ist, die in die Dissoziationspolynome eingesetzt werden darf.
       real(kind=qp),parameter :: tdispol=100.Q0
 *-----------------------------------------------------------------------
-      integer stindex,Nconv,switch,ido,iredo
-      integer Nact,all_to_act(nel),act_to_all(nel),switchoff(nel)
-      integer e,i,j,j1,ii,jj,kk,l,it,m1,m2,piter,ifatal,ipull,pullmax
-      integer Nseq,imin,imax,enew,eseq(nel)
+      integer :: stindex,Nconv,switch,ido,iredo
+      integer :: Nact,all_to_act(nel),act_to_all(nel),switchoff(nel)
+      integer :: e,i,j,j1,ii,jj,kk,l,it,m1,m2,piter,ifatal,ipull,pullmax
+      integer :: Nseq,imin,imax,enew,eseq(nel)
       integer,parameter :: itmax=200,Ncmax=16
       real(kind=qp) :: finish,qual0,qual
       real(kind=qp) :: g(0:nml),limit
@@ -71,8 +71,8 @@
       real(kind=qp) :: DF0(nel,nel),FF0(nel),scale(nel),conv(0:500,nel)
       real(kind=qp) :: converge(0:500),delp,nold,null(nel),nsave(nel)
       real(kind=qp) :: soll,haben,abw,sum
-      real(kind=qp) :: pbefore(nel)
-      real(kind=qp) :: emax,pges,pwork,peest
+      real(kind=qp) :: pbefore(nel),norm(nel)
+      real(kind=qp) :: emax,pges,pwork
       logical :: from_merk,eact(nel),redo(nel),done(nel),affect,known
       logical :: ptake
       character(len=5000) :: mols
@@ -82,19 +82,17 @@
       integer,save :: TiC
       real(kind=qp),allocatable,save :: amerk(:),ansave(:)
       real(kind=qp),allocatable,save :: badness(:),pcorr(:,:) 
-      real(kind=qp),save :: pecorr
       integer,allocatable,save :: pkey(:)
 *-----------------------------------------------------------------------      
 
       ilauf = ilauf + 1
       ifatal = 0
-      if ( ilauf .eq. 1 ) then
+      if (ilauf==1) then
         allocate(badness(nel),pcorr(nel,nel),pkey(nel),
      >           amerk(nel),ansave(nel))
         TiC = stindex(cmol,nml,'TIC    ')
         badness = 1.Q0
         pcorr   = 1.Q0
-        pecorr  = 1.Q0
       endif
 
 *-----------------------------------------------------------------------
@@ -110,19 +108,20 @@
       th4 = th3*th1
       kT  = bk*TT1
       kT1 = 1.Q0/kT
-*      
+      
 *-----------------------------------------------------------------------
-*     ! Vektoren initialisieren
-*     =========================
-      do j = 1 , nel 
-        anmono(j) = 0.Q0
-      enddo
-      do j = 1 , nml 
-        anmol(j)  = 0.Q0
-        g(j)      = 0.Q0
-      enddo
-*
+*     ! init vectors
+*     ==============
+      anmono = 0.Q0
+      anmol  = 0.Q0
+
 * --------------------------------------------------------------------------
+*     ! compute equilibrium constants
+*     ===============================
+      do i=1,nml
+        if (i.ne.TiC) g(i)=gk(i)       ! compute all equil.constants
+      enddo  
+
 *    TiC Gleichgewichtskonstante von Andreas Gauger ist anders
 *        definiert als die Gleichgewichtskonstanten von Gail
 *  Gauger: 
@@ -139,14 +138,13 @@
 *  Umrechnung der Gauger-TiC-GG-Konstante in das Gail'sche System
 *  -log(10)*log Kp(Gauger) = -2.30256*log Kp(Gauger) = ln Kp(Gail)
 
-        lth = LOG10(th1)
-        arg = 12.75293 - 5.44850*th1    - 1.56672*lth
-     &                 + 1.56041*lth**2 - 0.93275*lth**3
-        g(TiC) = EXP(MIN(1.1Q+4,-2.30256*arg))
+      lth = LOG10(th1)
+      arg = 12.75293 - 5.44850*th1    - 1.56672*lth
+     &               + 1.56041*lth**2 - 0.93275*lth**3
+      g(TiC) = EXP(MIN(1.1Q+4,-2.30256*arg))
 
 *---------------------------------------------------------------------------
       if ((ilauf.gt.10).and.merk) then
-c       write(*,*) 'benutze Konzentrationen von vorher'
         do i=1,nel
           anmono(i) = amerk(i) * anhges
         enddo
@@ -155,8 +153,8 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
       endif
 
 *---------------------------------------------------------------------------
-*     ! Elektronendichte
-*     ================== 
+*     ! estimate electron density
+*     =========================== 
  100  continue
       from_merk = .false.
       if (charge) then
@@ -164,27 +162,24 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
         do i=1,nel
           if (i==el) cycle 
           ng = anHges * eps(i)
-          Sa = gk(elion(i))*kT1
-          nelek = nelek + ng/(0.5Q0 + SQRT(0.25Q0 + ng/Sa))
+          Sa = g(elion(i))*kT1
+          nelek = nelek + ng/(0.5d0 + SQRT(0.25d0 + ng/Sa))
         enddo
         anmono(el) = nelek
         pel = nelek*kT
+        !peest = pel
+        !pel = pecorr*pel
+        !anmono(el) = pecorr*anmono(el) 
+        if (verbose>1) print'(" estimate pel=",2(1pE10.3))',pel
       endif  
-      peest = pel
-      pel = pecorr*pel
-      anmono(el) = pecorr*anmono(el) 
 
 *-----------------------------------------------------------------------
-*
 *     ! estimate atomic pressures: new method
 *     =======================================
-      do i=1,nml
-        if (i.ne.TiC) g(i)=gk(i)       ! compute all equil.constants
-      enddo  
       Nseq = nel
       done(:) = .false.                ! all elements to be estimated here
-      if (charge) done(el)=.true.      ! ... except for the electrons      
-      if (charge) Nseq=nel-1
+      !if (charge) done(el)=.true.     ! ... except for the electrons      
+      !if (charge) Nseq=nel-1
       eseq(:) = 0                      ! hirachical sequence of elements
       ptake = .true.
       do ido=1,Nseq
@@ -194,9 +189,11 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
         emax = 0.Q0 
         enew = 0
         do e=1,nel
-          if (done(e)) cycle   
-          if (eps(e)<emax) cycle
-          emax = eps(e)
+          if (done(e)) cycle
+          norm(e) = eps(e)
+          if (e==el) norm(e)=anmono(el)/anHges
+          if (norm(e)<emax.or.(ido==1.and.e==el)) cycle
+          emax = norm(e)
           enew = e
         enddo  
         if (verbose>1) print*,'estimate p'//trim(catm(enew))//' ...'
@@ -248,29 +245,34 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
           endif  
         enddo  
         if (verbose>1) print*,trim(mols)
-        !----------------------------------------------
-        ! solve 1d equation above with Newton's method 
-        !----------------------------------------------
-        do piter=1,99                  
-          f  = pwork-pges
-          fs = 1.Q0
-          do l=1,Ncmax
-            if (coeff(l)==0.d0) cycle
-            f  = f  + coeff(l)*pwork**l
-            fs = fs + coeff(l)*l*pwork**(l-1)
-          enddo
-          delta = f/fs
-          pwork = pwork-delta
-          if (verbose>1) print'(A2,I3,1pE25.15,1pE10.2)',
-     >                   catm(enew),piter,pwork,delta/pwork
-          if (ABS(delta)<1.Q-4*ABS(pwork)) exit 
-        enddo  
-        if (piter>=99) then
-          write(*,*) "*** no convergence in 1D pre-it "//catm(enew)
-          write(*,*) coeff
-          goto 1000
+        if (enew==el) then
+          pel = SQRT(-coeff(-1)/(1.Q0+coeff(+1)))     ! 0 = pel - a/pel + b*pel
+          anmono(el) = pel*kT1
+        else   
+          !----------------------------------------------
+          ! solve 1d equation above with Newton's method 
+          !----------------------------------------------
+          do piter=1,99                  
+            f  = pwork-pges
+            fs = 1.Q0
+            do l=1,Ncmax
+              if (coeff(l)==0.d0) cycle
+              f  = f  + coeff(l)*pwork**l
+              fs = fs + coeff(l)*l*pwork**(l-1)
+            enddo
+            delta = f/fs
+            pwork = pwork-delta
+            if (verbose>1) print'(A2,I3,1pE25.15,1pE10.2)',
+     >                     catm(enew),piter,pwork,delta/pwork
+            if (ABS(delta)<1.Q-4*ABS(pwork)) exit 
+          enddo  
+          if (piter>=99) then
+            write(*,*) "*** no convergence in 1D pre-it "//catm(enew)
+            write(*,*) coeff
+            goto 1000
+          endif  
+          anmono(enew) = pwork*kT1
         endif  
-        anmono(enew) = pwork*kT1
 
         !-----------------------------------------------------------
         ! take into account feedback on elements considered before,
@@ -282,7 +284,7 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
         Nact = 0
         do iredo=MAX(1,ido-NewBackIt),ido
           e = eseq(iredo)
-          if (eps(e)<NewBackFac*eps(enew)) then
+          if (norm(e)<NewBackFac*norm(enew)) then
             eact(e) = .true. 
             Nact = Nact+1
             all_to_act(e) = Nact
@@ -351,14 +353,14 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
                 do j=1,m_kind(0,i)
                   m1 = m_kind(j,i)
                   if (.not.eact(m1)) cycle
-                  m1 = all_to_act(m1)
+                  ii = all_to_act(m1)
                   term   = m_anz(j,i) * pmol
-                  FF(m1) = FF(m1) - term
+                  FF(ii) = FF(ii) - term
                   do l=1,m_kind(0,i)
                     m2 = m_kind(l,i)
                     if (.not.eact(m2)) cycle
                     jj = all_to_act(m2)
-                    DF(m1,jj) = DF(m1,jj) - m_anz(l,i)*term*pmono1(m2)
+                    DF(ii,jj) = DF(ii,jj) - m_anz(l,i)*term*pmono1(m2)
                   enddo	    
                 enddo
               endif  
@@ -367,7 +369,7 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
             qual = 0.Q0
             do ii=1,Nact
               i = act_to_all(ii)           
-              qual = qual + (FF(ii)/(anHges*eps(i)*kT))**2
+              qual = qual + (FF(ii)/(anHges*norm(i)*kT))**2
             enddo  
             if (qual<qual0) exit
             if (ipull==pullmax) exit
@@ -376,7 +378,7 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
           enddo  
           if (verbose>1) print'(I4,99(1pE11.3))',
      >                   it,anmono(act_to_all(1:Nact))*kT,qual
-          if (qual<1.Q-4) exit
+          if (it>1.and.qual<1.Q-4) exit
           !--- determine new NR-vector ---
           call GAUSS16(nel,Nact,DF,dp,FF)
           do ii=1,Nact
@@ -426,7 +428,6 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
       if (charge) then
         coeff(:) = 0.Q0
         do i=1,nml
-          if (i.ne.TiC) g(i)=gk(i)
           pmol = g(i)
           l=0
           do j=1,m_kind(0,i)
@@ -447,8 +448,8 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
         enddo
         pel = SQRT(coeff(-1)/(1.Q0+coeff(+1)))     ! 0 = pel - a/pel + b*pel
         anmono(el) = pel/kT
-        pecorr = pel/peest
-        !print'("-- pecorr =",1pE10.3)',pecorr
+        !print'(" pecorr =",3(1pE10.3))',pecorr,pel/peest
+        !pecorr = pel/peest
       endif  
 
 *     ! use memory of deviations between predicted atom pressures 
@@ -464,7 +465,6 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
         ! alle Molekuele mitrechnen
 *       ===========================
         do i=1,nml
-          if (i.ne.TiC) g(i)=gk(i)
           if (verbose>1.and.g(i)>1.Q+300) then
             print'("huge kp",A12,1pE12.3E4,I2)',cmol(i),g(i),fit(i)
           else if (g(i)>exp(1.1Q+4)) then
@@ -537,14 +537,14 @@ c       write(*,*) 'benutze Konzentrationen von vorher'
           do j=1,m_kind(0,i)
             m1 = m_kind(j,i)
             if (.not.eact(m1)) cycle
-            m1 = all_to_act(m1)
+            ii = all_to_act(m1)
             term   = m_anz(j,i) * pmol
-            FF(m1) = FF(m1) - term
+            FF(ii) = FF(ii) - term
             do l=1,m_kind(0,i)
               m2 = m_kind(l,i)
               if (.not.eact(m2)) cycle
               jj = all_to_act(m2)
-              DF(m1,jj) = DF(m1,jj) - m_anz(l,i)*term*pmono1(m2)
+              DF(ii,jj) = DF(ii,jj) - m_anz(l,i)*term*pmono1(m2)
             enddo	    
           enddo
         enddo

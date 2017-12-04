@@ -19,7 +19,7 @@ fatal.case
 .false.               ! model_struc 
 700.0                 ! Tmax [K]
 3.E+18                ! nHmax
-12                    ! NewBackIt  
-1.E+4                 ! NewBackFac
+99                    ! NewBackIt  
+1.E+6                 ! NewBackFac
 9000.0                ! Tfast
 .false.               ! useDatabase
