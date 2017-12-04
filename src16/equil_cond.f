@@ -295,7 +295,7 @@
       xstep(:) = 0.Q0             
       call SUPER(nHtot,T,xstep,eps,Sat0,.false.) ! from scratch
       qual = SQUAL(Sat0,active)
-      print'("it=",I4," qual=",1pE11.4)',0,qual
+      print'("it=",I4," qual=",1pE13.4E4)',0,qual
       act_old = active
       lastit = -99
       iminoff = 0
@@ -499,7 +499,7 @@
           xstep(:)= 0.Q0             
           call SUPER(nHtot,T,xstep,eps,Sat0,NewFastLevel<1)
           qual = SQUAL(Sat0,active)
-          print'("it=",I4," qual=",1pE11.4)',it,qual
+          print'("it=",I4," qual=",1pE13.4E4)',it,qual
           lastit = it
         endif
         if (verbose>0) then
@@ -1221,7 +1221,7 @@
         xstep(:) = 0.Q0
         call SUPER(nHtot,T,xstep,eps,Sat0,NewFastLevel<1)
         qual = SQUAL(Sat0,active)
-        print'("it=",I4," qual=",1pE11.4)',it,qual
+        print'("it=",I4," qual=",1pE13.4E4)',it,qual
         if (qual<1.Q-20) exit
         if (verbose>0) read(*,'(a1)') char1
 
