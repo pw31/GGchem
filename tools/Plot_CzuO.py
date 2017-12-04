@@ -6,6 +6,7 @@ plt.rcParams['axes.linewidth'] = 2.0
 pp = PdfPages('ggchem.pdf')
 
 file   = 'Static_Conc_CzuO_nocond.dat'
+file   = 'Static_Conc.dat'
 data   = open(file)
 dummy  = data.readline()
 dimens = data.readline()
@@ -51,9 +52,6 @@ lntot2 = np.log10(ntot1)
 iC = np.where('epsC'==keyword)[0][0]
 iO = np.where('epsO'==keyword)[0][0]
 
-print CzuO1
-print CzuO2
-
 bar  = 1.E+6                       # 1 bar in dyn/cm2 
 col  = ['black','blue','silver','red','gold','darkorange','darkorchid','aqua','cadetblue','cornflowerblue','chartreuse','limegreen','darkgreen','chocolate','darkgoldenrod','darkkhaki','pink','moccasin']
 Ncolor = len(col)
@@ -89,6 +87,11 @@ leg.get_frame().set_alpha(0.7)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
 plt.clf()
+
+H2O = dat1[:,np.where('H2O'==keyword)[0][0]]
+CH4 = dat1[:,np.where('CH4'==keyword)[0][0]]
+index = np.where(np.abs(H2O-CH4)==np.min(np.abs(H2O-CH4)))[0][0]
+print "transition C/O=",CzuO1[index]
 
 #================ the gas phase element abundances ===================
 fig,ax = plt.subplots(figsize=(8,6))

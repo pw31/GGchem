@@ -195,7 +195,7 @@
           if (done(e)) cycle
           norm(e) = eps(e)
           if (e==el) norm(e)=anmono(el)/anHges
-          if (norm(e)<emax) cycle
+          if (norm(e)<emax.or.(ido==1.and.e==el)) cycle
           emax = norm(e)
           enew = e
         enddo  
@@ -381,7 +381,7 @@
           enddo  
           if (verbose>1) print'(I4,99(1pE11.3))',
      >                   it,anmono(act_to_all(1:Nact))*kT,qual
-          if (qual<1.d-4) exit
+          if (it>1.and.qual<1.d-4) exit
           !--- determine new NR-vector ---
           call GAUSS8(nel,Nact,DF,dp,FF)
           do ii=1,Nact
@@ -536,14 +536,14 @@
           do j=1,m_kind(0,i)
             m1 = m_kind(j,i)
             if (.not.eact(m1)) cycle
-            m1 = all_to_act(m1)
+            ii = all_to_act(m1)
             term   = m_anz(j,i) * pmol
-            FF(m1) = FF(m1) - term
+            FF(ii) = FF(ii) - term
             do l=1,m_kind(0,i)
               m2 = m_kind(l,i)
               if (.not.eact(m2)) cycle
               jj = all_to_act(m2)
-              DF(m1,jj) = DF(m1,jj) - m_anz(l,i)*term*pmono1(m2)
+              DF(ii,jj) = DF(ii,jj) - m_anz(l,i)*term*pmono1(m2)
             enddo	    
           enddo
         enddo

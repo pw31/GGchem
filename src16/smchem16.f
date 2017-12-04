@@ -170,7 +170,7 @@
         !peest = pel
         !pel = pecorr*pel
         !anmono(el) = pecorr*anmono(el) 
-        if (verbose>1) print'(" estimate pel=",2(1pE10.3))',pel
+        if (verbose>1) print'(" estimate pel=",1pE10.3)',pel
       endif  
 
 *-----------------------------------------------------------------------
