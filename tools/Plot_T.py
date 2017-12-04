@@ -38,7 +38,7 @@ Tmax  = np.max(Tg)
 #if (Tmin<Tmax/3): Tmin=Tmax/3
 #Tmax  = 2800
 #Tmin  = 2000
-delT  = (Tmax-Tmin)*0.30  #0.47
+delT  = (Tmax-Tmin)*0.25
 iii   = np.where((Tg>Tmin) & (Tg<Tmax))[0]
 pmin  = np.min(press[iii])/bar
 pmax  = np.max(press[iii])/bar
@@ -160,7 +160,7 @@ for i in range(4+NELEM+NMOLE+2*NDUST,4+NELEM+NMOLE+2*NDUST+NELEM,1):
     count = count+1
 plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
 plt.ylabel(r'$\log\,\epsilon_{\rm gas}$',fontsize=20)
-plt.xlim(Tmin,Tmax*1.1)
+plt.xlim(Tmin,Tmax+0.7*delT)
 plt.ylim(ymax-12,ymax+0.3)
 plt.tick_params(axis='both', labelsize=15)
 plt.tick_params('both', length=6, width=1.5, which='major')
@@ -209,7 +209,7 @@ if (ymax>-99):
   plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
   plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{solid}/n_\mathrm{\langle H\rangle}$',fontsize=20)
   #plt.xscale('log')
-  plt.xlim(Tmin,Tmax) #+delT)
+  plt.xlim(Tmin,Tmax+delT)
   plt.ylim(ymin,ymax+0.3)
   plt.tick_params(axis='both', labelsize=14)
   plt.tick_params('both', length=6, width=1.5, which='major')
