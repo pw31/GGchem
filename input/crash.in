@@ -16,7 +16,6 @@ fatal.case
 # model options
 0                     ! model_dim  (0,1,2)
 .false.               ! model_pconst
-.false.               ! model_struc 
 700.0                 ! Tmax [K]
 3.E+18                ! nHmax
 99                    ! NewBackIt  

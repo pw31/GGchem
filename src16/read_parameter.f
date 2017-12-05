@@ -4,7 +4,7 @@
       use PARAMETERS,ONLY: elements,abund_pick,model_dim,model_pconst,
      >                     model_struc,model_eqcond,Npoints,useDatabase,
      >                     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,
-     >                     abund_file
+     >                     abund_file,struc_file
       use CHEMISTRY,ONLY: NewBackIt,NewFullIt,NewBackFac,
      >                    NewFastLevel,dispol_file
       use DUST_DATA,ONLY: bar
@@ -24,7 +24,7 @@
       model_eqcond = .false.
       model_dim    = 1
       model_pconst = .true.
-      model_struc  = .false.
+      model_struc  = 0
       Npoints      = 100
       Tfast        = 1000.d0
       Tmin         = 100.d0
@@ -70,6 +70,7 @@
           read(line,*) model_pconst
         else if (index(line,"! model_struc")>0) then   
           read(line,*) model_struc
+          if (model_struc>0) read(1,*) struc_file
         else if (index(line,"! Tmax")>0) then   
           read(line,*) Tmax
         else if (index(line,"! Tmin")>0) then   

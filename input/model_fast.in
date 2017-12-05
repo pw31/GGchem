@@ -13,12 +13,11 @@ dispol_fast.dat                ! dispol_file
 # model options
 1                     ! model_dim  (0,1,2)
 .true.                ! model_pconst
-.false.               ! model_struc 
 3000.0                ! Tmax [K]
 500.0                 ! Tmin [K]      (if model_dim>0)
 1.0                   ! pmax [bar]    (if pconst=.true.)
 1.0                   ! pmin [bar]
-1000                  ! Npoints       (if not model_struc)
+1000                  ! Npoints      
 5                     ! NewBackIt  
 .true.                ! NewFullIt  
 100.0                 ! Tfast

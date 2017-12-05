@@ -15,7 +15,6 @@ dispol_WoitkeRefit.dat                  ! dispol_file3
 # model options
 0                     ! model_dim  (0,1,2)
 .false.               ! model_pconst
-.false.               ! model_struc 
 600.0                 ! Tmax [K]
 3.E+18                ! nHmax [cm-3]
 99                    ! NewBackIt  

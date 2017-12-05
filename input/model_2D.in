@@ -15,7 +15,6 @@ dispol_WoitkeRefit.dat                  ! dispol_file3
 # model options
 2                     ! model_dim  (0,1,2)
 .true.                ! model_pconst
-.false.               ! model_struc 
 5000.0                ! Tmax [K]
 100.0                 ! Tmin [K]      
 10.0                  ! pmax [bar]    

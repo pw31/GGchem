@@ -15,7 +15,7 @@
       if (model_dim==0) then
         call DEMO_CHEMISTRY
       else if (model_dim==1) then  
-        if (.not.model_struc) then 
+        if (model_struc==0) then 
           call DEMO_SWEEP
         else  
           call DEMO_STRUCTURE

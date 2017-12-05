@@ -1,9 +1,9 @@
 ************************************************************************
       module PARAMETERS
 ************************************************************************
-      character(len=200) :: elements,abund_file
-      integer :: abund_pick,model_dim,Npoints
-      logical :: model_eqcond,model_pconst,model_struc,useDataBase
+      character(len=200) :: elements,abund_file,struc_file
+      integer :: abund_pick,model_dim,Npoints,model_struc
+      logical :: model_eqcond,model_pconst,useDataBase
       real*8  :: Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax
       end
 
@@ -77,7 +77,6 @@
       module STRUCTURE
 ************************************************************************
       integer,parameter :: Npmax=10000 
-      integer :: Npoints
       real*8,dimension(Npmax) :: Tgas,press,pelec,dens,nHtot
       end
 
