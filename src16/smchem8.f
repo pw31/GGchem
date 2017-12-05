@@ -22,11 +22,9 @@
 ************************************************************************
       use CHEMISTRY,ONLY: NewBackIt,NewFullIt,NewBackFac,
      >                    NewFastLevel,nml=>NMOLE,nel=>NELM,cmol,catm,
-     >                    m_kind,m_anz,a,natom,charge,elion,
-     >                    He,el,H,C,N,O,Si,Mg,Al,Fe,S,Na,K,Ti,Ca,Li,Cl,
-     >                    th1,th2,th3,th4,fit,TT1,TT2,TT3
-      use EXCHANGE,ONLY: HII,CII,NII,OII,NaII,MgII,AlII,KII,TiII,SII,
-     >                   SiII,FeII,CaII,LiII,ClII,HeII,chemcall,chemiter
+     >                    m_kind,m_anz,charge,elion,el,
+     >                    th1,th2,th3,th4,TT1,TT2,TT3
+      use EXCHANGE,ONLY: chemcall,chemiter
       implicit none
 *-----------------------------------------------------------------------
 *  Dimensionierung fuer die Molekuel- und Atom Felder. Hier ist auf
@@ -242,7 +240,7 @@
           ! for initial guess, consider this 
           ! molecule to have all of element e2 
           !------------------------------------
-          if (pmol>0.d0) then
+          if (pmol>0.d0.and.l>0) then
             pwork = MIN(pwork,(pges/(l*pmol))**(1.d0/REAL(l)))
             !if (verbose>1) print'(A10,1pE10.3)',cmol(i),pwork
           endif  
