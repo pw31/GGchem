@@ -1,7 +1,7 @@
 **********************************************************************
       MODULE DATABASE
 **********************************************************************
-      use dust_data,ONLY: NELEM,NDUSTmax,eps0,dust_nam
+      use dust_data,ONLY: NELEM,NDUSTmax,dust_nam
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       integer,parameter :: DMAX = 2*10**5
@@ -18,7 +18,7 @@
 **********************************************************************
       SUBROUTINE SAVE_DBASE
 **********************************************************************
-      use dust_data,ONLY: NELEM,NDUST,eps0,dust_nam
+      use dust_data,ONLY: NELEM,NDUST,dust_nam
       use DATABASE,ONLY: NDAT,NLAST,dbase
       implicit none
       integer :: i
@@ -26,7 +26,6 @@
       if (NLAST==0) then
         open(unit=11,file=filename,form='unformatted',status='replace')
         write(11) NELEM,NDUST
-        write(11) eps0
         write(11) dust_nam
         do i=1,NDAT
           write(11) dbase(i)%ln 
@@ -51,12 +50,11 @@
 **********************************************************************
       SUBROUTINE LOAD_DBASE
 **********************************************************************
-      use dust_data,ONLY: NELEM,NDUST,eps0,dust_nam
+      use dust_data,ONLY: NELEM,NDUST,dust_nam
       use DATABASE,ONLY: qp,NDAT,NLAST,dbase
       implicit none
       integer :: i,NELEM_read,NDUST_read
       logical :: ex
-      real(kind=qp) :: eps0_read(NELEM)
       character(len=20) :: dust_nam_read(NDUST)
       character(len=80) :: filename="database.dat"
 
@@ -68,13 +66,9 @@
       read(11) NELEM_read,NDUST_read
       if (NELEM_read.ne.NELEM) goto 200
       if (NDUST_read.ne.NDUST) goto 200
-      read(11) eps0_read
-      do i=1,NELEM
-        if (eps0(i).ne.eps0_read(i)) goto 100
-      enddo
       read(11) dust_nam_read
       do i=1,NDUST
-        if (dust_nam(i).ne.dust_nam_read(i)) goto 100
+        if (dust_nam(i).ne.dust_nam_read(i)) goto 200
       enddo
       do i=1,999999
         read(11,end=100) dbase(i)%ln 
@@ -84,8 +78,7 @@
         NDAT = NDAT+1
         !print*,i,EXP(dbase(i)%ln),EXP(dbase(i)%lT)
       enddo 
- 100  continue
-      close(11)
+ 100  close(11)
       print*,"... having read ",NDAT," datasets." 
       NLAST = NDAT
       return
@@ -139,16 +132,18 @@
 **********************************************************************
       subroutine GET_DATA(nH,T,eps,ddust,qbest,ibest,active)
 **********************************************************************
-      use dust_data,ONLY: NELEM,NDUST
+      use dust_data,ONLY: NELEM,NDUST,eps0,dust_nel,dust_nu,dust_el,
+     >                    elnam
       use DATABASE,ONLY: qp,NDAT,NMODI,NPICK1,NPICK2,DMAX,dbase
       implicit none
       real*8,intent(in) :: nH,T
       real*8,intent(out) :: qbest
       integer,intent(out) :: ibest
       real(kind=qp),intent(inout) :: eps(NELEM),ddust(NDUST)
-      real*8 :: ln,lT,lnread,lTread,qual,pot
       logical,intent(out) :: active(0:NDUST)
-      integer :: i
+      real*8 :: ln,lT,lnread,lTread,qual,pot
+      real(kind=qp) :: check(NELEM),error,errmax,corr
+      integer :: i,j,it,el,elworst
       logical,save :: firstCall=.true.
       
       if (firstCall) then
@@ -218,5 +213,38 @@
      >          ")  nH,T,qual=",3(1pE13.5))')
      >     ibest,EXP(dbase(ibest)%ln),EXP(dbase(ibest)%lT),qbest
 
+        !--- normalize to current eps0 ---
+        do it=1,99999
+          check = eps
+          do i=1,NDUST
+            do j=1,dust_nel(i)
+              el = dust_el(i,j)
+              check(el) = check(el) + ddust(i)*dust_nu(i,j)    
+            enddo
+          enddo
+          errmax = 0.Q0
+          do el=1,NELEM
+            error = ABS(1.Q0-check(el)/eps0(el))
+            if (error.gt.errmax) then
+              errmax = error
+              elworst = el
+              corr = eps0(el)/check(el)
+            endif   
+          enddo  
+          !print*,elnam(elworst),corr
+          if (errmax<1.Q-20) return
+          el = elworst
+          eps(el) = eps(el)*corr
+          do i=1,NDUST
+            if (ddust(i)==0.Q0) cycle 
+            do j=1,dust_nel(i)
+              if (el==dust_el(i,j)) then
+                ddust(i) = ddust(i)*corr
+                exit
+              endif
+            enddo
+          enddo  
+        enddo  
       endif  
+
       end

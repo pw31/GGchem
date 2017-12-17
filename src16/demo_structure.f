@@ -1,25 +1,29 @@
 ***********************************************************************
       SUBROUTINE DEMO_STRUCTURE
 ***********************************************************************
-      use PARAMETERS,ONLY: Tmin,Tmax,pmin,pmax,nHmin,nHmax,useDatabase,
+      use PARAMETERS,ONLY: Tmin,Tmax,pmin,pmax,nHmin,nHmax,
      >                     model_eqcond,model_pconst,Npoints,
      >                     model_struc,struc_file
       use CHEMISTRY,ONLY: NELM,NMOLE,elnum,cmol,catm,el,charge
-      use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,muH,
-     >                    amu,dust_nam,dust_mass,dust_Vol,mass
+      use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,muH,mass,
+     >                    amu,dust_nam,dust_mass,dust_Vol,
+     >                    dust_nel,dust_el,dust_nu
       use EXCHANGE,ONLY: nel,nat,nion,nmol,H,C,N,O,W
-      use STRUCTURE,ONLY: Npmax,Tgas,press,pelec,dens,nHtot
+      use STRUCTURE,ONLY: Npmax,Tgas,press,pelec,dens,nHtot,estruc
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
+      real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST),out(NDUST)
+      real :: dat(1000),ddust
       real :: tau,p,pe,Tg,rho,nHges,nges,kT,pges,mu,muold
       real :: Jstar,Nstar,rhog,dustV,rhod
-      real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST),out(NDUST)
-      integer :: i,j,jj,iz,NOUT,Nfirst,Nlast,Ninc,iW
+      integer :: i,j,k,e,jj,iz,dk,NOUT,Nfirst,Nlast,Ninc,iW
+      integer :: n1,n2,n3,n4,n5,Ndat,dind(1000)
+      integer :: verbose=0
+      character(len=20000) :: header
       character(len=200) :: line,filename
-      character(len=20) :: name,short_name(NDUST)
+      character(len=20) :: name,short_name(NDUST),dname,ename
       character(len=1) :: char
       logical :: hasW
-      integer :: verbose=0
 
       !-----------------------------
       ! ***  read the structure  ***
@@ -27,8 +31,9 @@
       filename = 'structures/'//trim(struc_file)
       print*,"reading "//trim(filename)//" ..."
 
+      !--------------------------------------------------------
       if (model_struc==1) then
-
+      !--------------------------------------------------------
         open(3,file=filename,status='old')
         Npoints = 256 
         do i=1,5+Npoints+2 
@@ -42,14 +47,16 @@
           pelec(i) = pe
           dens(i)  = rho
           nHtot(i) = rho/muH
+          estruc(i,:) = eps0(:)
         enddo
         close(3)
         Nfirst = Npoints
         Nlast  = 2
         Ninc   = -1  ! botton to top
 
+      !--------------------------------------------------------
       else if (model_struc==2) then
-
+      !--------------------------------------------------------
         open(3,file=filename,status='old')
         Npoints = 48
         do i=1,2
@@ -59,12 +66,76 @@
           read(3,*) Tg,p
           Tgas(i)  = Tg
           press(i) = p*bar
+          estruc(i,:) = eps0(:)
         enddo
         close(3)
         model_pconst = .true.
         Nfirst = Npoints
         Nlast  = 2
         Ninc   = -1  ! botton to top
+
+      !--------------------------------------------------------
+      else if (model_struc==3) then
+      !--------------------------------------------------------
+        open(3,file=filename,status='old')
+        read(3,'(A200)') line
+        read(3,*) n1,n2,n3,n4,n5,Npoints
+        Ndat = 5 + 2*n1 + n2 + 2*n3
+        read(3,'(A20000)') header
+        do j=Ndat-n1-n3+1,Ndat-n1
+          dname = adjustl(header(j*20-19:j*20))
+          dname = trim(dname(2:))//"[s]"
+          dind(j) = 0
+          do dk=1,NDUST
+            if (trim(dust_nam(dk))==trim(dname)) then
+              print*,dk,trim(dust_nam(dk))//" = "//trim(dname) 
+              dind(j) = dk
+            endif  
+          enddo
+          if (dind(j)==0) then
+            print*,"*** dust kind "//trim(dname)//" not found."
+            stop
+          endif  
+        enddo  
+        do k=1,NELM-1
+          j = 5 + n1 + n2 + 2*n3 + k
+          e = elnum(k)
+          ename = adjustl(header(j*20-19:j*20))
+          print*,e,"eps"//trim(elnam(e))//" = "//trim(ename)
+          if (trim(ename).ne."eps"//trim(elnam(e))) then
+            stop "*** something is wrong."
+          endif  
+        enddo    
+        do i=1,Npoints
+          read(3,*) dat(1:Ndat) 
+          Tgas(i)  = dat(1)
+          press(i) = dat(3)
+          pelec(i) = 10.d0**dat(5)*bk*Tgas(i)
+          dens(i)  = dat(2)*muH
+          nHtot(i) = dat(2)
+          estruc(i,:) = eps0(:)          
+          do k=1,NELM-1
+            j = 5 + n1 + n2 + 2*n3 + k
+            e = elnum(k) 
+            estruc(i,e) = 10.Q0**dat(j)
+          enddo   
+          do j=Ndat-n1-n3+1,Ndat-n1
+            ddust = 10.Q0**dat(j)
+            dk = dind(j)
+            do k=1,dust_nel(dk)
+              e = dust_el(dk,k)
+              estruc(i,e) = estruc(i,e) + ddust*dust_nu(dk,k)    
+            enddo
+          enddo  
+          !do k=1,NELM-1
+          !  e = elnum(k) 
+          !  print'(I3,A3,2(1pE18.10))',i,elnam(e),eps0(e),estruc(i,e) 
+          !enddo  
+        enddo
+        close(3)
+        Nfirst = 1
+        Nlast  = Npoints
+        Ninc   = 1           ! botton to top
 
       else
         print*,"*** unknown file format =",model_struc
@@ -103,9 +174,10 @@
       eldust = 0.Q0
       mu = muH
       do i=Nfirst,Nlast,Ninc
-        p = press(i) 
-        nHges = nHtot(i)
-        Tg = Tgas(i)
+        Tg      = Tgas(i)
+        p       = press(i) 
+        nHges   = nHtot(i)
+        eps0(:) = estruc(i,:)
 
         !--- run chemistry (+phase equilibrium)    ---
         !--- iterate to achieve requested pressure ---

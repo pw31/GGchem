@@ -274,7 +274,6 @@
           same = same.and.(nHmin==nHmax)
         endif  
         if (same) then
-          useDatabase = .false.
           eps0(C) = eps0(O) * (0.3+1.1*fac) 
           eps(C)  = eps0(C)
           eps(O)  = eps0(O)

@@ -76,8 +76,10 @@
 ************************************************************************
       module STRUCTURE
 ************************************************************************
+      use DUST_DATA,ONLY: NELEM
       integer,parameter :: Npmax=10000 
       real*8,dimension(Npmax) :: Tgas,press,pelec,dens,nHtot
+      real*8 :: estruc(Npmax,NELEM)
       end
 
 ************************************************************************
