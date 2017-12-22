@@ -39,8 +39,7 @@
 *-----------------------------------------------------------------------
 *  Die Variable "alle" entscheidet, ob die nicht unmittelbar 
 *  beruecksichtigten Molekuele dennoch inkonsistent mitgerechnet werden. 
-      logical alle
-      data alle/.true./
+      logical,parameter :: alle=.true.
 *-----------------------------------------------------------------------
 *  Bei merk=.true. merkt sich die Routine die letzte konvergiert Loesung
 *  und geht beim naechsten Mal von diesen Startwerten aus.
@@ -48,8 +47,7 @@
 *-----------------------------------------------------------------------
 *  Die Variable "ngestst" entscheidet, ob die Elementerhaltung ueber-
 *  prueft werden soll.
-      logical ngestst
-      data ngestst/.false./
+      logical,parameter :: ngestst=.false.
 *-----------------------------------------------------------------------
 *  Die Variable tdispol bestimmt, welches die niedrigste Temperatur 
 *  ist, die in die Dissoziationspolynome eingesetzt werden darf.
@@ -72,25 +70,26 @@
       real(kind=qp) :: pbefore(nel),norm(nel)
       real(kind=qp) :: emax,pges,pwork
       logical :: from_merk,eact(nel),redo(nel),done(nel),affect,known
+      logical :: relevant(nml)
       logical :: ptake
       character(len=5000) :: mols
       character(len=100) :: txt
       character(len=1) :: char
-      integer,save :: ilauf=0 
-      integer,save :: TiC
+      integer,save :: TiC,ilauf=0
       real(kind=qp),allocatable,save :: amerk(:),ansave(:)
       real(kind=qp),allocatable,save :: badness(:),pcorr(:,:) 
       integer,allocatable,save :: pkey(:)
+!$omp threadprivate(TiC,amerk,ansave,badness,pcorr,pkey)
 *-----------------------------------------------------------------------      
 
-      ilauf = ilauf + 1
       ifatal = 0
-      if (ilauf==1) then
+      if (.not.allocated(amerk)) then
         allocate(badness(nel),pcorr(nel,nel),pkey(nel),
      >           amerk(nel),ansave(nel))
         TiC = stindex(cmol,nml,'TIC    ')
         badness = 1.Q0
         pcorr   = 1.Q0
+        pkey    = 0
       endif
 
 *-----------------------------------------------------------------------
@@ -231,7 +230,7 @@
           enddo  
           if (.not.affect) cycle  
           if (.not.known) cycle
-          mols = trim(mols)//" "//cmol(i)
+          if (verbose>0) mols = trim(mols)//" "//cmol(i)
           coeff(l) = coeff(l) + l*pmol
           !------------------------------------
           ! for initial guess, consider this 
@@ -258,6 +257,7 @@
               f  = f  + coeff(l)*pwork**l
               fs = fs + coeff(l)*l*pwork**(l-1)
             enddo
+            if (fs==0.Q0) stop "*** fs=0 in smchem16 1d-pre-it."
             delta = f/fs
             pwork = pwork-delta
             if (verbose>1) print'(A2,I3,1pE25.15,1pE10.2)',
@@ -265,8 +265,10 @@
             if (ABS(delta)<1.Q-4*ABS(pwork)) exit 
           enddo  
           if (piter>=99) then
-            write(*,*) "*** no convergence in 1D pre-it "//catm(enew)
-            write(*,*) coeff
+            write(*,*) "*** smchem16 no conv in 1D pre-it "//catm(enew)
+            write(*,*) anHges,Tg
+            write(*,*) "eps:",eps
+            write(*,*) "coeff:",coeff
             goto 1000
           endif  
           anmono(enew) = pwork*kT1
@@ -300,6 +302,19 @@
           print*,eact(eseq(1:ido))
           print'("corr",99(1pE11.2))',pcorr(enew,act_to_all(1:Nact))
         endif
+        do i=1,nml
+          affect = .false. 
+          known  = .true.
+          do j=1,m_kind(0,i)
+            e = m_kind(j,i) 
+            if (.not.done(e)) then
+              known = .false.
+              exit
+            endif
+            if (eact(e)) affect=.true.
+          enddo  
+          relevant(i) = (known.and.affect)
+        enddo  
         qual  = 9.Q+99
         dp(:) = 0.Q0
         fak   = 1.Q0
@@ -324,44 +339,33 @@
               pmono1(i) = scale(i) / (anmono(i)*kT)
             enddo
             do i=1,nml
-              affect = .false. 
-              known  = .true.
+              if (.not.relevant(i)) cycle 
+              pmol = g(i)
               do j=1,m_kind(0,i)
-                e = m_kind(j,i) 
-                if (.not.done(e)) then
-                  known = .false.
-                  exit
+                pat = anmono(m_kind(j,i))*kT
+                if (m_anz(j,i).gt.0) then
+                  do kk=1,m_anz(j,i)
+                    pmol = pmol*pat
+                  enddo
+                else
+                  do kk=1,-m_anz(j,i)
+                    pmol = pmol/pat
+                  enddo
                 endif
-                if (eact(e)) affect=.true.
-              enddo  
-              if (known.and.affect) then
-                pmol = g(i)
-                do j=1,m_kind(0,i)
-                  pat = anmono(m_kind(j,i))*kT
-                  if (m_anz(j,i).gt.0) then
-                    do kk=1,m_anz(j,i)
-                      pmol = pmol*pat
-                    enddo
-                  else
-                    do kk=1,-m_anz(j,i)
-                      pmol = pmol/pat
-                    enddo
-                  endif
-                enddo
-                do j=1,m_kind(0,i)
-                  m1 = m_kind(j,i)
-                  if (.not.eact(m1)) cycle
-                  ii = all_to_act(m1)
-                  term   = m_anz(j,i) * pmol
-                  FF(ii) = FF(ii) - term
-                  do l=1,m_kind(0,i)
-                    m2 = m_kind(l,i)
-                    if (.not.eact(m2)) cycle
-                    jj = all_to_act(m2)
-                    DF(ii,jj) = DF(ii,jj) - m_anz(l,i)*term*pmono1(m2)
-                  enddo	    
-                enddo
-              endif  
+              enddo
+              do j=1,m_kind(0,i)
+                m1 = m_kind(j,i)
+                if (.not.eact(m1)) cycle
+                ii = all_to_act(m1)
+                term   = m_anz(j,i) * pmol
+                FF(ii) = FF(ii) - term
+                do l=1,m_kind(0,i)
+                  m2 = m_kind(l,i)
+                  if (.not.eact(m2)) cycle
+                  jj = all_to_act(m2)
+                  DF(ii,jj) = DF(ii,jj) - m_anz(l,i)*term*pmono1(m2)
+                enddo	    
+              enddo
             enddo
             !--- determine new quality ---
             qual = 0.Q0
@@ -568,7 +572,7 @@
         do i=1,nel
           if (.not.eact(i)) then
             Nconv = Nconv+1 
-            txt = trim(txt)//" "//catm(i)
+            if (verbose>0) txt = trim(txt)//" "//catm(i)
           else 
             ii = all_to_act(i) 
             delp = -dp(ii)/(anmono(i)*kT)              ! relative change dx/x
@@ -576,7 +580,7 @@
             converge(it) = MAX(converge(it),ABS(delp))
             if (ABS(delp)<finish) then
               Nconv = Nconv+1 
-              txt = trim(txt)//" "//catm(i)
+              if (verbose>0) txt = trim(txt)//" "//catm(i)
             endif  
             if (1.Q0+delp>fak) then
               limit = min(limit,(fak-1.Q0)/delp)       ! such that xnew=xold*fac 
@@ -726,10 +730,13 @@
      >              conv(switch,i),badness(i)
             endif  
           enddo
+!$omp critical(fort99)
+          ilauf = ilauf+1
           if (ilauf==1) write(99,'(A9,A10,A4,99(A10))') 
      >          'Tg','n<H>','it',catm(1:nel)
           write(99,'(0pF9.3,1pE10.3,I4,99(1pE10.3))') 
      >          Tg,anHges,it,badness
+!$omp end critical(fort99)
         endif  
 
       endif     ! NewFullIt
