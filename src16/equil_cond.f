@@ -49,7 +49,7 @@
       integer,dimension(NELEM) :: elem,Nslot,eind
       integer,dimension(NDUST) :: dind,dlin
       integer,dimension(NELEM,NDUST) :: dustkind,stoich
-      integer :: it,i,j,el,el2,Nact,Nact_read,Neq,slots,sl,dk,eq
+      integer :: it,i,j,m,el,el2,Nact,Nact_read,Neq,slots,sl,dk,eq
       integer :: itry,knowns,unknowns,unknown,ii,jj,lastit,laston
       integer :: imaxon,iminoff,info,ipvt(NELEM)
       integer :: e_num(NELEM),e_num_save(NELEM)
@@ -63,8 +63,7 @@
       logical,dimension(0:NDUST) :: active,act_read,act_old
       logical,dimension(NDUST) :: is_dsolved,d_resolved,d_eliminated
       logical,dimension(NDUST) :: itried
-      logical :: action,changed,solved,limited,ok
-      logical :: found
+      logical :: action,changed,solved,limited,ok,found,all_two
       character(len=1) :: char1,txt0
       character(len=2) :: rem,tnum
       character(len=6) :: dum6
@@ -684,6 +683,15 @@
                 exit
               endif   
             enddo          
+          endif  
+          if (found) then
+            all_two = (Nact>1)
+            do m=1,Nact
+              el2 = Iindex(m) 
+              if (e_eliminated(el2)) cycle
+              if (e_num(el2).ne.2) all_two=.false. 
+            enddo
+            if (all_two) found=.false.
           endif  
           if (found) then
             found = .false. 

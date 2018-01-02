@@ -568,7 +568,7 @@
         limit = 1.Q0                                   ! limit step, keep direction
         converge(it) = 0.Q0
         Nconv = 0
-        txt = ""
+        if (verbose>0) txt = ""
         do i=1,nel
           if (.not.eact(i)) then
             Nconv = Nconv+1 
