@@ -93,9 +93,44 @@ for iline in range(0,999):
       lfit.append(cfit)
 GGnam   = np.array(lnam,dtype='str')
 GGcoeff = np.array(lfit)
-#print GGnam
-#print GGcoeff
-#sys.exit()
+NN = len(GGnam)
+for ii in range(0,NN):
+  form = GGnam[ii]
+  a0 = GGcoeff[ii,0]
+  a1 = GGcoeff[ii,1]
+  a2 = GGcoeff[ii,2]
+  a3 = GGcoeff[ii,3]
+  a4 = GGcoeff[ii,4]
+  dG_gg = (a0/T2 + a1 + a2*T2 + a3*T2**2 + a4*T2**3)          # J/mol @ 1bar
+  dGmean = dG_gg
+  plt.plot(T2,dG_gg/1000,c='green',lw=1.5,label='old GGchem')
+  has_SH=0
+  ind = np.where(SHnam==form)[0]
+  if (len(ind)>0):
+    has_SH=1
+    iSH = ind[0]
+    a0 = SHcoeff[iSH,0]
+    a1 = SHcoeff[iSH,1]
+    a2 = SHcoeff[iSH,2]
+    a3 = SHcoeff[iSH,3]
+    a4 = SHcoeff[iSH,4]
+    Natom = 0
+    for iel in range(0,Nel):
+      Natom = Natom+int(num[iel])
+    print form,"has Sharp & Huebner (1990) data",Natom
+    dG_sh = (a0/T2 + a1 + a2*T2 + a3*T2**2 + a4*T2**3) * cal    # J/mol @ 1atm
+    dG_sh = dG_sh + Natom*np.log(atm/bar)*R*T2                  # J/mol @ 1bar
+    dGmean = dGmean + dG_sh
+    plt.plot(T2,dG_sh/1000,c='orange',lw=4.5,label='Sharp & Huebner 1990')
+
+  plt.xlim(0.0,1.05*Tmax2)
+  plt.xlabel(r'$T\,\mathrm{[K]}$',fontsize=16)
+  plt.ylabel(r'$\Delta_\mathrm{f} G^{\mathrm{1bar}}\mathrm{[kJ/mol]}$',fontsize=16)
+  plt.title(form+"  -  "+name)
+  plt.subplots_adjust(left=0.13, right=0.98, top=0.94, bottom=0.13)
+  plt.legend(loc='upper left')
+
+sys.exit()
 
 #==========================================================================
 # read SLOP16 database
@@ -482,6 +517,7 @@ for icond in range(0,Ncond):
 
 file.close
 file2.close
+
 pp.close()
 print ' '
 print ' '

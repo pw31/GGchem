@@ -322,6 +322,8 @@
       write(*,*) '303 = V2O3_cr'
       write(*,*) '304 = V2O4_cr'
       write(*,*) '305 = V2O5_cr'
+      write(*,*) '306 = Ni3S2_cr'
+      write(*,*) '307 = Ni3S2_l'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -2401,6 +2403,20 @@
         Edzahl = 2
         stoich(2) = 2.D0
         stoich(3) = 5.D0
+      elseif (specie.eq.306) then
+        call READ_DATEI('Ni3S2_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Ni.txt'    ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('S.txt'    ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 3.D0
+        stoich(3) = 2.D0
+      elseif (specie.eq.307) then
+        call READ_DATEI('Ni3S2_l.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Ni.txt'    ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('S.txt'    ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 3.D0
+        stoich(3) = 2.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop
