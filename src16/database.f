@@ -132,8 +132,8 @@
 **********************************************************************
       subroutine GET_DATA(nH,T,eps,ddust,qbest,ibest,active)
 **********************************************************************
-      use dust_data,ONLY: NELEM,NDUST,eps0,dust_nel,dust_nu,dust_el,
-     >                    elnam
+      use dust_data,ONLY: NEPS,NELEM,NDUST,eps0,elnam,elnr,
+     >                    dust_nel,dust_nu,dust_el,dust_nam
       use DATABASE,ONLY: qp,NDAT,NMODI,NPICK1,NPICK2,DMAX,dbase
       implicit none
       real*8,intent(in) :: nH,T
@@ -141,9 +141,14 @@
       integer,intent(out) :: ibest
       real(kind=qp),intent(inout) :: eps(NELEM),ddust(NDUST)
       logical,intent(out) :: active(0:NDUST)
-      real*8 :: ln,lT,lnread,lTread,qual,pot
-      real(kind=qp) :: check(NELEM),error,errmax,corr
-      integer :: i,j,it,el,elworst
+      real*8 :: ln,lT,lnread,lTread,qual,pot,rsort(NEPS)
+      real(kind=qp) :: check(NELEM),error,errmax,corr,emain,del
+      real(kind=qp) :: stoich(NEPS,NEPS),xx(NEPS),rest(NEPS),tmp
+      integer :: i,j,k,it,el,elworst,b,bb,Nbuf,iloop
+      integer :: isort(NEPS),jmain(NELEM),ibuf(NELEM)
+      character(len=1) :: char
+      character(len=80) :: frmt
+      logical :: found,used(NDUST)
       logical,save :: firstCall=.true.
       
       if (firstCall) then
@@ -213,8 +218,11 @@
      >          ")  nH,T,qual=",3(1pE13.5))')
      >     ibest,EXP(dbase(ibest)%ln),EXP(dbase(ibest)%lT),qbest
 
-        !--- normalize to current eps0 ---
-        do it=1,99999
+        !----------------------------------------------------
+        ! ***  adapt eps and ddust to reach current eps0  ***
+        !----------------------------------------------------
+        !--- 0. a few direct corrections ---
+        do it=1,10
           check = eps
           do i=1,NDUST
             do j=1,dust_nel(i)
@@ -222,7 +230,7 @@
               check(el) = check(el) + ddust(i)*dust_nu(i,j)    
             enddo
           enddo
-          errmax = 0.Q0
+          errmax = -1.Q0
           do el=1,NELEM
             error = ABS(1.Q0-check(el)/eps0(el))
             if (error.gt.errmax) then
@@ -230,9 +238,10 @@
               elworst = el
               corr = eps0(el)/check(el)
             endif   
-          enddo  
-          !print*,elnam(elworst),corr
-          if (errmax<1.Q-20) return
+          enddo
+          !print*,elnam(elworst),errmax,corr
+          if (errmax<1.Q-25) return          ! perfect fit - nothing to do
+          if (errmax<0.01) exit
           el = elworst
           eps(el) = eps(el)*corr
           do i=1,NDUST
@@ -245,6 +254,145 @@
             enddo
           enddo  
         enddo  
-      endif  
-
+        !--- 1. sort elements ---
+        rsort = 9.d+99
+        isort = 0
+        do i=1,NEPS
+          el = elnr(i) 
+          do j=NEPS+1,2,-1
+            if (eps0(el)>rsort(j-1)) exit
+          enddo  
+          isort(j+1:NEPS) = isort(j:NEPS-1)
+          rsort(j+1:NEPS) = rsort(j:NEPS-1)
+          isort(j) = el
+          rsort(j) = eps0(el)
+        enddo
+        iloop = 1
+ 200    continue
+        !--- 2. identify main reservoirs ---
+        used = .false.
+        Nbuf = 0
+        do i=1,NEPS
+          el = isort(i)
+          check(el) = eps(el)
+          emain = eps(el)
+          jmain(el) = 0
+          do j=1,NDUST
+            if (ddust(j)==0.Q0) cycle
+            do k=1,dust_nel(j)
+              if (dust_el(j,k).ne.el) cycle
+              del = ddust(j)*dust_nu(j,k)    
+              check(el) = check(el) + del
+              if (.not.used(j).and.del>emain) then
+                emain = del
+                jmain(el) = j
+              endif
+            enddo
+          enddo  
+          if (jmain(el)>0) then
+            j = jmain(el) 
+            used(j)=.true. 
+            Nbuf = Nbuf+1
+            ibuf(Nbuf) = el
+            !print*,elnam(el)//" "//trim(dust_nam(j)),REAL(ddust(j))
+          endif  
+        enddo  
+        !--- 3. setup linear equation system ---
+        stoich = 0.Q0
+        do b=1,Nbuf
+          el = ibuf(b) 
+          do bb=1,Nbuf
+            j = jmain(ibuf(bb))
+            do k=1,dust_nel(j)
+              if (dust_el(j,k)==el) then
+                 stoich(b,bb) = dust_nu(j,k) 
+              endif
+            enddo
+          enddo
+        enddo  
+        check = eps0 - eps
+        do j=1,NDUST
+          if (ddust(j)==0.Q0) cycle
+          if (used(j)) cycle 
+          do k=1,dust_nel(j)
+            el = dust_el(j,k) 
+            check(el) = check(el) - ddust(j)*dust_nu(j,k)
+          enddo
+        enddo  
+        do b=1,Nbuf
+          el = ibuf(b) 
+          j = jmain(el)
+          rest(b) = check(el)
+          write(frmt,'("(A2,2x,",I2,"(I2),A16,2(1pE13.6))")') Nbuf
+          write(*,frmt) elnam(el),INT(stoich(b,1:Nbuf)),
+     &           trim(dust_nam(j)),REAL(ddust(j)),REAL(rest(b))
+        enddo  
+        call GAUSS16( NEPS, Nbuf, stoich, xx, rest)
+        do b=1,Nbuf
+          el = ibuf(b)
+          j = jmain(el)
+          ddust(j) = xx(b)
+          print'(A3,A16,1pE13.6)',elnam(el),trim(dust_nam(j)),ddust(j)
+          if (xx(b)<0.Q0) then
+            print*,"*** negative dust abundance in database.f"
+            ddust(j) = 0.Q0
+            active(j) = .false.
+            qbest = 9.d+99
+            return
+          endif  
+        enddo  
+        !--- 4. correct gas element abundances ---
+        check = 0.Q0
+        do i=1,NDUST
+          do j=1,dust_nel(i)
+            el = dust_el(i,j)
+            check(el) = check(el) + ddust(i)*dust_nu(i,j)    
+          enddo
+        enddo
+        do i=1,NEPS
+          el = isort(i)
+          if (jmain(el)==0) then
+            tmp = eps0(el)-check(el)
+            print*,elnam(el)//" gas",REAL(tmp)
+            if (tmp<0.Q0) then
+              print*,"*** negative element abundance in database.f" 
+              qbest = 9.d+99
+              return
+              !if (jmain(el)==0) then
+              !  isort(i) = isort(iloop) 
+              !  isort(iloop) = el 
+              !  iloop = iloop+1
+              !  if (iloop>NEPS) iloop=1
+              !else   
+              !  j = jmain(el)
+              !  ddust(j) = 0.Q0
+              !  active(j) = .false.
+              !endif  
+              !goto 200
+            endif  
+            eps(el) = tmp
+          endif
+        enddo
+        check = eps
+        do i=1,NDUST
+          do j=1,dust_nel(i)
+            el = dust_el(i,j)
+            check(el) = check(el) + ddust(i)*dust_nu(i,j)    
+          enddo
+        enddo
+        errmax = -1.Q0
+        do el=1,NELEM
+          error = ABS(1.Q0-check(el)/eps0(el))
+          if (error.gt.errmax) then
+            errmax = error
+            elworst = el
+          endif   
+        enddo  
+        !print*,"check ",elnam(elworst),errmax
+        if (errmax>1.Q-10) then
+          print*,"*** element conservation violation in database.f"
+          stop
+        endif  
+      endif
+  
       end
