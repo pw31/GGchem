@@ -93,44 +93,9 @@ for iline in range(0,999):
       lfit.append(cfit)
 GGnam   = np.array(lnam,dtype='str')
 GGcoeff = np.array(lfit)
-NN = len(GGnam)
-for ii in range(0,NN):
-  form = GGnam[ii]
-  a0 = GGcoeff[ii,0]
-  a1 = GGcoeff[ii,1]
-  a2 = GGcoeff[ii,2]
-  a3 = GGcoeff[ii,3]
-  a4 = GGcoeff[ii,4]
-  dG_gg = (a0/T2 + a1 + a2*T2 + a3*T2**2 + a4*T2**3)          # J/mol @ 1bar
-  dGmean = dG_gg
-  plt.plot(T2,dG_gg/1000,c='green',lw=1.5,label='old GGchem')
-  has_SH=0
-  ind = np.where(SHnam==form)[0]
-  if (len(ind)>0):
-    has_SH=1
-    iSH = ind[0]
-    a0 = SHcoeff[iSH,0]
-    a1 = SHcoeff[iSH,1]
-    a2 = SHcoeff[iSH,2]
-    a3 = SHcoeff[iSH,3]
-    a4 = SHcoeff[iSH,4]
-    Natom = 0
-    for iel in range(0,Nel):
-      Natom = Natom+int(num[iel])
-    print form,"has Sharp & Huebner (1990) data",Natom
-    dG_sh = (a0/T2 + a1 + a2*T2 + a3*T2**2 + a4*T2**3) * cal    # J/mol @ 1atm
-    dG_sh = dG_sh + Natom*np.log(atm/bar)*R*T2                  # J/mol @ 1bar
-    dGmean = dGmean + dG_sh
-    plt.plot(T2,dG_sh/1000,c='orange',lw=4.5,label='Sharp & Huebner 1990')
-
-  plt.xlim(0.0,1.05*Tmax2)
-  plt.xlabel(r'$T\,\mathrm{[K]}$',fontsize=16)
-  plt.ylabel(r'$\Delta_\mathrm{f} G^{\mathrm{1bar}}\mathrm{[kJ/mol]}$',fontsize=16)
-  plt.title(form+"  -  "+name)
-  plt.subplots_adjust(left=0.13, right=0.98, top=0.94, bottom=0.13)
-  plt.legend(loc='upper left')
-
-sys.exit()
+print GGnam
+print SHnam
+#sys.exit()
 
 #==========================================================================
 # read SLOP16 database
@@ -401,6 +366,7 @@ index = np.argsort(lq1)
 all   = ''
 iplot = 0
 Nout  = 0
+SUnam = []
 for icond in range(0,Ncond): 
   i = index[icond]
   name = lname[i]
@@ -443,6 +409,7 @@ for icond in range(0,Ncond):
   # the SUPCRTBL data
   dG_su_fit = Stock(T2,coeff)
   dGmean = dG_su_fit
+  SUnam.append(form)
   
   # search for Sharp&Huebner data
   has_SH=0
@@ -514,6 +481,69 @@ for icond in range(0,Ncond):
   plt.subplots_adjust(left=0.16,right=0.99,bottom=0.1,top=0.96,hspace=0.15)
   plt.savefig(pp,format='pdf')
   plt.clf()
+
+SUnam = np.array(SUnam,dtype='str')
+print SHnam
+print SUnam
+NN = len(GGnam)
+for ii in range(0,NN):
+  form = GGnam[ii]
+  form = form.strip('[s]')
+  print "searching for ",form
+  a0 = GGcoeff[ii,0]
+  a1 = GGcoeff[ii,1]
+  a2 = GGcoeff[ii,2]
+  a3 = GGcoeff[ii,3]
+  a4 = GGcoeff[ii,4]
+  dG_gg = (a0/T2 + a1 + a2*T2 + a3*T2**2 + a4*T2**3)          # J/mol @ 1bar
+  dGmean = dG_gg
+  has_SH=0
+  ind1 = np.where(SHnam==form)[0]
+  ind2 = np.where(SUnam==form)[0]
+  if (len(ind1)>0 and len(ind2)==0):
+    has_SH=1
+    iSH = ind1[0]
+    a0 = SHcoeff[iSH,0]
+    a1 = SHcoeff[iSH,1]
+    a2 = SHcoeff[iSH,2]
+    a3 = SHcoeff[iSH,3]
+    a4 = SHcoeff[iSH,4]
+    Natom = 0
+    for iel in range(0,Nel):
+      Natom = Natom+int(num[iel])
+    print form,"has Sharp & Huebner (1990) data",Natom
+    dG_sh = (a0/T2 + a1 + a2*T2 + a3*T2**2 + a4*T2**3) * cal    # J/mol @ 1atm
+    dG_sh = dG_sh + Natom*np.log(atm/bar)*R*T2                  # J/mol @ 1bar
+    dGmean = dGmean + dG_sh
+    iplot = iplot+1
+    plt.figure(figsize=(7,8))
+    plt.subplot(211)
+    plt.plot(T2,dG_gg/1000,c='green',lw=1.5,label='old GGchem')
+    plt.plot(T2,dG_sh/1000,c='orange',lw=4.5,label='Sharp & Huebner 1990')
+    plt.xlim(0.0,1.05*Tmax2)
+    plt.xlabel(r'$T\,\mathrm{[K]}$',fontsize=16)
+    plt.ylabel(r'$\Delta_\mathrm{f} G^{\mathrm{1bar}}\mathrm{[kJ/mol]}$',fontsize=16)
+    plt.title(form)
+    plt.subplots_adjust(left=0.13, right=0.98, top=0.94, bottom=0.13)
+    plt.legend(loc='upper left')
+
+    plt.subplot(212)
+    dGmean = dGmean/2
+    plt.plot(T2,(dG_sh-dGmean)/1000,c='orange',lw=4.5,label='SH90 - MEAN')
+    ymin = np.min((dG_sh-dGmean)/1000)
+    ymax = np.max((dG_sh-dGmean)/1000)
+    plt.plot(T2,(dG_gg-dGmean)/1000,c='green',lw=1.5,label='GGCHEM - MEAN')
+    ymin = np.min([ymin,np.min((dG_gg-dGmean)/1000)])
+    ymax = np.max([ymax,np.max((dG_gg-dGmean)/1000)])
+    ymin = np.min([ymin,-ymax])  
+    ymax = np.max([ymax,-ymin])  
+    plt.xlim(0.0,1.05*Tmax2)
+    plt.ylim(2*ymin,2*ymax)
+    plt.xlabel(r'$T\,\mathrm{[K]}$',fontsize=16)
+    plt.ylabel(r'$\Delta_\mathrm{f} G^{\mathrm{1bar}}\mathrm{[kJ/mol]}$',fontsize=16)
+    plt.legend(loc='lower center')
+    plt.savefig(pp,format='pdf')
+    plt.clf()
 
 file.close
 file2.close
