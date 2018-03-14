@@ -1,5 +1,5 @@
 # selected elements
-H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li F P V Cr Mn Ni Zr W el
+H He C N O Na Mg Si Fe Ni Ca Al Ti S Cl K el
 
 # name of files with molecular kp-data
 dispol_BarklemCollet.dat                ! dispol_file
@@ -16,8 +16,8 @@ fatal.case
 # model options
 0                     ! model_dim  (0,1,2)
 .false.               ! model_pconst
-700.0                 ! Tmax [K]
-3.E+18                ! nHmax
+3.288469849997536E+017  ! nHmax
+279.026279807196        ! Tmax [K]
 99                    ! NewBackIt  
 1.E+6                 ! NewBackFac
 9000.0                ! Tfast
