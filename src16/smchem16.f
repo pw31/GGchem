@@ -322,7 +322,7 @@
         do it=1,199
           qual0 = qual 
           pullmax = 1
-          if (it>60) pullmax=10
+          if (it>100) pullmax=10
           do ipull=1,pullmax    ! pullback if quality gets worse
             !--- make a step ---
             do ii=1,Nact
