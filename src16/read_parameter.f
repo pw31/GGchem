@@ -5,7 +5,7 @@
      >                     model_struc,model_eqcond,Npoints,useDatabase,
      >                     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,
      >                     abund_file,struc_file
-      use CHEMISTRY,ONLY: NewBackIt,NewFullIt,NewBackFac,
+      use CHEMISTRY,ONLY: NewBackIt,NewFullIt,NewBackFac,NewPreMethod,
      >                    NewFastLevel,dispol_file
       use DUST_DATA,ONLY: bar
       implicit none
@@ -38,6 +38,7 @@
       NewBackIt    = 5
       NewBackFac   = 1.E+2
       NewFastLevel = 1
+      NewPreMethod = 2
 
       !-------------------------------------------
       ! ***  change parameters via input file  ***
@@ -97,6 +98,8 @@
           read(line,*) NewFullIt
         else if (index(line,"! NewFastLevel")>0) then 
           read(line,*) NewFastLevel
+        else if (index(line,"! NewPreMethod")>0) then 
+          read(line,*) NewPreMethod
         else if (index(line,"! useDatabase")>0) then 
           read(line,*) useDatabase
         else if (index(line,"! dispol_file2")>0) then 

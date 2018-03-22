@@ -21,7 +21,8 @@
 *                                                                      *
 ************************************************************************
       use CHEMISTRY,ONLY: NewBackIt,NewFullIt,NewBackFac,
-     >                    NewFastLevel,nml=>NMOLE,nel=>NELM,cmol,catm,
+     >                    NewFastLevel,NewPreMethod,
+     >                    nml=>NMOLE,nel=>NELM,cmol,catm,
      >                    m_kind,m_anz,charge,elion,el,
      >                    th1,th2,th3,th4,fit,TT1,TT2,TT3
       use EXCHANGE,ONLY: chemcall,chemiter
@@ -58,7 +59,7 @@
       integer :: e,i,j,j1,ii,jj,kk,l,it,m1,m2,piter,ifatal,ipull,pullmax
       integer :: Nseq,imin,imax,enew,eseq(nel)
       integer,parameter :: itmax=200,Ncmax=16
-      real(kind=qp) :: finish,qual0,qual
+      real(kind=qp) :: finish,qual,qual0,qual1
       real(kind=qp) :: g(0:nml),limit
       real(kind=qp) :: kT,kT1,cc,nelek,ng,Sa,fak,lth,arg,term,f,fs
       real(kind=qp) :: pel,delta,pat,atfrac,atmax
@@ -66,15 +67,15 @@
       real(kind=qp) :: DF(nel,nel),dp(nel),FF(nel),pmol,crit
       real(kind=qp) :: DF0(nel,nel),FF0(nel),scale(nel),conv(0:500,nel)
       real(kind=qp) :: converge(0:500),delp,nold,null(nel),nsave(nel)
-      real(kind=qp) :: soll,haben,abw,sum
-      real(kind=qp) :: pbefore(nel),norm(nel)
+      real(kind=qp) :: soll,haben,abw,sum,maxs
+      real(kind=qp) :: pbefore(nel),norm(nel),xx(nel)
       real(kind=qp) :: emax,pges,pwork
       logical :: from_merk,eact(nel),redo(nel),done(nel),affect,known
       logical :: relevant(nml)
       logical :: ptake
       character(len=5000) :: mols
       character(len=100) :: txt
-      character(len=1) :: char
+      character(len=1) :: char,bem
       integer,save :: TiC,ilauf=0
       real(kind=qp),allocatable,save :: amerk(:),ansave(:)
       real(kind=qp),allocatable,save :: badness(:),pcorr(:,:) 
@@ -315,91 +316,154 @@
           enddo  
           relevant(i) = (known.and.affect)
         enddo  
-        qual  = 9.Q+99
-        dp(:) = 0.Q0
-        fak   = 1.Q0
-        null  = anmono
-        do it=1,199
+        !-------- method 1: xx=log(patm)-variables --------
+        if (NewPreMethod==1) then
+          null = anmono
+          do ii=1,Nact
+            i = act_to_all(ii)
+            xx(i) = LOG(anmono(i)*kT)
+          enddo
+          qual  = 9.Q+999
           qual0 = qual 
-          pullmax = 1
-          if (it>100) pullmax=10
-          do ipull=1,pullmax    ! pullback if quality gets worse
-            !--- make a step ---
+          do it=1,199
             do ii=1,Nact
               i = act_to_all(ii)
-              anmono(i) = null(i)-fak*dp(ii)*kT1
-            enddo  
-            !--- determine new FF and DF ---
-            do ii=1,Nact
-              i = act_to_all(ii) 
               FF(ii) = anHges*eps(i)*kT - anmono(i)*kT
-              scale(i) = anmono(i)  
-              DF(ii,:) = 0.Q0
-              DF(ii,ii) = -scale(i)
-              pmono1(i) = scale(i) / (anmono(i)*kT)
-            enddo
+              DF(ii,:)  = 0.Q0
+              DF(ii,ii) = -anmono(i)*kT
+            enddo  
             do i=1,nml
               if (.not.relevant(i)) cycle 
-              pmol = g(i)
+              pmol = 0.Q0
               do j=1,m_kind(0,i)
-                pat = anmono(m_kind(j,i))*kT
-                if (m_anz(j,i).gt.0) then
-                  do kk=1,m_anz(j,i)
-                    pmol = pmol*pat
-                  enddo
-                else
-                  do kk=1,-m_anz(j,i)
-                    pmol = pmol/pat
-                  enddo
-                endif
+                pmol = pmol + m_anz(j,i)*xx(m_kind(j,i))
               enddo
+              pmol = g(i)*EXP(pmol)
               do j=1,m_kind(0,i)
                 m1 = m_kind(j,i)
                 if (.not.eact(m1)) cycle
                 ii = all_to_act(m1)
-                term   = m_anz(j,i) * pmol
+                term = m_anz(j,i) * pmol
                 FF(ii) = FF(ii) - term
                 do l=1,m_kind(0,i)
                   m2 = m_kind(l,i)
                   if (.not.eact(m2)) cycle
                   jj = all_to_act(m2)
-                  DF(ii,jj) = DF(ii,jj) - m_anz(l,i)*term*pmono1(m2)
+                  DF(ii,jj) = DF(ii,jj) - m_anz(l,i)*term
                 enddo	    
               enddo
             enddo
-            !--- determine new quality ---
-            qual = 0.Q0
+            call GAUSS16(nel,Nact,DF,dp,FF)
+            bem = " "
+            qual1 = qual0
+            qual0 = qual
+            qual  = 0.Q0
             do ii=1,Nact
-              i = act_to_all(ii)           
-              qual = qual + (FF(ii)/(anHges*norm(i)*kT))**2
+              qual = qual + ABS(dp(ii))
             enddo  
-            if (qual<qual0) exit
-            if (ipull==pullmax) exit
-            if (verbose>1) print'("pullback",3(1pE11.3))',fak,qual0,qual
-            fak = 0.5*fak   ! reduce NR-step
+            maxs = 3.Q0
+            if (it>30.and.(qual>qual0.or.qual0>qual1)) then
+              maxs = 3.Q0*exp(-MAX(0,it-30)/70.0)
+              bem = "*"
+            endif  
+            do ii=1,Nact
+              i = act_to_all(ii) 
+              xx(i) = xx(i) - MAX(-maxs,MIN(maxs,dp(ii)))
+              anmono(i) = exp(xx(i))*kT1
+            enddo
+            if (verbose>1) print'(I4,A2,99(1pE11.3E3))',
+     >                     it,bem,anmono(act_to_all(1:Nact))*kT,qual
+            if (it>1.and.qual<1.Q-4) exit
           enddo  
-          if (verbose>1) print'(I4,99(1pE11.3))',
-     >                   it,anmono(act_to_all(1:Nact))*kT,qual
-          if (it>1.and.qual<1.Q-4) exit
-          !--- determine new NR-vector ---
-          call GAUSS16(nel,Nact,DF,dp,FF)
-          do ii=1,Nact
-            i = act_to_all(ii) 
-            dp(ii) = dp(ii)*scale(i)
-          enddo
-          null = anmono
-          !--- limit step physically, keep direction ---
-          fak = 1.Q0
-          do ii=1,Nact
-            i = act_to_all(ii)
-            if (null(i)*kT-fak*dp(ii)>5.Q0*null(i)*kT) then
-              fak=MIN(fak,-4.Q0*null(i)*kT/dp(ii))
-            endif
-            if (null(i)*kT-fak*dp(ii)<0.2Q0*null(i)*kT) then
-              fak=MIN(fak,0.8Q0*null(i)*kT/dp(ii))
-            endif
-          enddo
-        enddo  
+        !-------- method 2: lin-variables with pullback --------
+        else if (NewPreMethod==2) then  
+          qual  = 9.Q+99
+          dp(:) = 0.Q0
+          fak   = 1.Q0
+          null  = anmono
+          do it=1,199
+            qual0 = qual 
+            pullmax = 1
+            if (it>100) pullmax=10
+            do ipull=1,pullmax  ! pullback if quality gets worse
+              !--- make a step ---
+              do ii=1,Nact
+                i = act_to_all(ii)
+                anmono(i) = null(i)-fak*dp(ii)*kT1
+              enddo  
+              !--- determine new FF and DF ---
+              do ii=1,Nact
+                i = act_to_all(ii) 
+                FF(ii) = anHges*eps(i)*kT - anmono(i)*kT
+                scale(i) = anmono(i)  
+                DF(ii,:) = 0.Q0
+                DF(ii,ii) = -scale(i)
+                pmono1(i) = scale(i) / (anmono(i)*kT)
+              enddo
+              do i=1,nml
+                if (.not.relevant(i)) cycle 
+                pmol = g(i)
+                do j=1,m_kind(0,i)
+                  pat = anmono(m_kind(j,i))*kT
+                  if (m_anz(j,i).gt.0) then
+                    do kk=1,m_anz(j,i)
+                      pmol = pmol*pat
+                    enddo
+                  else
+                    do kk=1,-m_anz(j,i)
+                      pmol = pmol/pat
+                    enddo
+                  endif
+                enddo
+                do j=1,m_kind(0,i)
+                  m1 = m_kind(j,i)
+                  if (.not.eact(m1)) cycle
+                  ii = all_to_act(m1)
+                  term   = m_anz(j,i) * pmol
+                  FF(ii) = FF(ii) - term
+                  do l=1,m_kind(0,i)
+                    m2 = m_kind(l,i)
+                    if (.not.eact(m2)) cycle
+                    jj = all_to_act(m2)
+                    DF(ii,jj) = DF(ii,jj) - m_anz(l,i)*term*pmono1(m2)
+                  enddo	    
+                enddo
+              enddo
+              !--- determine new quality ---
+              qual = 0.Q0
+              do ii=1,Nact
+                i = act_to_all(ii)           
+                qual = qual + (FF(ii)/(anHges*norm(i)*kT))**2
+              enddo  
+              if (qual<qual0) exit
+              if (ipull==pullmax) exit
+              if (verbose>1) print'("pullback",3(1pE11.3))',
+     >                       fak,qual0,qual
+              fak = 0.5*fak   ! reduce NR-step
+            enddo  
+            if (verbose>1) print'(I4,99(1pE11.3))',
+     >                     it,anmono(act_to_all(1:Nact))*kT,qual
+            if (it>1.and.qual<1.Q-4) exit
+            !--- determine new NR-vector ---
+            call GAUSS16(nel,Nact,DF,dp,FF)
+            do ii=1,Nact
+              i = act_to_all(ii) 
+              dp(ii) = dp(ii)*scale(i)
+            enddo
+            null = anmono
+            !--- limit step physically, keep direction ---
+            fak = 1.Q0
+            do ii=1,Nact
+              i = act_to_all(ii)
+              if (null(i)*kT-fak*dp(ii)>5.Q0*null(i)*kT) then
+                fak=MIN(fak,-4.Q0*null(i)*kT/dp(ii))
+              endif
+              if (null(i)*kT-fak*dp(ii)<0.2Q0*null(i)*kT) then
+                fak=MIN(fak,0.8Q0*null(i)*kT/dp(ii))
+              endif
+            enddo
+          enddo  
+        endif
         if (qual>1.Q-4) then
           if (ptake) then
             anmono = nsave 
