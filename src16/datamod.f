@@ -12,7 +12,7 @@
 ************************************************************************
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       integer,parameter :: NELEM=41        ! number of elements (up to Zr + W)
-      integer,parameter :: NDUSTmax=200    ! max number of condensed species
+      integer,parameter :: NDUSTmax=500    ! max number of condensed species
       integer :: NDUST                     ! number of condensed species
       integer :: NEPS                      ! number of affected elements
       

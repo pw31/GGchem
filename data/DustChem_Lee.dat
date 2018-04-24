@@ -1,0 +1,57 @@
+MnS[s]         ALABANDITE
+4.08
+2
+ 1 Mn
+ 1 S
+# Sharp & Huebner (1990):
+#  1  1.12482E+05 -1.81938E+05  5.87107E+01  8.89360E-05 -4.20876E-09
+# dG-Stock-fit Barin (1995) 298.15-2200K - liquid > 1803 K:
+  5 9.40711924e+04   3.95836639e+00  -5.61337761e+01  -4.31478032e-03 9.88651732e-07
+
+ZnS[s]         SPHALERITE/WURTZITE
+4.09
+2
+ 1 Zn
+ 1 S
+# dG-Stock-fit Barin (1995) [s + l] 298.15-2200K - sphalerite < 1293 K, Wurzite > 1293 K, liquid > 1995 K :
+  5 7.30636867e+04  -2.72297464e+00  -1.60451251e+01   3.44107646e-03  -2.56383825e-07
+
+NH4Cl[s]      AMMONIUM-CHLORIDE
+1.52
+3
+ 1 N
+ 4 H
+ 1 Cl
+# dG-Stock-fit NIST-Janaf 100-1500K:
+  5   2.12144240e+05  -9.05190775e+00  -2.63207886e+01   8.98927598e-03  -1.23486403e-06
+
+NH4SH[s]       AMMONIUM-HYDROSULFIDE
+1.17
+3
+ 1 N
+ 5 H
+ 1 S
+# pvap special (Stull 1947 - NIST fit):
+   99  0.0  0.0  0.0  0.0  0.0
+
+H2S[s]         HYDROGEN-SULFIDE(liquid/solid)
+1.12
+2
+  2 H
+  1 S
+# pvap special (Stull 1947 - NIST fit):
+   99  0.0  0.0  0.0  0.0  0.0
+
+S2[s]         Disulfer(liquid/solid)
+2.07
+1
+2 S
+# pvap special - Zahnle et al. (2016) - liquid > 413 K:
+ 99  0.0  0.0  0.0  0.0  0.0
+
+S8[s]         Octasulfur(liquid/solid)
+2.07
+1
+8 S
+# pvap special - Zahnle et al. (2016) - liquid > 413 K:
+ 99  0.0  0.0  0.0  0.0  0.0

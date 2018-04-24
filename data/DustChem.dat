@@ -1,6 +1,6 @@
 dust species
 ============
-200
+205
 
 Al2O3[s]       CORUNDUM(alpha)
 3.97
@@ -821,6 +821,8 @@ MnS[s]         ALABANDITE
  1 S
 # Sharp & Huebner (1990):
   1  1.12482E+05 -1.81938E+05  5.87107E+01  8.89360E-05 -4.20876E-09
+# dG-Stock-fit Barin (1995) 298.15-2200K - liquid > 1803 K:
+# 5  9.40711924e+04  3.95836639e+00 -5.61337761e+01 -4.31478032e-03 9.88651732e-07
 
 Ni[s]          NICKEL
  8.91
@@ -1935,4 +1937,45 @@ Cu[s]                    COPPER
 # Stock-fit to SUPCRTBL database (100-2500)K, +/-0.03 kJ/mol
   5  4.06509277e+04  3.27864586e-02 -1.65227378e+01  5.54989209e-04 -2.61835949e-08 
 
+NH4Cl[s]       AMMONIUM-CHLORIDE
+1.52
+3
+ 1 N
+ 4 H
+ 1 Cl
+# dG-Stock-fit NIST-Janaf 100-1500K -> (Graham Lee)
+# 5  2.12144240e+05  -9.05190775e+00  -2.63207886e+01   8.98927598e-03  -1.23486403e-06
+# dG-Stock-fit NIST-Janaf (100-1500)K, +/-0.16 kJ/mol
+  5  2.12391E+05 -6.87184E+00 -3.83434E+01  4.44416E-03  0.00000E+00
+
+NH4SH[s]       AMMONIUM-HYDROSULFIDE
+1.17
+3
+ 1 N
+ 5 H
+ 1 S
+# pvap special (Stull 1947 - NIST fit):
+  99  0.0  0.0  0.0  0.0  0.0
+
+H2S[s]         HYDROGEN-SULFIDE(liquid/solid)  187.65
+1.12
+2
+ 2 H
+ 1 S
+# pvap special (Stull 1947 - NIST fit):
+  99  0.0  0.0  0.0  0.0  0.0
+
+S2[s]          DISULPHUR(liquid/solid)     413.0
+2.07
+1
+ 2 S
+# pvap special - Zahnle et al. (2016)
+ 99  0.0  0.0  0.0  0.0  0.0
+
+S8[s]          OCTASULPHUR(liquid/solid)   432.0
+2.07
+ 1
+ 8 S
+# pvap special - Zahnle et al. (2016)
+  99  0.0  0.0  0.0  0.0  0.0
 

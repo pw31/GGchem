@@ -16,7 +16,7 @@
       real :: dat(1000),ddust
       real :: tau,p,pe,Tg,rho,nHges,nges,kT,pges,mu,muold
       real :: Jstar,Nstar,rhog,dustV,rhod
-      integer :: i,j,k,e,jj,iz,dk,NOUT,Nfirst,Nlast,Ninc,iW
+      integer :: i,j,k,e,jj,iz,dk,NOUT,Nfirst,Nlast,Ninc,iW,idum
       integer :: n1,n2,n3,n4,n5,Ndat,dind(1000)
       integer :: verbose=0
       character(len=20000) :: header
@@ -136,6 +136,27 @@
         Nfirst = 1
         Nlast  = Npoints
         Ninc   = 1           ! botton to top
+
+      !--------------------------------------------------------
+      else if (model_struc==4) then
+      !--------------------------------------------------------
+        open(3,file=filename,status='old')
+        do i=1,1
+          read(3,'(A200)') line
+        enddo  
+        do i=1,9999
+          read(3,*,end=444) idum,p,Tg
+          Tgas(i)  = Tg
+          press(i) = p*bar
+          estruc(i,:) = eps0(:)
+        enddo
+ 444    continue
+        close(3)
+        Npoints = i-1
+        model_pconst = .true.
+        Nfirst = Npoints
+        Nlast  = 1
+        Ninc   = -1  ! botton to top
 
       else
         print*,"*** unknown file format =",model_struc

@@ -5,7 +5,7 @@ from matplotlib.backends.backend_pdf import PdfPages
 plt.rcParams['axes.linewidth'] = 2
 pp = PdfPages('ggchem.pdf')
 
-single_figures = 1
+single_figures = 2    # 1 for pdf, 2 for png
 
 file   = 'Static_Conc.dat'
 data   = open(file)
@@ -185,7 +185,7 @@ plt.legend(loc='lower left',fontsize=10,fancybox=True)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
 plt.clf()
-if (single_figures==1): pp.close()
+if (single_figures>0): pp.close()
 
 #================== where are the elements? ================
 ellist = ['H','C','O','N','SI','S','NA','CL','CA','TI','K','AL','MG','FE','LI','F','P','NI','MN','CR','ZN','ZR','RB','CU','B','BR','V','SR','W','el']
@@ -232,7 +232,7 @@ for i in range(0,30):
         abulist.append(np.mean(yy[Tind1]))
   if (len(abulist)<=0): continue
   if (single_figures==1):  pp = PdfPages('benchmark_'+titel+'.pdf')
-  if (single_figures==1):  fig,ax = plt.subplots(figsize=(7,6))
+  if (single_figures>0):  fig,ax = plt.subplots(figsize=(7,6))
   indices = np.argsort(abulist)
   count = 0
   maxy = np.log10(maxy)
@@ -295,7 +295,8 @@ for i in range(0,30):
   leg = plt.legend(loc='lower left',fontsize=10,fancybox=True)
   leg.get_frame().set_alpha(0.7)
   plt.tight_layout()
-  plt.savefig(pp,format='pdf')
+  if (single_figures<2):  plt.savefig(pp,format='pdf')
+  if (single_figures==2): plt.savefig('benchmark_'+titel+'.png')
   if (single_figures==0): plt.clf()
   if (single_figures==1): pp.close()
 
