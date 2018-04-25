@@ -1,6 +1,6 @@
 dust species
 ============
-205
+210
 
 Al2O3[s]       CORUNDUM(alpha)
 3.97
@@ -1979,3 +1979,41 @@ S8[s]          OCTASULPHUR(liquid/solid)   432.0
 # pvap special - Zahnle et al. (2016)
   99  0.0  0.0  0.0  0.0  0.0
 
+P[s]           PHOSPHORUS_WHITE
+1.82
+ 1
+ 1 P
+# dG-Stock-fit NIST-Janaf (100-1000)K, +/-0.050 kJ/mol
+  5  3.81893E+04  5.02943E-01 -1.80174E+01  0.00000E+00  0.00000E+00
+
+P[l]           PHOSPHORUS(liquid)         317.3
+1.74
+ 1
+ 1 P
+# dG-Stock-fit NIST-Janaf (298-2000)K, +/-0.002 kJ/mol
+  5  3.81772E+04  6.65422E-01 -1.89113E+01  0.00000E+00  0.00000E+00
+
+P2O10[s]       PHOSPHORUS OXIDE
+2.39
+ 2
+ 2 P
+10 O
+# dG-Stock-fit NIST-Janaf (100-1500)K, +/-3.8 kJ/mol
+  5  7.32820E+05 -1.87447E+01 -9.60671E+01  1.33711E-02  0.00000E+00
+ 
+P4S3[s]        PHOSPHORUS-SULFIDE
+2.08
+ 2
+ 4 P
+ 3 S
+# dG-Stock-fit NIST-Janaf (298-2000)K, +/-0.016 kJ/mol
+  5  2.78912E+05 -1.10002E+00 -1.07964E+02  6.39523E-04 -5.96168E-08
+
+P4S3[l]        PHOSPHORUS-SULFIDE(liquid)   440.0
+2.0            estimated
+ 2
+ 4 P
+ 3 S
+# dG-Stock-fit NIST-Janaf (298-3000)K, +/-0.13 kJ/mol
+  5  2.80063E+05  4.26489E+00 -1.42993E+02  0.00000E+00  0.00000E+00
+ 

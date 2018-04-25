@@ -158,6 +158,27 @@
         Nlast  = 1
         Ninc   = -1  ! botton to top
 
+      !--------------------------------------------------------
+      else if (model_struc==5) then
+      !--------------------------------------------------------
+        open(3,file=filename,status='old')
+        do i=1,1
+          read(3,'(A200)') line
+        enddo  
+        do i=1,9999
+          read(3,*,end=555) p,Tg
+          Tgas(i)  = Tg
+          press(i) = p*bar
+          estruc(i,:) = eps0(:)
+        enddo
+ 555    continue
+        close(3)
+        Npoints = i-1
+        model_pconst = .true.
+        Nfirst = 1
+        Nlast  = Npoints
+        Ninc   = 1   ! bottom to top
+
       else
         print*,"*** unknown file format =",model_struc
         stop
@@ -204,6 +225,7 @@
         !--- iterate to achieve requested pressure ---
         do 
           if (model_pconst) nHges = p*mu/(bk*Tg)/muH
+          !print*,p/bar,nHges,Tg
           if (model_eqcond) then
             call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
           endif  
