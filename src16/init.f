@@ -10,7 +10,7 @@
 *****   - wie in Tsuji-Chemie                                    *****
 *****                                                            *****
 **********************************************************************
-      use PARAMETERS,ONLY: abund_pick,abund_file
+      use PARAMETERS,ONLY: abund_pick,abund_file,elements
       use DUST_DATA,ONLY: NELEM,eps=>eps0,mass,muH,elnam,amu
       use EXCHANGE,ONLY: H,He,Li,Be,B,C,N,O,F,Ne,Na,Mg,Al,Si,P,S,Cl,
      >                   Ar,K,Ca,Sc,Ti,V,Cr,Mn,Fe,Co,Ni,Cu,Zn,Ga,Ge,
@@ -298,9 +298,11 @@
 
       muH = 0.d0
       do i=1,NELEM
-        write(*,'(1x,a2,1x,0pF8.3,1pE12.4,0pF8.3)') 
-     &          elnam(i),12.d0+LOG10(eps(i)),eps(i),mass(i)/amu
-        muH = muH + mass(i)*eps(i)
+        if (index(trim(elements)," "//trim(elnam(i))//" ")>0) then 
+          write(*,'(1x,a2,1x,0pF8.3,1pE12.4,0pF8.3)') 
+     &            elnam(i),12.d0+LOG10(eps(i)),eps(i),mass(i)/amu
+          muH = muH + mass(i)*eps(i)
+        endif  
       enddo
       write(*,'("rho = n<H> *",1pE12.4," amu")') muH/amu
       write(*,'("C/O =",0pF6.3)') eps(C)/eps(O)

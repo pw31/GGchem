@@ -239,9 +239,10 @@
               corr = eps0(el)/check(el)
             endif   
           enddo
-          !print*,elnam(elworst),errmax,corr
+          print*,"need fitting? "//elnam(elworst),
+     >           SNGL(errmax),SNGL(corr)
           if (errmax<1.Q-25) return          ! perfect fit - nothing to do
-          if (errmax<0.01) exit
+          if (errmax<1.Q+99) exit            ! better do no iterations at all
           el = elworst
           eps(el) = eps(el)*corr
           do i=1,NDUST
@@ -389,8 +390,9 @@
           endif   
         enddo  
         !print*,"check ",elnam(elworst),errmax
-        if (errmax>1.Q-10) then
+        if (errmax>1.Q-8) then
           print*,"*** element conservation violation in database.f"
+          print*,elnam(elworst),errmax
           stop
         endif  
       endif

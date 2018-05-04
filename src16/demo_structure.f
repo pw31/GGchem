@@ -3,7 +3,7 @@
 ***********************************************************************
       use PARAMETERS,ONLY: Tmin,Tmax,pmin,pmax,nHmin,nHmax,
      >                     model_eqcond,model_pconst,Npoints,
-     >                     model_struc,struc_file
+     >                     model_struc,struc_file,remove_condensates
       use CHEMISTRY,ONLY: NELM,NMOLE,elnum,cmol,catm,el,charge
       use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,muH,mass,
      >                    amu,dust_nam,dust_mass,dust_Vol,
@@ -12,7 +12,9 @@
       use STRUCTURE,ONLY: Npmax,Tgas,press,pelec,dens,nHtot,estruc
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
-      real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST),out(NDUST)
+      real(kind=qp) :: eps(NELEM),eps00(NELEM)
+      real(kind=qp) :: Sat(NDUST),eldust(NDUST),out(NDUST)
+      real(kind=qp) :: fac,e_reservoir(NELEM),d_reservoir(NDUST)
       real :: dat(1000),ddust
       real :: tau,p,pe,Tg,rho,nHges,nges,kT,pges,mu,muold
       real :: Jstar,Nstar,rhog,dustV,rhod
@@ -213,6 +215,9 @@
       !-------------------------------------
       ! ***  run chemistry on structure  ***
       !-------------------------------------
+      e_reservoir = 0.Q0
+      d_reservoir = 0.Q0
+      eps00 = eps0
       eldust = 0.Q0
       mu = muH
       do i=Nfirst,Nlast,Ninc
@@ -245,6 +250,27 @@
           print '("mu=",2(1pE12.5))',muold/amu,mu/amu
           if (ABS(mu/muold-1.0)<1.E-5) exit
         enddo  
+
+        !--- remove all condensates and put them in reservoir? ---
+        if (remove_condensates) then
+          fac = 1.Q+0
+          do j=1,NDUST
+            d_reservoir(j) = d_reservoir(j) + fac*eldust(j)
+            do jj=1,dust_nel(j)
+              k = dust_el(j,jj)
+              e_reservoir(k) = e_reservoir(k) 
+     &                       + fac*dust_nu(j,jj)*eldust(j)
+            enddo
+          enddo  
+          !do j=1,NELM
+          !  if (j==el) cycle 
+          !  k = elnum(j)
+          !  print'(A3,2(1pE18.10))',elnam(k),eps(k)/eps00(k),
+     &    !                  (eps(k)+e_reservoir(k))/eps00(k)
+          !enddo
+          eps0(:) = eps(:) + (1.Q0-fac)*e_reservoir(:)
+          eldust(:) = d_reservoir(:)
+        endif  
 
         !--- compute supersat ratios and nucleation rates ---
         call SUPERSAT(Tg,nat,nmol,Sat)

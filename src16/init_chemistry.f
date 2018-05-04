@@ -2,12 +2,13 @@
       subroutine INIT_CHEMISTRY
 ************************************************************************
       use PARAMETERS,ONLY: elements
-      use CHEMISTRY,ONLY: NMOLdim,NMOLE,NELM,catm,cmol,
+      use CHEMISTRY,ONLY: NMOLdim,NMOLE,NELM,catm,cmol,el,
      &    dispol_file,source,fit,natom,a,error,
      &    m_kind,m_anz,elnum,elion,charge,
      &    el,H,He,Li,Be,B,C,N,O,F,Ne,Na,Mg,Al,Si,P,S,Cl,Ar,K,Ca,Sc,
      &    Ti,V,Cr,Mn,Fe,Co,Ni,Cu,Zn,Ga,Ge,As,Se,Br,Kr,Rb,Sr,Y,Zr,W
-      use EXCHANGE,ONLY: nmol
+      use DUST_DATA,ONLY: mass,mel,amu
+      use EXCHANGE,ONLY: nmol,mmol
       implicit none
       integer :: loop,i,ii,j,iel,e,smax,ret
       character(len=2) :: cel(40),elnam
@@ -175,7 +176,7 @@
  200    close(12)
       enddo  
       NMOLE = i-1
-      allocate(nmol(NMOLE))
+      allocate(nmol(NMOLE),mmol(NMOLE))
 
       if (loop>1) then
         print* 
@@ -198,6 +199,18 @@
       !close(1)
       !stop
 
+      do i=1,NMOLE
+        mmol(i) = 0.d0
+        do j=1,m_kind(0,i)
+          if (m_kind(j,i)==el) then
+            mmol(i) = mmol(i) + m_anz(j,i)*mel
+          else
+            mmol(i) = mmol(i) + m_anz(j,i)*mass(elnum(m_kind(j,i)))
+          endif
+        enddo
+        !print*,cmol(i),mmol(i)/amu
+      enddo  
+
       print* 
       print*,NMOLE,' species'
       print*,NELM,' elements'
@@ -208,6 +221,7 @@
         print'(1x,99(A4))',(trim(cmol(elion(j))),j=1,el-1),'  ',
      >                     (trim(cmol(elion(j))),j=el+1,NELM)
       endif  
+
  3000 format(I4," & ",A12," & (",I1,") & ",I1," & ",
      &       5(1pE12.5," & "),"$\pm$",0pF4.2,"\\")
  3010 format(I4," & ",A12," & (",I1,") & ",I1," & ",

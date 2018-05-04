@@ -3,7 +3,8 @@
 ************************************************************************
       character(len=200) :: elements,abund_file,struc_file
       integer :: abund_pick,model_dim,Npoints,model_struc
-      logical :: model_eqcond,model_pconst,useDataBase
+      logical :: model_eqcond,model_pconst
+      logical :: useDataBase,remove_condensates
       real*8  :: Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax
       end
 
@@ -34,12 +35,13 @@
       integer :: fit(NDUSTmax)                ! fit-formular identifier
       real*8  :: cfit(NDUSTmax,0:4)           ! pvap fit coefficients
       
-      real(kind=qp) :: bk=1.380662Q-16    ! Boltzman constant
-      real(kind=qp) :: bar=1.Q+6          ! 1 bar in dyn/cm2
-      real(kind=qp) :: amu=1.66055Q-24    ! atomar mass unit
-      real(kind=qp) :: atm=1.013Q+6       ! standard atmosphere pressure
-      real(kind=qp) :: rgas=8.3144598Q+0  ! gas constant 
-      real(kind=qp) :: muH                ! rho/n<H>
+      real(kind=qp) :: bk=1.380662Q-16        ! Boltzman constant
+      real(kind=qp) :: bar=1.Q+6              ! 1 bar in dyn/cm2
+      real(kind=qp) :: amu=1.66055Q-24        ! atomar mass unit
+      real(kind=qp) :: atm=1.013Q+6           ! standard atmosphere pressure
+      real(kind=qp) :: rgas=8.3144598Q+0      ! gas constant 
+      real(kind=qp) :: mel=9.109389754Q-28    ! electron mass
+      real(kind=qp) :: muH                    ! rho/n<H>
       end
 
 ************************************************************************
@@ -89,7 +91,7 @@
       use DUST_DATA,ONLY: NELEM
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       real(kind=qp) :: nel,nat(NELEM),nion(NELEM)
-      real(kind=qp),allocatable :: nmol(:)
+      real(kind=qp),allocatable :: nmol(:),mmol(:)
       integer :: HII,HeII,CII,NII,OII,NaII,MgII,LiII,ClII
       integer :: AlII,KII,TiII,SII,SiII,FeII,CaII
       integer,parameter :: H=1,He=2,Li=3,Be=4,B=5,C=6,N=7,O=8,F=9

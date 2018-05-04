@@ -4,7 +4,7 @@
       use PARAMETERS,ONLY: elements,abund_pick,model_dim,model_pconst,
      >                     model_struc,model_eqcond,Npoints,useDatabase,
      >                     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,
-     >                     abund_file,struc_file
+     >                     abund_file,struc_file,remove_condensates
       use CHEMISTRY,ONLY: NewBackIt,NewFullIt,NewBackFac,NewPreMethod,
      >                    NewFastLevel,dispol_file
       use DUST_DATA,ONLY: bar
@@ -22,6 +22,7 @@
       elements     = 'H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li el'
       abund_pick   = 3
       model_eqcond = .false.
+      remove_condensates = .false.
       model_dim    = 1
       model_pconst = .true.
       model_struc  = 0

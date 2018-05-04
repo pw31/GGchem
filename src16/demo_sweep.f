@@ -2,17 +2,21 @@
       SUBROUTINE DEMO_SWEEP
 ***********************************************************************
       use PARAMETERS,ONLY: Tmin,Tmax,pmin,pmax,nHmin,nHmax,useDatabase,
-     >                     model_eqcond,model_pconst,Npoints
+     >                     model_eqcond,model_pconst,Npoints,
+     >                     remove_condensates
       use CHEMISTRY,ONLY: NELM,NMOLE,elnum,cmol,catm,el,charge
-      use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,muH,
-     >                    amu,dust_nam,dust_mass,dust_Vol,mass
-      use EXCHANGE,ONLY: nel,nat,nion,nmol,H,C,N,O,W
+      use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,muH,amu,
+     >                    dust_nel,dust_el,dust_nu,dust_nam,dust_mass,
+     >                    dust_Vol,mass,mel
+      use EXCHANGE,ONLY: nel,nat,nion,nmol,mmol,H,C,N,O,W
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
-      real :: p,Tg,rhog,rhod,dustV,nHges,nges,kT,pges
-      real :: nTEA,pTEA,mu,muold,fac,Jstar,Nstar
-      real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST),out(NDUST)
-      integer :: i,j,jj,l,NOUT,iW,stindex
+      real :: p,Tg,rhog,rhod,dustV,nHges,nges,mges,kT,pges
+      real :: nTEA,pTEA,mu,muold,Jstar,Nstar
+      real(kind=qp) :: eps(NELEM),eps00(NELEM)
+      real(kind=qp) :: Sat(NDUST),eldust(NDUST),out(NDUST)
+      real(kind=qp) :: fac,e_reservoir(NELEM),d_reservoir(NDUST)
+      integer :: i,j,jj,k,l,NOUT,iW,stindex
       character(len=5000) :: species,NISTspecies,elnames
       character(len=20) :: frmt,name,short_name(NDUST),test1,test2
       character(len=4) :: sup
@@ -257,6 +261,9 @@
 
       iW = stindex(dust_nam,NDUST,'W[s]')
       hasW = (iW>0)
+      e_reservoir = 0.Q0
+      d_reservoir = 0.Q0
+      eps00 = eps0
 
       !----------------------------------------
       ! ***  run chemistry on linear track  ***
@@ -291,11 +298,14 @@
           call GGCHEM(nHges,Tg,eps,.false.,0)
           kT = bk*Tg
           nges = nel
+          mges = nel*mel
           do j=1,NELEM
             nges = nges + nat(j)
+            mges = mges + nat(j)*mass(j)
           enddo
           do j=1,NMOLE
             nges = nges + nmol(j)
+            mges = mges + nmol(j)*mmol(j)
           enddo
           pges = nges*kT
           muold = mu
@@ -304,6 +314,27 @@
           print '("mu=",2(1pE12.5))',muold/amu,mu/amu
           if (ABS(mu/muold-1.0)<1.E-5) exit
         enddo  
+
+        !--- remove all condensates and put them in reservoir? ---
+        if (remove_condensates) then
+          fac = 1.Q+0
+          do j=1,NDUST
+            d_reservoir(j) = d_reservoir(j) + fac*eldust(j)
+            do jj=1,dust_nel(j)
+              k = dust_el(j,jj)
+              e_reservoir(k) = e_reservoir(k) 
+     &                       + fac*dust_nu(j,jj)*eldust(j)
+            enddo
+          enddo  
+          !do j=1,NELM
+          !  if (j==el) cycle 
+          !  k = elnum(j)
+          !  print'(A3,2(1pE18.10))',elnam(k),eps(k)/eps00(k),
+     &    !                  (eps(k)+e_reservoir(k))/eps00(k)
+          !enddo
+          eps0(:) = eps(:) + (1.Q0-fac)*e_reservoir(:)
+          eldust(:) = d_reservoir(:)
+        endif  
 
         !--- compute supersat ratios and nucleation rates ---
         call SUPERSAT(Tg,nat,nmol,Sat)
@@ -316,7 +347,7 @@
         endif  
 
         !--- compute dust/gas density ratio ---
-        rhog  = nHges*muH
+        rhog  = mges
         rhod  = 0.0
         dustV = 0.0
         do jj=1,NDUST
