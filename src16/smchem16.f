@@ -59,7 +59,7 @@
       integer :: e,i,j,j1,ii,jj,kk,l,it,m1,m2,piter,ifatal,ipull,pullmax
       integer :: Nseq,imin,imax,enew,eseq(nel)
       integer,parameter :: itmax=200,Ncmax=16
-      real(kind=qp) :: finish,qual,qual0,qual1
+      real(kind=qp) :: finish,qual,qual0,qual1,qual2,qual3
       real(kind=qp) :: g(0:nml),limit
       real(kind=qp) :: kT,kT1,cc,nelek,ng,Sa,fak,lth,arg,term,f,fs
       real(kind=qp) :: pel,delta,pat,atfrac,atmax
@@ -325,6 +325,8 @@
           enddo
           qual  = 9.Q+999
           qual0 = qual 
+          qual1 = qual 
+          qual2 = qual 
           do it=1,199
             do ii=1,Nact
               i = act_to_all(ii)
@@ -355,6 +357,8 @@
             enddo
             call GAUSS16(nel,Nact,DF,dp,FF)
             bem = " "
+            qual3 = qual2
+            qual2 = qual1
             qual1 = qual0
             qual0 = qual
             qual  = 0.Q0
@@ -362,7 +366,8 @@
               qual = qual + ABS(dp(ii))
             enddo  
             maxs = 3.Q0
-            if (it>30.and.(qual>qual0.or.qual0>qual1)) then
+            if (it>30.and.(qual >qual0.or.qual0>qual1.or.
+     >                     qual1>qual2.or.qual2>qual3)) then
               maxs = 3.Q0*exp(-MAX(0,it-30)/70.0)
               bem = "*"
             endif  

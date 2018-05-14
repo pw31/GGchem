@@ -164,7 +164,7 @@
             Sat(i) = nmol(imol)*kT/psat
 
           else if (dust_nam(i).eq.'NH4SH[s]') then
-            !--- Stull (1947) ---
+            !--- G.Lee's fit to Walker & Lumsden (1897) ---
             psat  = 10.0**(7.8974 - 2409.4/T1)*bar
             imol1 = STINDEX(cmol,NMOLE,"NH3")
             imol2 = STINDEX(cmol,NMOLE,"H2S")
