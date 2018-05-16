@@ -142,6 +142,11 @@
       g(TiC) = EXP(MIN(1.1Q+4,-2.30256*arg))
 
 *---------------------------------------------------------------------------
+      if (.not.merk) then
+        badness = 1.Q0
+        pcorr   = 1.Q0
+        pkey    = 0         
+      endif   
       if ((ilauf.gt.10).and.merk) then
         do i=1,nel
           anmono(i) = amerk(i) * anhges

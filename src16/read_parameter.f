@@ -66,6 +66,8 @@
           if (abund_pick==0) read(1,'(A200)',end=100) abund_file
         else if (index(line,"! model_eqcond")>0) then   
           read(line,*) model_eqcond
+        else if (index(line,"! remove_condensates")>0) then   
+          read(line,*) remove_condensates
         else if (index(line,"! model_dim")>0) then   
           read(line,*) model_dim
         else if (index(line,"! model_pconst")>0) then   
