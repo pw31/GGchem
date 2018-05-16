@@ -17,9 +17,9 @@
       real(kind=qp) :: fac,e_reservoir(NELEM),d_reservoir(NDUST)
       real :: dat(1000),ddust
       real :: tau,p,pe,Tg,rho,nHges,nges,kT,pges,mu,muold
-      real :: Jstar,Nstar,rhog,dustV,rhod
-      integer :: i,j,k,e,jj,iz,dk,NOUT,Nfirst,Nlast,Ninc,iW,idum
-      integer :: n1,n2,n3,n4,n5,Ndat,dind(1000)
+      real :: Jstar,Nstar,rhog,dustV,rhod,L3,bmix,emono
+      integer :: i,j,k,l,e,jj,iz,dk,NOUT,Nfirst,Nlast,Ninc,iW,idum
+      integer :: n1,n2,n3,n4,n5,Ndat,dind(1000),ek,eind(1000)
       integer :: verbose=0
       character(len=20000) :: header
       character(len=200) :: line,filename
@@ -74,7 +74,7 @@
         model_pconst = .true.
         Nfirst = Npoints
         Nlast  = 2
-        Ninc   = -1  ! botton to top
+        Ninc   = -1            ! bottom to top
 
       !--------------------------------------------------------
       else if (model_struc==3) then
@@ -137,7 +137,7 @@
         close(3)
         Nfirst = 1
         Nlast  = Npoints
-        Ninc   = 1           ! botton to top
+        Ninc   = 1             ! bottom to top
 
       !--------------------------------------------------------
       else if (model_struc==4) then
@@ -158,7 +158,7 @@
         model_pconst = .true.
         Nfirst = Npoints
         Nlast  = 1
-        Ninc   = -1  ! botton to top
+        Ninc   = -1            ! bottom to top
 
       !--------------------------------------------------------
       else if (model_struc==5) then
@@ -179,7 +179,91 @@
         model_pconst = .true.
         Nfirst = 1
         Nlast  = Npoints
-        Ninc   = 1   ! bottom to top
+        Ninc   = 1             ! bottom to top
+
+      !--------------------------------------------------------
+      else if (model_struc==6) then
+      !--------------------------------------------------------
+        open(3,file=filename,status='old')
+        read(3,'(A200)') line
+        read(3,*) n1,n2
+        read(3,'(A200)') line
+        read(3,'(A200)') line
+        do i=1,999999
+          read(3,*,end=666) dat(1:5)
+          Tgas(i)  = dat(2)
+          nHtot(i) = dat(3)
+          dens(i)  = dat(4)
+          press(i) = dat(5)
+          muH = dens(i)/nHtot(i)
+          !print*,i,Tgas(i),nHtot(i)
+        enddo
+ 666    Npoints=i-1
+        close(3)
+        filename = 'structures/out3_dust.dat'
+        open(3,file=filename,status='old')
+        read(3,'(A200)') line
+        read(3,*) n1,n2
+        read(3,'(A200)') line
+        read(3,'(A20000)') header
+        do k=1,n1
+          j = 8+k + 2*n2 + n1
+          ename = adjustl(header(j*14-13:j*14))
+          ename = trim(ename(5:))
+          do ek=1,NELM
+            e = elnum(ek)
+            if (trim(ename)==trim(elnam(e))) then
+              print*,e,trim(ename)//" found"
+              eind(j) = e
+            endif
+          enddo
+        enddo
+        do k=1,n2
+          j = 8+k
+          dname = adjustl(header(j*14-13:j*14))
+          dname = trim(dname(3:))
+          dind(j) = 0
+          do dk=1,NDUST
+            if (trim(dust_nam(dk))==trim(dname)) then
+              print*,dk,trim(dust_nam(dk))//" = "//trim(dname) 
+              dind(j) = dk
+            endif  
+          enddo
+        enddo
+        Ndat = 8 + 2*n1 + 2*n2
+        do i=1,Npoints
+          read(3,*) dat(1:Ndat) 
+          rho = dens(i)                       ! gas density g/cm3
+          L3 = dat(6)                         ! dust volume cm3/g 
+          estruc(i,:) = eps0(:) 
+          do k=1,n1
+            j = 8+k + 2*n2 + n1
+            e = eind(j) 
+            estruc(i,e) = dat(j)
+            !print*,elnam(e),dat(j)
+          enddo   
+          !print'(99(A12))',elnam(1:NELEM)
+          !print'(99(1pE12.3))',estruc(i,:)/eps0(:)
+          do k=1,n2
+            j = 8+k
+            dk = dind(j) 
+            bmix = dat(j)                     ! volume ratio
+            emono = bmix*rho*L3/dust_vol(dk)/nHtot(i)
+            do l=1,dust_nel(dk)
+              e = dust_el(dk,l)
+              estruc(i,e) = estruc(i,e) + emono*dust_nu(dk,l)    
+            enddo
+          enddo  
+        print'(99(A12))',(elnam(elnum(j)),j=1,NELM)
+        print'(99(1pE12.3))',(eps0(elnum(j)),j=1,NELM)
+
+          !print'(99(1pE12.3))',estruc(i,:)/eps0(:)
+          !stop
+        enddo  
+        close(3)
+        Nfirst = Npoints
+        Nlast  = 1
+        Ninc   = -1            ! top to bottom to top
 
       else
         print*,"*** unknown file format =",model_struc
@@ -225,6 +309,11 @@
         p       = press(i) 
         nHges   = nHtot(i)
         eps0(:) = estruc(i,:)
+
+        print*
+        print*,"new point",i,nHges,Tg,p/bar
+        print'(99(A12))',(elnam(elnum(j)),j=1,NELM)
+        print'(99(1pE12.3))',(eps0(elnum(j)),j=1,NELM)
 
         !--- run chemistry (+phase equilibrium)    ---
         !--- iterate to achieve requested pressure ---
