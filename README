@@ -47,7 +47,22 @@ To run the code, type e.g.
 It will create the output file "Static_Conc.dat", which contains all
 computed molecular, atom and ion particle densities, the electron
 density, solid and liquid particle densities, and supersaturation
-ratios.
+ratios:
+
+  * gas temperature Tg[K],
+  * hydrgen nuclei particle density n<H>[cm-3],
+  * total gas pressure [dyn/cm2]
+  * atomic particle densities log10(natom)[cm-3] for free electrons, H, He, ...
+  * molecular particle densities log10(nmol)[cm-3]
+  * supersaturation ratios log10(S) [-] of condensates
+  * concentration of condensed units per <H> log10(ncond/n<H>) [-] 
+  * dust to gas mass ratio log10(rho_dust/rho_gas) [-]
+  * dust volume per <H> log10(dust_volume) [cm3]
+  * remainig element abundances in the gas phase [-]
+
+S{cond} and n{cond} are used in the header to distinguish between 
+supersaturation ratio and concentration of condensed units, whereas
+{mol} (without the leading "n") is a molecular particle density.
 
 ------------------------------------------------------------------------
 To visualise the results, use e.g.
@@ -132,7 +147,5 @@ The equilibrium condensation code requires many calls of the gas-phase
 equilibrium chemistry routine, and takes about 0.02-0.09 sec per call,
 depending on how much useful information is found in database.dat.
  
-
-
 
 
