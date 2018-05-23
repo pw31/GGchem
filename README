@@ -49,16 +49,17 @@ computed molecular, atom and ion particle densities, the electron
 density, solid and liquid particle densities, and supersaturation
 ratios:
 
-  * gas temperature Tg[K],
-  * hydrgen nuclei particle density n<H>[cm-3],
-  * total gas pressure [dyn/cm2]
-  * atomic particle densities log10(natom)[cm-3] for free electrons, H, He, ...
-  * molecular particle densities log10(nmol)[cm-3]
-  * supersaturation ratios log10(S) [-] of condensates
-  * concentration of condensed units per <H> log10(ncond/n<H>) [-] 
-  * dust to gas mass ratio log10(rho_dust/rho_gas) [-]
-  * dust volume per <H> log10(dust_volume) [cm3]
-  * remainig element abundances in the gas phase [-]
+  * Tg: gas temperature [K],
+  * nHges: total hydrogen nuclei particle density n<H> [cm-3],
+  * pges: total gas pressure [dyn/cm2]
+  * el ... W: atomic particle densities log10(natom)[cm-3]
+  * {mol}: molecular particle densities log10(nmol)[cm-3]
+  * S{cond}: supersaturation ratios log10(S) [-] of condensates
+  * n{cond}: concentration of condensed units per H nuclues 
+             log10(ncond/n<H>) [-] 
+  * eps{el}: remainig element abundances in the gas phase [-]
+  * dust/gas: dust to gas mass ratio log10(rho_dust/rho_gas) [-]
+  * dustVol/H: dust volume per H nucleus log10(dust_volume) [cm3]
 
 S{cond} and n{cond} are used in the header to distinguish between 
 supersaturation ratio and concentration of condensed units, whereas
