@@ -1244,7 +1244,7 @@
         write(*,'("*** EQUIL_COND failed after ",I3," iter,  time =",
      >            0pF9.4," CPU sec.")') it,time1-time0 
         stop
-      endif   
+      endif
 
       !----------------------------------
       ! ***  save result to database  ***
