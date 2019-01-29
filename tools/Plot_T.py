@@ -97,7 +97,9 @@ cCO2   = [  35.0187, -1.5119E+03, -1.1335E+01,  9.3383E-03,  7.7626E-10,  216,  
 #Tyaws2 = cc[6]
 #Tyaws  = np.arange(Tyaws1, Tyaws2, 0.1)
 #pvap   = yaws(Tyaws,*cc[0:5])
-#plt.plot(Tyaws,pvap/bar,lw=2)
+Tvap = np.arange(Tmin, Tmax, 0.1)
+pvap = 10.0**(7.8974 - 2409.4/Tvap)
+plt.plot(Tvap,pvap,c='red',lw=2,ls='--')
 #fmt=ScalarFormatter(useOffset=False)
 #fmt.set_scientific(False)
 #ax.yaxis.set_major_formatter(fmt)

@@ -3,6 +3,8 @@ import numpy as np
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter, ScalarFormatter, LogLocator
 from matplotlib.backends.backend_pdf import PdfPages
 plt.rcParams['axes.linewidth'] = 1.5
+plt.rcParams['xtick.direction'] = 'in'
+plt.rcParams['ytick.direction'] = 'in'
 pp = PdfPages('ggchem.pdf')
 
 file   = 'Static_Conc.dat'
@@ -57,11 +59,11 @@ widt = [2]*Ncolor*10
 #================== temperature-pressure structure ====================
 fig,ax = plt.subplots()
 plt.plot(lp,Tg,lw=4)
-plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$',fontsize=20)
-plt.ylabel(r'$T\ \mathrm{[K]}$',fontsize=20)
+plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$',fontsize=16)
+plt.ylabel(r'$T\ \mathrm{[K]}$',fontsize=16)
 plt.xlim(pmin,pmax)
 plt.ylim(Tmin,Tmax)
-plt.tick_params(axis='both', labelsize=15)
+plt.tick_params(axis='both', labelsize=13)
 plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
 #minorLocator = MultipleLocator(sep)
@@ -73,12 +75,12 @@ plt.clf()
 #================== temperature-density structure ====================
 fig,ax = plt.subplots()
 plt.plot(lp,nHtot,lw=4)
-plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$',fontsize=20)
-plt.ylabel(r'$n_\mathrm{\langle H\rangle}\ \mathrm{[cm^{-3}]}$',fontsize=20)
+plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$',fontsize=16)
+plt.ylabel(r'$n_\mathrm{\langle H\rangle}\ \mathrm{[cm^{-3}]}$',fontsize=16)
 plt.xlim(pmin,pmax)
 plt.ylim(nHmin,nHmax)
 if (nHmax>nHmin*5): plt.yscale('log')
-plt.tick_params(axis='both', labelsize=15)
+plt.tick_params(axis='both', labelsize=13)
 plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
 #minorLocator = MultipleLocator(sep)
