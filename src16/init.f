@@ -10,14 +10,14 @@
 *****   - wie in Tsuji-Chemie                                    *****
 *****                                                            *****
 **********************************************************************
-      use PARAMETERS,ONLY: abund_pick,abund_file,elements
+      use PARAMETERS,ONLY: abund_pick,abund_file,elements,pick_mfrac
       use DUST_DATA,ONLY: NELEM,eps=>eps0,mass,muH,elnam,amu
       use EXCHANGE,ONLY: H,He,Li,Be,B,C,N,O,F,Ne,Na,Mg,Al,Si,P,S,Cl,
      >                   Ar,K,Ca,Sc,Ti,V,Cr,Mn,Fe,Co,Ni,Cu,Zn,Ga,Ge,
      >                   As,Se,Br,Kr,Rb,Sr,Y,Zr,W
       implicit none
       integer :: i,j,nr
-      real*8 :: m,val,abund(74,4),eps0(NELEM),epsH
+      real*8 :: m,val,abund(74,4),eps0(NELEM),epsH,mfrac(NELEM)
       character(len=2) :: el
       character(len=20) :: elname
       character(len=10) :: source(4)
@@ -244,8 +244,9 @@
         write(*,*) "read element abundances from "//
      &             trim(abund_file)//" ..."
         open(1,file=abund_file,status='old')
-        eps0 = eps
-        eps  = LOG10(eps)+12.Q0
+        eps0  = eps
+        eps   = LOG10(eps)+12.Q0
+        mfrac = 1.E-50
         do i=1,999
           read(1,*,end=1000) el,val
           if (el=='el') exit
@@ -253,6 +254,7 @@
           do j=1,NELEM
             if (el==elnam(j)) then
               eps(j) = val
+              mfrac(j) = val
               found = .true.
               !print*,el,elnam(j),j
               exit
@@ -264,12 +266,21 @@
           endif  
         enddo  
  1000   close(1)
-        epsH = eps(H)
-        do i=1,NELEM
-          eps(i) = 10.Q0 ** (eps(i)-epsH)
-          write(*,'(A2,": ",1pE10.3," ->",1pE10.3)') 
-     &          elnam(i),eps0(i),eps(i)
-        enddo        
+        if (pick_mfrac) then
+          call mf2eps(mfrac,eps)
+          do i=1,NELEM
+            write(*,'(A2,": ",1pE10.3," ->",1pE10.3)') 
+     &           elnam(i),eps0(i),eps(i)
+          enddo        
+        else   
+          epsH = eps(H)
+          do i=1,NELEM
+            eps(i) = 10.Q0 ** (eps(i)-epsH)
+            write(*,'(A2,": ",1pE10.3," ->",1pE10.3)') 
+     &           elnam(i),eps0(i),eps(i)
+          enddo        
+          call eps2mf(eps,mfrac)
+        endif  
       else if (abund_pick.ne.3) then
         source = (/'EarthCrust','Ocean     ','Solar     ','Meteorites'/)
         write(*,*)
@@ -296,16 +307,19 @@
         close(1)
       endif  
 
+      call eps2mf(eps,mfrac)
       muH = 0.d0
+      write(*,'(4x,A8,A12,A8,A12)') "eps","n/nH","mass","mfrac[%]" 
       do i=1,NELEM
         if (index(trim(elements)," "//trim(elnam(i))//" ")>0) then 
-          write(*,'(1x,a2,1x,0pF8.3,1pE12.4,0pF8.3)') 
-     &            elnam(i),12.d0+LOG10(eps(i)),eps(i),mass(i)/amu
+          write(*,'(1x,a2,1x,0pF8.3,1pE12.4,0pF8.3,0pF12.7)') 
+     &          elnam(i),12.d0+LOG10(eps(i)),eps(i),mass(i)/amu,
+     &          mfrac(i)*100.0
           muH = muH + mass(i)*eps(i)
         endif  
       enddo
       write(*,'("rho = n<H> *",1pE12.4," amu")') muH/amu
       write(*,'("C/O =",0pF6.3)') eps(C)/eps(O)
-
+      
       RETURN
       end

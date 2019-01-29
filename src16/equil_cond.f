@@ -1244,7 +1244,7 @@
         write(*,'("*** EQUIL_COND failed after ",I3," iter,  time =",
      >            0pF9.4," CPU sec.")') it,time1-time0 
         stop
-      endif   
+      endif
 
       !----------------------------------
       ! ***  save result to database  ***
@@ -1264,6 +1264,7 @@
       use DUST_DATA,ONLY: NELEM,NDUST,dust_nel,dust_nu,dust_el,
      >                    dust_nam,elnam
       use EXCHANGE,ONLY: nel,nat,nion,nmol
+      use CHEMISTRY,ONLY: NELM,elnum,iel=>el
       use CONVERSION,ONLY: Ndep,Nind,Dindex,Iindex,is_dust,conv
       implicit none
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
@@ -1292,7 +1293,9 @@
         eps1(el) = eps1(el) + dx
       enddo
 
-      do el=1,NELEM
+      do i=1,NELM
+        if (i==iel) cycle
+        el = elnum(i)
         if (eps1(el).le.0.Q0) then
           write(*,*) "*** negative el.abund. SUPER",elnam(el),eps1(el)
           stop

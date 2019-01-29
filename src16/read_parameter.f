@@ -2,9 +2,9 @@
       subroutine READ_PARAMETER
 ************************************************************************
       use PARAMETERS,ONLY: elements,abund_pick,model_dim,model_pconst,
-     >                     model_struc,model_eqcond,Npoints,useDatabase,
-     >                     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,
-     >                     abund_file,struc_file,remove_condensates
+     >     model_struc,model_eqcond,Npoints,useDatabase,
+     >     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,pick_mfrac,
+     >     abund_file,struc_file,remove_condensates
       use CHEMISTRY,ONLY: NewBackIt,NewFullIt,NewBackFac,NewPreMethod,
      >                    NewFastLevel,dispol_file
       use DUST_DATA,ONLY: bar
@@ -21,6 +21,7 @@
       dispol_file(4) = ''
       elements     = 'H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li el'
       abund_pick   = 3
+      pick_mfrac   = .false.
       model_eqcond = .false.
       remove_condensates = .false.
       model_dim    = 1
@@ -64,6 +65,8 @@
         else if (index(line,"! abund_pick")>0) then   
           read(line,*) abund_pick
           if (abund_pick==0) read(1,'(A200)',end=100) abund_file
+        else if (index(line,"! pick_mfrac")>0) then   
+          read(line,*) pick_mfrac
         else if (index(line,"! model_eqcond")>0) then   
           read(line,*) model_eqcond
         else if (index(line,"! remove_condensates")>0) then   

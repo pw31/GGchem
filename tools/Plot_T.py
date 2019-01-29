@@ -4,6 +4,7 @@ from matplotlib.ticker import MultipleLocator, FormatStrFormatter, ScalarFormatt
 from matplotlib.backends.backend_pdf import PdfPages
 plt.rcParams['axes.linewidth'] = 1.5
 pp = PdfPages('ggchem.pdf')
+import sys
 
 mmHg = 1.3328E+3   # 1 mmHg in dyn/cm2
 def yaws(T,A,B,C,D,E):
@@ -38,7 +39,10 @@ Tmax  = np.max(Tg)
 #if (Tmin<Tmax/3): Tmin=Tmax/3
 #Tmax  = 2800
 #Tmin  = 2000
-delT  = (Tmax-Tmin)*0.25
+Narg  = len(sys.argv)
+if (Narg>1): Tmin=float(sys.argv[1])
+if (Narg>2): Tmax=float(sys.argv[2])
+delT  = (Tmax-Tmin)*0.2
 iii   = np.where((Tg>Tmin) & (Tg<Tmax))[0]
 pmin  = np.min(press[iii])/bar
 pmax  = np.max(press[iii])/bar
@@ -188,8 +192,7 @@ for i in range(4+NELEM+NMOLE,4+NELEM+NMOLE+NDUST,1):
   ind = ind[0]
   yy = dat[:,ind]               # log10 nsolid/n<H>
   ymax = np.max([ymax,np.max(yy[iii])])
-  #print solid[1:],ind,np.max(yy[iii])
-  ymin = ymax-8
+  ymin = -20
 if (ymax>-99):
   print solids
   fig,ax = plt.subplots()
@@ -202,6 +205,7 @@ if (ymax>-99):
     ind = ind[0]
     yy = dat[:,ind]               # log10 nsolid/n<H>
     ymax = np.max([ymax,np.max(yy[iii])])
+    if (np.max(yy[iii])>-99): print solid,ind,np.max(yy[iii])
     if (np.max(yy[iii])>ymin):
       plt.plot(Tg[iii],yy[iii],c=colo[count],ls=styl[count],lw=widt[count],label=solid)
       count = count + 1
@@ -210,7 +214,7 @@ if (ymax>-99):
   plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{solid}/n_\mathrm{\langle H\rangle}$',fontsize=20)
   #plt.xscale('log')
   plt.xlim(Tmin,Tmax+delT)
-  plt.ylim(ymin,ymax+0.3)
+  plt.ylim(ymax-10,ymax+0.3)
   plt.tick_params(axis='both', labelsize=14)
   plt.tick_params('both', length=6, width=1.5, which='major')
   plt.tick_params('both', length=3, width=1, which='minor')

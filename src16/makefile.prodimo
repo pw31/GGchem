@@ -36,6 +36,7 @@ OBJECTS  = datamod.o \
            gauss16.o \
            gauss8.o \
 	   gauss_nm.o \
+	   massfrac.o \
 	   linpack_q.o \
 	   slatec_routines.o \
            smchem16.o \
