@@ -46,31 +46,49 @@
 ***********************************************************************
       SUBROUTINE DEMO_CHEMISTRY
 ***********************************************************************
-      use PARAMETERS,ONLY: nHmax,Tmax,model_eqcond
+      use PARAMETERS,ONLY: nHmax,Tmax,pmax,model_pconst,model_eqcond
       use CHEMISTRY,ONLY: NMOLE,NELM,m_kind,elnum,cmol,el
-      use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,muH,
+      use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,amu,muH,
      >                    dust_nam,dust_mass,dust_Vol,dust_nel,dust_el
       use EXCHANGE,ONLY: nel,nat,nion,nmol
       implicit none
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST)
       real(kind=qp) :: nges,kT,nmax,threshold
-      real*8  :: Tg,nHges
+      real*8  :: Tg,nHges,p,mu,muold,pgas
       integer :: i,imol,iraus,e,j,verbose,dk
       logical :: included,haeufig,raus(NMOLE)
       character(len=10) :: sp
 
       Tg    = Tmax
       nHges = nHmax
+      p     = pmax
       eps   = eps0
+      mu    = muH
       eldust  = 0.Q0
       verbose = 2
       if (model_eqcond) verbose=0
 
-*     ------------------------------------------------------------------
-      if (model_eqcond) call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
-      call GGCHEM(nHges,Tg,eps,.false.,verbose)
-*     ------------------------------------------------------------------
+      do 
+        if (model_pconst) nHges = p*mu/(bk*Tg)/muH
+        if (model_eqcond) then
+          call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
+        endif  
+        call GGCHEM(nHges,Tg,eps,.false.,0)
+        nges = nel
+        do j=1,NELEM
+          nges = nges + nat(j)
+        enddo
+        do j=1,NMOLE
+          nges = nges + nmol(j)
+        enddo
+        pgas = nges*bk*Tg
+        muold = mu
+        mu = nHges/pgas*(bk*Tg)*muH
+        if (.not.model_pconst) exit
+        print '("mu=",2(1pE12.5))',muold/amu,mu/amu
+        if (ABS(mu/muold-1.0)<1.E-5) exit
+      enddo  
 
       write(*,*)
       write(*,'("Tg=",0pF8.2,"  rho=",1pE10.3,"  n<H>=",1pE10.3)') 
@@ -192,15 +210,7 @@
       enddo  
 
       write(*,*) '----- gas and electron pressure -----'
-      kT = bk*Tg
-      nges = nel
-      do i=1,NELEM
-        nges = nges + nat(i)
-      enddo
-      do i=1,NMOLE
-        nges = nges + nmol(i)  ! includes atomic ions
-      enddo
-      write(*,'("pges[bar]=",1pE10.3,"  pe[bar]=",1pE10.3)') 
+      write(*,'("pgas[bar]=",1pE10.3,"  pe[bar]=",1pE10.3)') 
      >      nges*kT/bar,nel*kT/bar
      
 *     ------------------------------

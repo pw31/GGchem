@@ -384,7 +384,7 @@
                 anmono(i) = exp(xx(i))*kT1
               enddo
               if (verbose>1) print'(I4,A2,99(1pE11.3E3))',
-     >                     it,bem,anmono(act_to_all(1:Nact))*kT,qual
+     >                       it,bem,anmono(act_to_all(1:Nact))*kT,qual
               if (it>1.and.qual<1.Q-4) exit
             enddo  
           else  
@@ -396,7 +396,7 @@
               qual0 = qual 
               pullmax = 1
               if (it>100) pullmax=10
-              do ipull=1,pullmax ! pullback if quality gets worse
+              do ipull=1,pullmax  ! pullback if quality gets worse
                 !--- make a step ---
                 do ii=1,Nact
                   i = act_to_all(ii)
@@ -443,13 +443,13 @@
                 !--- determine new quality ---
                 qual = 0.Q0
                 do ii=1,Nact
-                  i = act_to_all(ii)           
+                  i = act_to_all(ii)
                   qual = qual + (FF(ii)/(anHges*norm(i)*kT))**2
                 enddo  
                 if (qual<qual0) exit
                 if (ipull==pullmax) exit
                 if (verbose>1) print'("pullback",3(1pE11.3))',
-     >                       fak,qual0,qual
+     >                         fak,qual0,qual
                 fak = 0.5*fak   ! reduce NR-step
               enddo  
               if (verbose>1) print'(I4,99(1pE11.3))',
@@ -780,9 +780,9 @@
               fs = fs + coeff(l)*l**2*pat**(l-1)
             enddo
             delta = f/fs
-            pat = pat-delta
             if (verbose>1) print'(A2,1pE25.15,1pE10.2)',
      >                            catm(e),pat,delta/pat
+            pat = pat-delta
             if (ABS(delta)<finish*ABS(pat)) exit 
           enddo  
           if (piter>=99) then
