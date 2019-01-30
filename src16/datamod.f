@@ -11,6 +11,7 @@
 ************************************************************************
       module DUST_DATA
 ************************************************************************
+      character(len=200) :: DustChem_file
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       integer,parameter :: NELEM=41        ! number of elements (up to Zr + W)
       integer,parameter :: NDUSTmax=500    ! max number of condensed species

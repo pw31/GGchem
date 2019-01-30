@@ -7,7 +7,7 @@
      >     abund_file,struc_file,remove_condensates
       use CHEMISTRY,ONLY: NewBackIt,NewFullIt,NewBackFac,NewPreMethod,
      >                    NewFastLevel,dispol_file
-      use DUST_DATA,ONLY: bar
+      use DUST_DATA,ONLY: DustChem_file,bar
       implicit none
       integer :: iarg,iline,i,dispol_set
       character(len=200) :: ParamFile,line
@@ -19,6 +19,7 @@
       dispol_file(2) = 'dispol_StockKitzmann_withoutTsuji.dat'
       dispol_file(3) = 'dispol_WoitkeRefit.dat'
       dispol_file(4) = ''
+      DustChem_file  = 'DustChem.dat'
       elements     = 'H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li el'
       abund_pick   = 3
       pick_mfrac   = .false.
@@ -124,6 +125,9 @@
           i = index(line,"!")
           read(line(1:i-1),*) dispol_file(1)
           dispol_set = 1
+        else if (index(line,"! DustChem_file")>0) then 
+          i = index(line,"!")
+          read(line(1:i-1),*) DustChem_file
         else
           print*,"*** syntax error in "//trim(ParamFile)//":"
           print*,trim(line)

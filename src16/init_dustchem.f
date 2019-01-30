@@ -6,7 +6,8 @@
       use DUST_DATA,ONLY: NDUSTmax,NEPS,NELEM,NDUST,eps0,amu,
      &                    dust_nam,dust_rho,dust_vol,dust_mass,
      &                    dust_nel,dust_nu,dust_el,fit,cfit,
-     &                    elnr,elcode,elnam,mass,Tmelt,Tcorr
+     &                    elnr,elcode,elnam,mass,Tmelt,Tcorr,
+     &                    DustChem_file
       implicit none
       integer :: i,imax,j,k,el,j1,j2
       real*8 :: dmass,prec(NDUSTmax)
@@ -17,11 +18,11 @@
       logical :: found,allfound
 
       write(*,*) 
-      write(*,*) "reading DustChem.dat ..."
+      write(*,*) "reading "//trim(DustChem_file)//" ..."
       write(*,*) "========================"
       trivial(:)=' '
 
-      open(12, file='data/DustChem.dat', status='old')
+      open(12, file='data/'//trim(DustChem_file), status='old')
  
       write(*,*) '--- dust species ---'
       read(12,1000) zeile
