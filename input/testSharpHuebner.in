@@ -3,7 +3,7 @@ H C N O F Na Mg Al Si P S Cl K Ca Sc Ti V Cr Mn Fe Ni Cu Zr
 
 # name of file with molecular kp-data
 dispol_SharpHuebner.dat                 ! dispol_file
-DustChem_SharpHuebner.dat               ! DustChem_file
+DustChem_SH90.dat                       ! DustChem_file
 
 # abundance options 0=custom, 1=EarthCrust, 2=Ocean, 3=Solar, 4=Meteorites
 0                     ! abund_pick
