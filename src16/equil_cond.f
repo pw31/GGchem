@@ -1092,7 +1092,7 @@
           xstep(:) = 0.Q0
           xstep(j) = deps
           scale(j) = eps(el)
-          call SUPER(nHtot,T,xstep,eps,Sat2,.true.)
+          call SUPER(nHtot,T,xstep,eps,Sat2,NewFastLevel<1)
           do ii=1,Nsolve
             i  = act_to_dust(ii) 
             dk = Dindex(i)
