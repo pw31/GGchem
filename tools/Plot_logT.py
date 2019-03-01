@@ -405,7 +405,7 @@ for i in range(0,30):
       molname = molname[1:]
       if (str.find(molname,'[l]')<0):
         molname = molname+'[s]'
-    print mol,molname,abu,np.max(yy[iii])
+    #print mol,molname,abu,np.max(yy[iii])
     if (np.max(yy[iii]-maxy[iii])>-limit or molname=='el'):
       plt.plot(Tg,yy,c=colo[count],ls=styl[count],lw=widt[count],label=molname)
       count = count + 1
