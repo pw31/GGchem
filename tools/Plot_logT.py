@@ -50,13 +50,6 @@ nHmax = nHmax*1.1
 if (nHmax>nHmin*5): 
   nHmin = nHmin/2.0
   nHmax = nHmax*2.0
-sep = 20
-if (Tmax-Tmin>1500): sep=100
-if (Tmax-Tmin>1000): sep=50
-if (Tmax-Tmin<600): sep=20
-if (Tmax-Tmin<400): sep=10
-#Tmin  = Tmin*0.95
-#Tmax  = Tmax*1.1
 colo = ['blue','black','silver','red','darkorange','gold','darkorchid','aqua','cadetblue','cornflowerblue','chartreuse','limegreen','darkgreen','chocolate','darkgoldenrod','darkkhaki','pink','moccasin']
 #'darkolivegreen','darkmagenta','aquamarine','coral','burlywood',
 #'beige','darkorange','crimson','darkcyan','bisque'
@@ -66,7 +59,8 @@ styl = ['-']*Ncolor + ['--']*Ncolor + [':']*Ncolor + ['-.']*Ncolor*7
 widt = [2]*Ncolor*10
 locmin = LogLocator(base=10.0,subs=(0.1,0.15,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9))
 locmaj = np.array([100,200,500,1000,2000,5000,10000])
-locmaj = locmaj[np.where(locmaj<Tmax)[0]]
+locmaj = locmaj[np.where(locmaj<=Tmax)[0]]
+locmaj = locmaj[np.where(locmaj>=Tmin)[0]]
 
 #================== temperature-pressure structure ====================
 fig,ax = plt.subplots()
@@ -368,24 +362,33 @@ for i in range(0,30):
           abulist.append(np.mean(yy))
   for isolid in condensates:
     solid = solids[isolid]
-    #print solid
     isol = np.where(keyword == 'n'+solid)[0]
     if (np.size(isol) == 0): continue
     isol = isol[0]
-    ind = str.find(solid,el)
-    if (ind < 0): 
-      ind = str.find(solid,al)
-    if (ind >= 0):
-      next1 = solid[ind:ind+2]
-      next2 = solid[ind-1:ind+1]
-      if (len(next1)==1 or str.find(ex,next1)==-1 or molname=='SIS'):
-        if (next2!='MN' and next2!='ZN'):
-          yy = dat[:,isol]               # log10 nsolid/n<H>
-          nmax = np.max([nmax,np.max(yy[iii])])
-          maxy = maxy + 10**yy
-          #print isol,keyword[isol],np.max(yy[iii])
-          mollist.append(isol)   
-          abulist.append(np.max(yy[iii]))
+    search = el
+    if (len(el)==2): search=al
+    ind = str.find(solid,search)
+    found = 0
+    while (ind>=0):
+      #print solid,ind
+      if (len(search)==2): found=1
+      if (found==0):  
+        if (ind==len(solid)-1): found=2
+      if (found==0):  
+        next1 = solid[ind+1]
+        #print solid,search,next1
+        if (next1.isupper() or next1.isdigit() or next1=='['): found=3
+      if (found>0): break  
+      ind = solid.find(search,ind+1)
+      if (ind<0): break
+      #print 'try again with rest ',ind,len(solid),solid[ind:]
+    if (found>0):
+      yy = dat[:,isol]               # log10 nsolid/n<H>
+      nmax = np.max([nmax,np.max(yy[iii])])
+      maxy = maxy + 10**yy
+      #print found,isol,keyword[isol],np.max(yy[iii])
+      mollist.append(isol)   
+      abulist.append(np.max(yy[iii]))
   if (nmax==-100): continue
   count = 0
   indices = np.argsort(abulist)

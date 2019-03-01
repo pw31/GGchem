@@ -9,10 +9,11 @@
       use EXCHANGE,ONLY: nel,nat,nion,nmol,H,C,N,O,W
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
-      real :: p,Tg,nHges,nges,kT,pges,mu,muold,fac
+      real :: p,Tg,nHges,nges,kT,pgas,mu,muold,fac
+      real :: ff,fold,dmu,dfdmu
       real :: rhog,rhod,Jstar,Nstar
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST),out(NDUST)
-      integer :: i,ii,j,jj,NOUT,ic,stindex
+      integer :: it,i,ii,j,jj,NOUT,ic,stindex
       character(len=20) :: name,short_name(NDUST)
       integer :: verbose=0
 
@@ -32,7 +33,7 @@
       write(70,1000) 'H',eps( H), 'C',eps( C),
      &               'N',eps( N), 'O',eps( O)
       write(70,*) NOUT,NMOLE,NDUST,Npoints
-      write(70,2000) 'Tg','nHges','pges','el',
+      write(70,2000) 'Tg','nHges','pgas','el',
      &               (trim(elnam(elnum(j))),j=1,el-1),
      &               (trim(elnam(elnum(j))),j=el+1,NELM),
      &               (trim(cmol(i)),i=1,NMOLE),
@@ -71,12 +72,27 @@
             do j=1,NMOLE
               nges = nges + nmol(j)
             enddo
-            pges = nges*kT
-            muold = mu
-            mu = nHges/pges*(bk*Tg)*muH
-            if (.not.model_pconst) exit
-            print '("mu=",2(1pE12.5))',muold/amu,mu/amu
-            if (ABS(mu/muold-1.0)<1.E-5) exit
+            pgas  = nges*bk*Tg
+            ff    = p-pgas
+            if (it==1) then
+              muold = mu
+              mu = nHges/pgas*(bk*Tg)*muH
+              dmu = mu-muold
+              if (.not.model_pconst) exit
+            else
+              dfdmu = (ff-fold)/(mu-muold)
+              dmu   = -ff/dfdmu
+              write(98,'(I3,99(1pE14.7))') it,muold,mu,fold,ff,dfdmu,dmu/mu
+              muold = mu
+              if ((dmu>0.0).or.ABS(dmu/mu)<0.7) then
+                mu = muold+dmu
+              else
+                mu = nHges/pgas*(bk*Tg)*muH
+              endif  
+            endif
+            fold = ff
+            print '("p-it=",i3,"  mu=",2(1pE20.12))',it,mu/amu,dmu/mu
+            if (ABS(dmu/mu)<1.E-10) exit
           enddo  
           
           !--- compute supersat ratios and nucleation rates ---
@@ -97,10 +113,10 @@
           print'(i4,i4," Tg[K] =",0pF8.2,"  n<H>[cm-3] =",1pE10.3)',
      >          i,ii,Tg,nHges
           write(*,1010) ' Tg=',Tg,' n<H>=',nHges,
-     &                  ' p=',pges/bar,' mu=',mu/amu,
+     &                  ' p=',pgas/bar,' mu=',mu/amu,
      &                  ' dust/gas=',rhod/rhog
           print*
-          write(70,2010) Tg,nHges,pges,
+          write(70,2010) Tg,nHges,pgas,
      &       LOG10(MAX(1.Q-300, nel)),
      &      (LOG10(MAX(1.Q-300, nat(elnum(jj)))),jj=1,el-1),
      &      (LOG10(MAX(1.Q-300, nat(elnum(jj)))),jj=el+1,NELM),

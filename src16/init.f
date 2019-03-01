@@ -17,7 +17,7 @@
      >                   As,Se,Br,Kr,Rb,Sr,Y,Zr,W
       implicit none
       integer :: i,j,nr
-      real*8 :: m,val,abund(74,4),eps0(NELEM),epsH,mfrac(NELEM)
+      real*8 :: m,val,abund(74,4),eps0(NELEM),epsH,mfrac(NELEM),addH2O
       character(len=2) :: el
       character(len=20) :: elname
       character(len=10) :: source(4)
@@ -280,7 +280,10 @@
      &           elnam(i),eps0(i),eps(i)
           enddo        
           call eps2mf(eps,mfrac)
-        endif  
+        endif
+        addH2O = 5*eps(Si)
+        eps(H) = eps(H)+2*addH2O
+        eps(O) = eps(O)+1*addH2O
       else if (abund_pick.ne.3) then
         source = (/'EarthCrust','Ocean     ','Solar     ','Meteorites'/)
         write(*,*)

@@ -55,8 +55,8 @@
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST)
       real(kind=qp) :: nges,kT,nmax,threshold
-      real*8  :: Tg,nHges,p,mu,muold,pgas
-      integer :: i,imol,iraus,e,j,verbose,dk
+      real*8  :: Tg,nHges,p,mu,muold,pgas,fold,ff,dfdmu,dmu
+      integer :: i,imol,iraus,e,j,verbose,dk,it
       logical :: included,haeufig,raus(NMOLE)
       character(len=10) :: sp
 
@@ -69,7 +69,7 @@
       verbose = 2
       if (model_eqcond) verbose=0
 
-      do 
+      do it=1,999
         if (model_pconst) nHges = p*mu/(bk*Tg)/muH
         if (model_eqcond) then
           call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
@@ -82,14 +82,29 @@
         do j=1,NMOLE
           nges = nges + nmol(j)
         enddo
-        pgas = nges*bk*Tg
-        muold = mu
-        mu = nHges/pgas*(bk*Tg)*muH
-        if (.not.model_pconst) exit
-        print '("mu=",2(1pE12.5))',muold/amu,mu/amu
-        if (ABS(mu/muold-1.0)<1.E-5) exit
+        pgas  = nges*bk*Tg
+        ff    = p-pgas
+        if (it==1) then
+          muold = mu
+          mu = nHges/pgas*(bk*Tg)*muH
+          dmu = mu-muold
+          if (.not.model_pconst) exit
+        else
+          dfdmu = (ff-fold)/(mu-muold)
+          dmu   = -ff/dfdmu
+          !write(98,'(I3,99(1pE14.7))') it,muold,mu,fold,ff,dfdmu,dmu/mu
+          muold = mu
+          if ((dmu>0.0).or.ABS(dmu/mu)<0.7) then
+            mu = muold+dmu
+          else
+            mu = nHges/pgas*(bk*Tg)*muH
+          endif  
+        endif
+        fold = ff
+        print '("p-it=",i3,"  mu=",2(1pE20.12))',it,mu/amu,dmu/mu
+        if (ABS(dmu/mu)<1.E-10) exit
       enddo  
-
+      
       write(*,*)
       write(*,'("Tg=",0pF8.2,"  rho=",1pE10.3,"  n<H>=",1pE10.3)') 
      >        Tg,nHges*muH,nHges

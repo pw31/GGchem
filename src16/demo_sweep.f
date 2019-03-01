@@ -11,12 +11,13 @@
       use EXCHANGE,ONLY: nel,nat,nion,nmol,mmol,H,C,N,O,W
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
-      real :: p,Tg,rhog,rhod,dustV,nHges,nges,mges,kT,pges
+      real :: p,Tg,rhog,rhod,dustV,nHges,nges,mges,kT,pgas
+      real :: ff,fold,dmu,dfdmu
       real :: nTEA,pTEA,mu,muold,Jstar,Nstar
       real(kind=qp) :: eps(NELEM),eps00(NELEM)
       real(kind=qp) :: Sat(NDUST),eldust(NDUST),out(NDUST)
       real(kind=qp) :: fac,e_reservoir(NELEM),d_reservoir(NDUST)
-      integer :: i,j,jj,k,l,NOUT,iW,stindex
+      integer :: it,i,j,jj,k,l,NOUT,iW,stindex
       character(len=5000) :: species,NISTspecies,elnames
       character(len=20) :: frmt,name,short_name(NDUST),test1,test2
       character(len=4) :: sup
@@ -41,7 +42,7 @@
       write(70,1000) 'H',eps( H), 'C',eps( C),
      &               'N',eps( N), 'O',eps( O)
       write(70,*) NOUT,NMOLE,NDUST,Npoints
-      write(70,2000) 'Tg','nHges','pges','el',
+      write(70,2000) 'Tg','nHges','pgas','el',
      &               (trim(elnam(elnum(j))),j=1,el-1),
      &               (trim(elnam(elnum(j))),j=el+1,NELM),
      &               (trim(cmol(i)),i=1,NMOLE),
@@ -290,7 +291,7 @@
 
         !--- run chemistry (+phase equilibrium)    ---
         !--- iterate to achieve requested pressure ---
-        do 
+        do it=1,99
           if (model_pconst) nHges = p*mu/(bk*Tg)/muH
           if (model_eqcond) then
             call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
@@ -307,12 +308,26 @@
             nges = nges + nmol(j)
             mges = mges + nmol(j)*mmol(j)
           enddo
-          pges = nges*kT
-          muold = mu
-          mu = nHges/pges*(bk*Tg)*muH
-          if (.not.model_pconst) exit
-          print '("mu=",2(1pE12.5))',muold/amu,mu/amu
-          if (ABS(mu/muold-1.0)<1.E-5) exit
+          pgas  = nges*bk*Tg
+          ff    = p-pgas
+          if (it==1) then
+            muold = mu
+            mu = nHges/pgas*(bk*Tg)*muH
+            dmu = mu-muold
+            if (.not.model_pconst) exit
+          else
+            dfdmu = (ff-fold)/(mu-muold)
+            dmu   = -ff/dfdmu
+            muold = mu
+            if ((dmu>0.0).or.ABS(dmu/mu)<0.7) then
+              mu = muold+dmu
+            else
+              mu = nHges/pgas*(bk*Tg)*muH
+            endif  
+          endif
+          fold = ff
+          print '("p-it=",i3,"  mu=",2(1pE20.12))',it,mu/amu,dmu/mu
+          if (ABS(dmu/mu)<1.E-10) exit
         enddo  
 
         !--- remove all condensates and put them in reservoir? ---
@@ -346,7 +361,7 @@
           Nstar = 9.e+99
         endif  
 
-        !--- compute dust/gas density ratio ---
+        !--- compute dust/gas mass ratio ---
         rhog  = mges
         rhod  = 0.0
         dustV = 0.0
@@ -361,10 +376,10 @@
      >        i,Tg,nHges
 
         write(*,1010) ' Tg=',Tg,' n<H>=',nHges,
-     &                ' p=',pges/bar,' mu=',mu/amu,
+     &                ' p=',pgas/bar,' mu=',mu/amu,
      &                ' dust/gas=',rhod/rhog
         print*
-        write(70,2010) Tg,nHges,pges,
+        write(70,2010) Tg,nHges,pgas,
      &       LOG10(MAX(1.Q-300, nel)),
      &      (LOG10(MAX(1.Q-300, nat(elnum(jj)))),jj=1,el-1),
      &      (LOG10(MAX(1.Q-300, nat(elnum(jj)))),jj=el+1,NELM),
