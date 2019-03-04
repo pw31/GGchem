@@ -95,7 +95,6 @@
             print '("p-it=",i3,"  mu=",2(1pE20.12))',it,mu/amu,dmu/mu
             if (ABS(dmu/mu)<1.E-10) exit
           enddo
-          print*,p,pgas
           
           !--- compute supersat ratios and nucleation rates ---
           call SUPERSAT(Tg,nat,nmol,Sat)
@@ -132,7 +131,6 @@
      &       MIN(999999.99999,Nstar)
 
         enddo
-        stop
       enddo  
       close(70)
 
