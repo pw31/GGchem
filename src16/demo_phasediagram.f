@@ -58,7 +58,7 @@
           Tg = EXP(LOG(Tmax)+LOG(Tmin/Tmax)*REAL(ii-1)/REAL(Npoints-1))
           eldust = 0.0
           !--- iterate to achieve requested pressure ---
-          do 
+          do it=1,99
             if (model_pconst) nHges = p*mu/(bk*Tg)/muH
             if (model_eqcond) then
               call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
@@ -82,7 +82,8 @@
             else
               dfdmu = (ff-fold)/(mu-muold)
               dmu   = -ff/dfdmu
-              write(98,'(I3,99(1pE14.7))') it,muold,mu,fold,ff,dfdmu,dmu/mu
+              write(98,'(I3,99(1pE14.7))')
+     >              it,muold,mu,fold,ff,dfdmu,dmu/mu
               muold = mu
               if ((dmu>0.0).or.ABS(dmu/mu)<0.7) then
                 mu = muold+dmu
@@ -93,7 +94,8 @@
             fold = ff
             print '("p-it=",i3,"  mu=",2(1pE20.12))',it,mu/amu,dmu/mu
             if (ABS(dmu/mu)<1.E-10) exit
-          enddo  
+          enddo
+          print*,p,pgas
           
           !--- compute supersat ratios and nucleation rates ---
           call SUPERSAT(Tg,nat,nmol,Sat)
@@ -130,6 +132,7 @@
      &       MIN(999999.99999,Nstar)
 
         enddo
+        stop
       enddo  
       close(70)
 
