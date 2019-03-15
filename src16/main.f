@@ -54,7 +54,7 @@
       implicit none
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST)
-      real(kind=qp) :: nges,kT,nmax,threshold
+      real(kind=qp) :: nges,nmax,threshold
       real*8  :: Tg,nHges,p,mu,muold,pgas,fold,ff,dfdmu,dmu
       integer :: i,imol,iraus,e,j,verbose,dk,it
       logical :: included,haeufig,raus(NMOLE)
@@ -226,7 +226,7 @@
 
       write(*,*) '----- gas and electron pressure -----'
       write(*,'("pgas[bar]=",1pE10.3,"  pe[bar]=",1pE10.3)') 
-     >      nges*kT/bar,nel*kT/bar
+     >      nges*bk*Tg/bar,nel*bk*Tg/bar
      
 *     ------------------------------
       call SUPERSAT(Tg,nat,nmol,Sat)

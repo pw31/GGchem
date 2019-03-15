@@ -332,6 +332,7 @@
       write(*,*) '313 = P4S3_l'
       write(*,*) '314 = VO'
       write(*,*) '315 = VO2'
+      write(*,*) '316 = SO3'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -2479,6 +2480,13 @@
         Edzahl = 2
         stoich(2) = 1.D0
         stoich(3) = 2.D0
+      elseif (specie.eq.316) then
+        call READ_DATEI('SO3.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('S.txt' ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('O.txt' ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 3.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop

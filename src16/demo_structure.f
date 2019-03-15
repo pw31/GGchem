@@ -16,10 +16,11 @@
       real(kind=qp) :: Sat(NDUST),eldust(NDUST),out(NDUST)
       real(kind=qp) :: fac,e_reservoir(NELEM),d_reservoir(NDUST)
       real :: dat(1000),ddust
-      real :: tau,p,pe,Tg,rho,nHges,nges,kT,pges,mu,muold
-      real :: Jstar,Nstar,rhog,dustV,rhod,L3,bmix,emono
+      real :: tau,p,pe,Tg,rho,nHges,nges,kT,pgas,mu
+      real :: muold,dmu,ff,fold,dfdmu
+      real :: Jstar,Nstar,rhog,dustV,rhod,L3,bmix,emono,zdum
       integer :: i,j,k,l,e,jj,iz,dk,NOUT,Nfirst,Nlast,Ninc,iW,idum
-      integer :: n1,n2,n3,n4,n5,Ndat,dind(1000),ek,eind(1000)
+      integer :: it,n1,n2,n3,n4,n5,Ndat,dind(1000),ek,eind(1000)
       integer :: verbose=0
       character(len=20000) :: header
       character(len=200) :: line,filename
@@ -254,16 +255,35 @@
               estruc(i,e) = estruc(i,e) + emono*dust_nu(dk,l)    
             enddo
           enddo  
-        print'(99(A12))',(elnam(elnum(j)),j=1,NELM)
-        print'(99(1pE12.3))',(eps0(elnum(j)),j=1,NELM)
-
-          !print'(99(1pE12.3))',estruc(i,:)/eps0(:)
-          !stop
+          print'(99(A12))',(elnam(elnum(j)),j=1,el-1),
+     &                     (elnam(elnum(j)),j=el+1,NELM)
+          print'(99(1pE12.3))',(eps0(elnum(j)),j=1,el-1),
+     &                         (eps0(elnum(j)),j=el+1,NELM)
         enddo  
         close(3)
         Nfirst = Npoints
         Nlast  = 1
         Ninc   = -1            ! top to bottom to top
+
+      !--------------------------------------------------------
+      else if (model_struc==7) then
+      !--------------------------------------------------------
+        open(3,file=filename,status='old')
+        do i=1,1
+          read(3,'(A200)') line
+        enddo
+        read(3,*) Npoints
+        do i=1,Npoints
+          read(3,*) idum,zdum,p,Tg
+          Tgas(i)  = Tg
+          press(i) = p*bar
+          estruc(i,:) = eps0(:)
+        enddo
+        close(3)
+        model_pconst = .true.
+        Nfirst = 1
+        Nlast  = Npoints
+        Ninc   = 1             ! bottom to top
 
       else
         print*,"*** unknown file format =",model_struc
@@ -286,7 +306,7 @@
       write(70,1000) 'H',eps( H), 'C',eps( C),
      &               'N',eps( N), 'O',eps( O)
       write(70,*) NOUT,NMOLE,NDUST,Npoints
-      write(70,2000) 'Tg','nHges','pges','el',
+      write(70,2000) 'Tg','nHges','pgas','el',
      &               (trim(elnam(elnum(j))),j=1,el-1),
      &               (trim(elnam(elnum(j))),j=el+1,NELM),
      &               (trim(cmol(i)),i=1,NMOLE),
@@ -312,14 +332,15 @@
 
         print*
         print*,"new point",i,nHges,Tg,p/bar
-        print'(99(A12))',(elnam(elnum(j)),j=1,NELM)
-        print'(99(1pE12.3))',(eps0(elnum(j)),j=1,NELM)
+        print'(99(A12))',(elnam(elnum(j)),j=1,el-1),
+     &                   (elnam(elnum(j)),j=el+1,NELM)
+        print'(99(1pE12.3))',(eps0(elnum(j)),j=1,el-1),
+     &                       (eps0(elnum(j)),j=el+1,NELM)
 
         !--- run chemistry (+phase equilibrium)    ---
         !--- iterate to achieve requested pressure ---
-        do 
+        do it=1,99
           if (model_pconst) nHges = p*mu/(bk*Tg)/muH
-          !print*,p/bar,nHges,Tg
           if (model_eqcond) then
             call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
           endif  
@@ -332,12 +353,28 @@
           do j=1,NMOLE
             nges = nges + nmol(j)
           enddo
-          pges = nges*kT
-          muold = mu
-          mu = nHges/pges*(bk*Tg)*muH
-          if (.not.model_pconst) exit
-          print '("mu=",2(1pE12.5))',muold/amu,mu/amu
-          if (ABS(mu/muold-1.0)<1.E-5) exit
+          pgas = nges*kT
+          ff    = p-pgas
+          if (it==1) then
+            muold = mu
+            mu = nHges/pgas*(bk*Tg)*muH
+            dmu = mu-muold
+            if (.not.model_pconst) exit
+          else
+            dfdmu = (ff-fold)/(mu-muold)
+            dmu   = -ff/dfdmu
+            write(98,'(I3,99(1pE14.7))')
+     >           it,muold,mu,fold,ff,dfdmu,dmu/mu
+            muold = mu
+            if ((dmu>0.0).or.ABS(dmu/mu)<0.7) then
+              mu = muold+dmu
+            else
+              mu = nHges/pgas*(bk*Tg)*muH
+            endif  
+          endif
+          fold = ff
+          print '("p-it=",i3,"  mu=",2(1pE20.12))',it,mu/amu,dmu/mu
+          if (ABS(dmu/mu)<1.E-10) exit
         enddo  
 
         !--- remove all condensates and put them in reservoir? ---
@@ -351,13 +388,14 @@
      &                       + fac*dust_nu(j,jj)*eldust(j)
             enddo
           enddo  
-          !do j=1,NELM
-          !  if (j==el) cycle 
-          !  k = elnum(j)
-          !  print'(A3,2(1pE18.10))',elnam(k),eps(k)/eps00(k),
-     &    !                  (eps(k)+e_reservoir(k))/eps00(k)
-          !enddo
+          do j=1,NELM
+            if (j==el) cycle 
+            k = elnum(j)
+            print'(A3,2(1pE18.10))',elnam(k),eps(k)/eps00(k),
+     &                      (eps(k)+e_reservoir(k))/eps00(k)
+          enddo
           eps0(:) = eps(:) + (1.Q0-fac)*e_reservoir(:)
+          estruc(i+Ninc,:) =  eps0(:)  ! for next layer
           eldust(:) = d_reservoir(:)
         endif  
 
@@ -386,11 +424,10 @@
      >        i,Tg,nHges
 
         write(*,1010) ' Tg=',Tg,' n<H>=',nHges,
-     &                ' p=',pges/bar,' mu=',mu/amu,
+     &                ' p=',pgas/bar,' mu=',mu/amu,
      &                ' dust/gas=',rhod/rhog
-        !print*,pges,press(i)
         print*
-        write(70,2010) Tg,nHges,pges,
+        write(70,2010) Tg,nHges,pgas,
      &       LOG10(MAX(1.Q-300, nel)),
      &      (LOG10(MAX(1.Q-300, nat(elnum(jj)))),jj=1,el-1),
      &      (LOG10(MAX(1.Q-300, nat(elnum(jj)))),jj=el+1,NELM),

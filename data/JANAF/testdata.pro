@@ -20,7 +20,17 @@ norm4   = 0.5
 stoich2 = 1.0
 stoich3 = 1.0
 stoich4 = 1.0
-R = 8.31447 ;J/K/mol
+;file1 = 'SO2.txt'
+;file2 = 'Sref.txt'
+;file3 = 'O2.txt'
+;file4 = 'F2.txt'         ; not used
+;norm2 = 1.0
+;norm3 = 0.5              ; reference state is 1/2 O2
+;norm4 = 0.5
+;stoich2 = 1.0
+;stoich3 = 2.0
+;stoich4 = 0.0            ; not used
+R = 8.31447                     ;J/K/mol
 openr,1,file1
 readf,1,line1
 readf,1,line2
@@ -56,7 +66,7 @@ GHoverT4 = -GHoverT4*norm4
 HH4 = HH4*1000.0*norm4                ; reference state is 1/2 H2
 dH4 = dH4*1000.0*norm4
 dG4 = dG4*1000.0*norm4
-GHoverT3 = INTERPOL(GHoverT3,T3,T1)   ; interpolate to T1-temperatures
+GHoverT4 = INTERPOL(GHoverT4,T3,T1)   ; interpolate to T1-temperatures
 HH4 = INTERPOL(HH4,T3,T1)
 dH4 = INTERPOL(dH4,T3,T1)
 dG4 = INTERPOL(dG4,T3,T1)

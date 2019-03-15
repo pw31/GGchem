@@ -80,9 +80,10 @@
       module STRUCTURE
 ************************************************************************
       use DUST_DATA,ONLY: NELEM
+      integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       integer,parameter :: Npmax=10000 
       real*8,dimension(Npmax) :: Tgas,press,pelec,dens,nHtot
-      real*8 :: estruc(Npmax,NELEM)
+      real(kind=qp) :: estruc(Npmax,NELEM)
       end
 
 ************************************************************************

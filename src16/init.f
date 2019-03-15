@@ -281,9 +281,9 @@
           enddo        
           call eps2mf(eps,mfrac)
         endif
-        !addH2O = 5*eps(Si)
-        !eps(H) = eps(H)+2*addH2O
-        !eps(O) = eps(O)+1*addH2O
+        addH2O = 0.9*eps(Si)
+        eps(H) = eps(H)+2*addH2O
+        eps(O) = eps(O)+1*addH2O
       else if (abund_pick.ne.3) then
         source = (/'EarthCrust','Ocean     ','Solar     ','Meteorites'/)
         write(*,*)
