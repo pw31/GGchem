@@ -1,13 +1,14 @@
 **********************************************************************
       SUBROUTINE INIT_DUSTCHEM
 **********************************************************************
-      use PARAMETERS,ONLY: model_eqcond
+      use PARAMETERS,ONLY: model_eqcond,phyllosilicates
       use CHEMISTRY,ONLY: NMOLE,NELM,catm
       use DUST_DATA,ONLY: NDUSTmax,NEPS,NELEM,NDUST,eps0,amu,
      &                    dust_nam,dust_rho,dust_vol,dust_mass,
      &                    dust_nel,dust_nu,dust_el,fit,cfit,
      &                    elnr,elcode,elnam,mass,Tmelt,Tcorr,
      &                    DustChem_file
+      use EXCHANGE,ONLY: H,Si,Al,Ca
       implicit none
       integer :: i,imax,j,k,el,j1,j2
       real*8 :: dmass,prec(NDUSTmax)
@@ -15,7 +16,7 @@
       character(len=200):: zeile,lastzeile
       character(len=100) :: trivial(NDUSTmax),tmp
       character(len=2)  :: name
-      logical :: found,allfound
+      logical :: found,allfound,hasH,hasSi,hasAl,hasCa
 
       write(*,*) 
       write(*,*) "reading "//trim(DustChem_file)//" ..."
@@ -46,6 +47,10 @@
         read(12,*) dust_nel(NDUST)
         dmass = 0.d0
         allfound = .true.
+        hasH  = .false.
+        hasSi = .false.
+        hasCa = .false.
+        hasAl = .false.
         do j=1,dust_nel(NDUST)
           read(12,1030) dust_nu(NDUST,j),name
           found = .false. 
@@ -54,6 +59,10 @@
               dust_el(NDUST,j) = k
               dmass = dmass + dust_nu(NDUST,j)*mass(k)
               found = .true.
+              if (k==H)  hasH =.true.
+              if (k==Si) hasSi=.true.
+              if (k==Al) hasAl=.true.
+              if (k==Ca) hasCa=.true.
             endif
           enddo
           if (.not.found) then
@@ -99,6 +108,8 @@
           print*,dust_nam(NDUST)
           stop
         endif  
+        if ((.not.phyllosilicates).and.hasH
+     &      .and.(hasSi.or.hasAl.or.hasCa)) allfound=.false.
         if (allfound) then
           dust_mass(NDUST) = dmass
           dust_vol(NDUST) = dmass/dust_rho(NDUST)

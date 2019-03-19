@@ -4,7 +4,7 @@
       use PARAMETERS,ONLY: elements,abund_pick,model_dim,model_pconst,
      >     model_struc,model_eqcond,Npoints,useDatabase,
      >     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,pick_mfrac,
-     >     abund_file,struc_file,remove_condensates
+     >     abund_file,struc_file,remove_condensates,phyllosilicates
       use CHEMISTRY,ONLY: NewBackIt,NewFullIt,NewBackFac,NewPreMethod,
      >                    NewFastLevel,dispol_file
       use DUST_DATA,ONLY: DustChem_file,bar
@@ -25,6 +25,7 @@
       pick_mfrac   = .false.
       model_eqcond = .false.
       remove_condensates = .false.
+      phyllosilicates = .true.
       model_dim    = 1
       model_pconst = .true.
       model_struc  = 0
@@ -72,6 +73,8 @@
           read(line,*) model_eqcond
         else if (index(line,"! remove_condensates")>0) then   
           read(line,*) remove_condensates
+        else if (index(line,"! phyllosilicates")>0) then   
+          read(line,*) phyllosilicates
         else if (index(line,"! model_dim")>0) then   
           read(line,*) model_dim
         else if (index(line,"! model_pconst")>0) then   

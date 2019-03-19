@@ -9,10 +9,11 @@ dispol_WoitkeRefit.dat                  ! dispol_file3
 # abundance options 0=custum, 1=EarthCrust, 2=Ocean, 3=Solar, 4=Meteorites
 .true.                ! pick_mfrac
 0                     ! abund_pick
-mfrac_schaefer_CC.dat
+mfrac_schaefer_BSE.dat
 
 # equilibrium condensation?
 .true.                ! model_eqcond
+.false.               ! phyllosilicates
 
 # model options
 1                     ! model_dim  (0,1,2)
@@ -25,5 +26,5 @@ mfrac_schaefer_CC.dat
 7                     ! NewBackIt  
 1.E+5                 ! NewBackFac
 1                     ! NewFastLevel
-1500.0                 ! Tfast
+800.0                 ! Tfast
 
