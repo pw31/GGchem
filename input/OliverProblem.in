@@ -15,15 +15,15 @@ mfrac_schaefer_CC.dat
 .true.                ! model_eqcond
 
 # model options
-0                     ! model_dim  (0,1,2)
+1                     ! model_dim  (0,1,2)
 .true.                ! model_pconst
 4000.0                ! Tmax [K]
-250.0                 ! Tmin [K]      (if model_dim>0)
+500.0                 ! Tmin [K]      (if model_dim>0)
 1.E+2                 ! pmax [bar]    (if pconst=.true.)
 1.E+2                 ! pmin [bar]
 100                   ! Npoints
 7                     ! NewBackIt  
 1.E+5                 ! NewBackFac
 1                     ! NewFastLevel
-740.0                 ! Tfast
+1500.0                 ! Tfast
 

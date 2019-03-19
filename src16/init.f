@@ -17,7 +17,7 @@
      >                   As,Se,Br,Kr,Rb,Sr,Y,Zr,W
       implicit none
       integer :: i,j,nr
-      real*8 :: m,val,abund(74,4),eps0(NELEM),epsH,mfrac(NELEM),addH2O
+      real :: m,val,abund(74,4),eps0(NELEM),epsH,mfrac(NELEM),addH2O
       character(len=2) :: el
       character(len=20) :: elname
       character(len=10) :: source(4)
@@ -249,7 +249,7 @@
         mfrac = 1.E-50
         do i=1,999
           read(1,*,end=1000) el,val
-          if (el=='el') exit
+          if (el=='el') cycle
           found = .false.
           do j=1,NELEM
             if (el==elnam(j)) then
@@ -269,8 +269,9 @@
         if (pick_mfrac) then
           call mf2eps(mfrac,eps)
           do i=1,NELEM
-            write(*,'(A2,": ",1pE10.3," ->",1pE10.3)') 
-     &           elnam(i),eps0(i),eps(i)
+            if (mfrac(i)==1.E-50) cycle
+            write(*,'(A2,": ",1pE10.3," ->",2(1pE10.3))') 
+     &           elnam(i),eps0(i),eps(i),mfrac(i)
           enddo        
         else   
           epsH = eps(H)
@@ -281,9 +282,9 @@
           enddo        
           call eps2mf(eps,mfrac)
         endif
-        addH2O = 0.9*eps(Si)
-        eps(H) = eps(H)+2*addH2O
-        eps(O) = eps(O)+1*addH2O
+        !addH2O = 0.9*eps(Si)
+        !eps(H) = eps(H)+2*addH2O
+        !eps(O) = eps(O)+1*addH2O
       else if (abund_pick.ne.3) then
         source = (/'EarthCrust','Ocean     ','Solar     ','Meteorites'/)
         write(*,*)
