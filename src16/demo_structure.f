@@ -331,7 +331,8 @@
         eps0(:) = estruc(i,:)
 
         print*
-        print*,"new point",i,nHges,Tg,p/bar
+        print'("new point",I4,"  n<H>=",1pE12.5," cm-3  T=",0pF8.3,
+     &         " K  p=",1pE12.5," bar")',i,nHges,Tg,p/bar
         print'(99(A12))',(elnam(elnum(j)),j=1,el-1),
      &                   (elnam(elnum(j)),j=el+1,NELM)
         print'(99(1pE12.3))',(eps0(elnum(j)),j=1,el-1),

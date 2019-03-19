@@ -50,7 +50,7 @@
       use CHEMISTRY,ONLY: NMOLE,NELM,m_kind,elnum,cmol,el
       use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,amu,muH,
      >                    dust_nam,dust_mass,dust_Vol,dust_nel,dust_el
-      use EXCHANGE,ONLY: nel,nat,nion,nmol
+      use EXCHANGE,ONLY: nel,nat,nion,nmol,C,N
       implicit none
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST)
@@ -73,7 +73,7 @@
         if (model_pconst) nHges = p*mu/(bk*Tg)/muH
         if (model_eqcond) then
           call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
-        endif  
+        endif
         call GGCHEM(nHges,Tg,eps,.false.,0)
         nges = nel
         do j=1,NELEM
@@ -154,10 +154,11 @@
             nmax  = nmol(i)
           endif
         enddo
-        haeufig = (nmax.gt.nHges*1.Q-5)
+        haeufig = (nmax.gt.nHges*1.Q-6)
         if (.not.haeufig) exit
         raus(iraus) = .true.
-        write(*,4010) cmol(iraus), nmol(iraus)
+        write(*,4010) cmol(iraus),nmol(iraus),
+     &                nmol(iraus)/nges
       enddo
   
       write(*,*) '-----  where are the elements?  -----'
@@ -240,9 +241,9 @@
 
  1000 format(a6,1pE9.3)
  1010 format(a6,1pE9.3,a8,1pE9.3)
- 1020 format(a20,1pE9.3)
+ 1020 format(a20,1pE15.9)
  4000 format(a7,1pE10.4,a5,1pE10.4)     
- 4010 format(' n',a8,1pE12.4)
+ 4010 format(' n',a8,1pE12.4,0pF13.9)
  5000 format(1x,a20,' S=',1pE9.3)
       RETURN
       end      
