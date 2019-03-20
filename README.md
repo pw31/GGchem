@@ -4,13 +4,12 @@
 Fast thermo-chemical equilibrium code with or without equilibrium
 condensation down to 100K.
 
-Please cite 
-"Equilibrium chemistry down to 100 K. 
+Please cite our A&A paper "Equilibrium chemistry down to 100 K. 
  Impact of silicates and phyllosilicates on carbon/oxygen ratio",
 P. Woitke, Ch. Helling, G. H. Hunter, J. D. Millard, 
-G. E. Turner, M. Worters, J. Blecic, J. W. Stock
-Astronomy & Astrophysics, accepted 02/12/2017
-see GGchemPaper.pdf in this folder 
+G. E. Turner, M. Worters, J. Blecic, J. W. Stock,
+2018, Astronomy & Astrophysics 614, 1,
+see GGchemPaper.pdf in this folder. 
 
 ------------------------------------------------------------------------
 We would be interested to hear from you about what kind of applications
@@ -145,5 +144,3 @@ The equilibrium condensation code requires many calls of the gas-phase
 equilibrium chemistry routine, and takes about 0.02-0.09 sec per call,
 depending on how much useful information is found in database.dat.
  
-
-
