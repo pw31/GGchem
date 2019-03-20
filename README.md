@@ -1,12 +1,9 @@
-=====================
-       GGchem
-=====================
+# GGchem
 (c) Peter Woitke & Christiane Helling 2017
 
 Fast thermo-chemical equilibrium code with or without equilibrium
 condensation down to 100K.
 
-------------------------------------------------------------------------
 Please cite 
 "Equilibrium chemistry down to 100 K. 
  Impact of silicates and phyllosilicates on carbon/oxygen ratio",
@@ -28,7 +25,7 @@ If your research results in any publications, please cite the above
 article and consider to give us co-author-ship.
 
 ------------------------------------------------------------------------
-To checkout the git repository and compile the code, use 
+### checkout the git repository and compile the code, use 
 
 > git clone https://github.com/pw31/GGchem
 > cd GGchem/src16
@@ -39,7 +36,7 @@ The makefile.prodimo is for ifort compiler, adjust your own makefile if
 you want to compile e.g. with gfortran.
 
 ------------------------------------------------------------------------
-To run the code, type e.g.
+### To run the code, type e.g.
 
 > cd ..
 > ./ggchem input/default.in
@@ -66,7 +63,7 @@ supersaturation ratio and concentration of condensed units, whereas
 {mol} (without the leading "n") is a molecular particle density.
 
 ------------------------------------------------------------------------
-To visualise the results, use e.g.
+### To visualise the results, use e.g.
 
 > python tools/Plot_T.py
 > evince ggchem.pdf &
