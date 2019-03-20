@@ -117,7 +117,8 @@ points, the results will be faster and more reliable. The Gibbs-free
 energy data files are in folder data:
 
 DustChem_GGchem.dat      : old GGchem NIST-Janaf fits  
-DustChem_SUPCRTBL.dat    : dG-fits from the SUPCRTBL database (Zimmer et al. 2016, Computers and Geosciences, 90, 97)  
+DustChem_SUPCRTBL.dat    : dG-fits from the SUPCRTBL database  
+      (Zimmer et al. 2016, Computers and Geosciences, 90, 97)  
 DustChem.dat             : currently used collection from both  
 
 The pure gas phase chemistry needs about 0.4 ms per call for T > 1000 K
