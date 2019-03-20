@@ -1,4 +1,5 @@
 # GGchem
+
 (c) Peter Woitke & Christiane Helling 2017
 
 Fast thermo-chemical equilibrium code with or without equilibrium
@@ -59,8 +60,11 @@ supersaturation ratio and concentration of condensed units, whereas
 > python tools/Plot_T.py  
 > evince ggchem.pdf &  
 
+### Customise your own model
+
 To create your own model, make a copy of default.in and customize it to 
-tell GGchem what it should do.  Select or deselect elements by modifying 
+tell GGchem what it should do. You can also look at some of the other *.in 
+files to lean from examples. Select or deselect elements by modifying 
 the first line, default choice is
 
  H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li F P V Cr Mn Ni Zr W el
