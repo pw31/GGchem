@@ -169,10 +169,10 @@ for i in range(4+NELEM+NMOLE,4+NELEM+NMOLE+NDUST,1):
   yy = dat[:,ind]               # log10 nsolid/n<H>
   ymax = np.max([ymax,np.max(yy[iii])])
   ymin = -20
+indices = np.argsort(smean)
 if (ymax>-99):
   print solids
   fig,ax = plt.subplots()
-  indices = np.argsort(smean)
   count = 0
   for isolid in reversed(indices):
     solid = solids[isolid]
@@ -215,7 +215,7 @@ if (ymax>-99):
         outp=outp+' '+keyword[i][1:]
     print Tg[iT],iact,outp  
 
-#================== supersaturation ratios ===================
+  #================== log10 supersaturation ratios ===================
   fig,ax = plt.subplots()
   count = 0
   for isolid in reversed(indices):
@@ -251,37 +251,43 @@ if (ymax>-99):
   plt.savefig(pp,format='pdf')
   plt.clf()
 
-  fig,ax = plt.subplots()
-  count = 0
-  for isolid in reversed(indices):
-    solid = solids[isolid]
-    ind = np.where(keyword == 'S'+solid)[0]
-    if (np.size(ind) == 0): continue
-    ind = ind[0]
-    #print solid,ind
-    S = 10**dat[:,ind]              # S
-    if (np.max(S[iii])>0.7):
-      plt.plot(Tg,S,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
-      count = count + 1
-  plt.title('supersaturation ratios',fontsize=20)
-  plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
-  plt.ylabel(r'$S$',fontsize=20)
-  plt.xscale('log')
-  plt.xlim(Tmin,Tmax)
-  plt.ylim(0,1.05)
-  plt.tick_params(axis='both', labelsize=14)
-  plt.tick_params('both', length=6, width=1.5, which='major')
-  plt.tick_params('both', length=3, width=1, which='minor')
-  ax.xaxis.set_minor_locator(locmin)
-  ax.set_xticks(locmaj)
-  ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
-  sz = np.min([13,1+195.0/count])
-  leg = plt.legend(loc='best',fontsize=10,fancybox=True,
-                   handlelength=3,prop={'size':sz})
-  leg.get_frame().set_alpha(0.7)
-  plt.tight_layout()
-  plt.savefig(pp,format='pdf')
-  plt.clf()
+#================== supersaturation ratios ===================
+fig,ax = plt.subplots()
+count = 0
+for isolid in reversed(indices):
+  solid = solids[isolid]
+  ind = np.where(keyword == 'S'+solid)[0]
+  if (np.size(ind) == 0): continue
+  ind = ind[0]
+  #print solid,ind
+  S = 10**dat[:,ind]              # S
+  if (np.max(S[iii])>0.7):
+    plt.plot(Tg,S,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
+    count = count + 1
+    if (count>100): break  
+plt.title('supersaturation ratios',fontsize=20)
+plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
+plt.ylabel(r'$S$',fontsize=20)
+plt.xscale('log')
+plt.xlim(Tmin,Tmax)
+plt.ylim(0,1.05)
+plt.tick_params(axis='both', labelsize=14)
+plt.tick_params('both', length=6, width=1.5, which='major')
+plt.tick_params('both', length=3, width=1, which='minor')
+ax.xaxis.set_minor_locator(locmin)
+ax.set_xticks(locmaj)
+ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
+sz = np.min([13,1+195.0/count])
+col = 1
+if (count>30): 
+  sz = np.min([13,1+195.0/count*2])
+  col = 2
+leg = plt.legend(loc='best',fontsize=10,fancybox=True,
+                 handlelength=3,prop={'size':sz},ncol=col)
+leg.get_frame().set_alpha(0.7)
+plt.tight_layout()
+plt.savefig(pp,format='pdf')
+plt.clf()
 
 #================== some important molecules ====================
 fig,ax = plt.subplots()
@@ -314,7 +320,7 @@ plt.xscale('log')
 ax.xaxis.set_minor_locator(locmin)
 ax.set_xticks(locmaj)
 ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
-leg = plt.legend(loc='lower right',fontsize=11,fancybox=True)
+leg = plt.legend(loc='best',fontsize=11,ncol=2,fancybox=True)
 leg.get_frame().set_alpha(0.7)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
