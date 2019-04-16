@@ -41,12 +41,12 @@ density, solid and liquid particle densities, and supersaturation
 ratios:
 
   * Tg: gas temperature [K],  
-  * nHges: total hydrogen nuclei particle density n<H> [cm-3],  
+  * nHtot: total hydrogen nuclei particle density [cm-3],  
   * pges: total gas pressure [dyn/cm2]  
   * el ... W: atomic particle densities log10(natom)[cm-3]  
   * {mol}: molecular particle densities log10(nmol)[cm-3]  
   * S{cond}: supersaturation ratios log10(S) [-] of condensates  
-  * n{cond}: concentration of condensed units per H nuclues log10(ncond/n<H>) [-]  
+  * n{cond}: concentration of condensed units per H nuclues log10(ncond/nHtot) [-]  
   * eps{el}: remainig element abundances in the gas phase [-]  
   * dust/gas: dust to gas mass ratio log10(rho_dust/rho_gas) [-]  
   * dustVol/H: dust volume per H nucleus log10(dust_volume) [cm3]  
