@@ -152,7 +152,7 @@
       character(len=1) :: char
       character(len=80) :: frmt
       character(len=999) :: condensates
-      logical :: ok,found,contain1,contain2,used(NDUST)
+      logical :: ok,found,contain1,contain2,corrected,used(NDUST)
       logical,save :: firstCall=.true.
       
       if (firstCall) then
@@ -312,6 +312,7 @@
           endif  
         enddo
         !--- 2a check unassigned condensates ---
+        corrected = .false.
         do i=1,NEPS
           el = isort(i)
           if (jmain(el)>0) cycle 
@@ -341,9 +342,11 @@
                 jmain(el) = j
                 Nbuf = Nbuf+1
                 ibuf(Nbuf) = el
-                !print*,"correction:"
-                !print*,elnam(el2)//" "//trim(dust_nam(jj))
-                !print*,elnam(el)//" "//trim(dust_nam(j)),REAL(ddust(j))
+                print*,"correction:"
+                print*,elnam(el2)//" "//trim(dust_nam(jj))
+                print*,elnam(el)//" "//trim(dust_nam(j)),REAL(ddust(j))
+                corrected = .true.
+                exit
               endif
             enddo  
           enddo
@@ -421,6 +424,7 @@
             eps(el) = tmp
           endif
         enddo
+        !if (corrected) stop
         if (.not.ok) then
           eps   = ecopy
           ddust = dcopy

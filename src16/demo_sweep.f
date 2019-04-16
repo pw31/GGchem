@@ -282,7 +282,8 @@
           same = same.and.(nHmin==nHmax)
         endif  
         if (same) then
-          eps0(Ca) = eps00(Ca)*(1.0+1.0*fac)
+          !eps0(Ca) = eps00(Ca)*(1.0+1.0*fac)
+          eps0(Ca) = eps00(Ca)*(0.7-0.1*fac)
           !eps0(H) = eps00(H)*(1.0-0.3*fac)
           !eps0(S) = eps00(S)*(1.0 + 1.0*fac)
           !eps0(C) = eps00(O) * (0.3+1.1*fac) 
