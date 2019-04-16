@@ -89,7 +89,7 @@
 **********************************************************************
       SUBROUTINE PUT_DATA(nH,T,eps,ddust,qbest,ibest,active)
 **********************************************************************
-      use dust_data,ONLY: NELEM,NDUST
+      use dust_data,ONLY: NELEM,NDUST,dust_nam
       use DATABASE,ONLY: qp,NDAT,NLAST,NMODI,DMAX,dbase
       implicit none
       real*8,intent(in) :: nH,T,qbest
@@ -98,9 +98,10 @@
       logical,intent(in) :: active(0:NDUST)
       integer :: i,j
       
-      if (qbest<1.d-8) then
-        return 
-      else if (qbest<1.d-3) then
+      !if (qbest<1.d-8) then
+      !  return 
+      !else 
+      if (qbest<1.d-3) then
         i = ibest
         write(*,'(" ... replacing database entry (",I6,
      >          ") nH,T=",2(1pE15.7))') i,nH,T
@@ -118,6 +119,7 @@
       dbase(i)%lT = LOG(T)
       dbase(i)%eps = eps
       do j=1,NDUST
+        !if (ddust(j)>0.Q0) print*,active(j),dust_nam(j),real(ddust(j))
         dbase(i)%ddust(j) = ddust(j)
         if (.not.active(j)) dbase(i)%ddust(j)=0.Q0
       enddo
@@ -144,11 +146,13 @@
       real*8 :: ln,lT,lnread,lTread,qual,pot,rsort(NEPS)
       real(kind=qp) :: check(NELEM),error,errmax,corr,emain,del
       real(kind=qp) :: stoich(NEPS,NEPS),xx(NEPS),rest(NEPS),tmp
-      integer :: i,j,k,it,el,elworst,b,bb,Nbuf,iloop
+      real(kind=qp) :: ecopy(NELEM),dcopy(NDUST)
+      integer :: i,j,k,it,el,el2,elworst,b,bb,Nbuf,iloop,joff,jj
       integer :: isort(NEPS),jmain(NELEM),ibuf(NELEM)
       character(len=1) :: char
       character(len=80) :: frmt
-      logical :: found,used(NDUST)
+      character(len=999) :: condensates
+      logical :: ok,found,contain1,contain2,used(NDUST)
       logical,save :: firstCall=.true.
       
       if (firstCall) then
@@ -206,18 +210,26 @@
         endif  
       enddo
  100  active = .false.
+      condensates = ""
       if (ibest>0) then
         eps    = dbase(ibest)%eps
         ddust  = dbase(ibest)%ddust(1:NDUST)
         do i=1,NDUST
-          if (ddust(i)>0.Q0) active(i)=.true.
+          if (ddust(i)>0.Q0) then
+            active(i)=.true.
+            condensates = trim(condensates)//" "//trim(dust_nam(i))
+          endif  
         enddo
         NPICK2 = NPICK1
         NPICK1 = ibest
         write(*,'(" ... found best dataset (",I6,
      >          ")  nH,T,qual=",3(1pE13.5))')
      >     ibest,EXP(dbase(ibest)%ln),EXP(dbase(ibest)%lT),qbest
-
+        write(*,*) "active condensates: "//trim(condensates)
+        ecopy = eps
+        dcopy = ddust
+ 150    continue
+        joff = 0
         !----------------------------------------------------
         ! ***  adapt eps and ddust to reach current eps0  ***
         !----------------------------------------------------
@@ -278,6 +290,7 @@
           check(el) = eps(el)
           emain = eps(el)
           jmain(el) = 0
+          !print*,elnam(el),real(eps0(el)),real(emain)
           do j=1,NDUST
             if (ddust(j)==0.Q0) cycle
             do k=1,dust_nel(j)
@@ -297,6 +310,43 @@
             ibuf(Nbuf) = el
             !print*,elnam(el)//" "//trim(dust_nam(j)),REAL(ddust(j))
           endif  
+        enddo
+        !--- 2a check unassigned condensates ---
+        do i=1,NEPS
+          el = isort(i)
+          if (jmain(el)>0) cycle 
+          !print*,elnam(el)," not assigned"
+          do jj=1,NDUST
+            if (ddust(jj)==0.Q0) cycle
+            if (used(jj)) cycle         
+            !print*,dust_nam(jj)," not assigned"
+            do b=1,Nbuf
+              el2 = ibuf(b)
+              j = jmain(el2)
+              contain1 = .false.
+              contain2 = .false.
+              do k=1,dust_nel(j)
+                if (dust_el(j,k)==el) then
+                  del = ddust(j)*dust_nu(j,k) 
+                  contain1=.true.
+                endif  
+              enddo  
+              do k=1,dust_nel(jj)
+                if (dust_el(jj,k)==el2) contain2=.true.
+              enddo
+              !print*,dust_nam(j),elnam(el2),contain1,contain2,del
+              if (contain1.and.contain2.and.del>eps(el)) then
+                jmain(el2) = jj
+                used(jj)=.true.
+                jmain(el) = j
+                Nbuf = Nbuf+1
+                ibuf(Nbuf) = el
+                !print*,"correction:"
+                !print*,elnam(el2)//" "//trim(dust_nam(jj))
+                !print*,elnam(el)//" "//trim(dust_nam(j)),REAL(ddust(j))
+              endif
+            enddo  
+          enddo
         enddo  
         !--- 3. setup linear equation system ---
         stoich = 0.Q0
@@ -326,18 +376,20 @@
           rest(b) = check(el)
           write(frmt,'("(A2,2x,",I2,"(I2),A16,2(1pE13.6))")') Nbuf
           write(*,frmt) elnam(el),INT(stoich(b,1:Nbuf)),
-     &           trim(dust_nam(j)),REAL(ddust(j)),REAL(rest(b))
+     &           trim(dust_nam(j)),ddust(j),rest(b)
         enddo  
         call GAUSS16( NEPS, Nbuf, stoich, xx, rest)
+        ok = .true.
         do b=1,Nbuf
           el = ibuf(b)
           j = jmain(el)
+          print'(A3,A16,1pE13.6," ->",1pE13.6)',
+     &         elnam(el),trim(dust_nam(j)),ddust(j),xx(b)
           ddust(j) = xx(b)
-          print'(A3,A16,1pE13.6)',elnam(el),trim(dust_nam(j)),ddust(j)
           if (xx(b)<0.Q0) then
             print*,"*** negative dust abundance in database.f"
-            ddust(j) = 0.Q0
-            active(j) = .false.
+            !if (joff==0) joff=j
+            !ok = .false.
             qbest = 9.d+99
             return
           endif  
@@ -354,26 +406,29 @@
           el = isort(i)
           if (jmain(el)==0) then
             tmp = eps0(el)-check(el)
-            print*,elnam(el)//" gas",REAL(tmp)
+            print'(A3,A16,1pE13.6," ->",1pE13.6)',
+     &           elnam(el),"gas",eps(el),tmp
             if (tmp<0.Q0) then
               print*,"*** negative element abundance in database.f" 
+              !if (joff==0) then
+              !  el = ibuf(1)
+              !  joff = jmain(el)
+              !endif
+              !ok = .false.
               qbest = 9.d+99
               return
-              !if (jmain(el)==0) then
-              !  isort(i) = isort(iloop) 
-              !  isort(iloop) = el 
-              !  iloop = iloop+1
-              !  if (iloop>NEPS) iloop=1
-              !else   
-              !  j = jmain(el)
-              !  ddust(j) = 0.Q0
-              !  active(j) = .false.
-              !endif  
-              !goto 200
             endif  
             eps(el) = tmp
           endif
         enddo
+        if (.not.ok) then
+          eps   = ecopy
+          ddust = dcopy
+          dcopy(joff) = 0.Q0
+          ddust(joff) = 0.Q0
+          active(joff) = .false.
+          goto 150
+        endif  
         check = eps
         do i=1,NDUST
           do j=1,dust_nel(i)

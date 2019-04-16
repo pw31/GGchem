@@ -6,13 +6,6 @@ plt.rcParams['axes.linewidth'] = 1.5
 pp = PdfPages('ggchem.pdf')
 import sys
 
-mmHg = 1.3328E+3   # 1 mmHg in dyn/cm2
-def yaws(T,A,B,C,D,E):
-    #print A,B,C,D,E
-    #print T
-    val = 10**(A + B/T + C*np.log10(T) + D*T + E*T**2)
-    return val*mmHg
-
 file   = 'Static_Conc.dat'
 data   = open(file)
 dummy  = data.readline()
@@ -27,22 +20,18 @@ data.close()
 dat = np.loadtxt(file,skiprows=3)
 keyword = np.array(header.split())
 NPOINT = len(dat[0:])
+xx = np.arange(1,NPOINT+1,1)
 
 bar   = 1.E+6                    # 1 bar in dyn/cm2 
-Tg    = dat[:,0]                 # T [K]
 nHtot = dat[:,1]                 # n<H> [cm-3]
 lognH = np.log10(nHtot)          
 press = dat[:,2]                 # p [dyn/cm2]
-Tmin  = np.min(Tg)
-Tmax  = np.max(Tg)
-#if (Tmax>4*Tmin): Tmax=4*Tmin
-#if (Tmin<Tmax/3): Tmin=Tmax/3
-#Tmax  = 2800
-#Tmin  = 2000
+xmin  = np.min(xx)-0.3
+xmax  = np.max(xx)+0.3
 Narg  = len(sys.argv)
-if (Narg>1): Tmin=float(sys.argv[1])
-if (Narg>2): Tmax=float(sys.argv[2])
-iii   = np.where((Tg>Tmin) & (Tg<Tmax))[0]
+if (Narg>1): xmin=float(sys.argv[1])
+if (Narg>2): xmax=float(sys.argv[2])
+iii   = np.where((xx>=xmin) & (xx<=xmax))[0]
 pmin  = np.min(press[iii])/bar
 pmax  = np.max(press[iii])/bar
 pmin  = pmin*0.9
@@ -57,13 +46,6 @@ nHmax = nHmax*1.1
 if (nHmax>nHmin*5): 
   nHmin = nHmin/2.0
   nHmax = nHmax*2.0
-sep = 20
-if (Tmax-Tmin>1500): sep=100
-if (Tmax-Tmin>1000): sep=50
-if (Tmax-Tmin<600): sep=20
-if (Tmax-Tmin<400): sep=10
-#Tmin  = Tmin*0.95
-#Tmax  = Tmax*1.1
 colo = ['blue','black','silver','red','darkorange','gold','darkorchid','aqua','cadetblue','cornflowerblue','chartreuse','limegreen','darkgreen','chocolate','darkgoldenrod','darkkhaki','pink','moccasin']
 #'darkolivegreen','darkmagenta','aquamarine','coral','burlywood',
 #'beige','darkorange','crimson','darkcyan','bisque'
@@ -71,57 +53,43 @@ Ncolor = len(colo)
 colo = colo*10
 styl = ['-']*Ncolor + ['--']*Ncolor + [':']*Ncolor + ['-.']*Ncolor*7 
 widt = [2]*Ncolor*10
+locmin = LogLocator(base=10.0,subs=(0.1,0.15,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9))
+locmaj = np.array([100,200,500,1000,2000,5000,10000])
+locmaj = locmaj[np.where(locmaj<=xmax)[0]]
+locmaj = locmaj[np.where(locmaj>=xmin)[0]]
 
 #================== temperature-pressure structure ====================
 fig,ax = plt.subplots()
-plt.plot(Tg,press/bar,lw=4)
-plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
+plt.plot(xx,press/bar,lw=4)
+plt.xlabel(r'$x$',fontsize=20)
 plt.ylabel(r'$p\ \mathrm{[bar]}$',fontsize=20)
-plt.xlim(Tmin,Tmax)
+plt.xlim(xmin,xmax)
 plt.ylim(pmin,pmax)
 if (pmax>pmin*5): plt.yscale('log')
 plt.tick_params(axis='both', labelsize=15)
 plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
-minorLocator = MultipleLocator(sep)
-ax.xaxis.set_minor_locator(minorLocator)
-cAl2O3 = [  14.1611, -2.8238E+04, -7.3843E-01, -3.7413E-07,  2.2086E-11, 2421, 3253 ]
-cSiO2  = [-378.5210,  6.5473E+03,  1.3150E+02, -3.5774E-02,  3.4220E-06, 1883, 2503 ]
-cH2O   = [  29.8605, -3.1522E+03, -7.3037E+00,  2.4247E-09,  1.8090E-06,  273,  647 ]
-cFe    = [  11.5549, -1.9538E+04, -6.2549E-01, -2.7182E-09,  1.9086E-13, 1808, 3008 ]
-cNH3   = [  37.1575, -2.0277E+03, -1.1601E+01,  7.4625E-03, -9.5811E-12,  195,  406 ]
-cCO2   = [  35.0187, -1.5119E+03, -1.1335E+01,  9.3383E-03,  7.7626E-10,  216,  305 ]
-#cc = cCO2
-#Tyaws1 = cc[5]
-#Tyaws2 = cc[6]
-#Tyaws  = np.arange(Tyaws1, Tyaws2, 0.1)
-#pvap   = yaws(Tyaws,*cc[0:5])
-#Tvap = np.arange(Tmin, Tmax, 0.1)
-#pvap = 10.0**(7.8974 - 2409.4/Tvap)
-#plt.plot(Tvap,pvap,c='red',lw=2,ls='--')
-#fmt=ScalarFormatter(useOffset=False)
-#fmt.set_scientific(False)
-#ax.yaxis.set_major_formatter(fmt)
+#ax.xaxis.set_minor_locator(locmin)
+#ax.set_xticks(locmaj)
+#ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
 plt.clf()
 
 #================== temperature-density structure ====================
 fig,ax = plt.subplots()
-plt.plot(Tg,nHtot,lw=4)
-plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
+plt.plot(xx,nHtot,lw=4)
+plt.xlabel(r'$x$',fontsize=20)
 plt.ylabel(r'$n_\mathrm{\langle H\rangle}\ \mathrm{[cm^{-3}]}$',fontsize=20)
-plt.xlim(Tmin,Tmax)
+plt.xlim(xmin,xmax)
 plt.ylim(nHmin,nHmax)
 if (nHmax>nHmin*5): plt.yscale('log')
 plt.tick_params(axis='both', labelsize=15)
 plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
-minorLocator = MultipleLocator(sep)
-ax.xaxis.set_minor_locator(minorLocator)
-#fmt=ScalarFormatter(useOffset=False)
-#fmt.set_scientific(False)
-#ax.yaxis.set_major_formatter(fmt)
+#ax.xaxis.set_minor_locator(locmin)
+#ax.set_xticks(locmaj)
+#ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
 plt.clf()
@@ -132,21 +100,19 @@ ind = np.where(keyword=='dust/gas')[0][0]
 log10_dust_gas = dat[:,ind]
 ymax = np.max(log10_dust_gas)
 if (ymax>-10):
-  plt.plot(Tg,10**log10_dust_gas,lw=4)
-  plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
+  plt.plot(xx,10**log10_dust_gas,lw=4)
+  plt.xlabel(r'$x$',fontsize=20)
   plt.ylabel(r'$\mathrm{dust/gas}$',fontsize=20)
-  plt.xlim(Tmin,Tmax)
+  plt.xlim(xmin,xmax)
   plt.ylim(10**(ymax-8),10**ymax*3)
   plt.yscale('log')
   plt.tick_params(axis='both', labelsize=15)
   plt.tick_params('both', length=6, width=1.5, which='major')
   plt.tick_params('both', length=3, width=1, which='minor')
-  ax.yaxis.set_minor_locator(LogLocator(subs=[2,3,4,5,6,7,8,9]))
-  minorLocator = MultipleLocator(sep)
-  ax.xaxis.set_minor_locator(minorLocator)
-  #fmt=ScalarFormatter(useOffset=False)
-  #fmt.set_scientific(False)
-  #ax.yaxis.set_major_formatter(fmt)
+  #ax.yaxis.set_minor_locator(LogLocator(subs=[2,3,4,5,6,7,8,9]))
+  #ax.xaxis.set_minor_locator(locmin)
+  #ax.set_xticks(locmaj)
+  #ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
   plt.clf()
@@ -161,19 +127,19 @@ for i in range(4+NELEM+NMOLE+2*NDUST,4+NELEM+NMOLE+2*NDUST+NELEM,1):
   yy = dat[:,i]               # log10 eps
   ymax=np.max([ymax,np.max(yy)])            
   if (np.max(yy)>-20):
-    plt.plot(Tg,yy,c=colo[count],ls=styl[count],lw=widt[count],label=element)
+    plt.plot(xx,yy,c=colo[count],ls=styl[count],lw=widt[count],label=element)
     count = count+1
-plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
+plt.title('gas phase element abundances',fontsize=20)
+plt.xlabel(r'$x$',fontsize=20)
 plt.ylabel(r'$\log\,\epsilon_{\rm gas}$',fontsize=20)
-plt.xlim(Tmin,Tmax)
-plt.ylim(ymax-12,ymax+0.3)
+plt.xlim(xmin,xmax)
+plt.ylim(ymax-11.5,ymax+0.3)
 plt.tick_params(axis='both', labelsize=15)
 plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
-minorLocator = MultipleLocator(sep)
-ax.xaxis.set_minor_locator(minorLocator)
-minorLocator = MultipleLocator(1)
-ax.yaxis.set_minor_locator(minorLocator)
+#ax.xaxis.set_minor_locator(locmin)
+#ax.set_xticks(locmaj)
+#ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
 sz = np.min([11,1+195.0/count])
 leg = plt.legend(loc='lower right',fontsize=sz,fancybox=True)
 leg.get_frame().set_alpha(0.7)
@@ -195,10 +161,10 @@ for i in range(4+NELEM+NMOLE,4+NELEM+NMOLE+NDUST,1):
   yy = dat[:,ind]               # log10 nsolid/n<H>
   ymax = np.max([ymax,np.max(yy[iii])])
   ymin = -20
+indices = np.argsort(smean)
 if (ymax>-99):
   print solids
   fig,ax = plt.subplots()
-  indices = np.argsort(smean)
   count = 0
   for isolid in reversed(indices):
     solid = solids[isolid]
@@ -209,28 +175,24 @@ if (ymax>-99):
     ymax = np.max([ymax,np.max(yy[iii])])
     if (np.max(yy[iii])>-99): print solid,ind,np.max(yy[iii])
     if (np.max(yy[iii])>ymin):
-      plt.plot(Tg[iii],yy[iii],c=colo[count],ls=styl[count],lw=widt[count],label=solid)
+      plt.plot(xx[iii],yy[iii],c=colo[count],ls=styl[count],lw=widt[count],label=solid)
       count = count + 1
-  #plt.title('condensates',fontsize=20)
-  plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
+  plt.title('condensates',fontsize=20)
+  plt.xlabel(r'$x$',fontsize=20)
   plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{solid}/n_\mathrm{\langle H\rangle}$',fontsize=20)
-  #plt.xscale('log')
-  plt.xlim(Tmin,Tmax)
+  plt.xlim(xmin,xmax)
   plt.ylim(ymax-10,ymax+0.3)
   plt.tick_params(axis='both', labelsize=14)
   plt.tick_params('both', length=6, width=1.5, which='major')
   plt.tick_params('both', length=3, width=1, which='minor')
-  minorLocator = MultipleLocator(sep)
-  ax.xaxis.set_minor_locator(minorLocator)
-  minorLocator = MultipleLocator(1.0)
-  ax.yaxis.set_minor_locator(minorLocator)
+  #ax.xaxis.set_minor_locator(locmin)
+  #ax.set_xticks(locmaj)
+  #ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
   sz = np.min([11,1+195.0/count])
-  #sz = sz+1
-  leg = plt.legend(loc='lower right',fontsize=11,fancybox=True,
+  leg = plt.legend(loc='best',fontsize=11,fancybox=True,
              handlelength=2.5,prop={'size':sz})
   leg.get_frame().set_alpha(0.7)
   plt.tight_layout()
-  #plt.show()
   plt.savefig(pp,format='pdf')
   plt.clf()
 
@@ -242,9 +204,9 @@ if (ymax>-99):
       if (dat[iT,i]>-200): 
         iact=iact+1
         outp=outp+' '+keyword[i][1:]
-    print Tg[iT],iact,outp  
+    print xx[iT],iact,outp  
 
-#================== supersaturation ratios ===================
+  #================== log10 supersaturation ratios ===================
   fig,ax = plt.subplots()
   count = 0
   for isolid in reversed(indices):
@@ -252,70 +214,73 @@ if (ymax>-99):
     ind = np.where(keyword == 'S'+solid)[0]
     if (np.size(ind) == 0): continue
     ind = ind[0]
-    #print solid,ind
     logS = dat[:,ind]              # log10 S
     if (np.max(logS[iii])>-6):
-      plt.plot(Tg,logS,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
+      plt.plot(xx,logS,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
       count = count + 1
   plt.title('supersaturation ratios',fontsize=20)
-  plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
+  plt.xlabel(r'$x$',fontsize=20)
   plt.ylabel(r'$\mathrm{log}_{10}\ S$',fontsize=20)
-  #plt.xscale('log')
-  plt.xlim(Tmin,Tmax)
+  plt.xlim(xmin,xmax)
   plt.ylim(-7,0.5)
   plt.tick_params(axis='both', labelsize=14)
   plt.tick_params('both', length=6, width=1.5, which='major')
   plt.tick_params('both', length=3, width=1, which='minor')
-  minorLocator = MultipleLocator(sep)
-  ax.xaxis.set_minor_locator(minorLocator)
+  #ax.xaxis.set_minor_locator(locmin)
+  #ax.set_xticks(locmaj)
+  #ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
   sz = np.min([13,1+195.0/count])
   col = 1
   if (count>30): 
     sz = np.min([13,1+195.0/count*2])
     col = 2
-  leg = plt.legend(loc='lower right',fontsize=10,fancybox=True,
-             handlelength=3,prop={'size':sz},ncol=col)
+  leg = plt.legend(loc='best',fontsize=10,fancybox=True,
+                   handlelength=3,prop={'size':sz},ncol=col)
   leg.get_frame().set_alpha(0.7)
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
   plt.clf()
 
-  fig,ax = plt.subplots()
-  count = 0
-  for isolid in reversed(indices):
-    solid = solids[isolid]
-    ind = np.where(keyword == 'S'+solid)[0]
-    if (np.size(ind) == 0): continue
-    ind = ind[0]
-    #print solid,ind
-    S = 10**dat[:,ind]              # S
-    if (np.max(S[iii])>0.7):
-      plt.plot(Tg,S,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
-      count = count + 1
-  #plt.title('supersaturation ratios',fontsize=20)
-  plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
-  plt.ylabel(r'$S$',fontsize=20)
-  #plt.xscale('log')
-  plt.xlim(Tmin,Tmax)
-  plt.ylim(0,1.05)
-  plt.tick_params(axis='both', labelsize=14)
-  plt.tick_params('both', length=6, width=1.5, which='major')
-  plt.tick_params('both', length=3, width=1, which='minor')
-  sz = np.min([13,1+195.0/count])
-  #sz = sz+3
-  leg = plt.legend(loc='lower right',fontsize=10,fancybox=True,
-             handlelength=3,prop={'size':sz})
-  leg.get_frame().set_alpha(0.7)
-  minorLocator = MultipleLocator(sep)
-  ax.xaxis.set_minor_locator(minorLocator)
-  plt.tight_layout()
-  #plt.show()
-  plt.savefig(pp,format='pdf')
-  plt.clf()
+#================== supersaturation ratios ===================
+fig,ax = plt.subplots()
+count = 0
+for isolid in reversed(indices):
+  solid = solids[isolid]
+  ind = np.where(keyword == 'S'+solid)[0]
+  if (np.size(ind) == 0): continue
+  ind = ind[0]
+  #print solid,ind
+  S = 10**dat[:,ind]              # S
+  if (np.max(S[iii])>0.7):
+    plt.plot(xx,S,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
+    count = count + 1
+    if (count>100): break  
+plt.title('supersaturation ratios',fontsize=20)
+plt.xlabel(r'$x$',fontsize=20)
+plt.ylabel(r'$S$',fontsize=20)
+plt.xlim(xmin,xmax)
+plt.ylim(0,1.05)
+plt.tick_params(axis='both', labelsize=14)
+plt.tick_params('both', length=6, width=1.5, which='major')
+plt.tick_params('both', length=3, width=1, which='minor')
+#ax.xaxis.set_minor_locator(locmin)
+#ax.set_xticks(locmaj)
+#ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
+sz = np.min([13,1+195.0/count])
+col = 1
+if (count>30): 
+  sz = np.min([13,1+195.0/count*2])
+  col = 2
+leg = plt.legend(loc='best',fontsize=10,fancybox=True,
+                 handlelength=3,prop={'size':sz},ncol=col)
+leg.get_frame().set_alpha(0.7)
+plt.tight_layout()
+plt.savefig(pp,format='pdf')
+plt.clf()
 
 #================== some important molecules ====================
 fig,ax = plt.subplots()
-mols  = ['H2','H','N2','H2O','O2','CO','CO2','CH4','NH3','C2H2','el']
+mols  = ['CO2','N2','SO2','COS','H2S','S2','CO','H2O','H2','HCL','HF','Ar','Ne']
 mols  = np.array(mols)
 ntot  = 0.0*nHtot
 for i in range(3,4+NELEM+NMOLE): # electrons, all atoms, ions and cations
@@ -325,29 +290,25 @@ count = 0
 for i in range(3,4+NELEM+NMOLE): 
   mol = keyword[i]
   yy = dat[:,i]-lntot            # log10 nmol/ntot
-  crit = -2.5
+  crit = -1.5
   ind = np.where(mols == mol)[0]
   if (np.size(ind)>0): crit=-5
   #print i,mol,ind,np.size(ind)
   if (np.max(yy[iii])>crit):
-    plt.plot(Tg,yy,c=colo[count],ls=styl[count],lw=widt[count],label=mol)
+    plt.plot(xx,yy,c=colo[count],ls=styl[count],lw=widt[count],label=mol)
     count = count + 1
 plt.title('important molecules',fontsize=20)
-plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
+plt.xlabel(r'$x$',fontsize=20)
 plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{tot}$',fontsize=20)
-plt.xlim(Tmin,Tmax)
+plt.xlim(xmin,xmax)
 plt.ylim(-6.2,0.2)
 plt.tick_params(axis='both', labelsize=14)
 plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
-if (Tmax/Tmin>10):
-  plt.xscale('log')
-else:  
-  minorLocator = MultipleLocator(sep)
-  ax.xaxis.set_minor_locator(minorLocator)
-minorLocator = MultipleLocator(0.2)
-ax.yaxis.set_minor_locator(minorLocator)
-leg = plt.legend(loc='lower right',fontsize=11,fancybox=True)
+#ax.xaxis.set_minor_locator(locmin)
+#ax.set_xticks(locmaj)
+#ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
+leg = plt.legend(loc='best',fontsize=11,ncol=2,fancybox=True)
 leg.get_frame().set_alpha(0.7)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
@@ -356,9 +317,10 @@ plt.clf()
 #================== where are the elements? ================
 ellist = ['H','C','O','N','SI','S','NA','CL','CA','TI','K','AL','MG','FE','LI','F','P','NI','MN','CR','ZN','ZR','RB','CU','B','BR','V','SR','W','el']
 allist = [' ',' ',' ',' ','Si',' ','Na','Cl','Ca','Ti',' ','Al','Mg','Fe','Li',' ',' ','Ni','Mn','Cr','Zn','Zr','Rb','Cu',' ','Br',' ','Sr',' ','+']
-exlist = [' He ',' Cl CL Ca CA Cr CR Co Cu CU ',' ',' Ne NE Na NA Ni NI ',' ',' Si SI Sr SR ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' Fe FE ',' ',' ',' ',' ',' ',' ',' ',' ',' Br BR ',' ',' ',' ',' ',' ']
+exlist = [' He ',' Cl CL Ca CA Cr CR Co Cu CU ',' ',' Na NA Ni NI ',' ',' Si SI Sr SR ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' Fe FE ',' ',' ',' ',' ',' ',' ',' ',' ',' Br BR ',' ',' ',' ',' ',' ']
 titels = ['hydrogen','carbon','oxygen','nitrogen','silicon','sulphur','sodium','chlorine','calcium','titanium','potassium','aluminum','magnesium','iron','lithium','fluorine','phosphorus','nickel','manganese','chromium','zinc','zirconium','rubidium','copper','boron','bromine','vanadium','strontium','tungston','charge carriers']
-limits = [2,5,4,6,6,5,6,4,7,8,6,6,6,6,7,6,6,6,6,6,6,6,6,6,6,6,6,6,6,5]   
+limits = [2,5,5,5,6,5,6,4,7,8,6,6,6,6,7,6,6,6,6,6,6,6,6,6,6,6,6,6,6,5]
+condensates = indices
 for i in range(0,30):
   fig,ax = plt.subplots()
   el = ellist[i]
@@ -392,9 +354,38 @@ for i in range(0,30):
           if (molname=='el'): nmin = np.min([nmin,np.min(yy[iii])])
           mollist.append(mol)   
           abulist.append(np.mean(yy))
+  for isolid in condensates:
+    solid = solids[isolid]
+    isol = np.where(keyword == 'n'+solid)[0]
+    if (np.size(isol) == 0): continue
+    isol = isol[0]
+    search = el
+    if (len(el)==2): search=al
+    ind = str.find(solid,search)
+    found = 0
+    while (ind>=0):
+      #print solid,ind
+      if (len(search)==2): found=1
+      if (found==0):  
+        if (ind==len(solid)-1): found=2
+      if (found==0):  
+        next1 = solid[ind+1]
+        #print solid,search,next1
+        if (next1.isupper() or next1.isdigit() or next1=='['): found=3
+      if (found>0): break  
+      ind = solid.find(search,ind+1)
+      if (ind<0): break
+      #print 'try again with rest ',ind,len(solid),solid[ind:]
+    if (found>0):
+      yy = dat[:,isol]               # log10 nsolid/n<H>
+      nmax = np.max([nmax,np.max(yy[iii])])
+      maxy = maxy + 10**yy
+      #print found,isol,keyword[isol],np.max(yy[iii])
+      mollist.append(isol)   
+      abulist.append(np.max(yy[iii]))
   if (nmax==-100): continue
-  indices = np.argsort(abulist)
   count = 0
+  indices = np.argsort(abulist)
   maxy = np.log10(maxy)
   nmin = np.min([nmin,np.min(maxy[iii])-limit,nmax-12])
   for ind in reversed(indices):
@@ -402,35 +393,33 @@ for i in range(0,30):
     abu = abulist[ind]
     molname = keyword[mol]
     yy = dat[:,mol]                # log10 nmol [cm-3]
-    yy = yy - lognH                # log10 nmol/n<H>
+    if (mol<=4+NELEM+NMOLE):
+      yy = yy - lognH              # log10 nmol/n<H>
+    else:
+      molname = molname[1:]
+      if (str.find(molname,'[l]')<0):
+        molname = molname+'[s]'
+    #print mol,molname,abu,np.max(yy[iii])
     if (np.max(yy[iii]-maxy[iii])>-limit or molname=='el'):
-      print molname,abu
-      plt.plot(Tg,yy,c=colo[count],ls=styl[count],lw=widt[count],label=molname)
+      plt.plot(xx,yy,c=colo[count],ls=styl[count],lw=widt[count],label=molname)
       count = count + 1
   plt.title(titel,fontsize=20)
-  plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
+  plt.xlabel(r'$x$',fontsize=20)
   plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{\langle H\rangle}$',fontsize=20)
-  plt.xlim(Tmin,Tmax)
+  plt.xlim(xmin,xmax)
   plt.ylim(nmin,nmax+1)
   plt.tick_params(axis='both', labelsize=14)
   plt.tick_params('both', length=6, width=1.5, which='major')
   plt.tick_params('both', length=3, width=1, which='minor')
-  if (Tmax/Tmin>10):
-    plt.xscale('log')
-  else:  
-    minorLocator = MultipleLocator(sep)
-    ax.xaxis.set_minor_locator(minorLocator)
-  minorLocator = MultipleLocator(1.0)
-  if (nmax-nmin>50): minorLocator = MultipleLocator(2.0)
-  if (nmax-nmin>100): minorLocator = MultipleLocator(5.0)
-  if (nmax-nmin>200): minorLocator = MultipleLocator(10.0)
-  ax.yaxis.set_minor_locator(minorLocator)
+  #ax.xaxis.set_minor_locator(locmin)
+  #ax.set_xticks(locmaj)
+  #ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
   sz = np.min([11,1+195.0/count])
   col = 1
   if (count>30): 
     sz = np.min([9,1+195.0/count*2])
     col = 2
-  leg = plt.legend(loc='lower right',fontsize=10,fancybox=True,
+  leg = plt.legend(loc='best',fontsize=10,fancybox=True,
              handlelength=3,prop={'size':sz},ncol=col)
   leg.get_frame().set_alpha(0.7)
   plt.tight_layout()

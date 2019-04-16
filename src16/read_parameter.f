@@ -2,7 +2,7 @@
       subroutine READ_PARAMETER
 ************************************************************************
       use PARAMETERS,ONLY: elements,abund_pick,model_dim,model_pconst,
-     >     model_struc,model_eqcond,Npoints,useDatabase,
+     >     model_struc,model_eqcond,Npoints,useDatabase,verbose,
      >     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,pick_mfrac,
      >     abund_file,struc_file,remove_condensates,phyllosilicates
       use CHEMISTRY,ONLY: NewBackIt,NewFullIt,NewBackFac,NewPreMethod,
@@ -29,6 +29,7 @@
       model_dim    = 1
       model_pconst = .true.
       model_struc  = 0
+      verbose      = 0
       Npoints      = 100
       Tfast        = 1000.d0
       Tmin         = 100.d0
@@ -88,6 +89,8 @@
           read(line,*) Tmin
         else if (index(line,"! Tfast")>0) then   
           read(line,*) Tfast
+        else if (index(line,"! verbose")>0) then   
+          read(line,*) verbose
         else if (index(line,"! pmax")>0) then   
           read(line,*) pmax
           pmax = pmax*bar

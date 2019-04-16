@@ -8,7 +8,7 @@
       use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,muH,amu,
      >                    dust_nel,dust_el,dust_nu,dust_nam,dust_mass,
      >                    dust_Vol,mass,mel
-      use EXCHANGE,ONLY: nel,nat,nion,nmol,mmol,H,C,N,O,W
+      use EXCHANGE,ONLY: nel,nat,nion,nmol,mmol,H,C,N,O,W,S,Ca
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       real :: p,Tg,rhog,rhod,dustV,nHges,nges,mges,kT,pgas
@@ -282,10 +282,12 @@
           same = same.and.(nHmin==nHmax)
         endif  
         if (same) then
-          eps0(C) = eps0(O) * (0.3+1.1*fac) 
-          eps(C)  = eps0(C)
-          eps(O)  = eps0(O)
-          print*,"C/O=",eps(C)/eps(O)
+          eps0(Ca) = eps00(Ca)*(1.0+1.0*fac)
+          !eps0(H) = eps00(H)*(1.0-0.3*fac)
+          !eps0(S) = eps00(S)*(1.0 + 1.0*fac)
+          !eps0(C) = eps00(O) * (0.3+1.1*fac) 
+          !eps(C)  = eps00(C)
+          !print*,"C/O=",eps(C)/eps(O)
         endif   
         eldust = 0.Q0
 

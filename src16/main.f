@@ -46,7 +46,8 @@
 ***********************************************************************
       SUBROUTINE DEMO_CHEMISTRY
 ***********************************************************************
-      use PARAMETERS,ONLY: nHmax,Tmax,pmax,model_pconst,model_eqcond
+      use PARAMETERS,ONLY: nHmax,Tmax,pmax,model_pconst,model_eqcond,
+     >                     verbose 
       use CHEMISTRY,ONLY: NMOLE,NELM,m_kind,elnum,cmol,el
       use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,amu,muH,
      >                    dust_nam,dust_mass,dust_Vol,dust_nel,dust_el
@@ -56,8 +57,9 @@
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST)
       real(kind=qp) :: nges,nmax,threshold
       real*8  :: Tg,nHges,p,mu,muold,pgas,fold,ff,dfdmu,dmu
-      integer :: i,imol,iraus,e,j,verbose,dk,it
+      integer :: i,imol,iraus,e,aIraus,aIIraus,j,verb,dk,it
       logical :: included,haeufig,raus(NMOLE)
+      logical :: rausI(NELEM),rausII(NELEM)
       character(len=10) :: sp
 
       Tg    = Tmax
@@ -65,16 +67,16 @@
       p     = pmax
       eps   = eps0
       mu    = muH
-      eldust  = 0.Q0
-      verbose = 2
-      if (model_eqcond) verbose=0
+      eldust = 0.Q0
+      verb = verbose
+      if (model_eqcond) verb=0
 
       do it=1,999
         if (model_pconst) nHges = p*mu/(bk*Tg)/muH
         if (model_eqcond) then
           call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
         endif
-        call GGCHEM(nHges,Tg,eps,.false.,0)
+        call GGCHEM(nHges,Tg,eps,.false.,verb)
         nges = nel
         do j=1,NELEM
           nges = nges + nat(j)
@@ -143,10 +145,14 @@
      >               '  n'//trim(elnam(i))//'II=',nion(i)
       enddo
   
-      write(*,*) '----- some abundant molecules -----'
-      raus = .false.
+      write(*,*) '----- most abundant species -----'
+      raus   = .false.
+      rausI  = .false.
+      rausII = .false.
       do
-        iraus = 0
+        iraus   = 0
+        aIraus  = 0
+        aIIraus = 0
         nmax  = 0.Q0
         do i=1,NMOLE
           if ((nmol(i).gt.nmax).and.(.not.raus(i))) then
@@ -154,11 +160,36 @@
             nmax  = nmol(i)
           endif
         enddo
+        do e=1,NELM
+          if (e==el) cycle
+          i = elnum(e) 
+          if ((nat(i).gt.nmax).and.(.not.rausI(i))) then
+            iraus = 0
+            aIraus = i
+            aIIraus = 0
+            nmax  = nat(i)
+          endif
+          if ((nion(i).gt.nmax).and.(.not.rausII(i))) then
+            iraus = 0
+            aIraus = 0
+            aIIraus = i
+            nmax  = nion(i)
+          endif
+        enddo
         haeufig = (nmax.gt.nHges*1.Q-6)
         if (.not.haeufig) exit
-        raus(iraus) = .true.
-        write(*,4010) cmol(iraus),nmol(iraus),
-     &                nmol(iraus)/nges
+        if (iraus>0) then
+          raus(iraus) = .true.
+          write(*,4010) cmol(iraus),nmol(iraus),nmol(iraus)/nges
+        else if (aIraus>0) then 
+          rausI(aIraus) = .true.
+          write(*,4010) elnam(aIraus)//"I       ",
+     >                  nat(aIraus),nat(aIraus)/nges
+        else if (aIIraus>0) then 
+          rausII(aIIraus) = .true.
+          write(*,4010) elnam(aIIraus)//"II     ",
+     >                  nat(aIIraus),nion(aIIraus)/nges
+        endif  
       enddo
   
       write(*,*) '-----  where are the elements?  -----'

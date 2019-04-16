@@ -241,7 +241,7 @@
           text = trim(text)//" "//trim(dust_nam(i))
         enddo
         Nact = Nact_read
-        verbose = 0
+        !verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
         !if (qread>1.Q-3.and.iread==207) verbose=2
         if (verbose>0) then
@@ -365,7 +365,7 @@
             if (active(i).neqv.act_old(i)) changed=.true.
             if (active(i)) Nact=Nact+1
           enddo
-
+          
           if (imaxon>0.and.Nact>1) then
             !----------------------------------------
             ! ***  eliminate linear combinations  ***
@@ -517,7 +517,7 @@
               print*,"... switching off "//trim(dust_nam(i)) 
             endif
           enddo   
-        endif  
+        endif
         act_old = active
         if (Nact==0.and.qual<1.Q-30) exit   ! no solid supersaturated 
         if (it>1.and.(.not.changed)) goto 100
@@ -1249,7 +1249,8 @@
       !----------------------------------
       ! ***  save result to database  ***
       !----------------------------------
-      if (qual<1.Q-10.and.useDatabase) then
+      !if (qual<1.Q-10.and.useDatabase) then
+      if (useDatabase) then
         call PUT_DATA(nHtot,T,eps,ddust,qread,iread,active)
       endif  
       ieqcond = ieqcond + 1
