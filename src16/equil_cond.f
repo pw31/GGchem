@@ -20,7 +20,7 @@
       use PARAMETERS,ONLY: Tfast,useDatabase
       use DUST_DATA,ONLY: NELEM,NDUST,dust_nam,dust_nel,dust_nu,dust_el,
      >                    eps0,elnam,elcode
-      use CHEMISTRY,ONLY: NewFastLevel
+      use CHEMISTRY,ONLY: NewFastLevel,NELM,elnum,iel=>el
       use CONVERSION,ONLY: Nind,Ndep,Iindex,Dindex,is_dust,conv
       use EXCHANGE,ONLY: Fe,Mg,Si,Al,Ca,Ti,C,O,S,Na,Cl,H,Li,Mn,W,Ni,Cr,
      >                   Kalium=>K,Zr,V,itransform,ieqcond,ieqconditer
@@ -40,9 +40,9 @@
       real(kind=qp),dimension(NELEM,NELEM) :: DF,DFsav,emat,vecs
       real(kind=qp),dimension(NDUST,NELEM) :: mat
       real(kind=qp),dimension(NELEM,NDUST) :: AA
-      real(kind=qp) :: worst,xmin,Smax,Smin,qual,SQUAL,del
+      real(kind=qp) :: worst,xmin,Smax,Smin,qual,qold,SQUAL,del
       real(kind=qp) :: turnon,maxon,minoff,fac,fac2,amount,Nt
-      real(kind=qp) :: deps1,deps2,deps,esum,emax
+      real(kind=qp) :: deps1,deps2,deps,esum,emax,NRstep
       real(kind=qp) :: det(2),converge(5000,NELEM),crit,cbest
       real(kind=qp) :: small=1.Q-30
       integer,parameter :: itmax=5000
@@ -55,7 +55,7 @@
       integer :: e_num(NELEM),e_num_save(NELEM)
       integer :: Nunsolved,unsolved(NELEM),Nvar1,Nvar2,var(NELEM)
       integer :: Nsolve,ebest,dbest,nonzero,itrivial,iread,ioff
-      integer :: ifail,Nall,imax,swap,irow,erow,Eact,Nlin
+      integer :: ifail,Nall,imax,swap,irow,erow,Eact,Nlin,iback
       integer :: act_to_elem(NELEM),act_to_dust(NELEM)
       integer :: Nzero,Ntrivial,etrivial(NELEM),dtrivial(NELEM)
       logical,dimension(NELEM) :: e_resolved,e_act,e_taken,is_esolved
@@ -74,7 +74,7 @@
       integer,save :: iNaAlSi3O8=0,iMgAl2O4=0,iCaTiO3=0,iSiO=0,iSiO2=0
       integer,save :: iTiO2=0,iMgTi2O5=0,iSiC=0,iCaS=0,iFe2SiO4=0,iFeO=0
       integer,save :: iNaCl=0,iKCl=0,iKAlSi3O8=0,iFe_l=0,iH2O=0,iH2O_l=0
-      integer,save :: iFeS_l=0,iNaCl_l=0,iTiO2_l=0,iSiO2_l=0
+      integer,save :: iFeS_l=0,iNaCl_l=0,iTiO2_l=0,iSiO2_l=0,iCaSO4=0
       integer,save :: iNa2SiO3_l=0,iMgAl2O4_l=0,iMg2SiO4_l=0,iMgSiO3_l=0
       integer,save :: iAl2O3_l=0,iCaAl2Si2O8=0,iC=0,iTiC=0,iFe2O3=0
       integer,save :: iMgO=0,iNa=0,iS=0,iMgS=0,iLiCl=0,iSiS2=0,iFeS2=0
@@ -135,6 +135,7 @@
           if (dust_nam(i).eq.'MgTiO3[l]')     iMgTiO3_l=i
           if (dust_nam(i).eq.'SiC[s]')        iSiC=i
           if (dust_nam(i).eq.'CaS[s]')        iCaS=i
+          if (dust_nam(i).eq.'CaSO4[s]')      iCaSO4=i
           if (dust_nam(i).eq.'Fe2SiO4[s]')    iFe2SiO4=i
           if (dust_nam(i).eq.'Fe3O4[s]')      iFe3O4=i
           if (dust_nam(i).eq.'FeO[s]')        iFeO=i
@@ -249,6 +250,8 @@
      >          ") qual=",1pE15.7)') iread,qread
           write(*,*) trim(text)
         endif  
+      !else
+      !  verbose=2
       endif
   
       !----------------------------------------------------
@@ -730,7 +733,32 @@
             e_act(Iindex(i)) = .true.
             e_act(Iindex(j)) = .false.
             goto 200 
-          endif   
+          endif
+          !print*,Nall,Nact,elnam(Iindex(Nall)),e_num(Iindex(Nall))
+          found = (Nall>=Nact+1.and.Iindex(Nall)==O
+     >         .and.e_num(Iindex(Nall))==1)
+     >         .and.active(iCaS).and.active(iCaSO4)
+          if (found) then
+            do j=Nact,1,-1
+              print*,j,elnam(Iindex(j)),S,e_num(Iindex(j))
+              if (Iindex(j)==S.and.e_num(Iindex(j))==2) then
+                found = .true.
+                exit
+              endif 
+            enddo
+          endif  
+          if (found) then
+            ! can't have O as independent variable in this case
+            i = Nall
+            print*,"... exchanging "//elnam(Iindex(j))//
+     >           " for "//elnam(Iindex(i))
+            swap = Iindex(i)   
+            Iindex(i) = Iindex(j)
+            Iindex(j) = swap
+            e_act(Iindex(i)) = .true.
+            e_act(Iindex(j)) = .false.
+            goto 200 
+          endif  
         endif   
 
         if (verbose>1) print*,"solving for ... ",
@@ -1081,7 +1109,8 @@
             if (conv(i,j)==0.Q0) cycle
             if (is_dust(i)) cycle
             el2 = Dindex(i)                 ! limited by dep. element?
-            del = 1.Q-2*eps(el2)/conv(i,j)
+            del = 1.Q-6*eps(el2)/conv(i,j)
+            if (T<Tfast) del=1.Q-12*eps(el2)/conv(i,j)
             if (del>0.Q0) deps2=MAX(deps2,-del)
             if (del<0.Q0) deps1=MIN(deps1,-del)
             !if (verbose>1) print*,elnam(el)//" "//elnam(el2),
@@ -1188,48 +1217,72 @@
         !------------------------------------
         ! ***  apply dx to ddust and eps  ***
         !------------------------------------
-        do ii=1,Nsolve
-          i = act_to_elem(ii) 
-          el = Iindex(i)
-          eps(el) = eps(el) + dx(ii)          ! direct effect
-        enddo  
-        do j=1,Ndep
-          del = 0.Q0 
+        eps_save = eps
+        dust_save = ddust
+        NRstep = 1.Q0
+        qold = qual
+        do iback=1,10
+          eps = eps_save
+          ddust = dust_save
           do ii=1,Nsolve
             i = act_to_elem(ii) 
-            del = del + conv(j,i)*dx(ii)      ! effect of indep.element i
-          enddo 
-          if (is_dust(j)) then
-            dk = Dindex(j)
-            ddust(dk) = ddust(dk) + del
-          else  
-            el = Dindex(j)
-            eps(el) = eps(el) + del
-          endif  
+            el = Iindex(i)
+            eps(el) = eps(el) + NRstep*dx(ii) ! direct effect
+          enddo  
+          do j=1,Ndep
+            del = 0.Q0 
+            do ii=1,Nsolve
+              i = act_to_elem(ii) 
+              del = del + conv(j,i)*dx(ii) ! effect of indep.element i
+            enddo 
+            if (is_dust(j)) then
+              dk = Dindex(j)
+              ddust(dk) = ddust(dk) + NRstep*del
+            else  
+              el = Dindex(j)
+              eps(el) = eps(el) + NRstep*del
+            endif  
+          enddo
+          xstep(:) = 0.Q0
+          call SUPER(nHtot,T,xstep,eps,Sat0,NewFastLevel<1)
+          qual = SQUAL(Sat0,active)
+          if (verbose>0) print'("--> pullback",i3,0pF6.3," Q=",1pE11.3,
+     >                          " ->",1pE11.3)',iback,NRstep,qold,qual
+          if (qual<qold*2) exit
+          NRstep = NRstep/2
         enddo  
+        !del = 0.Q0
+        !do i=1,NELM
+        !  if (i==iel) cycle
+        !  el = elnum(i)
+        !  del = MAX(del,ABS(LOG10(work(el)/eps(el))))
+        !  print'(A3,1pE10.3," -> ",1pE10.3,0pF5.2)',
+     >  !       elnam(el),work(el),eps(el),LOG10(work(el)/eps(el))
+        !enddo
+        !print*,"epsilon max-log-change =",REAL(del)
 
         !-------------------------------------
         ! ***  check element conservation  ***
         !-------------------------------------
-        check = eps
-        do i=1,NDUST
-          do j=1,dust_nel(i)
-            el = dust_el(i,j)
-            check(el) = check(el) + ddust(i)*dust_nu(i,j)    
-          enddo
-        enddo
-        worst = 0.d0
-        do i=1,NELEM
-          worst = MAX(worst,ABS(1.Q0-check(i)/eps00(i)))
-        enddo
-        if (verbose>1.or.worst>1.Q-8) write(*,*) 
-     >     "element conservation error 2:",worst
-        if (worst>1.Q-8) stop
+        !check = eps
+        !do i=1,NDUST
+        !  do j=1,dust_nel(i)
+        !    el = dust_el(i,j)
+        !    check(el) = check(el) + ddust(i)*dust_nu(i,j)    
+        !  enddo
+        !enddo
+        !worst = 0.d0
+        !do i=1,NELEM
+        !  worst = MAX(worst,ABS(1.Q0-check(i)/eps00(i)))
+        !enddo
+        !if (verbose>1.or.worst>1.Q-8) write(*,*) 
+     >  !   "element conservation error 2:",worst
+        !if (worst>1.Q-8) stop
 
-        xstep(:) = 0.Q0
-        call SUPER(nHtot,T,xstep,eps,Sat0,NewFastLevel<1)
-        qual = SQUAL(Sat0,active)
-        print'("it=",I4," qual=",1pE13.4E4)',it,qual
+        !xstep(:) = 0.Q0
+        !call SUPER(nHtot,T,xstep,eps,Sat0,NewFastLevel<1)
+        !qual = SQUAL(Sat0,active)
+        print'("it =",I4," qual =",1pE13.4E4)',it,qual
         if (qual<1.Q-20) exit
         if (verbose>0) read(*,'(a1)') char1
 
@@ -1325,10 +1378,12 @@
 
       qual = 0.d0
       do i=1,NDUST
-        if (active(i).or.(Sat(i).gt.1.Q0)) then
-          qual = qual + (1.Q0-Sat(i))**2
-         !qual = qual + (Sat(i)-1.Q0/Sat(i))**2
+        if (active(i)) then
+         !qual = qual + (1.Q0-Sat(i))**2
+          qual = qual + (Sat(i)-1.Q0/Sat(i))**2
          !qual = qual + LOG(Sat(i))**2
+        else if (Sat(i).gt.1.Q0) then
+          qual = qual + MIN(Sat(i)-1.Q0,1.Q0)
         endif  
       enddo
       SQUAL = qual

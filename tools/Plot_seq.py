@@ -181,7 +181,7 @@ if (ymax>-99):
   plt.xlabel(r'$x$',fontsize=20)
   plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{solid}/n_\mathrm{\langle H\rangle}$',fontsize=20)
   plt.xlim(xmin,xmax)
-  plt.ylim(ymax-10,ymax+0.3)
+  plt.ylim(ymax-4,ymax+0.3)
   plt.tick_params(axis='both', labelsize=14)
   plt.tick_params('both', length=6, width=1.5, which='major')
   plt.tick_params('both', length=3, width=1, which='minor')
@@ -317,9 +317,9 @@ plt.clf()
 #================== where are the elements? ================
 ellist = ['H','C','O','N','SI','S','NA','CL','CA','TI','K','AL','MG','FE','LI','F','P','NI','MN','CR','ZN','ZR','RB','CU','B','BR','V','SR','W','el']
 allist = [' ',' ',' ',' ','Si',' ','Na','Cl','Ca','Ti',' ','Al','Mg','Fe','Li',' ',' ','Ni','Mn','Cr','Zn','Zr','Rb','Cu',' ','Br',' ','Sr',' ','+']
-exlist = [' He ',' Cl CL Ca CA Cr CR Co Cu CU ',' ',' Na NA Ni NI ',' ',' Si SI Sr SR ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' Fe FE ',' ',' ',' ',' ',' ',' ',' ',' ',' Br BR ',' ',' ',' ',' ',' ']
+exlist = [' He ',' Cl CL Ca CA Cr CR Co Cu CU ',' ',' Na NA Ni NI Ne NE ',' ',' Si SI Sr SR ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' Fe FE ',' ',' ',' ',' ',' ',' ',' ',' ',' Br BR ',' ',' ',' ',' ',' ']
 titels = ['hydrogen','carbon','oxygen','nitrogen','silicon','sulphur','sodium','chlorine','calcium','titanium','potassium','aluminum','magnesium','iron','lithium','fluorine','phosphorus','nickel','manganese','chromium','zinc','zirconium','rubidium','copper','boron','bromine','vanadium','strontium','tungston','charge carriers']
-limits = [2,5,5,5,6,5,6,4,7,8,6,6,6,6,7,6,6,6,6,6,6,6,6,6,6,6,6,6,6,5]
+limits = [5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5]
 condensates = indices
 for i in range(0,30):
   fig,ax = plt.subplots()
@@ -354,6 +354,7 @@ for i in range(0,30):
           if (molname=='el'): nmin = np.min([nmin,np.min(yy[iii])])
           mollist.append(mol)   
           abulist.append(np.mean(yy))
+  nmaxgas = nmax
   for isolid in condensates:
     solid = solids[isolid]
     isol = np.where(keyword == 'n'+solid)[0]
@@ -387,20 +388,22 @@ for i in range(0,30):
   count = 0
   indices = np.argsort(abulist)
   maxy = np.log10(maxy)
-  nmin = np.min([nmin,np.min(maxy[iii])-limit,nmax-12])
+  nmin = np.min([nmin,np.min(maxy[iii])-limit,nmax-7])
   for ind in reversed(indices):
     mol = mollist[ind]
     abu = abulist[ind]
     molname = keyword[mol]
     yy = dat[:,mol]                # log10 nmol [cm-3]
     if (mol<=4+NELEM+NMOLE):
+      lim = limit+(nmax-nmaxgas)
       yy = yy - lognH              # log10 nmol/n<H>
     else:
+      lim = limit
       molname = molname[1:]
       if (str.find(molname,'[l]')<0):
         molname = molname+'[s]'
     #print mol,molname,abu,np.max(yy[iii])
-    if (np.max(yy[iii]-maxy[iii])>-limit or molname=='el'):
+    if (np.max(yy[iii]-maxy[iii])>-lim or molname=='el'):
       plt.plot(xx,yy,c=colo[count],ls=styl[count],lw=widt[count],label=molname)
       count = count + 1
   plt.title(titel,fontsize=20)
