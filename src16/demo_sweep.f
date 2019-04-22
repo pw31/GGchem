@@ -283,12 +283,10 @@
           same = same.and.(nHmin==nHmax)
         endif  
         if (same) then
-          eps0(Mg) = eps00(Mg)*(1.0+1.0*fac)
-          !eps0(H) = eps00(H)*(1.0-0.3*fac)
-          !eps0(S) = eps00(S)*(1.0 + 1.0*fac)
-          !eps0(C) = eps00(O) * (0.3+1.1*fac) 
-          !eps(C)  = eps00(C)
-          !print*,"C/O=",eps(C)/eps(O)
+          eps0(O) = eps00(O)*(1.0+0.00003*fac)
+          !eps0(C) = eps00(O)*(0.3+1.1*fac) 
+          !eps0(C) = eps00(C)
+          !print*,"C/O=",eps0(C)/eps0(O)
         endif   
         eldust = 0.Q0
 
@@ -298,6 +296,8 @@
           if (model_pconst) nHges = p*mu/(bk*Tg)/muH
           if (model_eqcond) then
             call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
+          else
+            eps = eps0
           endif  
           call GGCHEM(nHges,Tg,eps,.false.,0)
           kT = bk*Tg

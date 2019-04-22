@@ -254,29 +254,30 @@ for isolid in reversed(indices):
   if (np.max(S[iii])>0.7):
     plt.plot(xx,S,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
     count = count + 1
-    if (count>100): break  
-plt.title('supersaturation ratios',fontsize=20)
-plt.xlabel(r'$x$',fontsize=20)
-plt.ylabel(r'$S$',fontsize=20)
-plt.xlim(xmin,xmax)
-plt.ylim(0,1.05)
-plt.tick_params(axis='both', labelsize=14)
-plt.tick_params('both', length=6, width=1.5, which='major')
-plt.tick_params('both', length=3, width=1, which='minor')
-#ax.xaxis.set_minor_locator(locmin)
-#ax.set_xticks(locmaj)
-#ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
-sz = np.min([13,1+195.0/count])
-col = 1
-if (count>30): 
-  sz = np.min([13,1+195.0/count*2])
+    if (count>100): break 
+if (count>0):
+  plt.title('supersaturation ratios',fontsize=20)
+  plt.xlabel(r'$x$',fontsize=20)
+  plt.ylabel(r'$S$',fontsize=20)
+  plt.xlim(xmin,xmax)
+  plt.ylim(0,1.05)
+  plt.tick_params(axis='both', labelsize=14)
+  plt.tick_params('both', length=6, width=1.5, which='major')
+  plt.tick_params('both', length=3, width=1, which='minor')
+  #ax.xaxis.set_minor_locator(locmin)
+  #ax.set_xticks(locmaj)
+  #ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
+  sz = np.min([13,1+195.0/count])
+  col = 1
+  if (count>30): 
+    sz = np.min([13,1+195.0/count*2])
   col = 2
-leg = plt.legend(loc='best',fontsize=10,fancybox=True,
+  leg = plt.legend(loc='best',fontsize=10,fancybox=True,
                  handlelength=3,prop={'size':sz},ncol=col)
-leg.get_frame().set_alpha(0.7)
-plt.tight_layout()
-plt.savefig(pp,format='pdf')
-plt.clf()
+  leg.get_frame().set_alpha(0.7)
+  plt.tight_layout()
+  plt.savefig(pp,format='pdf')
+  plt.clf()
 
 #================== some important molecules ====================
 fig,ax = plt.subplots()
