@@ -281,7 +281,7 @@ if (count>0):
 
 #================== some important molecules ====================
 fig,ax = plt.subplots()
-mols  = ['CO2','N2','SO2','COS','H2S','S2','CO','H2O','H2','HCL','HF','Ar','Ne']
+mols  = ['CO2','N2','SO2','COS','H2S','S2','CO','H2O','H2','HCL','HF','Ar','Ne','H2SO4']
 mols  = np.array(mols)
 ntot  = 0.0*nHtot
 for i in range(3,4+NELEM+NMOLE): # electrons, all atoms, ions and cations
@@ -291,9 +291,9 @@ count = 0
 for i in range(3,4+NELEM+NMOLE): 
   mol = keyword[i]
   yy = dat[:,i]-lntot            # log10 nmol/ntot
-  crit = -1.5
+  crit = -5.0
   ind = np.where(mols == mol)[0]
-  if (np.size(ind)>0): crit=-5
+  if (np.size(ind)>0): crit=-7
   #print i,mol,ind,np.size(ind)
   if (np.max(yy[iii])>crit):
     plt.plot(xx,yy,c=colo[count],ls=styl[count],lw=widt[count],label=mol)
@@ -302,14 +302,14 @@ plt.title('important molecules',fontsize=20)
 plt.xlabel(r'$x$',fontsize=20)
 plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{tot}$',fontsize=20)
 plt.xlim(xmin,xmax)
-plt.ylim(-6.2,0.2)
+plt.ylim(-8.0,0.2)
 plt.tick_params(axis='both', labelsize=14)
 plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
 #ax.xaxis.set_minor_locator(locmin)
 #ax.set_xticks(locmaj)
 #ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
-leg = plt.legend(loc='best',fontsize=11,ncol=2,fancybox=True)
+leg = plt.legend(loc='upper center',fontsize=11,ncol=5,fancybox=True)
 leg.get_frame().set_alpha(0.7)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')

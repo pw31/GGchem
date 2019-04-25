@@ -283,7 +283,7 @@
           same = same.and.(nHmin==nHmax)
         endif  
         if (same) then
-          eps0(O) = eps00(O)*(1.0+0.00003*fac)
+          eps0(O) = eps00(O)*(1.0+0.0005*(fac-0.5)/0.5)
           !eps0(C) = eps00(O)*(0.3+1.1*fac) 
           !eps0(C) = eps00(C)
           !print*,"C/O=",eps0(C)/eps0(O)

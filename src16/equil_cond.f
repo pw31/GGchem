@@ -297,7 +297,7 @@
       xstep(:) = 0.Q0             
       call SUPER(nHtot,T,xstep,eps,Sat0,.false.) ! from scratch
       qual = SQUAL(Sat0,active)
-      print'("it=",I4," qual=",1pE13.4E4)',0,qual
+      print'("it =",I4," qual =",1pE13.4E4)',0,qual
       act_old = active
       lastit = -99
       iminoff = 0
@@ -357,7 +357,21 @@
      >                   1pE10.2,2x,A18)',maxon,dust_nam(imaxon)
 
           if (maxon>0.0*MAX(Smax-1.Q0,0.Q0)) then
-            if (imaxon.ne.iminoff) then 
+            if (imaxon.ne.iminoff) then
+              txt = dust_nam(imaxon)
+              i = index(txt,'[l]')
+              if (i>0) then
+                txt = trim(txt(1:i-1))//'[s]'
+                do i=1,NDUST
+                  if (active(i).and.trim(dust_nam(i)).eq.trim(txt)) then
+                    !print*,dust_nam(imaxon),Sat1(imaxon)
+                    !print*,dust_nam(i),Sat1(i)
+                    if (Sat1(imaxon)<Sat1(i)) imaxon=0
+                  endif
+                enddo  
+              endif  
+            endif
+            if (imaxon>0) then
               active(imaxon) = .true.
               print*,"switch on ",trim(dust_nam(imaxon))
             endif  
@@ -1248,7 +1262,7 @@
           qual = SQUAL(Sat0,active)
           if (verbose>0) print'("--> pullback",i3,0pF6.3," Q=",1pE11.3,
      >                          " ->",1pE11.3)',iback,NRstep,qold,qual
-          if (qual<qold*2) exit
+          if (qual<qold*1.5) exit
           NRstep = NRstep/2
         enddo  
         !del = 0.Q0

@@ -23,5 +23,6 @@ dispol_WoitkeRefit.dat                  ! dispol_file3
 7                     ! NewBackIt  
 1.E+5                 ! NewBackFac
 1                     ! NewFastLevel
+3                     ! NewPreMethod
 1000.0                ! Tfast
 

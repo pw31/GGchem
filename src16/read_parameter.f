@@ -43,7 +43,7 @@
       NewBackIt    = 5
       NewBackFac   = 1.E+2
       NewFastLevel = 1
-      NewPreMethod = 2
+      NewPreMethod = 3
 
       !-------------------------------------------
       ! ***  change parameters via input file  ***

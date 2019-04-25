@@ -57,7 +57,7 @@
       integer :: stindex,Nconv,switch,ido,iredo
       integer :: Nact,all_to_act(nel),act_to_all(nel),switchoff(nel)
       integer :: e,i,j,j1,ii,jj,kk,l,it,m1,m2,piter,ifatal,ipull,pullmax
-      integer :: Nseq,imin,imax,imethod,enew,eseq(nel)
+      integer :: Nseq,imin,imax,iloop,imethod,enew,eseq(nel)
       integer,parameter :: itmax=200,Ncmax=16
       real(kind=qp) :: finish,qual,qual0,qual1,qual2,qual3
       real(kind=qp) :: g(0:nml),limit
@@ -322,9 +322,14 @@
           relevant(i) = (known.and.affect)
         enddo  
         qual = 9.Q+99
-        do imethod=1,2
-          if (qual<1.Q-4) exit 
-          if (imethod==NewPreMethod) then
+        do iloop=1,3
+          imethod = MOD(NewPreMethod+iloop-2,3)+1
+          if (verbose>1) print*,"imethod=",iloop,imethod
+          !write(97,*) catm(eseq(1:ido))
+          !write(97,*) eact(eseq(1:ido))
+          !write(97,*) imethod
+          !write(97,*) real(pcorr(enew,act_to_all(1:Nact)))          
+          if (imethod==1) then
             !-------- method 1: xx=log(patm)-variables --------
             null = anmono
             do ii=1,Nact
@@ -383,11 +388,13 @@
                 xx(i) = xx(i) - MAX(-maxs,MIN(maxs,dp(ii)))
                 anmono(i) = exp(xx(i))*kT1
               enddo
+              !write(97,'(I4,A2,99(1pE11.3E3))')
+     >        !               it,bem,anmono(act_to_all(1:Nact))*kT,qual
               if (verbose>1) print'(I4,A2,99(1pE11.3E3))',
      >                       it,bem,anmono(act_to_all(1:Nact))*kT,qual
-              if (it>1.and.qual<1.Q-4) exit
+              if (it>1.and.qual<1.Q-12) exit
             enddo  
-          else  
+          else if (imethod==2) then
             !-------- method 2: lin-variables with pullback --------
             dp(:) = 0.Q0
             fak   = 1.Q0
@@ -448,13 +455,16 @@
                 enddo  
                 if (qual<qual0) exit
                 if (ipull==pullmax) exit
+                !write(97,'("pullback",3(1pE11.3))') fak,qual0,qual
                 if (verbose>1) print'("pullback",3(1pE11.3))',
      >                         fak,qual0,qual
                 fak = 0.5*fak   ! reduce NR-step
               enddo  
+              !write(97,'(I4,99(1pE11.3))')
+     >        !             it,anmono(act_to_all(1:Nact))*kT,qual
               if (verbose>1) print'(I4,99(1pE11.3))',
      >                     it,anmono(act_to_all(1:Nact))*kT,qual
-              if (it>1.and.qual<1.Q-4) exit
+              if (it>1.and.qual<1.Q-12) exit
               !--- determine new NR-vector ---
               call GAUSS16(nel,Nact,DF,dp,FF)
               do ii=1,Nact
@@ -474,7 +484,64 @@
                 endif
               enddo
             enddo  
+          else if (imethod==3) then
+            !-------- method 3: xx=log(patm)-variables --------
+            null = anmono
+            do ii=1,Nact
+              i = act_to_all(ii)
+              xx(i) = LOG(anmono(i)*kT)
+            enddo
+            do it=1,299
+              do ii=1,Nact
+                i = act_to_all(ii)
+                FF(ii) = anHges*eps(i)*kT - anmono(i)*kT
+                DF(ii,:)  = 0.Q0
+                DF(ii,ii) = -anmono(i)*kT
+              enddo  
+              do i=1,nml
+                if (.not.relevant(i)) cycle 
+                pmol = 0.Q0
+                do j=1,m_kind(0,i)
+                  pmol = pmol + m_anz(j,i)*xx(m_kind(j,i))
+                enddo
+                pmol = g(i)*EXP(pmol)
+                do j=1,m_kind(0,i)
+                  m1 = m_kind(j,i)
+                  if (.not.eact(m1)) cycle
+                  ii = all_to_act(m1)
+                  term = m_anz(j,i) * pmol
+                  FF(ii) = FF(ii) - term
+                  do l=1,m_kind(0,i)
+                    m2 = m_kind(l,i)
+                    if (.not.eact(m2)) cycle
+                    jj = all_to_act(m2)
+                    DF(ii,jj) = DF(ii,jj) - m_anz(l,i)*term
+                  enddo	    
+                enddo
+              enddo
+              call GAUSS16(nel,Nact,DF,dp,FF)
+              qual = 0.Q0
+              do ii=1,Nact
+                qual = MAX(qual,ABS(dp(ii)))
+              enddo  
+              fak = MIN(1.0,3.0/qual)
+              do ii=1,Nact
+                i = act_to_all(ii) 
+                xx(i) = xx(i) - fak*dp(ii)
+                anmono(i) = exp(xx(i))*kT1
+              enddo
+              !write(97,'(I4,A2,99(1pE11.3E3))')
+     >        !               it,bem,anmono(act_to_all(1:Nact))*kT,qual
+              if (verbose>1) print'(I4,99(1pE11.3E3))',
+     >                       it,anmono(act_to_all(1:Nact))*kT,fak,qual
+              if (qual<1.Q-12) exit
+            enddo  
           endif
+          if (qual<1.Q-12) exit
+          do ii=1,Nact
+            i = act_to_all(ii)
+            anmono(i) = pbefore(i)    
+          enddo 
         enddo  
         if (qual>1.Q-4) then
           if (ptake) then

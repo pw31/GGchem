@@ -364,8 +364,8 @@
           else
             dfdmu = (ff-fold)/(mu-muold)
             dmu   = -ff/dfdmu
-            write(98,'(I3,99(1pE14.7))')
-     >           it,muold,mu,fold,ff,dfdmu,dmu/mu
+            !write(98,'(I3,99(1pE14.7))')
+     >      !     it,muold,mu,fold,ff,dfdmu,dmu/mu
             muold = mu
             if ((dmu>0.0).or.ABS(dmu/mu)<0.7) then
               mu = muold+dmu

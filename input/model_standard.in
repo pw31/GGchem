@@ -22,7 +22,8 @@ dispol_WoitkeRefit.dat                  ! dispol_file3
 4.E+19                ! nHmax [cm-3]  (if pconst=.false.)
 4.E+19                ! nHmin [cm-3]
 300                   ! Npoints      
-7                     ! NewBackIt  
+6                     ! NewBackIt  
 1.E+5                 ! NewBackFac
+2                     ! NewPreMethod
 1000.0                ! Tfast
 

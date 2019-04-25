@@ -16,8 +16,10 @@
      >                   Ar,K,Ca,Sc,Ti,V,Cr,Mn,Fe,Co,Ni,Cu,Zn,Ga,Ge,
      >                   As,Se,Br,Kr,Rb,Sr,Y,Zr,W
       implicit none
+      integer,parameter :: qp=selected_real_kind(33,4931)
       integer :: i,j,nr
-      real :: m,val,abund(74,4),eps0(NELEM),epsH,mfrac(NELEM),addH2O
+      real(kind=qp) :: abund(74,4),eps0(NELEM),epsH,mfrac(NELEM)
+      real(kind=qp) :: m,val,addH2O
       character(len=2) :: el
       character(len=20) :: elname
       character(len=10) :: source(4)
@@ -248,7 +250,8 @@
         eps   = LOG10(eps)+12.Q0
         mfrac = 1.E-50
         do i=1,999
-          read(1,*,end=1000) el,val
+          read(1,*,err=1000,end=1000) el,val
+          print*,el,val
           if (el=='el') cycle
           found = .false.
           do j=1,NELEM

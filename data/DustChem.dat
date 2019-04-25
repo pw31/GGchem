@@ -1,6 +1,6 @@
 dust species
 ============
-210
+206
 
 Al2O3[s]       CORUNDUM(alpha)
 3.97
@@ -559,22 +559,6 @@ LiCl[l]        LI-CHLORIDE(liquid)     883.0
  1 Cl
 # pvap-fit NIST-Janaf 298-2000K, +/- 0.008:
  3 -2.38196E+04  3.23179E+01 -4.07306E-03  1.00591E-06 -9.65764E-11
-
-SiS2[s]        SI-DISULFIDE
-1.85
-2
- 1 Si
- 2 S
-# dG-fit NIST-Janaf 298-2000K, +/- 0.009:
-  2 -1.96413E+05 -1.21744E+06  4.29645E+02 -1.32885E-02  9.27515E-07
-
-SiS2[l]        SI-DISULFIDE(liquid)    1363.0
-1.5
-2
- 1 Si
- 2 S
-# dG-fit NIST-Janaf 298-2000K, +/- 0.024:
-  2  5.45975E+05 -1.21556E+06  4.34344E+02 -1.99379E-02  2.31933E-06
 
 AlCl3[s]       AL-TRICHLORIDE
 2.48
@@ -1963,20 +1947,6 @@ H2S[s]         HYDROGEN-SULFIDE(liquid/solid)  187.65
  2 H
  1 S
 # pvap special (Stull 1947 - NIST fit):
-  99  0.0  0.0  0.0  0.0  0.0
-
-S2[s]          DISULPHUR(liquid/solid)     413.0
-2.07
-1
- 2 S
-# pvap special - Zahnle et al. (2016)
- 99  0.0  0.0  0.0  0.0  0.0
-
-S8[s]          OCTASULPHUR(liquid/solid)   432.0
-2.07
- 1
- 8 S
-# pvap special - Zahnle et al. (2016)
   99  0.0  0.0  0.0  0.0  0.0
 
 P[s]           PHOSPHORUS_WHITE
