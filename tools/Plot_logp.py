@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter, ScalarFormatter, LogLocator
 from matplotlib.backends.backend_pdf import PdfPages
 plt.rcParams['axes.linewidth'] = 1.5
@@ -30,6 +31,9 @@ press = dat[:,2]/bar             # p [bar]
 lp    = np.log10(press)
 pmin  = np.min(lp)
 pmax  = np.max(lp)
+Narg  = len(sys.argv)
+if (Narg>1): pmin=float(sys.argv[1])
+if (Narg>2): pmax=float(sys.argv[2])
 iii   = np.where((lp>pmin) & (lp<pmax))[0]
 Tmin  = np.min(Tg[iii])
 Tmax  = np.max(Tg[iii])
