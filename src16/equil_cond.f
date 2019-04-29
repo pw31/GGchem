@@ -54,7 +54,7 @@
       integer :: imaxon,iminoff,info,ipvt(NELEM)
       integer :: e_num(NELEM),e_num_save(NELEM)
       integer :: Nunsolved,unsolved(NELEM),Nvar1,Nvar2,var(NELEM)
-      integer :: Nsolve,ebest,dbest,nonzero,itrivial,iread,ioff
+      integer :: Nsolve,ebest,dbest,nonzero,itrivial,iread,ioff,method
       integer :: ifail,Nall,imax,swap,irow,erow,Eact,Nlin,iback
       integer :: act_to_elem(NELEM),act_to_dust(NELEM)
       integer :: Nzero,Ntrivial,etrivial(NELEM),dtrivial(NELEM)
@@ -228,9 +228,10 @@
       !--------------------------------------------
       ! ***  load initial state from database?  ***
       !--------------------------------------------
-      call GET_DATA(nHtot,T,epsread,ddustread,qread,iread,act_read)
+      call GET_DATA(nHtot,T,epsread,ddustread,qread,iread,
+     >              act_read,method)
       Nact = 0
-      if (qread.lt.0.5.and.useDatabase) then
+      if (qread.lt.1.0.and.useDatabase) then
         eps    = epsread
         ddust  = ddustread
         active = act_read
@@ -245,13 +246,12 @@
         !verbose = 0
         !if (qread>1.Q-3.and.Nact>0) verbose=2
         !if (qread>1.Q-3.and.iread==207) verbose=2
+        !if (method==2) verbose=2
         if (verbose>0) then
           write(*,'(" ... using database entry (",I6,
      >          ") qual=",1pE15.7)') iread,qread
           write(*,*) trim(text)
         endif  
-      !else
-      !  verbose=2
       endif
   
       !----------------------------------------------------
@@ -515,7 +515,7 @@
           xstep(:)= 0.Q0             
           call SUPER(nHtot,T,xstep,eps,Sat0,NewFastLevel<1)
           qual = SQUAL(Sat0,active)
-          print'("it=",I4," qual=",1pE13.4E4)',it,qual
+          print'("it =",I4," qual =",1pE13.4E4)',it,qual
           lastit = it
         endif
         if (verbose>0) then

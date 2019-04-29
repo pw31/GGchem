@@ -9,6 +9,7 @@
       TYPE ENTRY
         real*8 :: ln
         real*8 :: lT
+        real*8 :: eprod
         real(kind=qp) :: eps(NELEM)
         real(kind=qp) :: ddust(NDUSTmax)
       END TYPE ENTRY
@@ -30,6 +31,7 @@
         do i=1,NDAT
           write(11) dbase(i)%ln 
           write(11) dbase(i)%lT
+          write(11) dbase(i)%eprod
           write(11) dbase(i)%eps
           write(11) dbase(i)%ddust(1:NDUST)
         enddo 
@@ -39,6 +41,7 @@
         do i=NLAST+1,NDAT
           write(11) dbase(i)%ln 
           write(11) dbase(i)%lT
+          write(11) dbase(i)%eprod
           write(11) dbase(i)%eps
           write(11) dbase(i)%ddust(1:NDUST)
         enddo 
@@ -73,6 +76,7 @@
       do i=1,999999
         read(11,end=100) dbase(i)%ln 
         read(11) dbase(i)%lT
+        read(11) dbase(i)%eprod
         read(11) dbase(i)%eps
         read(11) dbase(i)%ddust(1:NDUST)
         NDAT = NDAT+1
@@ -89,14 +93,15 @@
 **********************************************************************
       SUBROUTINE PUT_DATA(nH,T,eps,ddust,qbest,ibest,active)
 **********************************************************************
-      use dust_data,ONLY: NELEM,NDUST,dust_nam
+      use dust_data,ONLY: NELEM,NDUST,NEPS,dust_nam,eps0,elnr
       use DATABASE,ONLY: qp,NDAT,NLAST,NMODI,DMAX,dbase
       implicit none
       real*8,intent(in) :: nH,T,qbest
       integer,intent(in) :: ibest
+      real*8 :: prod
       real(kind=qp),intent(in) :: eps(NELEM),ddust(NDUST)
       logical,intent(in) :: active(0:NDUST)
-      integer :: i,j
+      integer :: i,j,e,el
       
       !if (qbest<1.d-8) then
       !  return 
@@ -115,9 +120,15 @@
           stop
         endif  
       endif  
-      dbase(i)%ln = LOG(nH)
-      dbase(i)%lT = LOG(T)
-      dbase(i)%eps = eps
+      prod = 1.0
+      do e=1,NEPS
+        el = elnr(e) 
+        prod = prod * eps0(el)
+      enddo  
+      dbase(i)%ln    = LOG(nH)
+      dbase(i)%lT    = LOG(T)
+      dbase(i)%eprod = LOG(prod)
+      dbase(i)%eps   = eps
       do j=1,NDUST
         !if (ddust(j)>0.Q0) print*,active(j),dust_nam(j),real(ddust(j))
         dbase(i)%ddust(j) = ddust(j)
@@ -132,7 +143,7 @@
 
 
 **********************************************************************
-      subroutine GET_DATA(nH,T,eps,ddust,qbest,ibest,active)
+      subroutine GET_DATA(nH,T,eps,ddust,qbest,ibest,active,method)
 **********************************************************************
       use dust_data,ONLY: NEPS,NELEM,NDUST,eps0,elnam,elnr,
      >                    dust_nel,dust_nu,dust_el,dust_nam
@@ -140,19 +151,20 @@
       implicit none
       real*8,intent(in) :: nH,T
       real*8,intent(out) :: qbest
-      integer,intent(out) :: ibest
+      integer,intent(out) :: ibest,method
       real(kind=qp),intent(inout) :: eps(NELEM),ddust(NDUST)
       logical,intent(out) :: active(0:NDUST)
-      real*8 :: ln,lT,lnread,lTread,qual,pot,rsort(NEPS)
-      real(kind=qp) :: check(NELEM),error,errmax,corr,emain,del
+      real*8 :: prod,lp,ln,lT,lpread,lnread,lTread
+      real*8 :: qual,pot,rsort(NEPS)
+      real(kind=qp) :: check(NELEM),error,errmax,emain,del,sjk,sik
       real(kind=qp) :: stoich(NEPS,NEPS),xx(NEPS),rest(NEPS),tmp
-      real(kind=qp) :: ecopy(NELEM),dcopy(NDUST)
-      integer :: i,j,k,it,el,el2,elworst,b,bb,Nbuf,iloop,joff,jj
+      real(kind=qp) :: ecopy(NELEM),dcopy(NDUST),deps0(NELEM)
+      integer :: i,j,k,it,el,el2,elworst,b,bb,Nbuf,iloop,jj,ii,Nact,e
       integer :: isort(NEPS),jmain(NELEM),ibuf(NELEM)
       character(len=1) :: char
       character(len=80) :: frmt
       character(len=999) :: condensates
-      logical :: ok,found,contain1,contain2,corrected,used(NDUST)
+      logical :: found,contain1,contain2,corrected,used(NDUST)
       logical,save :: firstCall=.true.
       
       if (firstCall) then
@@ -160,9 +172,15 @@
         firstCall = .false.
       endif  
 
-      write(*,'("looking for nH,T=",2(1pE13.5)," ...")') nH,T
+      prod = 1.0
+      do e=1,NEPS
+        el = elnr(e) 
+        prod = prod * eps0(el)
+      enddo  
+      print'("looking for nH,T,eprod=",3(1pE13.5)," ...")',nH,T,prod
       ln = LOG(nH)
       lT = LOG(T) 
+      lp = LOG(prod)
       qbest  = 9.d+99
       ibest  = 0
       pot    = -0.03
@@ -171,7 +189,9 @@
         i=NMODI
         lnread = dbase(i)%ln 
         lTread = dbase(i)%lT
+        lpread = dbase(i)%eprod
         qual = 0.05*ABS(lnread-ln)+ABS((lTread-lT)+pot*(lnread-ln))
+     >       + 10.0*ABS(lpread-lp)
         qbest = qual
         ibest = i
         if (qbest<1.d-3) goto 100
@@ -180,7 +200,9 @@
       do i=MAX(1,NPICK1-1),MIN(NDAT,NPICK1+1)
         lnread = dbase(i)%ln 
         lTread = dbase(i)%lT
+        lpread = dbase(i)%eprod
         qual = 0.05*ABS(lnread-ln)+ABS((lTread-lT)+pot*(lnread-ln))
+     >       + 10.0*ABS(lpread-lp)
         if (qual<qbest) then 
           qbest = qual
           ibest = i
@@ -190,7 +212,9 @@
       do i=MAX(1,NPICK2-1),MIN(NDAT,NPICK2+1)
         lnread = dbase(i)%ln 
         lTread = dbase(i)%lT
+        lpread = dbase(i)%eprod
         qual = 0.05*ABS(lnread-ln)+ABS((lTread-lT)+pot*(lnread-ln))
+     >       + 10.0*ABS(lpread-lp)
         if (qual<qbest) then 
           qbest = qual
           ibest = i
@@ -202,7 +226,9 @@
       do i=NDAT,1,-1
         lnread = dbase(i)%ln 
         lTread = dbase(i)%lT
+        lpread = dbase(i)%eprod
         qual = 0.05*ABS(lnread-ln)+ABS((lTread-lT)+pot*(lnread-ln))
+     >       + 10.0*(lpread-lp)
         if (qual<qbest) then 
           qbest = qual
           ibest = i
@@ -214,8 +240,10 @@
       if (ibest>0) then
         eps    = dbase(ibest)%eps
         ddust  = dbase(ibest)%ddust(1:NDUST)
+        Nact = 0
         do i=1,NDUST
           if (ddust(i)>0.Q0) then
+            Nact = Nact+1
             active(i)=.true.
             condensates = trim(condensates)//" "//trim(dust_nam(i))
           endif  
@@ -223,50 +251,36 @@
         NPICK2 = NPICK1
         NPICK1 = ibest
         write(*,'(" ... found best dataset (",I6,
-     >          ")  nH,T,qual=",3(1pE13.5))')
-     >     ibest,EXP(dbase(ibest)%ln),EXP(dbase(ibest)%lT),qbest
+     >          ")  nH,T,eprod,qual=",4(1pE13.5))')
+     >     ibest,EXP(dbase(ibest)%ln),EXP(dbase(ibest)%lT),
+     >     EXP(dbase(ibest)%eprod),qbest
         write(*,*) "active condensates: "//trim(condensates)
         ecopy = eps
         dcopy = ddust
- 150    continue
-        joff = 0
-        !----------------------------------------------------
-        ! ***  adapt eps and ddust to reach current eps0  ***
-        !----------------------------------------------------
-        !--- 0. a few direct corrections ---
-        do it=1,10
-          check = eps
-          do i=1,NDUST
-            do j=1,dust_nel(i)
-              el = dust_el(i,j)
-              check(el) = check(el) + ddust(i)*dust_nu(i,j)    
-            enddo
+
+        !--------------------------------------------------------------
+        ! ***  adapt eps and ddust to reach current eps0: method 1  ***
+        !--------------------------------------------------------------
+        check = eps
+        do i=1,NDUST
+          do j=1,dust_nel(i)
+            el = dust_el(i,j)
+            check(el) = check(el) + ddust(i)*dust_nu(i,j)    
           enddo
-          errmax = -1.Q0
-          do el=1,NELEM
-            error = ABS(1.Q0-check(el)/eps0(el))
-            if (error.gt.errmax) then
-              errmax = error
-              elworst = el
-              corr = eps0(el)/check(el)
-            endif   
-          enddo
-          print*,"need fitting? "//elnam(elworst),
-     >           SNGL(errmax),SNGL(corr)
-          if (errmax<1.Q-25) return          ! perfect fit - nothing to do
-          if (errmax<1.Q+99) exit            ! better do no iterations at all
-          el = elworst
-          eps(el) = eps(el)*corr
-          do i=1,NDUST
-            if (ddust(i)==0.Q0) cycle 
-            do j=1,dust_nel(i)
-              if (el==dust_el(i,j)) then
-                ddust(i) = ddust(i)*corr
-                exit
-              endif
-            enddo
-          enddo  
-        enddo  
+        enddo
+        deps0 = eps0-check
+        errmax = -1.Q0
+        do el=1,NELEM
+          error = ABS(1.Q0-check(el)/eps0(el))
+          if (error.gt.errmax) then
+            errmax = error
+            elworst = el
+          endif   
+        enddo
+        print*,"need fitting? "//elnam(elworst),SNGL(errmax)
+        method = 0
+        if (errmax<1.Q-25) return ! perfect fit - nothing to do
+
         !--- 1. sort elements ---
         rsort = 9.d+99
         isort = 0
@@ -281,7 +295,6 @@
           rsort(j) = eps0(el)
         enddo
         iloop = 1
- 200    continue
         !--- 2. identify main reservoirs ---
         used = .false.
         Nbuf = 0
@@ -311,12 +324,16 @@
             !print*,elnam(el)//" "//trim(dust_nam(j)),REAL(ddust(j))
           endif  
         enddo
+        !if (Nact>Nbuf) goto 300   ! prefer method 2 in this case
+
+        print*,"adjust with method 1 ..."
+        method = 1
         !--- 2a check unassigned condensates ---
-        corrected = .false.
         do i=1,NEPS
           el = isort(i)
           if (jmain(el)>0) cycle 
           !print*,elnam(el)," not assigned"
+          corrected = .false.
           do jj=1,NDUST
             if (ddust(jj)==0.Q0) cycle
             if (used(jj)) cycle         
@@ -349,9 +366,16 @@
                 exit
               endif
             enddo  
+            if (corrected) exit
           enddo
         enddo  
-        !--- 3. setup linear equation system ---
+        !----------------------------------------------------------------
+        !*** 3. setup linear equation system                          ***
+        !*** the idea is to find modified ddust, such that eps is as  ***
+        !*** in the database:  ((stoich))*(ddust) = (eps0-eps)        ***
+        !*** ibuf(1...Nbuf) : sorted list of elements                 ***
+        !*** jmain(el) : dust index of main reservoir                 ***
+        !---------------------------------------------------------------- 
         stoich = 0.Q0
         do b=1,Nbuf
           el = ibuf(b) 
@@ -382,7 +406,6 @@
      &           trim(dust_nam(j)),ddust(j),rest(b)
         enddo  
         call GAUSS16( NEPS, Nbuf, stoich, xx, rest)
-        ok = .true.
         do b=1,Nbuf
           el = ibuf(b)
           j = jmain(el)
@@ -390,11 +413,10 @@
      &         elnam(el),trim(dust_nam(j)),ddust(j),xx(b)
           ddust(j) = xx(b)
           if (xx(b)<0.Q0) then
-            print*,"*** negative dust abundance in database.f"
-            !if (joff==0) joff=j
-            !ok = .false.
-            qbest = 9.d+99
-            return
+            print*,"*** negative dust abund. in database.f method 1"
+            goto 300
+            !qbest = 9.d+99
+            !return
           endif  
         enddo  
         !--- 4. correct gas element abundances ---
@@ -412,27 +434,95 @@
             print'(A3,A16,1pE13.6," ->",1pE13.6)',
      &           elnam(el),"gas",eps(el),tmp
             if (tmp<0.Q0) then
-              print*,"*** negative element abundance in database.f" 
-              !if (joff==0) then
-              !  el = ibuf(1)
-              !  joff = jmain(el)
-              !endif
-              !ok = .false.
-              qbest = 9.d+99
-              return
+              print*,"*** negative el. abund. in database.f method 1" 
+              goto 300
+              !qbest = 9.d+99
+              !return
             endif  
             eps(el) = tmp
           endif
         enddo
-        !if (corrected) stop
-        if (.not.ok) then
-          eps   = ecopy
-          ddust = dcopy
-          dcopy(joff) = 0.Q0
-          ddust(joff) = 0.Q0
-          active(joff) = .false.
-          goto 150
-        endif  
+        goto 500
+
+ 300    continue    
+        !--------------------------------------------------------------
+        ! ***  adapt eps and ddust to reach current eps0: method 2  ***
+        !--------------------------------------------------------------
+        print*,"adjust with method 2 ..."
+        !--------------------------------------------------------------
+        ! ***  the idea is to minimise the change of eps            ***
+        ! ***      Sum_k (deps_k/eps_k)**2 -> Min                   ***
+        ! ***  where deps_k = eps_k - eps_k(table)                  ***
+        ! ***  with eps_k        = eps0_k        - Sum_j sjk xj     ***
+        ! ***  and  eps_k(table) = eps0_k(table) - Sum_j sjk xj(table)
+        ! ***       ---------------------------------------------------
+        ! ***       deps_k       = deps0_k       - Sum_j sjk xx     ***
+        ! ***       ---------------------------------------------------
+        ! ***  the differentiate with respect to each xx_i = 0      ***
+        ! -------------------------------------------------------------
+        method = 2
+        ddust = dcopy
+        eps   = ecopy
+        Nact = 0
+        stoich = 0.Q0
+        rest = 0.Q0
+        i = 0
+        do ii=1,NDUST
+          if (ddust(ii)==0.Q0) cycle
+          Nact = Nact+1
+          i = i+1
+          do k=1,NEPS
+            el = elnr(k)
+            do e=1,dust_nel(ii)
+              if (el==dust_el(ii,e)) exit
+            enddo  
+            sik = dust_nu(ii,e)
+            !print*,dust_nam(ii),elnam(el),sik,deps0(el)
+            rest(i) = rest(i) + sik*deps0(el)/eps(el)**2
+            j = 0
+            do jj=1,NDUST
+              if (ddust(jj)==0.Q0) cycle
+              j = j+1
+              do e=1,dust_nel(jj)
+                if (el==dust_el(jj,e)) exit
+              enddo  
+              sjk = dust_nu(jj,e)
+              stoich(i,j) = stoich(i,j) + sik*sjk/eps(el)**2 
+            enddo  
+          enddo  
+        enddo
+        !print*,NEPS,Nact,rest
+        call GAUSS16( NEPS, Nact, stoich, xx, rest)
+        eps = eps + deps0
+        j = 0
+        do jj=1,NDUST
+          if (ddust(jj)==0.Q0) cycle
+          j = j+1
+          print'(A12,2(1pE12.4))',dust_nam(jj),dcopy(jj),xx(j)
+          ddust(jj) = ddust(jj)+xx(j)
+          do e=1,dust_nel(jj)
+            el = dust_el(jj,e)
+            eps(el) = eps(el)-dust_nu(jj,e)*xx(j)
+          enddo
+          if (ddust(jj)<0.Q0) then
+            method = 0
+            print*,"*** negative dust abund. in database.f method 2"
+            qbest = 9.d+99
+            return
+          endif
+        enddo 
+        do e=1,NEPS
+          el = elnr(e)
+          print'(A3,2(1pE12.4))',elnam(el),ecopy(el),eps(el)-ecopy(el)
+          if (eps(el)<0.Q0) then
+            method = 0
+            print*,"*** negative el. abund. in database.f method 2"
+            qbest = 9.d+99
+            return
+          endif
+        enddo
+
+ 500    continue
         check = eps
         do i=1,NDUST
           do j=1,dust_nel(i)

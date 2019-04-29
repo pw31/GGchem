@@ -51,7 +51,7 @@
       use CHEMISTRY,ONLY: NMOLE,NELM,m_kind,elnum,cmol,el
       use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,amu,muH,
      >                    dust_nam,dust_mass,dust_Vol,dust_nel,dust_el
-      use EXCHANGE,ONLY: nel,nat,nion,nmol,C,N
+      use EXCHANGE,ONLY: nel,nat,nion,nmol,C,N,O
       implicit none
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST)
@@ -61,6 +61,8 @@
       logical :: included,haeufig,raus(NMOLE)
       logical :: rausI(NELEM),rausII(NELEM)
       character(len=10) :: sp
+
+      eps0(O) = eps0(O)*(1.1-130./200.*0.1)
 
       Tg    = Tmax
       nHges = nHmax
