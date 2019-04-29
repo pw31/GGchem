@@ -413,7 +413,7 @@
         endif
   
         if (verbose>0) read(*,'(a1)') char
-
+        
       enddo  
 
       close(70)

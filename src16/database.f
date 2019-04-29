@@ -157,14 +157,15 @@
       real*8 :: prod,lp,ln,lT,lpread,lnread,lTread
       real*8 :: qual,pot,rsort(NEPS)
       real(kind=qp) :: check(NELEM),error,errmax,emain,del,sjk,sik
-      real(kind=qp) :: stoich(NEPS,NEPS),xx(NEPS),rest(NEPS),tmp
-      real(kind=qp) :: ecopy(NELEM),dcopy(NDUST),deps0(NELEM)
+      real(kind=qp) :: stoich(NEPS,NEPS),xx(NEPS),rest(NEPS),tmp,val
+      real(kind=qp) :: ecopy(NELEM),dcopy(NDUST),deps0(NELEM),echange
       integer :: i,j,k,it,el,el2,elworst,b,bb,Nbuf,iloop,jj,ii,Nact,e
       integer :: isort(NEPS),jmain(NELEM),ibuf(NELEM)
       character(len=1) :: char
       character(len=80) :: frmt
       character(len=999) :: condensates
-      logical :: found,contain1,contain2,corrected,used(NDUST)
+      logical :: IS_NAN,found,contain1,contain2,corrected
+      logical :: condensed(NELEM),used(NDUST)
       logical,save :: firstCall=.true.
       
       if (firstCall) then
@@ -258,14 +259,14 @@
         ecopy = eps
         dcopy = ddust
 
-        !--------------------------------------------------------------
-        ! ***  adapt eps and ddust to reach current eps0: method 1  ***
-        !--------------------------------------------------------------
+        condensed(:) = .false.
         check = eps
         do i=1,NDUST
           do j=1,dust_nel(i)
+            if (ddust(i)==0.Q0) cycle
             el = dust_el(i,j)
             check(el) = check(el) + ddust(i)*dust_nu(i,j)    
+            condensed(el) = .true.
           enddo
         enddo
         deps0 = eps0-check
@@ -281,101 +282,47 @@
         method = 0
         if (errmax<1.Q-25) return ! perfect fit - nothing to do
 
-        !--- 1. sort elements ---
+        !--------------------------------------------------------------
+        ! ***  adapt eps and ddust to reach current eps0: method 1  ***
+        !--------------------------------------------------------------
+        print*,"adjust with method 1 ..."
+        method = 1
+
+        !--- 1. sort elements from rare to abundant ---
         rsort = 9.d+99
         isort = 0
         do i=1,NEPS
-          el = elnr(i) 
+          el = elnr(i)
+          val = eps(el)
+          if (.not.condensed(el)) val=val+1.E+10  ! non-condensed to bottom
           do j=NEPS+1,2,-1
-            if (eps0(el)>rsort(j-1)) exit
+            if (val>rsort(j-1)) exit
           enddo  
           isort(j+1:NEPS) = isort(j:NEPS-1)
           rsort(j+1:NEPS) = rsort(j:NEPS-1)
           isort(j) = el
-          rsort(j) = eps0(el)
+          rsort(j) = val
         enddo
-        iloop = 1
-        !--- 2. identify main reservoirs ---
-        used = .false.
-        Nbuf = 0
-        do i=1,NEPS
-          el = isort(i)
-          check(el) = eps(el)
-          emain = eps(el)
-          jmain(el) = 0
-          !print*,elnam(el),real(eps0(el)),real(emain)
-          do j=1,NDUST
-            if (ddust(j)==0.Q0) cycle
-            do k=1,dust_nel(j)
-              if (dust_el(j,k).ne.el) cycle
-              del = ddust(j)*dust_nu(j,k)    
-              check(el) = check(el) + del
-              if (.not.used(j).and.del>emain) then
-                emain = del
-                jmain(el) = j
-              endif
-            enddo
-          enddo  
-          if (jmain(el)>0) then
-            j = jmain(el) 
-            used(j)=.true. 
-            Nbuf = Nbuf+1
-            ibuf(Nbuf) = el
-            !print*,elnam(el)//" "//trim(dust_nam(j)),REAL(ddust(j))
-          endif  
-        enddo
-        !if (Nact>Nbuf) goto 300   ! prefer method 2 in this case
-
-        print*,"adjust with method 1 ..."
-        method = 1
-        !--- 2a check unassigned condensates ---
-        do i=1,NEPS
-          el = isort(i)
-          if (jmain(el)>0) cycle 
-          !print*,elnam(el)," not assigned"
-          corrected = .false.
-          do jj=1,NDUST
-            if (ddust(jj)==0.Q0) cycle
-            if (used(jj)) cycle         
-            !print*,dust_nam(jj)," not assigned"
-            do b=1,Nbuf
-              el2 = ibuf(b)
-              j = jmain(el2)
-              contain1 = .false.
-              contain2 = .false.
-              do k=1,dust_nel(j)
-                if (dust_el(j,k)==el) then
-                  del = ddust(j)*dust_nu(j,k) 
-                  contain1=.true.
-                endif  
-              enddo  
-              do k=1,dust_nel(jj)
-                if (dust_el(jj,k)==el2) contain2=.true.
-              enddo
-              !print*,dust_nam(j),elnam(el2),contain1,contain2,del
-              if (contain1.and.contain2.and.del>eps(el)) then
-                jmain(el2) = jj
-                used(jj)=.true.
-                jmain(el) = j
-                Nbuf = Nbuf+1
-                ibuf(Nbuf) = el
-                print*,"correction:"
-                print*,elnam(el2)//" "//trim(dust_nam(jj))
-                print*,elnam(el)//" "//trim(dust_nam(j)),REAL(ddust(j))
-                corrected = .true.
-                exit
-              endif
-            enddo  
-            if (corrected) exit
-          enddo
+        jmain = 0                                 ! list of condensates
+        used  = .false.
+        Nbuf  = 0
+        do j=1,NDUST                              
+          if (ddust(j)==0.Q0) cycle
+          Nbuf = Nbuf+1          
+          el = isort(Nbuf)
+          ibuf(Nbuf) = el
+          jmain(el) = j
+          used(j)=.true.
+          !print*,elnam(el),dust_nam(j),REAL(eps(el))
         enddo  
-        !----------------------------------------------------------------
-        !*** 3. setup linear equation system                          ***
-        !*** the idea is to find modified ddust, such that eps is as  ***
-        !*** in the database:  ((stoich))*(ddust) = (eps0-eps)        ***
-        !*** ibuf(1...Nbuf) : sorted list of elements                 ***
-        !*** jmain(el) : dust index of main reservoir                 ***
-        !---------------------------------------------------------------- 
+
+        !--------------------------------------------------------------
+        !*** 2. setup linear equation system                        ***
+        !*** the idea is to find modified ddust, such that eps is   ***
+        !*** as in the database:  ((stoich))*(ddust) = (eps0-eps)   ***
+        !*** ibuf(1...Nbuf) : sorted list of elements               ***
+        !*** jmain(el) : dust index of main reservoir               ***
+        !-------------------------------------------------------------- 
         stoich = 0.Q0
         do b=1,Nbuf
           el = ibuf(b) 
@@ -412,14 +359,15 @@
           print'(A3,A16,1pE13.6," ->",1pE13.6)',
      &         elnam(el),trim(dust_nam(j)),ddust(j),xx(b)
           ddust(j) = xx(b)
-          if (xx(b)<0.Q0) then
+          if (xx(b)<0.Q0.or.IS_NAN(DBLE(xx(b)))) then
             print*,"*** negative dust abund. in database.f method 1"
             goto 300
             !qbest = 9.d+99
             !return
           endif  
-        enddo  
-        !--- 4. correct gas element abundances ---
+        enddo 
+ 
+        !--- 3. correct remaining gas element abundances ---
         check = 0.Q0
         do i=1,NDUST
           do j=1,dust_nel(i)
@@ -427,28 +375,32 @@
             check(el) = check(el) + ddust(i)*dust_nu(i,j)    
           enddo
         enddo
+        echange = 0.Q0
         do i=1,NEPS
           el = isort(i)
           if (jmain(el)==0) then
             tmp = eps0(el)-check(el)
             print'(A3,A16,1pE13.6," ->",1pE13.6)',
      &           elnam(el),"gas",eps(el),tmp
-            if (tmp<0.Q0) then
+            if (tmp<0.Q0.or.IS_NAN(DBLE(tmp))) then
               print*,"*** negative el. abund. in database.f method 1" 
               goto 300
               !qbest = 9.d+99
               !return
             endif  
             eps(el) = tmp
+            echange = MAX(echange,ABS(LOG10(eps(el)/ecopy(el))))
           endif
         enddo
-        goto 500
+        print*,'echange =',REAL(echange)
+        if (echange<2.Q0) goto 500
 
  300    continue    
         !--------------------------------------------------------------
         ! ***  adapt eps and ddust to reach current eps0: method 2  ***
         !--------------------------------------------------------------
         print*,"adjust with method 2 ..."
+        method = 2
         !--------------------------------------------------------------
         ! ***  the idea is to minimise the change of eps            ***
         ! ***      Sum_k (deps_k/eps_k)**2 -> Min                   ***
@@ -460,7 +412,6 @@
         ! ***       ---------------------------------------------------
         ! ***  the differentiate with respect to each xx_i = 0      ***
         ! -------------------------------------------------------------
-        method = 2
         ddust = dcopy
         eps   = ecopy
         Nact = 0
@@ -504,7 +455,7 @@
             el = dust_el(jj,e)
             eps(el) = eps(el)-dust_nu(jj,e)*xx(j)
           enddo
-          if (ddust(jj)<0.Q0) then
+          if (ddust(jj)<0.Q0.or.IS_NAN(DBLE(ddust(jj)))) then
             method = 0
             print*,"*** negative dust abund. in database.f method 2"
             qbest = 9.d+99
@@ -514,7 +465,7 @@
         do e=1,NEPS
           el = elnr(e)
           print'(A3,2(1pE12.4))',elnam(el),ecopy(el),eps(el)-ecopy(el)
-          if (eps(el)<0.Q0) then
+          if (eps(el)<0.Q0.or.IS_NAN(DBLE(eps(el)))) then
             method = 0
             print*,"*** negative el. abund. in database.f method 2"
             qbest = 9.d+99
@@ -545,5 +496,5 @@
           stop
         endif  
       endif
-  
+
       end
