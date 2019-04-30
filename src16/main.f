@@ -62,8 +62,6 @@
       logical :: rausI(NELEM),rausII(NELEM)
       character(len=10) :: sp
 
-      eps0(O) = eps0(O)*(1.1-130./200.*0.1)
-
       Tg    = Tmax
       nHges = nHmax
       p     = pmax
