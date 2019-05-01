@@ -229,7 +229,7 @@
         lTread = dbase(i)%lT
         lpread = dbase(i)%eprod
         qual = 0.05*ABS(lnread-ln)+ABS((lTread-lT)+pot*(lnread-ln))
-     >       + 10.0*(lpread-lp)
+     >       + 10.0*ABS(lpread-lp)
         if (qual<qbest) then 
           qbest = qual
           ibest = i

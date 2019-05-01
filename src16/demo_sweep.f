@@ -17,7 +17,7 @@
       real :: nTEA,pTEA,mu,muold,Jstar,Nstar
       real(kind=qp) :: eps(NELEM),eps00(NELEM)
       real(kind=qp) :: Sat(NDUST),eldust(NDUST),out(NDUST)
-      real(kind=qp) :: fac,e_reservoir(NELEM),d_reservoir(NDUST)
+      real(kind=qp) :: fac,deps,e_reservoir(NELEM),d_reservoir(NDUST)
       integer :: it,i,j,jj,k,l,NOUT,iW,stindex
       character(len=5000) :: species,NISTspecies,elnames
       character(len=20) :: frmt,name,short_name(NDUST),test1,test2
@@ -283,7 +283,9 @@
           same = same.and.(nHmin==nHmax)
         endif  
         if (same) then
-          eps0(O) = eps00(O)*(1.1-0.1*fac)
+          deps = eps00(Si)*0.1*(1.Q0-fac)
+          eps0(Si) = eps00(Si) + deps
+          eps0(O)  = eps00(O)  + deps*2
           !eps0(C) = eps00(O)*(0.3+1.1*fac) 
           !eps0(C) = eps00(C)
           !print*,"C/O=",eps0(C)/eps0(O)

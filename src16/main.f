@@ -1,7 +1,8 @@
 ***********************************************************************
       PROGRAM EQ_CHEMISTRY
 ***********************************************************************
-      use PARAMETERS,ONLY: model_dim,model_struc,model_eqcond
+      use PARAMETERS,ONLY: model_dim,model_struc,model_eqcond,
+     >                     useDatabase
       use EXCHANGE,ONLY: chemcall,chemiter,ieqcond,ieqconditer,
      >                   itransform
       use DATABASE,ONLY: NLAST
@@ -37,7 +38,7 @@
      >                   REAL(ieqconditer)/REAL(ieqcond)
         print'("      transform calls = ",I8)',itransform
         NLAST=0         ! also save replaced database entries
-        call SAVE_DBASE
+        if (useDatabase) call SAVE_DBASE
       endif
 
       end
@@ -51,17 +52,21 @@
       use CHEMISTRY,ONLY: NMOLE,NELM,m_kind,elnum,cmol,el
       use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,amu,muH,
      >                    dust_nam,dust_mass,dust_Vol,dust_nel,dust_el
-      use EXCHANGE,ONLY: nel,nat,nion,nmol,C,N,O
+      use EXCHANGE,ONLY: nel,nat,nion,nmol,C,N,O,Si
       implicit none
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST)
-      real(kind=qp) :: nges,nmax,threshold
+      real(kind=qp) :: nges,nmax,threshold,deps
       real*8  :: Tg,nHges,p,mu,muold,pgas,fold,ff,dfdmu,dmu
       integer :: i,imol,iraus,e,aIraus,aIIraus,j,verb,dk,it
       logical :: included,haeufig,raus(NMOLE)
       logical :: rausI(NELEM),rausII(NELEM)
       character(len=10) :: sp
 
+      !deps = eps0(Si)*0.1*(1.0-108./200.)
+      !eps0(Si) = eps0(Si) + deps
+      !eps0(O)  = eps0(O)  + deps*2
+      
       Tg    = Tmax
       nHges = nHmax
       p     = pmax

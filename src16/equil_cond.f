@@ -331,9 +331,11 @@
                 emax = REAL(dust_nu(i,j),kind=qp)
               endif
             enddo
+            esum = esum**2   ! simple condensates first
             pot(i)  = 1.0/(0.0*emax+1.0*esum)
             Sat1(i) = Sat0(i)**pot(i)
-            !print'(A20,99(0pF8.3))',dust_nam(i),emax,esum,pot(i)
+            !print'(A20,3(0pF8.3),1pE10.3)',
+     >      !     dust_nam(i),emax,esum,pot(i),Sat1(i)
           enddo 
           Smax = 0.Q0
           imax = 0

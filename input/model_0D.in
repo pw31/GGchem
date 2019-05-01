@@ -1,5 +1,5 @@
 # selected elements
-H He Li C N O F Na Mg Al Si P S Cl K Ca Ti V Cr Mn Fe Ni Zr W el
+H He Li C N O F Ne Na Mg Al Si P S Cl Ar K Ca Ti V Cr Mn Fe Ni Cu Zn Zr W el
 
 # name of files with molecular kp-data
 dispol_BarklemCollet.dat                ! dispol_file
@@ -10,7 +10,8 @@ dispol_WoitkeRefit.dat                  ! dispol_file3
 3                     ! abund_pick
 
 # equilibrium condensation?
-.false.               ! model_eqcond
+.true.                ! model_eqcond
+.true.                ! useDatabase
 
 # model options
 0                     ! model_dim  (0,1,2)
@@ -18,8 +19,7 @@ dispol_WoitkeRefit.dat                  ! dispol_file3
 500.0                 ! Tmax [K]
 1.E+18                ! nHmax [cm-3]
 8                     ! NewBackIt  
-1.E+4                 ! NewBackFac
+1.E+6                 ! NewBackFac
 1                     ! NewFastLevel
 1000.0                ! Tfast
-.false.               ! useDatabase
 
