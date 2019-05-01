@@ -1,6 +1,6 @@
 dust species
 ============
-206
+210
 
 Al2O3[s]       CORUNDUM(alpha)
 3.97
@@ -1963,7 +1963,7 @@ P[l]           PHOSPHORUS(liquid)         317.3
 # dG-Stock-fit NIST-Janaf (298-2000)K, +/-0.002 kJ/mol
   5  3.81772E+04  6.65422E-01 -1.89113E+01  0.00000E+00  0.00000E+00
 
-P2O10[s]       PHOSPHORUS OXIDE
+P2O10[s]       PHOSPHORUS-OXIDE
 2.39
  2
  2 P
@@ -1986,4 +1986,35 @@ P4S3[l]        PHOSPHORUS-SULFIDE(liquid)   440.0
  3 S
 # dG-Stock-fit NIST-Janaf (298-3000)K, +/-0.13 kJ/mol
   5  2.80063E+05  4.26489E+00 -1.42993E+02  0.00000E+00  0.00000E+00
- 
+
+Zn[s]          ZINC
+7.14           
+ 1
+ 1 Zn
+# dG-Stock-fit NIST-Janaf (100-1000)K, +/-0.07 kJ/mol
+  5  1.56414E+04 -1.32671E+00 -7.87964E+00  4.59419E-03 -1.46651E-06
+
+Zn[l]          ZINC(liquid)      692.7
+6.57           
+ 1
+ 1 Zn
+# dG-Stock-fit NIST-Janaf (298-2000)K, +/-0.11 kJ/mol
+  5  1.46836E+04 -1.41251E+00 -5.35361E+00  3.06757E-03 -5.18382E-07
+
+ZnSO4[s]       ZINC-SULFATE
+3.54
+3
+ 1 Zn
+ 1 S
+ 4 O
+# dG-Stock-fit NIST-Janaf (100-2000)K, +/-1.2 kJ/mol
+  5  2.84836E+05 -8.62576E+00 -5.12505E+01  1.02815E-02 -1.02650E-06
+
+ZnS[s]         SPHALERITE/WURTZITE
+4.09
+2
+ 1 Zn
+ 1 S
+# dG-Stock-fit Barin (1995) [s + l] 298.15-2200K - sphalerite < 1293 K, Wurzite > 1293 K, liquid > 1995 K :
+  5 7.30636867e+04  -2.72297464e+00  -1.60451251e+01   3.44107646e-03  -2.56383825e-07
+

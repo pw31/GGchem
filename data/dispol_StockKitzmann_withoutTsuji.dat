@@ -231,9 +231,9 @@ CaS                   2  Ca  S  1  1                  : Calcium_Sulfide
  4  3.894981E+04 -3.022453E+00  8.788288E+00  1.759343E-03 -1.128208E-07
 Ca2                   1  Ca  2                        : Calcium
  4  8.988604E+02 -2.173543E+00  8.569594E+00  2.388705E-04 -5.447053E-08
-ClCo                  2  Cl Co  1  1                  : Cobalt_Chloride
+CoCl                  2  Cl Co  1  1                  : Cobalt_Chloride
  4  4.228835E+04 -1.372540E+00 -2.669690E+00 -2.392506E-05  1.167972E-08
-ClCu                  2  Cl Cu  1  1                  : Copper_Chloride
+CuCl                  2  Cl Cu  1  1                  : Copper_Chloride
  4  4.397064E+04 -9.969549E-01 -4.834620E+00  2.474752E-04 -2.394786E-08
 ClF                   2  Cl  F  1  1                  : Chlorine_Fluoride
  4  3.000644E+04 -8.365397E-01 -7.313493E+00 -1.312371E-04  3.440155E-08
