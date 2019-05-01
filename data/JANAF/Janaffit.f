@@ -336,6 +336,9 @@
       write(*,*) '317 = Zn_cr'
       write(*,*) '318 = Zn_l'
       write(*,*) '319 = ZnSO4_cr'
+      write(*,*) '320 = H3PO4_cr'
+      write(*,*) '321 = Mg3P2O8_cr'
+      write(*,*) '322 = P3N5_cr'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -2509,6 +2512,31 @@
         stoich(2) = 1.D0
         stoich(3) = 1.D0
         stoich(4) = 4.D0
+      elseif (specie.eq.320) then
+        call READ_DATEI('H3PO4_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('H.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('P.txt'    ,dG,T,Nmax,N,S,3) 
+        call READ_DATEI('O.txt'    ,dG,T,Nmax,N,S,4) 
+        Edzahl = 3
+        stoich(2) = 3.D0
+        stoich(3) = 1.D0
+        stoich(4) = 4.D0
+      elseif (specie.eq.321) then
+        call READ_DATEI('Mg3P2O8_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Mg.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('P.txt'    ,dG,T,Nmax,N,S,3) 
+        call READ_DATEI('O.txt'    ,dG,T,Nmax,N,S,4) 
+        Edzahl = 3
+        stoich(2) = 3.D0
+        stoich(3) = 2.D0
+        stoich(4) = 8.D0
+      elseif (specie.eq.322) then
+        call READ_DATEI('P3N5_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('P.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('N.txt'    ,dG,T,Nmax,N,S,3) 
+        Edzahl = 2
+        stoich(2) = 3.D0
+        stoich(3) = 5.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop
