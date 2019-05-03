@@ -1,5 +1,5 @@
 # selected elements
-H He C N O Na Mg Si Fe Ni Ca Al Ti S Cl K el
+H He C N O F Ne S Cl Ar el
 
 # name of files with molecular kp-data
 dispol_BarklemCollet.dat                ! dispol_file
@@ -12,13 +12,16 @@ fatal.case
 
 # equilibrium condensation?
 .false.               ! model_eqcond
+.false.               ! useDatabase
 
 # model options
 0                     ! model_dim  (0,1,2)
 .false.               ! model_pconst
-3.288469849997536E+017  ! nHmax
-279.026279807196        ! Tmax [K]
-99                    ! NewBackIt  
-1.E+6                 ! NewBackFac
 9000.0                ! Tfast
-.false.               ! useDatabase
+   3588102590452.1118 ! nHmax
+   184.90878110000000 ! Tmax [K]        
+99       ! NewBackIt
+1.E+10   ! NewBackFac
+1        ! NewFastLevel
+2        ! NewPreMethod
+2        ! verbose

@@ -1,4 +1,4 @@
-34  Woitke re-fits, some Stock&Kietzmann Tsuji-refits
+36  Woitke re-fits, some Stock&Kietzmann Tsuji-refits
 TiC         2   Ti C  1  1         : Gauger hard-coded, priv.comm.
  1  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00  0.00000E+00
 (WO3)4      2   W  O  4 12         : Woitke NIST ! +/- 1.0
@@ -19,8 +19,6 @@ H2WO4       3   H  W  O  2  1  4   : Woitke NIST ! +/- 0.33
  4  3.81291E+05 -8.84105E+00 -2.70678E+01  5.34328E-03 -5.38002E-07
 HS          2   H  S  1  1         : Woitke NIST ! +/- 0.13
  4  4.23352E+04 -1.58869E+00 -1.54130E-02  2.52514E-04 -9.19992E-09
-PH3         2   H  P  3  1         : Woitke NIST ! +/- 0.84
- 4  1.12196E+05 -6.48813E+00  6.41757E+00  2.31993E-03 -1.38454E-07
 PH2         2   H  P  2  1         : Woitke NIST ! +/- 0.30
  4  7.43018E+04 -3.79856E+00  3.13658E+00  1.11063E-03 -6.69289E-08
 PH          2   H  P  1  1         : Woitke NIST ! +/- 0.059
@@ -47,6 +45,12 @@ SI(CH3)4    3 Si  C  H  1  4 12    : Woitke NIST ! +/- 1.7
  4  7.44905E+05 -1.44347E+01 -1.25573E+02  0.00000E+00  0.00000E+00
 SICH3CL3    4 Si  C  H Cl  1  1  3  3  : Woitke NIST ! +/- 0.50 
  4  3.23859E+05 -9.66441E+00 -5.80646E+01  0.00000E+00  0.00000E+00
+P4O6        2  P  O  4  6          : Woitke NIST ! +/- 0.17
+ 1  -2.78379E+02  1.18159E+02  8.52603E-02 -3.49811E-03  3.85465E-05
+P4O10       2  P  O  4 10          : Woitke NIST ! +/- 0.34
+ 1  -4.05369E+02  1.58112E+02  1.40498E-01 -5.88998E-03  6.58624E-05
+PH3         2  P  H  1  3          : Woitke NIST ! +/- 0.05
+ 1  -8.35639E+01  2.37339E+01 -7.02203E-02  1.81872E-03 -1.70273E-05
 SiH2                  2   H Si  2  1                  : Silylene
  4  7.504412E+04 -1.116184E+00 -1.933124E+01  9.975917E-05 -7.158293E-10
 SiH3                  2   H Si  3  1                  : Silyl_Radical
