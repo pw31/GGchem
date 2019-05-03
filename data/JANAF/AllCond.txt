@@ -1,0 +1,620 @@
+    2 Al1(cr)                      Aluminum (Al)                                   62
+ 1759 Al1(cr,l)                    Aluminum (Al)                                   64
+  494 Al1Br3(cr)                   Aluminum bromide (AlBr3)                        70
+ 1530 Al1Br3(cr,l)                 Aluminum bromide (AlBr3)                        72
+  807 Al1Cl1O1(cr)                 Aluminum chloride oxide (OAlCl)                 79
+   12 Al1Cl3(cr)                   Aluminum chloride (AlCl3)                       85
+ 1531 Al1Cl3(cr,l)                 Aluminum chloride (AlCl3)                       87
+  649 Al1Cl4K1(cr)                 Potassium tetrachloroaluminate (KAlCl4)         89
+  770 Al1Cl4Na1(cr)                Sodium tetrachloroaluminate (NaAlCl4)           90
+  650 Al1Cl6K3(cr)                 Potassium hexachloroaluminate (K3AlCl6)         91
+  794 Al1Cl6Na3(cr)                Sodium hexachloroaluminate (Na3AlCl6)           92
+   18 Al1F3(cr)                    Aluminum fluoride (AlF3)                       101
+ 1533 Al1F3(cr,l)                  Aluminum fluoride (AlF3)                       103
+  651 Al1F6K3(cr)                  Potassium hexafluoraluminate (K3AlF6)          108
+  795 Al1F6Li3(cr)                 Lithium hexafluoroaluminate (Li3AlF6)          109
+ 1744 Al1F6Li3(cr,l)               Lithium hexafluoroaluminate (Li3AlF6)          111
+  460 Al1F6Na3(cr)                 Cryolite, alpha (Na3AlF6)                      112
+ 1535 Al1F6Na3(cr)                 Cryolite, beta (Na3AlF6)                       113
+ 1536 Al1F6Na3(cr,l)               Cryolite (Na3AlF6)                             115
+  771 Al1H4Li1(cr)                 Lithium tetrahydroaluminate (LiAlH4)           122
+  498 Al1I3(cr)                    Aluminum iodide (AlI3)                         124
+ 1534 Al1I3(cr,l)                  Aluminum iodide (AlI3)                         126
+   23 Al1Li1O2(cr)                 Lithium aluminum oxide (LiAlO2)                128
+ 1537 Al1Li1O2(cr,l)               Lithium aluminum oxide (LiAlO2)                130
+   24 Al1N1(cr)                    Aluminum nitride (AlN)                         131
+   26 Al1Na1O2(cr)                 Sodium aluminum oxide (NaAlO2)                 133
+  565 Al2Be1O4(cr)                 Beryllium aluminum oxide (BeAl2O4)             141
+ 1538 Al2Be1O4(cr,l)               Beryllium aluminum oxide (BeAl2O4)             143
+  652 Al2Cl9K3(cr)                 Potassium aluminum chloride (K3Al2Cl9)         146
+   30 Al2Mg1O4(cr)                 Magnesium aluminum oxide (MgAl2O4)             149
+ 1539 Al2Mg1O4(cr,l)               Magnesium aluminum oxide (MgAl2O4)             151
+   33 Al2O3(cr)                    Aluminum oxide, alpha (Al2O3)                  156
+ 1290 Al2O3(cr)                    Aluminum oxide, delta (Al2O3)                  157
+  285 Al2O3(cr)                    Aluminum oxide, gamma (Al2O3)                  158
+ 1291 Al2O3(cr)                    Aluminum oxide, kappa (Al2O3)                  159
+ 1540 Al2O3(cr,l)                  Aluminum oxide (Al2O3)                         161
+  924 Al2O5Si1(cr)                 Aluminum silicate, andalusite (Al2SiO5)        162
+  925 Al2O5Si1(cr)                 Aluminum silicate, kyanite (Al2SiO5)           163
+   35 Al2O5Si1(cr)                 Aluminum silicate, sillimanite (Al2SiO5)       164
+ 1541 Al2S3(cr)                    Aluminum sulfide (Al2S3)                       165
+ 1542 Al3F14Na5(cr)                Chiolite (Na5Al3F14)                           166
+ 1544 Al3F14Na5(cr,l)              Chiolite (Na5Al3F14)                           168
+ 1150 Al6Be1O10(cr)                Beryllium aluminum oxide (BeAl6O10)            169
+ 1566 Al6Be1O10(cr,l)              Beryllium aluminum oxide (BeAl6O10)            171
+  926 Al6O13Si2(cr)                Aluminum silicate, mullite (Al6Si2O13)         172
+   38 B1(cr)                       Boron, beta-rhombohedral (B)                   176
+ 1681 B1(cr,l)                     Boron (B)                                      178
+  689 B1F4K1(cr)                   Potassium tetrafluoroborate (KBF4)             215
+ 1567 B1F4K1(cr,l)                 Potassium tetrafluoroborate (KBF4)             217
+  716 B1H1O2(cr)                   Boric acid (HBO2)                              223
+  717 B1H3O3(cr)                   Boric acid (H3BO3)                             230
+  744 B1H4K1(cr)                   Potassium tetrahydroborate (KBH4)              232
+  745 B1H4Li1(cr)                  Lithium tetrahydroborate (LiBH4)               233
+   59 B1H4Na1(cr)                  Sodium tetrahydroborate (NaBH4)                234
+ 1121 B1K1O2(cr)                   Potassium borate (KBO2)                        238
+ 1568 B1K1O2(cr,l)                 Potassium borate (KBO2)                        240
+  444 B1Li1O2(cr)                  Lithium borate (LiBO2)                         242
+ 1569 B1Li1O2(cr,l)                Lithium borate (LiBO2)                         244
+   60 B1N1(cr)                     Boron nitride (BN)                             246
+   62 B1Na1O2(cr)                  Sodium borate (NaBO2)                          248
+ 1570 B1Na1O2(cr,l)                Sodium borate (NaBO2)                          250
+  746 B1Ti1(cr)                    Titanium boride (TiB)                          256
+  927 B2Be3O6(cr)                  Beryllium borate (Be3B2O6)                     259
+  875 B2H4O4(cr)                   Dihydroxyborane ((B(OH)2)2)                    263
+  747 B2Mg1(cr)                    Magnesium boride (MgB2)                        266
+   70 B2O3(cr)                     Boron oxide (B2O3)                             269
+ 1571 B2O3(cr,l)                   Boron oxide (B2O3)                             271
+  576 B2O4Pb1(cr)                  Lead borate (PbB2O4)                           273
+  691 B2Ti1(cr)                    Titanium boride (TiB2)                         274
+ 1572 B2Ti1(cr,l)                  Titanium boride (TiB2)                         276
+  693 B2Zr1(cr)                    Zirconium boride (ZrB2)                        277
+ 1573 B2Zr1(cr,l)                  Zirconium boride (ZrB2)                        279
+  695 B3F3O3(cr)                   Trifluoroboroxin (B3O3F3)                      283
+  835 B3H3O3(cr)                   Boroxin (B3H3O3)                               285
+  751 B4K2O7(cr)                   Potassium borate (K2B4O7)                      289
+ 1574 B4K2O7(cr,l)                 Potassium borate (K2B4O7)                      291
+  570 B4Li2O7(cr)                  Lithium borate (Li2B4O7)                       292
+ 1575 B4Li2O7(cr,l)                Lithium borate (Li2B4O7)                       294
+  753 B4Mg1(cr)                    Magnesium boride (MgB4)                        295
+   79 B4Na2O7(cr)                  Sodium borate (Na2B4O7)                        296
+ 1576 B4Na2O7(cr,l)                Sodium borate (Na2B4O7)                        298
+  577 B4O7Pb1(cr)                  Lead borate (PbB4O7)                           299
+  754 B6K2O10(cr)                  Potassium borate (K2B6O10)                     302
+  572 B6Li2O10(cr)                 Lithium borate (Li2B6O10)                      303
+  755 B6Na2O10(cr)                 Sodium borate (Na2B6O10)                       304
+  578 B6O10Pb1(cr)                 Lead borate (PbB6O10)                          305
+  756 B8K2O13(cr)                  Potassium borate (K2B8O13)                     306
+ 1577 B8K2O13(cr,l)                Potassium borate (K2B8O13)                     308
+  574 B8Li2O13(cr)                 Lithium borate (Li2B8O13)                      309
+  696 B10H14(cr)                   Decaborane (B10H14)                            310
+ 1578 B10H14(cr,l)                 Decaborane (B10H14)                            312
+  579 B10O17Pb2(cr)                Lead borate (Pb2B10O17)                        314
+ 1104 Ba1(cr)                      Barium (Ba)                                    316
+ 1585 Ba1(cr,l)                    Barium (Ba)                                    318
+ 1269 Ba1Br2(cr)                   Barium bromide (BaBr2)                         322
+ 1579 Ba1Br2(cr,l)                 Barium bromide (BaBr2)                         324
+ 1156 Ba1Cl2(cr)                   Barium chloride (BaCl2)                        327
+ 1580 Ba1Cl2(cr,l)                 Barium chloride (BaCl2)                        329
+ 1161 Ba1F2(cr)                    Barium fluoride (BaF2)                         333
+ 1581 Ba1F2(cr,l)                  Barium fluoride (BaF2)                         335
+ 1299 Ba1H2O2(cr)                  Barium hydroxide, alpha (Ba(OH)2)              339
+ 1582 Ba1H2O2(cr,l)                Barium hydroxide (Ba(OH)2)                     341
+ 1248 Ba1I2(cr)                    Barium iodide (BaI2)                           344
+ 1583 Ba1I2(cr,l)                  Barium iodide (BaI2)                           346
+ 1164 Ba1O1(cr)                    Barium oxide (BaO)                             348
+ 1584 Ba1O1(cr,l)                  Barium oxide (BaO)                             350
+ 1396 Ba1S1(cr)                    Barium sulfide (BaS)                           352
+   84 Be1(cr)                      Beryllium (Be)                                 355
+ 1766 Be1(cr,l)                    Beryllium (Be)                                 357
+  508 Be1Br2(cr)                   Beryllium bromide (BeBr2)                      361
+  845 Be1Cl2(cr)                   Beryllium chloride, alpha (BeCl2)              366
+  462 Be1Cl2(cr)                   Beryllium chloride, beta (BeCl2)               367
+ 1587 Be1Cl2(cr,l)                 Beryllium chloride (BeCl2)                     369
+  464 Be1F2(cr)                    Beryllium fluoride (BeF2)                      372
+ 1588 Be1F2(cr,l)                  Beryllium fluoride (BeF2)                      374
+  890 Be1F3Li1(cr)                 Lithium trifluoroberyllate (LiBeF3)            376
+ 1589 Be1F3Li1(cr,l)               Lithium trifluoroberyllate (LiBeF3)            378
+  891 Be1F4Li2(cr)                 Lithium tetrafluoroberyllate (Li2BeF4)         380
+ 1590 Be1F4Li2(cr,l)               Lithium tetrafluoroberyllate (Li2BeF4)         382
+  951 Be1H2O2(cr)                  Beryllium hydroxide, alpha (Be(OH)2)           388
+   96 Be1H2O2(cr)                  Beryllium hydroxide, beta (Be(OH)2)            389
+  512 Be1I2(cr)                    Beryllium iodide (BeI2)                        392
+ 1591 Be1I2(cr,l)                  Beryllium iodide (BeI2)                        394
+   98 Be1O1(cr)                    Beryllium oxide, alpha (BeO)                   397
+ 1124 Be1O1(cr)                    Beryllium oxide, beta (BeO)                    398
+ 1592 Be1O1(cr,l)                  Beryllium oxide (BeO)                          400
+  929 Be1O4S1(cr)                  Beryllium sulfate, alpha (BeSO4)               402
+  930 Be1O4S1(cr)                  Beryllium sulfate, beta (BeSO4)                403
+  931 Be1O4S1(cr)                  Beryllium sulfate, gamma (BeSO4)               404
+  775 Be1O4W1(cr)                  Beryllium tungsten oxide (BeWO4)               405
+ 1398 Be1S1(cr)                    Beryllium sulfide (BeS)                        406
+  467 Be2O4Si1(cr)                 Beryllium silicate (Be2SiO4)                   413
+  105 Be3N2(cr)                    Beryllium nitride, alpha (Be3N2)               414
+ 1593 Be3N2(cr,l)                  Beryllium nitride (Be3N2)                      416
+  580 Br1H4N1(cr)                  Ammonium bromide (NH4Br)                       432
+  516 Br1K1(cr)                    Potassium bromide (KBr)                        435
+ 1594 Br1K1(cr,l)                  Potassium bromide (KBr)                        437
+  470 Br1Li1(cr)                   Lithium bromide (LiBr)                         439
+ 1595 Br1Li1(cr,l)                 Lithium bromide (LiBr)                         441
+  821 Br1Na1(cr)                   Sodium bromide (NaBr)                          447
+ 1596 Br1Na1(cr,l)                 Sodium bromide (NaBr)                          449
+  474 Br2(cr,l)                    Bromine (Br2)                                  459
+ 1252 Br2Ca1(cr)                   Calcium bromide (CaBr2)                        461
+ 1597 Br2Ca1(cr,l)                 Calcium bromide (CaBr2)                        463
+  932 Br2Fe1(cr)                   Iron bromide (FeBr2)                           465
+ 1598 Br2Fe1(cr,l)                 Iron bromide (FeBr2)                           467
+  583 Br2Hg1(cr)                   Mercury bromide (HgBr2)                        470
+ 1599 Br2Hg1(cr,l)                 Mercury bromide (HgBr2)                        472
+  586 Br2Hg2(cr)                   Mercury bromide (Hg2Br2)                       474
+  895 Br2Mg1(cr)                   Magnesium bromide (MgBr2)                      477
+ 1600 Br2Mg1(cr,l)                 Magnesium bromide (MgBr2)                      479
+ 1469 Br2Mo1(cr)                   Molybdenum bromide (MoBr2)                     482
+  587 Br2Pb1(cr)                   Lead bromide (PbBr2)                           485
+ 1601 Br2Pb1(cr,l)                 Lead bromide (PbBr2)                           487
+ 1256 Br2Sr1(cr)                   Strontium bromide (SrBr2)                      490
+ 1602 Br2Sr1(cr,l)                 Strontium bromide (SrBr2)                      492
+  521 Br2Ti1(cr)                   Titanium bromide (TiBr2)                       494
+  590 Br2Zr1(cr)                   Zirconium bromide (ZrBr2)                      496
+ 1603 Br2Zr1(cr,l)                 Zirconium bromide (ZrBr2)                      498
+ 1471 Br3Mo1(cr)                   Molybdenum bromide (MoBr3)                     501
+  522 Br3Ti1(cr)                   Titanium bromide (TiBr3)                       507
+  593 Br3Zr1(cr)                   Zirconium bromide (ZrBr3)                      509
+ 1473 Br4Mo1(cr)                   Molybdenum bromide (MoBr4)                     513
+  523 Br4Ti1(cr)                   Titanium bromide (TiBr4)                       518
+ 1604 Br4Ti1(cr,l)                 Titanium bromide (TiBr4)                       520
+  595 Br4Zr1(cr)                   Zirconium bromide (ZrBr4)                      522
+ 1274 Br5Nb1(cr)                   Niobium bromide (NbBr5)                        524
+ 1605 Br5Nb1(cr,l)                 Niobium bromide (NbBr5)                        526
+  727 Br5W1(cr)                    Tungsten bromide (WBr5)                        528
+ 1606 Br5W1(cr,l)                  Tungsten bromide (WBr5)                        530
+  730 Br6W1(cr)                    Tungsten bromide (WBr6)                        532
+ 1208 C0.98Nb1(cr)                 Niobium carbide (NbC0.98)                      534
+   77 C1B4(cr)                     Boron carbide (B4C)                            541
+ 1607 C1B4(cr,l)                   Boron carbide (B4C)                            543
+  101 C1Be2(cr)                    Beryllium carbide (Be2C)                       544
+ 1608 C1Be2(cr,l)                  Beryllium carbide (Be2C)                       546
+ 1134 C1Cu1N1(cr)                  Copper cyanide (CuCN)                          562
+  657 C1K1N1(cr)                   Potassium cyanide (KCN)                        602
+ 1609 C1K1N1(cr,l)                 Potassium cyanide (KCN)                        604
+  526 C1K2O3(cr)                   Potassium carbonate (K2CO3)                    606
+ 1610 C1K2O3(cr,l)                 Potassium carbonate (K2CO3)                    608
+  876 C1Li2O3(cr)                  Lithium carbonate (Li2CO3)                     609
+ 1611 C1Li2O3(cr,l)                Lithium carbonate (Li2CO3)                     611
+  146 C1Mg1O3(cr)                  Magnesium carbonate (MgCO3)                    612
+  148 C1N1Na1(cr)                  Sodium cyanide (NaCN)                          616
+ 1612 C1N1Na1(cr,l)                Sodium cyanide (NaCN)                          618
+  151 C1Na2O3(cr)                  Sodium carbonate (Na2CO3)                      623
+ 1613 C1Na2O3(cr,l)                Sodium carbonate (NaCO3)                       625
+  159 C1Si1(cr)                    Silicon carbide, alpha (SiC)                   633
+  967 C1Si1(cr)                    Silicon carbide, beta (SiC)                    634
+ 1209 C1Ta1(cr)                    Tantalum carbide (TaC)                         637
+ 1614 C1Ta1(cr,l)                  Tantalum carbide (TaC)                         639
+  160 C1Ti1(cr)                    Titanium carbide (TiC)                         640
+ 1565 C1Ti1(cr,l)                  Titanium carbide (TiC)                         642
+  598 C1Zr1(cr)                    Zirconium carbide (ZrC)                        643
+ 1615 C1Zr1(cr,l)                  Zirconium carbide (ZrC)                        645
+ 1211 C2Cr3(cr)                    Chromium carbide (Cr3C2)                       652
+  168 C2Li2(cr)                    Lithium carbide (Li2C2)                        664
+  169 C2Mg1(cr)                    Magnesium carbide (MgC2)                       665
+   36 C3Al4(cr)                    Aluminum carbide (Al4C3)                       672
+ 1213 C3Cr7(cr)                    Chromium carbide (Cr7C3)                       673
+  172 C3Mg2(cr)                    Magnesium carbide (Mg2C3)                      674
+ 1214 C6Cr23(cr)                   Chromium carbide (Cr23C6)                      684
+ 1052 Ca1(cr)                      Calcium, alpha (Ca)                            686
+ 1053 Ca1(cr)                      Calcium, beta (Ca)                             687
+  509 Ca1(cr,l)                    Calcium (Ca)                                   689
+ 1088 Ca1Cl2(cr)                   Calcium chloride (CaCl2)                       693
+ 1745 Ca1Cl2(cr,l)                 Calcium chloride (CaCl2)                       695
+ 1057 Ca1F2(cr)                    Calcium fluoride (CaF2)                        698
+ 1617 Ca1F2(cr,l)                  Calcium fluoride (CaF2)                        700
+ 1137 Ca1H2O2(cr)                  Calcium hydroxide (Ca(OH)2)                    704
+ 1261 Ca1I2(cr)                    Calcium iodide (CaI2)                          707
+ 1618 Ca1I2(cr,l)                  Calcium iodide (CaI2)                          709
+ 1125 Ca1O1(cr)                    Calcium oxide (CaO)                            711
+ 1619 Ca1O1(cr,l)                  Calcium oxide (CaO)                            713
+ 1138 Ca1S1(cr)                    Calcium sulfide (CaS)                          715
+ 1030 Cl1Cs1(cr)                   Cesium chloride (CsCl)                         722
+ 1620 Cl1Cs1(cr,l)                 Cesium chloride (CsCl)                         724
+  879 Cl1Cu1(cr)                   Copper chloride (CuCl)                         726
+ 1621 Cl1Cu1(cr,l)                 Copper chloride (CuCl)                         728
+  188 Cl1H4N1(cr)                  Ammonium chloride (NH4Cl)                      746
+  189 Cl1H4N1O4(cr)                Ammonium perchlorate (NH4ClO4)                 747
+  600 Cl1I1(cr)                    Iodine chloride (ICl)                          749
+ 1622 Cl1I1(cr,l)                  Iodine chloride (ICl)                          751
+  529 Cl1K1(cr)                    Potassium chloride (KCl)                       753
+ 1623 Cl1K1(cr,l)                  Potassium chloride (KCl)                       755
+  777 Cl1K1O4(cr)                  Potassium perchlorate (KClO4)                  757
+  190 Cl1Li1(cr)                   Lithium chloride (LiCl)                        758
+ 1624 Cl1Li1(cr,l)                 Lithium chloride (LiCl)                        760
+  194 Cl1Li1O4(cr)                 Lithium perchlorate (LiClO4)                   763
+ 1625 Cl1Li1O4(cr,l)               Lithium perchlorate (LiClO4)                   765
+  198 Cl1Na1(cr)                   Sodium chloride (NaCl)                         770
+ 1626 Cl1Na1(cr,l)                 Sodium chloride (NaCl)                         772
+  778 Cl1Na1O4(cr)                 Sodium perchlorate (NaClO4)                    774
+ 1190 Cl2Co1(cr)                   Cobalt chloride (CoCl2)                        791
+ 1627 Cl2Co1(cr,l)                 Cobalt chloride (CoCl2)                        793
+  882 Cl2Cu1(cr)                   Copper chloride (CuCl2)                        796
+  849 Cl2Fe1(cr)                   Iron chloride (FeCl2)                          798
+ 1628 Cl2Fe1(cr,l)                 Iron chloride (FeCl2)                          800
+  604 Cl2Hg1(cr)                   Mercury chloride (HgCl2)                       803
+ 1629 Cl2Hg1(cr,l)                 Mercury chloride (HgCl2)                       805
+  532 Cl2Hg2(cr)                   Mercury chloride (Hg2Cl2)                      807
+  208 Cl2Mg1(cr)                   Magnesium chloride (MgCl2)                     810
+ 1630 Cl2Mg1(cr,l)                 Magnesium chloride (MgCl2)                     812
+ 1402 Cl2Ni1(cr)                   Nickel chloride (NiCl2)                        816
+ 1631 Cl2Ni1(cr,l)                 Nickel chloride (NiCl2)                        818
+  703 Cl2O2W1(cr)                  Tungsten chloride oxide (WO2Cl2)               823
+  607 Cl2Pb1(cr)                   Lead chloride (PbCl2)                          825
+ 1632 Cl2Pb1(cr,l)                 Lead chloride (PbCl2)                          827
+ 1167 Cl2Sr1(cr)                   Strontium chloride (SrCl2)                     836
+ 1633 Cl2Sr1(cr,l)                 Strontium chloride (SrCl2)                     838
+  213 Cl2Ti1(cr)                   Titanium chloride (TiCl2)                      840
+  705 Cl2W1(cr)                    Tungsten chloride (WCl2)                       842
+  216 Cl2Zr1(cr)                   Zirconium chloride (ZrCl2)                     844
+ 1634 Cl2Zr1(cr,l)                 Zirconium chloride (ZrCl2)                     846
+  852 Cl3Fe1(cr)                   Iron chloride (FeCl3)                          851
+ 1635 Cl3Fe1(cr,l)                 Iron chloride (FeCl3)                          853
+  225 Cl3Ti1(cr)                   Titanium chloride (TiCl3)                      861
+  227 Cl3Zr1(cr)                   Zirconium chloride (ZrCl3)                     863
+ 1060 Cl4Mo1(cr)                   Molybdenum chloride (MoCl4)                    868
+ 1636 Cl4Mo1(cr,l)                 Molybdenum chloride (MoCl4)                    870
+  707 Cl4O1W1(cr)                  Tungsten chloride oxide (OWCl4)                872
+ 1637 Cl4O1W1(cr,l)                Tungsten chloride oxide (OWCl4)                874
+  478 Cl4Ti1(cr)                   Titanium chloride (TiCl4)                      878
+ 1638 Cl4Ti1(cr,l)                 Titanium chloride (TiCl4)                      880
+  709 Cl4W1(cr)                    Tungsten chloride (WCl4)                       882
+  232 Cl4Zr1(cr)                   Zirconium chloride (ZrCl4)                     884
+ 1063 Cl5Mo1(cr)                   Molybdenum chloride (MoCl5)                    886
+ 1639 Cl5Mo1(cr,l)                 Molybdenum chloride (MoCl5)                    888
+ 1279 Cl5Nb1(cr)                   Niobium chloride (NbCl5)                       890
+ 1640 Cl5Nb1(cr,l)                 Niobium chloride (NbCl5)                       892
+ 1282 Cl5Ta1(cr)                   Tantalum chloride (TaCl5)                      895
+ 1641 Cl5Ta1(cr,l)                 Tantalum chloride (TaCl5)                      897
+  734 Cl5W1(cr)                    Tungsten chloride (WCl5)                       899
+ 1642 Cl5W1(cr,l)                  Tungsten chloride (WCl5)                       901
+ 1066 Cl6Mo1(cr)                   Molybdenum chloride (MoCl6)                    904
+  737 Cl6W1(cr)                    Tungsten chloride, alpha (WCl6)                906
+  953 Cl6W1(cr)                    Tungsten chloride, beta (WCl6)                 907
+ 1643 Cl6W1(cr,l)                  Tungsten chloride (WCl6)                       909
+  995 Co1(cr)                      Cobalt (Co)                                    913
+ 1767 Co1(cr,l)                    Cobalt (Co)                                    915
+ 1094 Co1F2(cr)                    Cobalt fluoride (CoF2)                         919
+ 1644 Co1F2(cr,l)                  Cobalt fluoride (CoF2)                         921
+ 1112 Co1F3(cr)                    Cobalt fluoride (CoF3)                         923
+ 1113 Co1O1(cr)                    Cobalt oxide (CoO)                             924
+ 1139 Co1O4S1(cr)                  Cobalt sulfate (CoSO4)                         925
+ 1114 Co3O4(cr)                    Cobalt oxide (Co3O4)                           926
+ 1194 Cr1(cr)                      Chromium (Cr)                                  928
+ 1768 Cr1(cr,l)                    Chromium (Cr)                                  930
+ 1219 Cr1N1(cr)                    Chromium nitride (CrN)                         934
+ 1224 Cr2N1(cr)                    Chromium nitride (Cr2N)                        939
+ 1225 Cr2O3(cr)                    Chromium oxide (Cr2O3)                         940
+ 1645 Cr2O3(cr,l)                  Chromium oxide (Cr2O3)                         942
+ 1036 Cs1(cr)                      Cesium (Cs)                                    944
+ 1769 Cs1(cr,l)                    Cesium (Cs)                                    946
+ 1040 Cs1F1(cr)                    Cesium fluoride (CsF)                          950
+ 1646 Cs1F1(cr,l)                  Cesium fluoride (CsF)                          952
+ 1129 Cs1H1O1(cr)                  Cesium hydroxide (CsOH)                        954
+ 1647 Cs1H1O1(cr,l)                Cesium hydroxide (CsOH)                        956
+ 1524 Cs2O4S1(cr)                  Cesium sulfate, I (Cs2SO4)                     964
+ 1523 Cs2O4S1(cr)                  Cesium sulfate, II (Cs2SO4)                    965
+ 1526 Cs2O4S1(cr,l)                Cesium sulfate (Cs2SO4)                        967
+  596 Cu1(cr)                      Copper (Cu)                                    970
+ 1770 Cu1(cr,l)                    Copper (Cu)                                    972
+  905 Cu1F1(cr)                    Copper fluoride (CuF)                          976
+  907 Cu1F2(cr)                    Copper fluoride (CuF2)                         978
+ 1648 Cu1F2(cr,l)                  Copper fluoride (CuF2)                         980
+  910 Cu1H2O2(cr)                  Copper hydroxide (Cu(OH)2)                     982
+  911 Cu1O1(cr)                    Copper oxide (CuO)                             983
+  912 Cu1O4S1(cr)                  Copper sulfate (CuSO4)                         985
+  913 Cu2O1(cr)                    Copper oxide (Cu2O)                            987
+ 1649 Cu2O1(cr,l)                  Copper oxide (Cu2O)                            989
+  915 Cu2O5S1(cr)                  Copper oxide sulfate (CuO*CuSO4)               990
+  535 F1K1(cr)                     Potassium fluoride (KF)                       1021
+ 1650 F1K1(cr,l)                   Potassium fluoride (KF)                       1023
+  240 F1Li1(cr)                    Lithium fluoride (LiF)                        1025
+ 1651 F1Li1(cr,l)                  Lithium fluoride (LiF)                        1027
+  247 F1Na1(cr)                    Sodium fluoride (NaF)                         1037
+ 1652 F1Na1(cr,l)                  Sodium fluoride (NaF)                         1039
+  575 F2Fe1(cr)                    Iron fluoride (FeF2)                          1059
+ 1653 F2Fe1(cr,l)                  Iron fluoride (FeF2)                          1061
+  661 F2H1K1(cr)                   Potassium fluoride (K(HF2))                   1063
+ 1654 F2H1K1(cr,l)                 Potassium fluoride (K(HF2))                   1065
+  614 F2Hg1(cr)                    Mercury fluoride (HgF2)                       1068
+ 1655 F2Hg1(cr,l)                  Mercury fluoride (HgF2)                       1070
+  616 F2Hg2(cr)                    Mercury fluoride (Hg2F2)                      1072
+  257 F2Mg1(cr)                    Magnesium fluoride (MgF2)                     1077
+ 1656 F2Mg1(cr,l)                  Magnesium fluoride (MgF2)                     1079
+  617 F2Pb1(cr)                    Lead fluoride, alpha (PbF2)                   1096
+ 1227 F2Pb1(cr)                    Lead fluoride, beta (PbF2)                    1097
+ 1657 F2Pb1(cr,l)                  Lead fluoride (PbF2)                          1099
+ 1172 F2Sr1(cr)                    Strontium fluoride (SrF2)                     1107
+ 1658 F2Sr1(cr,l)                  Strontium fluoride (SrF2)                     1109
+  268 F2Zr1(cr)                    Zirconium fluoride (ZrF2)                     1112
+ 1659 F2Zr1(cr,l)                  Zirconium fluoride (ZrF2)                     1114
+  233 F3Fe1(cr)                    Iron fluoride (FeF3)                          1116
+  275 F3Ti1(cr)                    Titanium fluoride (TiF3)                      1131
+  278 F3Zr1(cr)                    Zirconium fluoride (ZrF3)                     1133
+  663 F4O1W1(cr)                   Tungsten fluoride oxide (WF4O)                1140
+ 1660 F4O1W1(cr,l)                 Tungsten fluoride oxide (WF4O)                1142
+  282 F4Ti1(cr)                    Titanium fluoride (TiF4)                      1149
+  284 F4Zr1(cr)                    Zirconium fluoride (ZrF4)                     1151
+  857 Fe0.947O1(cr)                Iron oxide, wustite (Fe0.947O)                1172
+ 1409 Fe0.877S1(cr)                Iron sulfide, pyrrhotite (Fe0.877S)           1173
+  836 Fe1(cr)                      Iron, alpha-delta (Fe)                        1175
+ 1449 Fe1(cr)                      Iron, gamma (Fe)                              1176
+ 1771 Fe1(cr,l)                    Iron (Fe)                                     1178
+  916 Fe1H2O2(cr)                  Iron hydroxide (Fe(OH)2)                      1182
+  918 Fe1H3O3(cr)                  Iron hydroxide (Fe(OH)3)                      1184
+  939 Fe1I2(cr)                    Iron iodide (FeI2)                            1185
+ 1661 Fe1I2(cr,l)                  Iron iodide (FeI2)                            1187
+  858 Fe1O1(cr)                    Iron oxide (FeO)                              1189
+ 1662 Fe1O1(cr,l)                  Iron oxide (FeO)                              1191
+  919 Fe1O4S1(cr)                  Iron sulfate (FeSO4)                          1193
+ 1410 Fe1S1(cr)                    Iron sulfide, troilite (FeS)                  1194
+ 1663 Fe1S1(cr,l)                  Iron sulfide, troilite (FeS)                  1196
+ 1414 Fe1S2(cr)                    Iron sulfide, marcasite (FeS2)                1198
+ 1413 Fe1S2(cr)                    Iron sulfide, pyrite (FeS2)                   1199
+  861 Fe2O3(cr)                    Iron oxide, hematite (Fe2O3)                  1201
+  920 Fe2O12S3(cr)                 Iron sulfate (Fe2(SO4)3)                      1202
+  862 Fe3O4(cr)                    Iron oxide, magnetite (Fe3O4)                 1203
+ 1746 Ga1(cr)                      Gallium (Ga)                                  1205
+ 1772 Ga1(cr,l)                    Gallium (Ga)                                  1207
+  765 H1K1(cr)                     Potassium hydride (KH)                        1217
+  540 H1K1O1(cr)                   Potassium hydroxide (KOH)                     1219
+ 1664 H1K1O1(cr,l)                 Potassium hydroxide (KOH)                     1221
+  714 H1Li1(cr)                    Lithium hydride (LiH)                         1224
+ 1665 H1Li1(cr,l)                  Lithium hydride (LiH)                         1226
+  290 H1Li1O1(cr)                  Lithium hydroxide (LiOH)                      1228
+ 1666 H1Li1O1(cr,l)                Lithium hydroxide (LiOH)                      1230
+  768 H1Na1(cr)                    Sodium hydride (NaH)                          1241
+  297 H1Na1O1(cr)                  Sodium hydroxide (NaOH)                       1243
+ 1667 H1Na1O1(cr,l)                Sodium hydroxide (NaOH)                       1245
+  306 H2Mg1(cr)                    Magnesium hydride (MgH2)                      1266
+  307 H2Mg1O2(cr)                  Magnesium hydroxide (Mg(OH)2)                 1267
+ 1306 H2O2Sr1(cr)                  Strontium hydroxide (Sr(OH)2)                 1281
+ 1668 H2O2Sr1(cr,l)                Strontium hydroxide (Sr(OH)2)                 1283
+  311 H2O4S1(cr,l)                 Sulfuric acid (O2S(OH)2)                      1285
+  741 H2O4W1(cr)                   Tungstic acid (O2W(OH)2)                      1287
+  786 H2Ti1(cr)                    Titanium hydride (TiH2)                       1291
+  315 H3O4P1(cr)                   Phosphoric acid (H3PO4)                       1295
+ 1669 H3O4P1(cr,l)                 Phosphoric acid (H3PO4)                       1297
+  624 H4I1N1(cr)                   Ammonium iodide (NH4I)                        1299
+ 1417 H4O5S1(cr,l)                 Sulfuric acid, monohydrate (H2SO4*H2O)        1302
+ 1418 H6O6S1(cr,l)                 Sulfuric acid, dihydrate (H2SO4*2H2O)         1304
+ 1419 H8O7S1(cr,l)                 Sulfuric acid, trihydrate (H2SO4*3H2O)        1305
+ 1420 H10O8S1(cr,l)                Sulfuric acid, tetrahydrate (H2SO4*4H2O)      1306
+ 1421 H15O10.5S1(cr,l)             Sulfuric acid, hemihexahydrate (H2SO4*6.5H2O) 1307
+ 1514 Hf1(cr)                      Hafnium, alpha (Hf)                           1311
+ 1515 Hf1(cr)                      Hafnium, beta (Hf)                            1312
+ 1773 Hf1(cr,l)                    Hafnium (Hf)                                  1314
+  543 Hg1(cr,l)                    Mercury (Hg)                                  1319
+  625 Hg1I2(cr)                    Mercury iodide (HgI2)                         1323
+ 1670 Hg1I2(cr,l)                  Mercury iodide (HgI2)                         1325
+  668 Hg1O1(cr)                    Mercury oxide (HgO)                           1327
+  628 Hg2I2(cr)                    Mercury iodide (Hg2I2)                        1329
+ 1671 Hg2I2(cr,l)                  Mercury iodide (Hg2I2)                        1331
+  546 I1K1(cr)                     Potassium iodide (KI)                         1335
+ 1672 I1K1(cr,l)                   Potassium iodide (KI)                         1337
+  483 I1Li1(cr)                    Lithium iodide (LiI)                          1339
+ 1673 I1Li1(cr,l)                  Lithium iodide (LiI)                          1341
+  803 I1Na1(cr)                    Sodium iodide (NaI)                           1346
+ 1674 I1Na1(cr,l)                  Sodium iodide (NaI)                           1348
+ 1761 I2(cr)                       Iodine (I2)                                   1355
+ 1774 I2(cr,l)                     Iodine (I2)                                   1357
+ 1286 I2Mg1(cr)                    Magnesium iodide (MgI2)                       1361
+ 1675 I2Mg1(cr,l)                  Magnesium iodide (MgI2)                       1363
+ 1477 I2Mo1(cr)                    Molybdenum iodide, alpha (MoI2)               1365
+  632 I2Pb1(cr)                    Lead iodide (PbI2)                            1367
+ 1676 I2Pb1(cr,l)                  Lead iodide (PbI2)                            1369
+ 1265 I2Sr1(cr)                    Strontium iodide (SrI2)                       1372
+ 1677 I2Sr1(cr,l)                  Strontium iodide (SrI2)                       1374
+  551 I2Ti1(cr)                    Titanium iodide (TiI2)                        1376
+  669 I2Zr1(cr)                    Zirconium iodide (ZrI2)                       1378
+ 1678 I2Zr1(cr,l)                  Zirconium iodide (ZrI2)                       1380
+ 1479 I3Mo1(cr)                    Molybdenum iodide (MoI3)                      1382
+  553 I3Ti1(cr)                    Titanium iodide (TiI3)                        1385
+  672 I3Zr1(cr)                    Zirconium iodide (ZrI3)                       1387
+ 1481 I4Mo1(cr)                    Molybdenum iodide (MoI4)                      1389
+ 1320 I4Si1(cr)                    Tetraiodosilane (SiI4)                        1392
+ 1679 I4Si1(cr,l)                  Tetraiodosilane (SiI4)                        1394
+  554 I4Ti1(cr)                    Titanium iodide (TiI4)                        1396
+ 1680 I4Ti1(cr,l)                  Titanium iodide (TiI4)                        1398
+  635 I4Zr1(cr)                    Zirconium iodide (ZrI4)                       1400
+ 1760 K1(cr)                       Potassium (K)                                 1403
+ 1775 K1(cr,l)                     Potassium (K)                                 1405
+  675 K1O2(cr)                     Potassium superoxide (KO2)                    1411
+  787 K2O1(cr)                     Potassium oxide (K2O)                         1413
+  788 K2O2(cr)                     Potassium peroxide (K2O2)                     1414
+ 1153 K2O3Si1(cr)                  Potassium silicate (K2SiO3)                   1415
+ 1682 K2O3Si1(cr,l)                Potassium silicate (K2SiO3)                   1417
+ 1145 K2O4S1(cr)                   Potassium sulfate, alpha (K2SO4)              1418
+ 1458 K2O4S1(cr)                   Potassium sulfate, beta (K2SO4)               1419
+ 1459 K2O4S1(cr,l)                 Potassium sulfate (K2SO4)                     1421
+ 1452 K2S1(cr)                     Potassium sulfide (K2S)                       1423
+ 1683 K2S1(cr,l)                   Potassium sulfide (K2S)                       1425
+  321 Li1(cr)                      Lithium (Li)                                  1429
+ 1776 Li1(cr,l)                    Lithium (Li)                                  1431
+  327 Li2O1(cr)                    Lithium oxide (Li2O)                          1441
+ 1684 Li2O1(cr,l)                  Lithium oxide (Li2O)                          1443
+  789 Li2O2(cr)                    Lithium peroxide (Li2O2)                      1445
+  490 Li2O3Si1(cr)                 Lithium silicate (Li2SiO3)                    1447
+ 1685 Li2O3Si1(cr,l)               Lithium silicate (Li2SiO3)                    1449
+  449 Li2O3Ti1(cr)                 Lithium titanium oxide (Li2TiO3)              1450
+ 1686 Li2O3Ti1(cr,l)               Lithium titanium oxide (Li2TiO3)              1452
+ 1492 Li2O4S1(cr)                  Lithium sulfate, alpha (Li2SO4)               1453
+ 1493 Li2O4S1(cr)                  Lithium sulfate, beta (Li2SO4)                1454
+ 1495 Li2O4S1(cr,l)                Lithium sulfate (Li2SO4)                      1456
+  982 Li2O5Si2(cr)                 Lithium silicate (Li2Si2O5)                   1458
+ 1687 Li2O5Si2(cr,l)               Lithium silicate (Li2Si2O5)                   1460
+  330 Li3N1(cr)                    Lithium nitride (Li3N)                        1461
+  332 Mg1(cr)                      Magnesium (Mg)                                1463
+ 1777 Mg1(cr,l)                    Magnesium (Mg)                                1465
+  335 Mg1O1(cr)                    Magnesium oxide (MgO)                         1469
+ 1688 Mg1O1(cr,l)                  Magnesium oxide (MgO)                         1471
+  337 Mg1O3Si1(cr)                 Magnesium silicate (MgSiO3)                   1473
+ 1689 Mg1O3Si1(cr,l)               Magnesium silicate (MgSiO3)                   1475
+  451 Mg1O3Ti1(cr)                 Magnesium titanium oxide (MgTiO3)             1476
+ 1690 Mg1O3Ti1(cr,l)               Magnesium titanium oxide (MgTiO3)             1478
+  339 Mg1O4S1(cr)                  Magnesium sulfate (MgSO4)                     1479
+ 1691 Mg1O4S1(cr,l)                Magnesium sulfate (MgSO4)                     1481
+  790 Mg1O4W1(cr)                  Magnesium tungsten oxide (MgWO4)              1482
+  452 Mg1O5Ti2(cr)                 Magnesium titanium oxide (MgTi2O5)            1483
+ 1692 Mg1O5Ti2(cr,l)               Magnesium titanium oxide (MgTi2O5)            1485
+  341 Mg1S1(cr)                    Magnesium sulfide (MgS)                       1486
+  343 Mg2O4Si1(cr)                 Magnesium silicate (Mg2SiO4)                  1489
+ 1693 Mg2O4Si1(cr,l)               Magnesium silicate (Mg2SiO4)                  1491
+  454 Mg2O4Ti1(cr)                 Magnesium titanium oxide (Mg2TiO4)            1492
+ 1694 Mg2O4Ti1(cr,l)               Magnesium titanium oxide (Mg2TiO4)            1494
+  345 Mg2Si1(cr)                   Magnesium silicide (Mg2Si)                    1495
+ 1695 Mg2Si1(cr,l)                 Magnesium silicide (Mg2Si)                    1497
+  347 Mg3N2(cr)                    Magnesium nitride (Mg3N2)                     1498
+  348 Mg3O8P2(cr)                  Magnesium phosphate (Mg3P2O8)                 1499
+ 1696 Mg3O8P2(cr,l)                Magnesium phosphate (Mg3P2O8)                 1501
+ 1748 Mn1(cr)                      Manganese (Mn)                                1503
+ 1778 Mn1(cr,l)                    Manganese (Mn)                                1505
+  957 Mo1(cr)                      Molybdenum (Mo)                               1509
+ 1779 Mo1(cr,l)                    Molybdenum (Mo)                               1511
+  986 Mo1O2(cr)                    Molybdenum oxide (MoO2)                       1516
+ 1484 Mo1O2.750(cr)                Molybdenum oxide (MoO2.750)                   1518
+ 1485 Mo1O2.875(cr)                Molybdenum oxide (MoO2.875)                   1519
+ 1486 Mo1O2.889(cr)                Molybdenum oxide (MoO2.889)                   1520
+  987 Mo1O3(cr)                    Molybdenum oxide (MoO3)                       1521
+ 1483 Mo1O3(cr,l)                  Molybdenum oxide (MoO3)                       1523
+ 1461 Mo1S2(cr)                    Molybdenum sulfide (MoS2)                     1525
+ 1462 Mo2S3(cr)                    Molybdenum sulfide (Mo2S3)                    1526
+ 1464 Mo2S3(cr,l)                  Molybdenum sulfide (Mo2S3)                    1528
+ 1228 N0.465V1(cr)                 Vanadium nitride (VN0.465)                    1529
+  356 N1Ti1(cr)                    Titanium nitride (TiN)                        1542
+ 1697 N1Ti1(cr,l)                  Titanium nitride (TiN)                        1544
+ 1229 N1V1(cr)                     Vanadium nitride (VN)                         1545
+  358 N1Zr1(cr)                    Zirconium nitride (ZrN)                       1547
+ 1698 N1Zr1(cr,l)                  Zirconium nitride (ZrN)                       1549
+  456 N2O4(cr)                     Nitrogen oxide (N2O4)                         1557
+ 1699 N2O4(cr,l)                   Nitrogen oxide (N2O4)                         1559
+  365 N4Si3(cr)                    Silicon nitride, alpha (Si3N4)                1563
+  366 N5P3(cr)                     Phosphorus nitride (P3N5)                     1564
+  368 Na1(cr)                      Sodium (Na)                                   1566
+ 1780 Na1(cr,l)                    Sodium (Na)                                   1568
+  792 Na1O2(cr)                    Sodium superoxide (NaO2)                      1574
+  373 Na2O1(cr)                    Sodium oxide (Na2O)                           1576
+ 1700 Na2O1(cr,l)                  Sodium oxide (Na2O)                           1578
+  793 Na2O2(cr)                    Sodium peroxide (Na2O2)                       1579
+  375 Na2O3Si1(cr)                 Sodium silicate (Na2SiO3)                     1580
+ 1701 Na2O3Si1(cr,l)               Sodium silicate (Na2SiO3)                     1582
+  964 Na2O4S1(cr)                  Sodium sulfate, delta (Na2SO4)                1583
+  963 Na2O4S1(cr)                  Sodium sulfate, I (Na2SO4)                    1584
+  962 Na2O4S1(cr)                  Sodium sulfate, III (Na2SO4)                  1585
+ 1465 Na2O4S1(cr)                  Sodium sulfate, IV (Na2SO4)                   1586
+  961 Na2O4S1(cr)                  Sodium sulfate, V (Na2SO4)                    1587
+ 1466 Na2O4S1(cr,l)                Sodium sulfate (Na2SO4)                       1589
+  989 Na2O4W1(cr)                  Sodium tungsten oxide (Na2WO4)                1591
+  377 Na2O5Si2(cr)                 Sodium silicate (Na2Si2O5)                    1592
+ 1702 Na2O5Si2(cr,l)               Sodium silicate (Na2Si2O5)                    1594
+  379 Na2S1(cr)                    Sodium sulfide (Na2S)                         1595
+ 1703 Na2S1(cr,l)                  Sodium sulfide (Na2S)                         1597
+ 1728 Na2S2(cr)                    Sodium sulfide, beta (Na2S2)                  1598
+ 1730 Na2S2(cr,l)                  Sodium sulfide (Na2S2)                        1600
+ 1176 Nb1(cr)                      Niobium (Nb)                                  1602
+ 1781 Nb1(cr,l)                    Niobium (Nb)                                  1604
+ 1231 Nb1O1(cr)                    Niobium oxide (NbO)                           1608
+ 1704 Nb1O1(cr,l)                  Niobium oxide (NbO)                           1610
+ 1234 Nb1O2(cr)                    Niobium oxide (NbO2)                          1612
+ 1705 Nb1O2(cr,l)                  Niobium oxide (NbO2)                          1614
+ 1179 Nb2O5(cr)                    Niobium oxide (Nb2O5)                         1616
+ 1706 Nb2O5(cr,l)                  Niobium oxide (Nb2O5)                         1618
+ 1345 Ni1(cr)                      Nickel (Ni)                                   1622
+ 1782 Ni1(cr,l)                    Nickel (Ni)                                   1624
+ 1348 Ni1S1(cr)                    Nickel sulfide (NiS)                          1628
+ 1707 Ni1S1(cr,l)                  Nickel sulfide (NiS)                          1630
+ 1367 Ni1S2(cr)                    Nickel sulfide (NiS2)                         1632
+ 1708 Ni1S2(cr,l)                  Nickel sulfide (NiS2)                         1634
+ 1351 Ni3S2(cr)                    Nickel sulfide (Ni3S2)                        1635
+ 1709 Ni3S2(cr,l)                  Nickel sulfide (Ni3S2)                        1637
+ 1369 Ni3S4(cr)                    Nickel sulfide (Ni3S4)                        1638
+  638 O1Pb1(cr)                    Lead oxide, red (PbO)                         1643
+  639 O1Pb1(cr)                    Lead oxide, yellow (PbO)                      1644
+ 1710 O1Pb1(cr,l)                  Lead oxide (PbO)                              1646
+ 1181 O1Sr1(cr)                    Strontium oxide (SrO)                         1651
+ 1711 O1Sr1(cr,l)                  Strontium oxide (SrO)                         1653
+  385 O1Ti1(cr)                    Titanium oxide, alpha (TiO)                   1656
+  974 O1Ti1(cr)                    Titanium oxide, beta (TiO)                    1657
+ 1712 O1Ti1(cr,l)                  Titanium oxide (TiO)                          1659
+ 1238 O1V1(cr)                     Vanadium oxide (VO)                           1661
+ 1713 O1V1(cr,l)                   Vanadium oxide (VO)                           1663
+  642 O2Pb1(cr)                    Lead oxide (PbO2)                             1671
+  991 O2Si1(cr)                    Silicon oxide, cristobalite, high (SiO2)      1673
+  990 O2Si1(cr)                    Silicon oxide, cristobalite, low (SiO2)       1674
+  392 O2Si1(cr)                    Silicon oxide, quartz (SiO2)                  1675
+ 1714 O2Si1(cr,l)                  Silicon oxide (SiO2)                          1677
+  395 O2Ti1(cr)                    Titanium oxide, anatase (TiO2)                1680
+  396 O2Ti1(cr)                    Titanium oxide, rutile (TiO2)                 1681
+ 1715 O2Ti1(cr,l)                  Titanium oxide (TiO2)                         1683
+  677 O2W1(cr)                     Tungsten oxide (WO2)                          1686
+  945 O2.72W1(cr)                  Tungsten oxide (WO2.72)                       1688
+  946 O2.90W1(cr)                  Tungsten oxide (WO2.90)                       1689
+  947 O2.96W1(cr)                  Tungsten oxide (WO2.96)                       1690
+  399 O2Zr1(cr)                    Zirconium oxide (ZrO2)                        1691
+ 1716 O2Zr1(cr,l)                  Zirconium oxide (ZrO2)                        1693
+  864 O3Pb1Si1(cr)                 Lead silicate (PbSiO3)                        1696
+  404 O3Ti2(cr)                    Titanium oxide (Ti2O3)                        1698
+ 1717 O3Ti2(cr,l)                  Titanium oxide (Ti2O3)                        1700
+ 1243 O3V2(cr)                     Vanadium oxide (V2O3)                         1701
+ 1718 O3V2(cr,l)                   Vanadium oxide (V2O3)                         1703
+  679 O3W1(cr)                     Tungsten oxide (WO3)                          1704
+ 1719 O3W1(cr,l)                   Tungsten oxide (WO3)                          1706
+  865 O4Pb2Si1(cr)                 Lead silicate (Pb2SiO4)                       1708
+  643 O4Pb3(cr)                    Lead oxide (Pb3O4)                            1709
+ 1520 O4S1Zn1(cr)                  Zinc sulfate (ZnSO4)                          1710
+  492 O4Si1Zr1(cr)                 Zirconium silicate (ZrSiO4)                   1711
+ 1197 O4V2(cr)                     Vanadium oxide (V2O4)                         1712
+ 1720 O4V2(cr,l)                   Vanadium oxide (V2O4)                         1714
+ 1183 O5Ta2(cr)                    Tantalum oxide (Ta2O5)                        1715
+ 1721 O5Ta2(cr,l)                  Tantalum oxide (Ta2O5)                        1717
+  406 O5Ti3(cr)                    Titanium oxide, alpha (Ti3O5)                 1718
+  975 O5Ti3(cr)                    Titanium oxide, beta (Ti3O5)                  1719
+ 1722 O5Ti3(cr,l)                  Titanium oxide (Ti3O5)                        1721
+ 1199 O5V2(cr)                     Vanadium oxide (V2O5)                         1722
+ 1723 O5V2(cr,l)                   Vanadium oxide (V2O5)                         1724
+ 1245 O7Ti4(cr)                    Titanium oxide (Ti4O7)                        1727
+ 1724 O7Ti4(cr,l)                  Titanium oxide (Ti4O7)                        1729
+  408 O10P4(cr)                    Phosphorus oxide ((P2O5)2)                    1732
+ 1732 P1(cr)                       Phosphorus, black (P)                         1736
+ 1731 P1(cr)                       Phosphorus, red, IV (P)                       1737
+  411 P1(cr)                       Phosphorus, red, V (P)                        1738
+  412 P1(cr)                       Phosphorus, white (P)                         1739
+ 1783 P1(cr,l)                     Phosphorus (P)                                1741
+  418 P4S3(cr)                     Phosphorus sulfide (P4S3)                     1748
+ 1725 P4S3(cr,l)                   Phosphorus sulfide (P4S3)                     1750
+  645 Pb1(cr)                      Lead (Pb)                                     1753
+ 1784 Pb1(cr,l)                    Lead (Pb)                                     1755
+ 1201 Pb1S1(cr)                    Lead sulfide (PbS)                            1759
+ 1726 Pb1S1(cr,l)                  Lead sulfide (PbS)                            1761
+ 1740 Rb1(cr)                      Rubidium (Rb)                                 1765
+ 1750 Rb1(cr,l)                    Rubidium (Rb)                                 1767
+ 1440 S1(cr)                       Sulfur, monoclinic (S)                        1775
+  422 S1(cr)                       Sulfur, orthorhombic (S)                      1776
+ 1785 S1(cr,l)                     Sulfur (S)                                    1778
+ 1427 S1Sr1(cr)                    Strontium sulfide (SrS)                       1783
+  427 S2Si1(cr)                    Silicon sulfide (SiS2)                        1786
+ 1727 S2Si1(cr,l)                  Silicon sulfide (SiS2)                        1788
+  431 Si1(cr)                      Silicon (Si)                                  1796
+ 1787 Si1(cr,l)                    Silicon (Si)                                  1798
+ 1118 Sr1(cr)                      Strontium, alpha (Sr)                         1805
+ 1586 Sr1(cr)                      Strontium, beta (Sr)                          1806
+ 1788 Sr1(cr,l)                    Strontium (Sr)                                1808
+ 1186 Ta1(cr)                      Tantalum (Ta)                                 1812
+ 1789 Ta1(cr,l)                    Tantalum (Ta)                                 1814
+  437 Ti1(cr)                      Titanium, alpha (Ti)                          1819
+  950 Ti1(cr)                      Titanium, beta (Ti)                           1820
+ 1790 Ti1(cr,l)                    Titanium (Ti)                                 1822
+ 1205 V1(cr)                       Vanadium (V)                                  1827
+ 1791 V1(cr,l)                     Vanadium (V)                                  1829
+  562 W1(cr)                       Tungsten (W)                                  1834
+ 1792 W1(cr,l)                     Tungsten (W)                                  1836
+ 1498 Zn1(cr)                      Zinc (Zn)                                     1843
+ 1793 Zn1(cr,l)                    Zinc (Zn)                                     1845
+  441 Zr1(cr)                      Zirconium, alpha (Zr)                         1850
+ 1008 Zr1(cr)                      Zirconium, beta (Zr)                          1851
+ 1794 Zr1(cr,l)                    Zirconium (Zr)                                1853
