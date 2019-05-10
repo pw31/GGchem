@@ -64,6 +64,7 @@
       logical,dimension(NDUST) :: is_dsolved,d_resolved,d_eliminated
       logical,dimension(NDUST) :: itried
       logical :: action,changed,solved,limited,ok,found,all_two
+      logical :: limdust
       character(len=1) :: char1,txt0
       character(len=2) :: rem,tnum
       character(len=6) :: dum6
@@ -1174,6 +1175,7 @@
         !-----------------------------------
         fac = 1.Q0
         iminoff = 0
+        limdust = .false.
         do ii=1,Nsolve
           i  = act_to_elem(ii) 
           el = Iindex(i)
@@ -1183,6 +1185,7 @@
      >        " eps=",1pE9.2,"  fac=",1pE9.2)',elnam(el),eps(el),fac2
             if (fac2<fac) then
               fac = fac2 
+              limdust = .false.
             endif
           endif  
         enddo
@@ -1201,6 +1204,7 @@
               if (fac2<fac) then
                 fac = fac2 
                 iminoff = dk
+                limdust = .true.
               endif
             endif  
           else  
@@ -1211,6 +1215,7 @@
      >        " eps=",1pE9.2,"  fac=",1pE9.2)',elnam(el),eps(el),fac2
               if (fac2<fac) then
                 fac = fac2 
+                limdust = .false.
               endif  
             endif
           endif  
@@ -1265,6 +1270,8 @@
           if (verbose>0) print'("--> pullback",i3,0pF6.3," Q=",1pE11.3,
      >                          " ->",1pE11.3)',iback,NRstep,qold,qual
           if (qual<qold*1.5) exit
+          if (qual<1.0) exit
+          if (limdust) exit
           NRstep = NRstep/2
         enddo  
         !del = 0.Q0

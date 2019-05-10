@@ -316,6 +316,7 @@ if (ymax>-99):
 #================== some important molecules ====================
 fig,ax = plt.subplots()
 mols  = ['H2','H','N2','H2O','O2','CO','CO2','CH4','NH3','C2H2','el']
+mols  = ['CO2','N2','SO2','COS','H2S','S2','CO','H2O','H2','HCL','HF','Ar','Ne','H2SO4']
 mols  = np.array(mols)
 ntot  = 0.0*nHtot
 for i in range(3,4+NELEM+NMOLE): # electrons, all atoms, ions and cations
@@ -326,8 +327,10 @@ for i in range(3,4+NELEM+NMOLE):
   mol = keyword[i]
   yy = dat[:,i]-lntot            # log10 nmol/ntot
   crit = -2.5
+  crit = -5
   ind = np.where(mols == mol)[0]
   if (np.size(ind)>0): crit=-5
+  if (np.size(ind)>0): crit=-7
   #print i,mol,ind,np.size(ind)
   if (np.max(yy[iii])>crit):
     plt.plot(Tg,yy,c=colo[count],ls=styl[count],lw=widt[count],label=mol)
