@@ -4,7 +4,8 @@
       use PARAMETERS,ONLY: elements,abund_pick,model_dim,model_pconst,
      >     model_struc,model_eqcond,Npoints,useDatabase,verbose,
      >     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,pick_mfrac,
-     >     abund_file,struc_file,remove_condensates,phyllosilicates
+     >     abund_file,struc_file,remove_condensates,phyllosilicates,
+     >     initchem_info 
       use CHEMISTRY,ONLY: NewBackIt,NewFullIt,NewBackFac,NewPreMethod,
      >                    NewFastLevel,dispol_file
       use DUST_DATA,ONLY: DustChem_file,bar
@@ -29,6 +30,7 @@
       model_dim    = 1
       model_pconst = .true.
       model_struc  = 0
+      initchem_info= .true.
       verbose      = 0
       Npoints      = 100
       Tfast        = 1000.d0
@@ -91,6 +93,8 @@
           read(line,*) Tfast
         else if (index(line,"! verbose")>0) then   
           read(line,*) verbose
+        else if (index(line,"! initchem_info")>0) then   
+          read(line,*) initchem_info
         else if (index(line,"! pmax")>0) then   
           read(line,*) pmax
           pmax = pmax*bar

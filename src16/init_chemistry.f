@@ -1,7 +1,7 @@
 ************************************************************************
       subroutine INIT_CHEMISTRY
 ************************************************************************
-      use PARAMETERS,ONLY: elements
+      use PARAMETERS,ONLY: elements,initchem_info
       use CHEMISTRY,ONLY: NMOLdim,NMOLE,NELM,catm,cmol,el,
      &    dispol_file,source,fit,natom,a,error,
      &    m_kind,m_anz,elnum,elion,charge,
@@ -77,8 +77,10 @@
         elseif (elnam=='W')  then;  W=NELM ; elnum(NELM)=41
         else
           stop "*** unknown element "
-        endif   
-        print*,'element '//elnam,elnum(NELM)
+        endif
+        if (initchem_info) then
+          print*,'element '//elnam,elnum(NELM)
+        endif
       enddo
 
       NMOLdim = 10000
@@ -90,8 +92,8 @@
         filename = trim(dispol_file(loop))
         if (filename=='') exit
         filename = 'data/'//trim(filename)
-        write(*,*)
-        write(*,*) 'reading molecules and kp-data from '
+        if (initchem_info) write(*,*)
+        write(*,*) 'reading kp-data from '
      &             //trim(filename)//" ..."
         open(unit=12, file=filename, status='old')
         read(12,*) NMOLdim
@@ -151,17 +153,21 @@
             fit(ret)  = fit(i)
             a(ret,:)  = a(i,:)
             error(ret)= error(i)
-            write(line,'(I4,A20,1x,99(I3,1x,A2,1x))')
+            if (initchem_info) then
+              write(line,'(I4,A20,1x,99(I3,1x,A2,1x))')
      &           ret,trim(cmol(ret)),(m_anz(j,ret),cel(j),j=1,iel)
-            print*,trim(line)//"    OVERWRITE" 
+              print*,trim(line)//"    OVERWRITE"
+            endif  
           else  
-            write(line,'(I4,A20,1x,99(I3,1x,A2,1x))')
+            if (initchem_info) then
+              write(line,'(I4,A20,1x,99(I3,1x,A2,1x))')
      &            i,trim(cmol(i)),(m_anz(j,i),catm(m_kind(j,i)),j=1,iel)
-            if (loop==1) then
-              print*,trim(line)
-            else
-              print*,trim(line)//"    --> NEW" 
-            endif   
+              if (loop==1) then
+                print*,trim(line)
+              else
+                print*,trim(line)//"    --> NEW" 
+              endif
+            endif  
             if (iel==2.and.
      >       ((m_kind(1,i)==el.and.m_anz(1,i)==-1.and.m_anz(2,i)==1).or.
      >        (m_kind(2,i)==el.and.m_anz(2,i)==-1.and.m_anz(1,i)==1))
@@ -178,7 +184,7 @@
       NMOLE = i-1
       allocate(nmol(NMOLE),mmol(NMOLE))
 
-      if (loop>1) then
+      if (loop>1.and.initchem_info) then
         print* 
         do i=1,NMOLE
           print*,i,cmol(i),' ->  '//trim(dispol_file(source(i)))
@@ -221,7 +227,7 @@
         print'(1x,99(A4))',(trim(cmol(elion(j))),j=1,el-1),'  ',
      >                     (trim(cmol(elion(j))),j=el+1,NELM)
       endif  
-
+      
  3000 format(I4," & ",A12," & (",I1,") & ",I1," & ",
      &       5(1pE12.5," & "),"$\pm$",0pF4.2,"\\")
  3010 format(I4," & ",A12," & (",I1,") & ",I1," & ",
@@ -231,6 +237,7 @@
 ************************************************************************
       subroutine CHECK_DOUBLE(molname,kind,anz,N,loop,ret)
 ************************************************************************
+      use PARAMETERS,ONLY: initchem_info
       use CHEMISTRY,ONLY: cmol,m_kind,m_anz,dispol_file,source
       implicit none
       character(len=20) :: molname
@@ -268,8 +275,10 @@
           print*,trim(molname)//", "//trim(cmol(i))
           stop
         else if ((.not.eqname).and.eqsource.and.loop==1) then
-          print*,trim(molname)//", "//trim(cmol(i))//
-     &         " different isomere in first source is OK"
+          if (initchem_info) then
+            print*,trim(molname)//", "//trim(cmol(i))//
+     &           " different isomere in first source is OK"
+          endif
           return  
         else if (eqname.and.(.not.eqsource)) then  
           ret = i
@@ -280,8 +289,10 @@
       enddo
       if (ambi>0) then
         if (source(ambi)==loop) then 
-          print*,trim(molname)//", "//trim(cmol(ambi))//
-     &         " different isomere in subsequent source is OK"
+          if (initchem_info) then
+            print*,trim(molname)//", "//trim(cmol(ambi))//
+     &           " different isomere in subsequent source is OK"
+          endif  
           ret = 0
           return
         else  

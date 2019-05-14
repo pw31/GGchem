@@ -10,7 +10,8 @@
 *****   - wie in Tsuji-Chemie                                    *****
 *****                                                            *****
 **********************************************************************
-      use PARAMETERS,ONLY: abund_pick,abund_file,elements,pick_mfrac
+      use PARAMETERS,ONLY: abund_pick,abund_file,elements,pick_mfrac,
+     >                     initchem_info 
       use DUST_DATA,ONLY: NELEM,eps=>eps0,mass,muH,elnam,amu
       use EXCHANGE,ONLY: H,He,Li,Be,B,C,N,O,F,Ne,Na,Mg,Al,Si,P,S,Cl,
      >                   Ar,K,Ca,Sc,Ti,V,Cr,Mn,Fe,Co,Ni,Cu,Zn,Ga,Ge,
@@ -213,30 +214,10 @@
       eps(Zr) = 2.58  
       eps(W ) = 0.85  
 
-      !eps(C)  = eps(O) + LOG10(2.Q0)     ! try C/O=2
-
-      !eps(Fe) = eps(H)+30.0              ! pure Fe modelling ...
-
-      !eps(Si) = eps(H)+30.0              ! pure SiO2 modelling ...
-      !eps(O)  = eps(Si)+LOG10(2.Q0)      ! Si:O = 1:2
-
-      !eps(Al) = eps(H)+30.0              ! pure Al2O3 modelling ...
-      !eps(O)  = eps(Al)+LOG10(3.Q0/2.Q0) ! Al:O = 2:3
-
-      !eps(C)  = eps(H)+30.0              ! pure CO2 modelling ...
-      !eps(O)  = eps(C)+LOG10(2.0000000000001Q0)       ! C:O = 1:2
-
-      !eps(:)  = eps(:)-30.0              ! pure NH3 modelling ...
-      !eps(H)  = 12.0
-      !eps(N)  = eps(H)-LOG10(3.Q0)       ! N:H = 1:3
-
-      !eps(:) = eps(:)-30.0               ! pure H2O modelling ...
-      !eps(H) = 12.0
-      !eps(O) = eps(H)-LOG10(2.Q0)        ! H:O = 2:1
-
       do i=1,NELEM
         eps(i) = 10.Q0 ** (eps(i)-12.Q0)
       enddo
+      eps0 = eps
   
 *     ------------------------------------
 *     ***  read abundances from file?  ***      
@@ -246,9 +227,8 @@
         write(*,*) "read element abundances from "//
      &             trim(abund_file)//" ..."
         open(1,file=abund_file,status='old')
-        eps0  = eps
         eps   = LOG10(eps)+12.Q0
-        mfrac = 1.E-50
+        mfrac = 1.Q-50
         do i=1,999
           read(1,*,err=1000,end=1000) el,val
           print*,el,val
@@ -272,7 +252,7 @@
         if (pick_mfrac) then
           call mf2eps(mfrac,eps)
           do i=1,NELEM
-            if (mfrac(i)==1.E-50) cycle
+            if (mfrac(i)==1.Q-50) cycle
             write(*,'(A2,": ",1pE10.3," ->",2(1pE10.3))') 
      &           elnam(i),eps0(i),eps(i),mfrac(i)
           enddo        
@@ -280,8 +260,10 @@
           epsH = eps(H)
           do i=1,NELEM
             eps(i) = 10.Q0 ** (eps(i)-epsH)
-            write(*,'(A2,": ",1pE10.3," ->",1pE10.3)') 
-     &           elnam(i),eps0(i),eps(i)
+            if (initchem_info) then
+              write(*,'(A2,": ",1pE10.3," ->",1pE10.3)') 
+     &             elnam(i),eps0(i),eps(i)
+            endif
           enddo        
           call eps2mf(eps,mfrac)
         endif

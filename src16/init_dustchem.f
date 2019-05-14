@@ -151,7 +151,7 @@
       Tcorr(:) = -1.d0
       if (model_eqcond) call CHECK_MELTING
       write(*,*)
-
+      
       !open(unit=1,file='condensates.tex')
       !do i=1,NDUST
       !  limit = ' '

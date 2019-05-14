@@ -6,7 +6,7 @@
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       real(kind=qp),intent(in) :: eps(NELEM)   ! with respect to H nuclei
-      real,intent(out) :: mf(NELEM)            ! mass fractions
+      real(kind=qp),intent(out) :: mf(NELEM)   ! mass fractions
       real(kind=qp) :: msum
       integer :: e,el
 
@@ -15,7 +15,7 @@
         if (index(trim(elements)," "//trim(elnam(el))//" ")<=0) cycle
         msum = msum + eps(el)*mass(el)
       enddo  
-      mf = 0.0
+      mf = 0.Q0
       do el=1,NELEM
         if (index(trim(elements)," "//trim(elnam(el))//" ")<=0) cycle
         mf(el) = eps(el)*mass(el)/msum
@@ -31,7 +31,7 @@
       use EXCHANGE,ONLY: H
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
-      real,intent(in) :: mf(NELEM)            ! mass fractions
+      real(kind=qp),intent(in)  :: mf(NELEM)  ! mass fractions
       real(kind=qp),intent(out) :: eps(NELEM) ! with respect to H nuclei
       real(kind=qp) :: epsH
       integer :: el
