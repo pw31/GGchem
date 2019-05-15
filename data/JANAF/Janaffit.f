@@ -345,7 +345,7 @@
       write(*,*) '326 = CaF2 pvap'
       write(*,*) '327 = KF pvap'
       write(*,*) '328 = NaF pvap'
-      write(*,*) '329 = H3PO4_cr'
+      write(*,*) '329 = H3PO4_l'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -2521,7 +2521,7 @@
         stoich(4) = 4.D0
       elseif (specie.eq.320) then
         call READ_DATEI('H3PO4_cr.txt',dG,T,Nmax,N,S,1) 
-        call READ_DATEI('H.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('H.txt'    ,dG,T,Nmax,N,S,2) 
         call READ_DATEI('P.txt'    ,dG,T,Nmax,N,S,3) 
         call READ_DATEI('O.txt'    ,dG,T,Nmax,N,S,4) 
         Edzahl = 3
@@ -2581,7 +2581,7 @@
         Edzahl = 1
         stoich(2) = 1.D0
       elseif (specie.eq.329) then
-        call READ_DATEI('H3PO4_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('H3PO4_l.txt',dG,T,Nmax,N,S,1) 
         call READ_DATEI('H.txt'   ,dG,T,Nmax,N,S,2) 
         call READ_DATEI('P.txt'   ,dG,T,Nmax,N,S,3) 
         call READ_DATEI('O.txt'   ,dG,T,Nmax,N,S,4) 

@@ -1,6 +1,6 @@
 dust species
 ============
-218
+219
 
 Al2O3[s]       CORUNDUM(alpha)
 3.97
@@ -59,7 +59,7 @@ TiO2[s]        RUTILE
  2 O
 # dG-fit NIST-Janaf extended 50-4500K, +/- 3.0:
 # 2  0.00000E+00 -1.91963E+06  4.70841E+02 -1.22263E-02  2.13041E-07
-# pvap NIST-Janaf 100-2500K, +/- 0.040:
+/home/star/pw31/Desktop/Oliver1.pdf# pvap NIST-Janaf 100-2500K, +/- 0.040:
   3  -7.70443E+04  4.03144E+01 -2.59140E-03  6.02422E-07 -6.86899E-11
 # Stock-fit to SUPCRTBL database (100-2500)K, +/-0.07 kJ/mol
 # 5  2.29696147e+05 -3.39257317e+00 -3.33841561e+01  3.42697508e-03 -3.57218451e-07 
@@ -2019,13 +2019,30 @@ ZnS[s]         SPHALERITE/WURTZITE
   5 7.30636867e+04  -2.72297464e+00  -1.60451251e+01   3.44107646e-03  -2.56383825e-07
 
 H3PO4[s]       PHOSPHORIC-ACID
+2.03
+3
+ 3 H
+ 1 P
+ 4 O
+# dG-Stock-fit NIST-Janaf cr (100-1000)K, +/-0.18 kJ/mol
+# 5  3.87111E+05 -1.83791E+01 -1.25909E+01  1.78638E-02  0.00000E+00
+# dG-Stock-fit NIST-Janaf cr (100-1000)K, +/-3.1 kJ/mol
+# 5  3.88821E+05 -5.25161E+00 -8.80331E+01  0.00000E+00  0.00000E+00
+# dG-fit NIST-Janaf (100-1000)K, +/- 2.3 kJ/mol
+  2  0.00000E+00 -3.24681E+06  1.03070E+03  1.16398E-02  0.00000E+00
+
+H3PO4[l]       PHOSPHORIC-ACID     315.5
 1.88
 3
  3 H
  1 P
  4 O
-# dG-Stock-fit NIST-Janaf cr/l (100-2000)K, +/-1.2 kJ/mol
-  5  3.89114E+05 -1.48102E+00 -1.07483E+02 -1.15241E-02  1.14871E-05
+# dG-Stock-fit NIST-Janaf l (298-1000)K, +/-0.06 kJ/mol
+# 5  3.89236E+05 -1.53687E+00 -1.10195E+02 -3.17818E-03  5.91170E-06
+# dG-Stock-fit NIST-Janaf l (298-1000)K, +/-1.0 kJ/mol
+# 5  3.92008E+05  6.19591E+00 -1.63947E+02  0.00000E+00  0.00000E+00
+# dG-fit NIST-Janaf (298-1000)K, +/- 2.8 kJ/mol
+  2  0.00000E+00 -3.23028E+06  9.80875E+02  0.00000E+00  0.00000E+00
 
 Mg3P2O8[s]     MAGNESIUM-PHOSPHATE
 3.06
