@@ -84,7 +84,7 @@
           read(line,*) model_pconst
         else if (index(line,"! model_struc")>0) then   
           read(line,*) model_struc
-          if (model_struc>0) read(1,*) struc_file
+          if (model_struc>0) read(1,'(A200)') struc_file
         else if (index(line,"! Tmax")>0) then   
           read(line,*) Tmax
         else if (index(line,"! Tmin")>0) then   
