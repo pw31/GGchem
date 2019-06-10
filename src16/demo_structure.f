@@ -3,7 +3,8 @@
 ***********************************************************************
       use PARAMETERS,ONLY: Tmin,Tmax,pmin,pmax,nHmin,nHmax,
      >                     model_eqcond,model_pconst,Npoints,
-     >                     model_struc,struc_file,remove_condensates
+     >                     model_struc,struc_file,remove_condensates,
+     >                     model_eqcond
       use CHEMISTRY,ONLY: NELM,NMOLE,elnum,cmol,catm,el,charge
       use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,muH,mass,
      >                    amu,dust_nam,dust_mass,dust_Vol,
@@ -31,7 +32,11 @@
       !-----------------------------
       ! ***  read the structure  ***
       !-----------------------------
-      filename = 'structures/'//trim(struc_file)
+      if (index(struc_file,'~')==1) then
+        filename = trim(struc_file)
+      else
+        filename = 'structures/'//trim(struc_file)
+      endif  
       print*,"reading "//trim(filename)//" ..."
 
       !--------------------------------------------------------
@@ -78,12 +83,12 @@
         Ninc   = -1            ! bottom to top
 
       !--------------------------------------------------------
-      else if (model_struc==3) then
+      else if (model_struc==3) then    ! weather_*.dat
       !--------------------------------------------------------
         open(3,file=filename,status='old')
         read(3,'(A200)') line
         read(3,*) n1,n2,n3,n4,n5,Npoints
-        Ndat = 5 + 2*n1 + n2 + 2*n3
+        Ndat = 6 + 2*n1 + n2 + 2*n3
         read(3,'(A20000)') header
         do j=Ndat-n1-n3+1,Ndat-n1
           dname = adjustl(header(j*20-19:j*20))
@@ -101,7 +106,7 @@
           endif  
         enddo  
         do k=1,NELM-1
-          j = 5 + n1 + n2 + 2*n3 + k
+          j = 6 + n1 + n2 + 2*n3 + k
           e = elnum(k)
           ename = adjustl(header(j*20-19:j*20))
           print*,e,"eps"//trim(elnam(e))//" = "//trim(ename)
@@ -110,26 +115,29 @@
           endif  
         enddo    
         do i=1,Npoints
+          print*,i,Npoints
           read(3,*) dat(1:Ndat) 
           Tgas(i)  = dat(1)
-          press(i) = dat(3)
-          pelec(i) = 10.d0**dat(5)*bk*Tgas(i)
-          dens(i)  = dat(2)*muH
           nHtot(i) = dat(2)
+          press(i) = dat(3)
+          dens(i)  = dat(5)
+          pelec(i) = 10.d0**dat(7)*bk*Tgas(i)
           estruc(i,:) = eps0(:)          
           do k=1,NELM-1
-            j = 5 + n1 + n2 + 2*n3 + k
+            j = 6 + n1 + n2 + 2*n3 + k
             e = elnum(k) 
             estruc(i,e) = 10.Q0**dat(j)
           enddo   
-          do j=Ndat-n1-n3+1,Ndat-n1
-            ddust = 10.Q0**dat(j)
-            dk = dind(j)
-            do k=1,dust_nel(dk)
-              e = dust_el(dk,k)
-              estruc(i,e) = estruc(i,e) + ddust*dust_nu(dk,k)    
-            enddo
-          enddo  
+          if (model_eqcond) then
+            do j=Ndat-n1-n3+1,Ndat-n1
+              ddust = 10.Q0**dat(j)
+              dk = dind(j)
+              do k=1,dust_nel(dk)
+                e = dust_el(dk,k)
+                estruc(i,e) = estruc(i,e) + ddust*dust_nu(dk,k)    
+              enddo
+            enddo  
+          endif  
           !do k=1,NELM-1
           !  e = elnum(k) 
           !  print'(I3,A3,2(1pE18.10))',i,elnam(e),eps0(e),estruc(i,e) 
@@ -344,6 +352,8 @@
           if (model_pconst) nHges = p*mu/(bk*Tg)/muH
           if (model_eqcond) then
             call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
+          else
+            eps(:) = eps0(:)
           endif  
           call GGCHEM(nHges,Tg,eps,.false.,0)
           kT = bk*Tg
