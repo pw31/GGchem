@@ -703,16 +703,16 @@
                 exit
               endif   
             enddo          
-          endif  
-          if (found) then
-            all_two = (Nact>1)
-            do m=1,Nact
-              el2 = Iindex(m) 
-              if (e_eliminated(el2)) cycle
-              if (e_num(el2).ne.2) all_two=.false. 
-            enddo
-            if (all_two) found=.false.
-          endif  
+          endif
+          !if (found) then
+          !  all_two = (Nact>1)
+          !  do m=1,Nact
+          !    el2 = Iindex(m) 
+          !    if (e_eliminated(el2)) cycle
+          !    if (e_num(el2).ne.2) all_two=.false. 
+          !  enddo
+          !  if (all_two) found=.false.
+          !endif  
           if (found) then
             found = .false. 
             do j=Nact,1,-1
