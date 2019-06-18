@@ -32,7 +32,8 @@
       !-----------------------------
       ! ***  read the structure  ***
       !-----------------------------
-      if (index(struc_file,'~')==1) then
+      if ((index(struc_file,'~')==1).or.
+     &    (index(struc_file,'/')==1)) then 
         filename = trim(struc_file)
       else
         filename = 'structures/'//trim(struc_file)
