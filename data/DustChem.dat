@@ -1,6 +1,6 @@
 dust species
 ============
-219
+221
 
 Al2O3[s]       CORUNDUM(alpha)
 3.97
@@ -2074,7 +2074,7 @@ CaF2[s]        CALCIUM-FLUORIDE
 2
  1 Ca
  2 F
-# pvap NIST-Janaf cr/l (100-4000)K, +/- 0.18:
+# pvap NIST-Janaf cr/l (100-4000)K, +/- 0.18 kJ/mol:
   3 -5.34661E+04  4.04321E+01 -2.55099E-03 -2.53640E-07  7.40848E-11
 
 KF[s]          POTASSIUM-FLUORIDE
@@ -2082,7 +2082,7 @@ KF[s]          POTASSIUM-FLUORIDE
 2
  1 K
  1 F
-# pvap NIST-Janaf cr/l (100-3000)K, +/- 0.20:
+# pvap NIST-Janaf cr/l (100-3000)K, +/- 0.20 kJ/mol:
   3 -2.95176E+04  3.54317E+01 -2.87217E-03 -2.73484E-07  1.27882E-10
 
 NaF[s]         SODIUM-FLUORIDE
@@ -2090,8 +2090,24 @@ NaF[s]         SODIUM-FLUORIDE
 2
  1 Na
  1 F
-# pvap NIST-Janaf cr/l (100-3000)K, +/- 0.31:
+# pvap NIST-Janaf cr/l (100-3000)K, +/- 0.31 kJ/mol:
   3 -3.47698E+04  3.64918E+01 -3.18335E-03  4.09510E-08  5.71733E-11
+
+FeF2[s]        IRON-FLUORIDE
+4.09
+2
+ 1 Fe
+ 2 F
+# pvap NIST-Janaf cr/l (100-3000)K, +/- 0.14:
+  3 -3.80518E+04  3.46201E+01  2.28837E-03 -2.75233E-06  4.94191E-10
+
+MgF2[s]        MAGNESIUM-FLUORIDE
+3.15
+2
+ 1 Mg
+ 2 F
+# pvap NIST-Janaf cr/l (100-3000)K, +/- 0.28:
+  3 -4.76043E+04  3.62239E+01  2.91639E-03 -3.02649E-06  5.16807E-10
 
 HF2K[s]        POTASSIUM-BIFLUORIDE 
 2.37

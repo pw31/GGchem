@@ -346,6 +346,8 @@
       write(*,*) '327 = KF pvap'
       write(*,*) '328 = NaF pvap'
       write(*,*) '329 = H3PO4_l'
+      write(*,*) '330 = FeF2 pvap'
+      write(*,*) '331 = MgF2 pvap'      
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -2589,6 +2591,16 @@
         stoich(2) = 3.D0
         stoich(3) = 1.D0
         stoich(4) = 4.D0
+      elseif (specie.eq.330) then
+        call READ_DATEI('FeF2_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('FeF2.txt'   ,dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.331) then
+        call READ_DATEI('MgF2_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('MgF2.txt'   ,dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop

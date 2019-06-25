@@ -22,12 +22,13 @@
       real :: Jstar,Nstar,rhog,dustV,rhod,L3,bmix,emono,zdum
       integer :: i,j,k,l,e,jj,iz,dk,NOUT,Nfirst,Nlast,Ninc,iW,idum
       integer :: it,n1,n2,n3,n4,n5,Ndat,dind(1000),ek,eind(1000)
+      integer :: Nfound,e_source(100),e_target(100)
       integer :: verbose=0
       character(len=20000) :: header
       character(len=200) :: line,filename
       character(len=20) :: name,short_name(NDUST),dname,ename
       character(len=1) :: char
-      logical :: hasW
+      logical :: hasW,efound
 
       !-----------------------------
       ! ***  read the structure  ***
@@ -88,7 +89,7 @@
       !--------------------------------------------------------
         open(3,file=filename,status='old')
         read(3,'(A200)') line
-        read(3,*) n1,n2,n3,n4,n5,Npoints
+        read(3,*) n1,n2,n3,n4,n5,Npoints  ! NELM,NMOLE,NDUST,NEPS,NNUC,Npoints
         Ndat = 6 + 2*n1 + n2 + 2*n3
         read(3,'(A20000)') header
         do j=Ndat-n1-n3+1,Ndat-n1
@@ -106,15 +107,27 @@
             stop
           endif  
         enddo  
+        Nfound = 0
         do k=1,NELM-1
-          j = 6 + n1 + n2 + 2*n3 + k
           e = elnum(k)
-          ename = adjustl(header(j*20-19:j*20))
-          print*,e,"eps"//trim(elnam(e))//" = "//trim(ename)
-          if (trim(ename).ne."eps"//trim(elnam(e))) then
-            stop "*** something is wrong."
-          endif  
-        enddo    
+          efound = .false.
+          do j=6+n1+n2+2*n3+1,6+n1+n2+2*n3+n1
+            ename = adjustl(header(j*20-19:j*20))
+            !print*,e,"eps"//trim(elnam(e))//" = "//trim(ename)
+            if (trim(ename)=="eps"//trim(elnam(e))) then
+              Nfound = Nfound+1
+              efound = .true.
+              e_source(Nfound) = j
+              e_target(Nfound) = e
+              exit
+            endif  
+          enddo
+          if (efound) then
+            print*,"found "//trim(elnam(e))
+          else
+            print*,"not found "//trim(elnam(e))
+          endif
+        enddo
         do i=1,Npoints
           print*,i,Npoints
           read(3,*) dat(1:Ndat) 
@@ -124,9 +137,9 @@
           dens(i)  = dat(5)
           pelec(i) = 10.d0**dat(7)*bk*Tgas(i)
           estruc(i,:) = eps0(:)          
-          do k=1,NELM-1
-            j = 6 + n1 + n2 + 2*n3 + k
-            e = elnum(k) 
+          do k=1,Nfound
+            j = e_source(k)
+            e = e_target(k)
             estruc(i,e) = 10.Q0**dat(j)
           enddo   
           if (model_eqcond) then
