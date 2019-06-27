@@ -59,7 +59,7 @@ TiO2[s]        RUTILE
  2 O
 # dG-fit NIST-Janaf extended 50-4500K, +/- 3.0:
 # 2  0.00000E+00 -1.91963E+06  4.70841E+02 -1.22263E-02  2.13041E-07
-/home/star/pw31/Desktop/Oliver1.pdf# pvap NIST-Janaf 100-2500K, +/- 0.040:
+# pvap NIST-Janaf 100-2500K, +/- 0.040:
   3  -7.70443E+04  4.03144E+01 -2.59140E-03  6.02422E-07 -6.86899E-11
 # Stock-fit to SUPCRTBL database (100-2500)K, +/-0.07 kJ/mol
 # 5  2.29696147e+05 -3.39257317e+00 -3.33841561e+01  3.42697508e-03 -3.57218451e-07 
