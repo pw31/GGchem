@@ -348,6 +348,7 @@
       write(*,*) '329 = H3PO4_l'
       write(*,*) '330 = FeF2 pvap'
       write(*,*) '331 = MgF2 pvap'      
+      write(*,*) '332 = AlF6Na3_cr'      
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -2601,6 +2602,15 @@
         call READ_DATEI('MgF2.txt'   ,dG,T,Nmax,N,S,2) 
         Edzahl = 1
         stoich(2) = 1.D0
+      elseif (specie.eq.332) then
+        call READ_DATEI('AlF6Na3_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Al.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('F.txt'    ,dG,T,Nmax,N,S,3) 
+        call READ_DATEI('Na.txt'   ,dG,T,Nmax,N,S,4) 
+        Edzahl = 3
+        stoich(2) = 1.D0
+        stoich(3) = 6.D0
+        stoich(4) = 3.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop
