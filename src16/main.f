@@ -50,14 +50,16 @@
       use PARAMETERS,ONLY: nHmax,Tmax,pmax,model_pconst,model_eqcond,
      >                     verbose 
       use CHEMISTRY,ONLY: NMOLE,NELM,m_kind,elnum,cmol,el
-      use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,amu,muH,
+      use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,amu,
+     >                    muH,mass,mel,
      >                    dust_nam,dust_mass,dust_Vol,dust_nel,dust_el
-      use EXCHANGE,ONLY: nel,nat,nion,nmol,C,N,O,Si
+      use EXCHANGE,ONLY: nel,nat,nion,nmol,mmol,C,N,O,Si
       implicit none
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST)
       real(kind=qp) :: nges,nmax,threshold,deps
       real*8  :: Tg,nHges,p,mu,muold,pgas,fold,ff,dfdmu,dmu
+      real*8  :: rhog,rhoc,rhod,d2g,mcond,mgas,Vcon,Vcond,Vgas,ngas
       integer :: i,imol,iraus,e,aIraus,aIIraus,j,verb,dk,it
       logical :: included,haeufig,raus(NMOLE)
       logical :: rausI(NELEM),rausII(NELEM)
@@ -111,11 +113,9 @@
         print '("p-it=",i3,"  mu=",2(1pE20.12))',it,mu/amu,dmu/mu
         if (ABS(dmu/mu)<1.E-10) exit
       enddo  
-      
-      write(*,*)
-      write(*,'("Tg=",0pF8.2,"  rho=",1pE10.3,"  n<H>=",1pE10.3)') 
-     >        Tg,nHges*muH,nHges
-      write(*,*) '----- total particle densities -----'
+
+      print*
+      write(*,*) '----- total nuclei densities and gas fraction -----'
       do e=1,NELM
         if (e==el) cycle
         i = elnum(e) 
@@ -123,7 +123,43 @@
      >      elnam(i),nHges*eps(i),eps(i)/eps0(i)
       enddo  
 
-      write(*,*) '----- condensates -----'
+      ngas = nel      ! cm-3
+      rhog = nel*mel  ! g cm-3
+      do j=1,NELEM
+        ngas = ngas + nat(j)
+        rhog = rhog + nat(j)*mass(j)
+      enddo
+      do j=1,NMOLE
+        ngas = ngas + nmol(j)
+        rhog = rhog + nmol(j)*mmol(j)
+      enddo
+      rhod = 0.d0     ! g cm-3  
+      Vcon = 0.d0     ! cm3
+      do i=1,NDUST
+        if (eldust(i)<=0.Q0) cycle 
+        rhod = rhod + nHges*eldust(i)*dust_mass(i)
+        Vcon = Vcon + nHges*eldust(i)*dust_Vol(i)
+      enddo  
+      d2g   = rhod/rhog        ! dust/gas mass ratio
+      rhoc  = rhod/Vcon        ! condensed matter density
+      mcond = 1.0              ! mass of condensates [= 1 g]
+      Vcond = mcond/rhoc       ! volume of condensates [cm3]
+      mgas  = mcond/d2g        ! mass of gas
+      Ngas  = mgas/mu          ! number of gas particles
+      Vgas  = Ngas*bk*Tg/pgas  ! volume of gas [cm3]
+      
+      print*
+      write(*,*) '----- bulk properties -----'
+      print'("for Tg[K]=",0pF8.2," and n<H>[cm-3]=",1pE10.3)',Tg,nHges
+      print'(14x,2(A12))',"condensates","gas"
+      print'("       mass[g]",2(1pE12.4))',mcond,mgas
+      print'("density[g/cm3]",2(1pE12.4))',rhoc,rhog
+      print'("   volume[cm3]",2(1pE12.4))',Vcond,Vgas
+      print'(" pressure[bar]",12x,1pE12.4)',pgas/bar
+      print'("el.press.[bar]",12x,1pE12.4)',nel*bk*Tg/bar
+     
+      print*
+      write(*,*) '----- condensates [cm3] [mfrac] [Vfrac] -----'
       raus = .false.
       do 
         iraus = 0
@@ -138,10 +174,13 @@
         if (iraus==0) exit
         raus(iraus) = .true.
         write(*,1020) ' n'//trim(dust_nam(iraus))//'=',
-     >                eldust(iraus)*nHges
+     >                eldust(iraus)*nHges,
+     >                eldust(iraus)*dust_mass(iraus)*nHges/rhod,
+     >                eldust(iraus)*dust_Vol(iraus)*nHges/Vcon
       enddo
   
-      write(*,*) '----- atoms and ions -----'
+      print*
+      write(*,*) '----- atoms and ions [cm3] -----'
       write(*,1000) ' nel=',nel
       do e=1,NELM
         if (e==el) cycle
@@ -150,7 +189,7 @@
      >               '  n'//trim(elnam(i))//'II=',nion(i)
       enddo
   
-      write(*,*) '----- most abundant species -----'
+      write(*,*) '----- most abundant species [cm3] [molfrac] -----'
       raus   = .false.
       rausI  = .false.
       rausII = .false.
@@ -197,6 +236,7 @@
         endif  
       enddo
   
+      print*
       write(*,*) '-----  where are the elements?  -----'
       do e=1,NELM
         i = elnum(e)
@@ -261,14 +301,10 @@
         enddo
       enddo  
 
-      write(*,*) '----- gas and electron pressure -----'
-      write(*,'("pgas[bar]=",1pE10.3,"  pe[bar]=",1pE10.3)') 
-     >      nges*bk*Tg/bar,nel*bk*Tg/bar
-     
 *     ------------------------------
       call SUPERSAT(Tg,nat,nmol,Sat)
 *     ------------------------------
-      write(*,*)
+      print*
       write(*,*) '----- supersaturation ratios -----'
       do i=1,NDUST
         if (Sat(i)<1.Q-2) cycle 
@@ -277,7 +313,7 @@
 
  1000 format(a6,1pE9.3)
  1010 format(a6,1pE9.3,a8,1pE9.3)
- 1020 format(a20,1pE15.9)
+ 1020 format(a20,1pE15.9,2(0pF10.5))
  4000 format(a7,1pE10.4,a5,1pE10.4)     
  4010 format(' n',a8,1pE12.4,0pF13.9)
  5000 format(1x,a20,' S=',1pE9.3)
