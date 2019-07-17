@@ -57,8 +57,8 @@
       implicit none
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST)
-      real(kind=qp) :: nges,nmax,threshold,deps
-      real*8  :: Tg,nHges,p,mu,muold,pgas,fold,ff,dfdmu,dmu
+      real(kind=qp) :: nmax,threshold,deps
+      real*8  :: Tg,nHges,p,mu,muold,pgas,fold,ff,dfdmu,dmu,mugas
       real*8  :: rhog,rhoc,rhod,d2g,mcond,mgas,Vcon,Vcond,Vgas,ngas
       integer :: i,imol,iraus,e,aIraus,aIIraus,j,verb,dk,it
       logical :: included,haeufig,raus(NMOLE)
@@ -84,14 +84,14 @@
           call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
         endif
         call GGCHEM(nHges,Tg,eps,.false.,verb)
-        nges = nel
+        ngas = nel
         do j=1,NELEM
-          nges = nges + nat(j)
+          ngas = ngas + nat(j)
         enddo
         do j=1,NMOLE
-          nges = nges + nmol(j)
+          ngas = ngas + nmol(j)
         enddo
-        pgas  = nges*bk*Tg
+        pgas  = ngas*bk*Tg
         ff    = p-pgas
         if (it==1) then
           muold = mu
@@ -115,7 +115,7 @@
       enddo  
 
       print*
-      write(*,*) '----- total nuclei densities and gas fraction -----'
+      write(*,*) '----- total nuclei dens. and fractions in gas -----'
       do e=1,NELM
         if (e==el) cycle
         i = elnum(e) 
@@ -140,24 +140,31 @@
         rhod = rhod + nHges*eldust(i)*dust_mass(i)
         Vcon = Vcon + nHges*eldust(i)*dust_Vol(i)
       enddo  
-      d2g   = rhod/rhog        ! dust/gas mass ratio
-      rhoc  = rhod/Vcon        ! condensed matter density
-      mcond = 1.0              ! mass of condensates [= 1 g]
-      Vcond = mcond/rhoc       ! volume of condensates [cm3]
-      mgas  = mcond/d2g        ! mass of gas
-      Ngas  = mgas/mu          ! number of gas particles
-      Vgas  = Ngas*bk*Tg/pgas  ! volume of gas [cm3]
+      mugas = rhog/ngas             ! mean molecular weight [g]
+      d2g   = rhod/rhog             ! dust/gas mass ratio [-]
+      rhoc  = rhod/Vcon             ! condensed matter density [g cm-3]
+      mcond = 1.0                   ! mass of condensates [= 1 g]
+      Vcond = mcond/rhoc            ! volume of condensates [cm3]
+      mgas  = mcond/d2g             ! mass of gas [g]
+      Vgas  = mgas/mugas*bk*Tg/pgas ! volume of gas [cm3]
       
       print*
       write(*,*) '----- bulk properties -----'
       print'("for Tg[K]=",0pF8.2," and n<H>[cm-3]=",1pE10.3)',Tg,nHges
-      print'(14x,2(A12))',"condensates","gas"
-      print'("       mass[g]",2(1pE12.4))',mcond,mgas
-      print'("density[g/cm3]",2(1pE12.4))',rhoc,rhog
-      print'("   volume[cm3]",2(1pE12.4))',Vcond,Vgas
-      print'(" pressure[bar]",12x,1pE12.4)',pgas/bar
-      print'("el.press.[bar]",12x,1pE12.4)',nel*bk*Tg/bar
-     
+      print'(16x,3(A12))',"condensates","gas","check"
+      print'("         mass[g]",2(1pE12.4))',mcond,mgas
+      print'("  density[g/cm3]",2(1pE12.4))',rhoc,rhog
+      print'("tot.dens.[g/cm3]",12x,2(1pE12.4))',nHges*muH,
+     >                                   (mcond+mgas)/Vgas
+      print'("     volume[cm3]",2(1pE12.4))',Vcond,Vgas
+      print'("   pressure[bar]",12x,1pE12.4)',pgas/bar
+      print'("  el.press.[bar]",12x,1pE12.4)',nel*bk*Tg/bar
+      print'(" mol.weight[amu]",12x,1pE12.4)', mugas/amu
+      print'("         mu[amu]",12x,2(1pE12.4))', mu/amu,
+     >                (mcond+mgas)/Vgas/pgas*(bk*Tg)/amu
+      print'("        muH[amu]",12x,2(1pE12.4))',muH/amu,
+     >                     (mcond+mgas)/(nHges*Vgas)/amu
+      
       print*
       write(*,*) '----- condensates [cm3] [mfrac] [Vfrac] -----'
       raus = .false.
@@ -224,15 +231,15 @@
         if (.not.haeufig) exit
         if (iraus>0) then
           raus(iraus) = .true.
-          write(*,4010) cmol(iraus),nmol(iraus),nmol(iraus)/nges
+          write(*,4010) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
         else if (aIraus>0) then 
           rausI(aIraus) = .true.
           write(*,4010) elnam(aIraus)//"I       ",
-     >                  nat(aIraus),nat(aIraus)/nges
+     >                  nat(aIraus),nat(aIraus)/ngas
         else if (aIIraus>0) then 
           rausII(aIIraus) = .true.
           write(*,4010) elnam(aIIraus)//"II     ",
-     >                  nat(aIIraus),nion(aIIraus)/nges
+     >                  nat(aIIraus),nion(aIIraus)/ngas
         endif  
       enddo
   
@@ -313,7 +320,7 @@
 
  1000 format(a6,1pE9.3)
  1010 format(a6,1pE9.3,a8,1pE9.3)
- 1020 format(a20,1pE15.9,2(0pF10.5))
+ 1020 format(a22,1pE15.9,2(0pF10.5))
  4000 format(a7,1pE10.4,a5,1pE10.4)     
  4010 format(' n',a8,1pE12.4,0pF13.9)
  5000 format(1x,a20,' S=',1pE9.3)
