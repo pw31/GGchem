@@ -961,7 +961,7 @@
  1000 continue
       open(unit=12,file='fatal.case')
       do i=1,nel
-        write(12,'(A2,1x,0pF30.26)') catm(i),12+log10(eps(i))
+        write(12,'(A2,1x,0pF32.26)') catm(i),12.Q0+log10(eps(i))
       enddo  
       write(12,*) anhges,Tg
       close(12)

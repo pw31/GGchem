@@ -44,7 +44,7 @@
       real(kind=qp) :: turnon,maxon,minoff,fac,fac2,amount,Nt
       real(kind=qp) :: deps1,deps2,deps,esum,emax,NRstep
       real(kind=qp) :: det(2),converge(5000,NELEM),crit,cbest
-      real(kind=qp) :: small=1.Q-30
+      real(kind=qp) :: deplete1,deplete2,small=1.Q-30
       integer,parameter :: itmax=5000
       integer,dimension(NELEM) :: elem,Nslot,eind
       integer,dimension(NDUST) :: dind,dlin
@@ -679,7 +679,7 @@
               endif
             enddo  
             if (found) then
-              print*,"... exchanging "//elnam(Iindex(i))//
+              print*,"... exchanging1 "//elnam(Iindex(i))//
      >               " for "//elnam(Iindex(j))
               swap = Iindex(i)   
               Iindex(i) = Iindex(j)
@@ -722,8 +722,13 @@
                 exit
               endif 
             enddo
+            deplete1 = eps(Iindex(i))/eps0(Iindex(i))
+            deplete2 = eps(Iindex(j))/eps0(Iindex(j))
+            !print*,elnam(Iindex(i)),elnam(Iindex(j))
+            !print*,deplete1,deplete2
+            if (deplete1>1.Q+5*deplete2) found=.false.
             if (found) then
-              print*,"... exchanging "//elnam(Iindex(j))//
+              print*,"... exchanging2 "//elnam(Iindex(j))//
      >               " for "//elnam(Iindex(i))
               swap = Iindex(i)   
               Iindex(i) = Iindex(j)
@@ -742,7 +747,7 @@
             ! there is a linear-combination disregarding hydrogen
             i = Nall
             j = Nact
-            print*,"... exchanging "//elnam(Iindex(j))//
+            print*,"... exchanging3 "//elnam(Iindex(j))//
      >             " for "//elnam(Iindex(i))
             swap = Iindex(i)   
             Iindex(i) = Iindex(j)
@@ -756,8 +761,9 @@
      >         .and.e_num(Iindex(Nall))==1)
      >         .and.active(iCaS).and.active(iCaSO4)
           if (found) then
+            found = .false.
             do j=Nact,1,-1
-              print*,j,elnam(Iindex(j)),S,e_num(Iindex(j))
+              !print*,j,elnam(Iindex(j)),S,e_num(Iindex(j))
               if (Iindex(j)==S.and.e_num(Iindex(j))==2) then
                 found = .true.
                 exit
@@ -767,13 +773,14 @@
           if (found) then
             ! can't have O as independent variable in this case
             i = Nall
-            print*,"... exchanging "//elnam(Iindex(j))//
+            print*,"... exchanging4 "//elnam(Iindex(j))//
      >           " for "//elnam(Iindex(i))
             swap = Iindex(i)   
             Iindex(i) = Iindex(j)
             Iindex(j) = swap
             e_act(Iindex(i)) = .true.
             e_act(Iindex(j)) = .false.
+            stop
             goto 200 
           endif  
         endif   
@@ -1273,7 +1280,7 @@
           if (qual<1.0) exit
           if (limdust) exit
           NRstep = NRstep/2
-        enddo  
+        enddo
         !del = 0.Q0
         !do i=1,NELM
         !  if (i==iel) cycle

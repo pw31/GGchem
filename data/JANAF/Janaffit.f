@@ -349,6 +349,12 @@
       write(*,*) '330 = FeF2 pvap'
       write(*,*) '331 = MgF2 pvap'      
       write(*,*) '332 = AlF6Na3_cr'      
+      write(*,*) '333 = Li2SiO3_cr'      
+      write(*,*) '334 = Li2SiO3_l'      
+      write(*,*) '335 = Li2Si2O5_cr'      
+      write(*,*) '336 = Li2Si2O5_l'      
+      write(*,*) '337 = Li2TiO3_cr'      
+      write(*,*) '338 = Li2TiO3_l'      
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -2610,6 +2616,60 @@
         Edzahl = 3
         stoich(2) = 1.D0
         stoich(3) = 6.D0
+        stoich(4) = 3.D0
+      elseif (specie.eq.333) then
+        call READ_DATEI('Li2SiO3_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Li.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('Si.txt'   ,dG,T,Nmax,N,S,3) 
+        call READ_DATEI('O.txt'    ,dG,T,Nmax,N,S,4) 
+        Edzahl = 3
+        stoich(2) = 2.D0
+        stoich(3) = 1.D0
+        stoich(4) = 3.D0
+      elseif (specie.eq.334) then
+        call READ_DATEI('Li2SiO3_l.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Li.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('Si.txt'   ,dG,T,Nmax,N,S,3) 
+        call READ_DATEI('O.txt'    ,dG,T,Nmax,N,S,4) 
+        Edzahl = 3
+        stoich(2) = 2.D0
+        stoich(3) = 1.D0
+        stoich(4) = 3.D0
+      elseif (specie.eq.335) then
+        call READ_DATEI('Li2Si2O5_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Li.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('Si.txt'   ,dG,T,Nmax,N,S,3) 
+        call READ_DATEI('O.txt'    ,dG,T,Nmax,N,S,4) 
+        Edzahl = 3
+        stoich(2) = 2.D0
+        stoich(3) = 2.D0
+        stoich(4) = 5.D0
+      elseif (specie.eq.336) then
+        call READ_DATEI('Li2Si2O5_l.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Li.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('Si.txt'   ,dG,T,Nmax,N,S,3) 
+        call READ_DATEI('O.txt'    ,dG,T,Nmax,N,S,4) 
+        Edzahl = 3
+        stoich(2) = 2.D0
+        stoich(3) = 2.D0
+        stoich(4) = 5.D0
+      elseif (specie.eq.337) then
+        call READ_DATEI('Li2TiO3_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Li.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('Ti.txt'   ,dG,T,Nmax,N,S,3) 
+        call READ_DATEI('O.txt'    ,dG,T,Nmax,N,S,4) 
+        Edzahl = 3
+        stoich(2) = 2.D0
+        stoich(3) = 1.D0
+        stoich(4) = 3.D0
+      elseif (specie.eq.338) then
+        call READ_DATEI('Li2TiO3_l.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Li.txt'   ,dG,T,Nmax,N,S,2) 
+        call READ_DATEI('Ti.txt'   ,dG,T,Nmax,N,S,3) 
+        call READ_DATEI('O.txt'    ,dG,T,Nmax,N,S,4) 
+        Edzahl = 3
+        stoich(2) = 2.D0
+        stoich(3) = 1.D0
         stoich(4) = 3.D0
       else
         write(*,*) 'Specie=',specie,' ???'

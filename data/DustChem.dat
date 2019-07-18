@@ -1,6 +1,6 @@
 dust species
 ============
-222
+228
 
 Al2O3[s]       CORUNDUM(alpha)
 3.97
@@ -2126,4 +2126,58 @@ AlF6Na3[s]     CRYOLITE
  3 Na
 # dG-Stock-fit NIST-Janaf cr/l (100-3000)K, +/-9.4 kJ/mol
   5  5.33274E+05 -7.58058E+00 -1.17668E+02  1.27147E-02  1.45909E-19
+
+Li2SiO3[s]     LI-SILICATE
+2.52
+3
+ 2 Li
+ 1 Si
+ 3 O
+# dG-Stock-fit NIST-Janaf cr (100-2500)K, +/-0.37 kJ/mol
+  5  3.78736E+05 -8.35599E+00 -5.02149E+01  8.45736E-03 -8.25412E-07
+
+Li2SiO3[l]     LI-SILICATE       1474.0
+2.2            estimated
+3
+ 2 Li
+ 1 Si
+ 3 O
+# dG-Stock-fit NIST-Janaf l (298-4000)K, +/-0.40 kJ/mol
+  5  3.77984E+05 -1.47587E+00 -9.30930E+01  2.99212E-03 -2.11954E-07
+
+Li2Si2O5[s]    LI-SILICATE
+2.47
+3
+ 2 Li
+ 2 Si
+ 5 O
+# dG-Stock-fit NIST-Janaf cr (298-2500)K, +/-0.49 kJ/mol
+  5  6.04720E+05 -1.72460E+00 -1.47641E+02  3.24662E-03  0.00000E+00
+
+Li2Si2O5[l]    LI-SILICATE       1307.0
+2.1            estimated
+3
+ 2 Li
+ 2 Si
+ 5 O
+# dG-Stock-fit NIST-Janaf l (298-3000)K, +/-0.67 kJ/mol
+  5  5.99140E+05 -1.96117E+00 -1.43101E+02  4.81332E-03 -3.53317E-07
+
+Li2TiO3[s]     LI-TITANATE
+3.43
+3
+ 2 Li
+ 2 Si
+ 5 O
+# dG-Stock-fit NIST-Janaf cr (100-3000)K, +/-0.32 kJ/mol
+  5  3.84426E+05 -7.07925E+00 -5.83248E+01  7.47936E-03 -5.86251E-07
+
+Li2TiO3[l]     LI-TITANATE       1820.0
+3.0            estimated
+3
+ 2 Li
+ 2 Si
+ 5 O
+# dG-Stock-fit NIST-Janaf l (298-3000)K, +/-0.67 kJ/mol
+  5  3.73769E+05 -1.64374E+00 -8.75079E+01  3.62423E-03 -1.84980E-07
 
