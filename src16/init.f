@@ -212,7 +212,7 @@
       eps(Sr) = 2.87     
       eps(Y ) = 2.21  
       eps(Zr) = 2.58  
-      eps(W ) = 0.85  
+      eps(W ) = 0.85   
 
       do i=1,NELEM
         eps(i) = 10.Q0 ** (eps(i)-12.Q0)
@@ -227,7 +227,7 @@
         write(*,*) "read element abundances from "//
      &             trim(abund_file)//" ..."
         open(1,file=abund_file,status='old')
-        eps   = LOG10(eps)+12.Q0
+        eps   = -40.0
         mfrac = 1.Q-50
         do i=1,999
           read(1,*,err=1000,end=1000) el,val
@@ -298,12 +298,14 @@
 
       call eps2mf(eps,mfrac)
       muH = 0.d0
-      write(*,'(4x,A8,A12,A8,A12)') "eps","n/nH","mass","mfrac[%]" 
+      write(*,'(7x,A8,A8,A12,A13,A12)')
+     &      "mass","eps","n/nH","log10(n/nSi)","mfrac" 
       do i=1,NELEM
-        if (index(trim(elements)," "//trim(elnam(i))//" ")>0) then 
-          write(*,'(1x,a2,1x,0pF8.3,1pE12.4,0pF8.3,0pF12.7)') 
-     &          elnam(i),12.d0+LOG10(eps(i)),eps(i),mass(i)/amu,
-     &          mfrac(i)*100.0
+        if (index(elements," "//trim(elnam(i))//" ")>0) then 
+          write(*,'(1x,I2,1x,a2,1x,0pF8.3,0pF8.3,1pE12.3,
+     &              0pF13.3,1pE12.3)') 
+     &          i,elnam(i),mass(i)/amu,12.d0+LOG10(eps(i)),eps(i),
+     &          LOG10(eps(i)/eps(Si)),mfrac(i)
           muH = muH + mass(i)*eps(i)
         endif  
       enddo

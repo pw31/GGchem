@@ -1189,7 +1189,7 @@ BrF5                  2  Br  F  1  5                  : Bromine_Fluoride
  4  1.125977E+05 -1.638851E+00 -6.789540E+01  8.893352E-04 -5.047957E-08
 BrF5S                 3  Br  F  S  1  5  1            : Sulfur_Bromide_Fluoride
  4  2.111896E+05 -2.811403E+00 -7.978847E+01  1.505171E-03 -8.764995E-08
-BrH                   2  Br  H  1  1                  : Hydrogen_Bromide
+HBr                   2  Br  H  1  1                  : Hydrogen_Bromide
  4  4.359434E+04 -1.648248E+00 -7.219255E-02  2.486554E-04 -9.508271E-09
 BrH3Si                3  Br  H Si  1  3  1            : Bromosilane
  4  1.545256E+05 -5.061146E+00 -1.889740E+01  1.705138E-03 -9.239132E-08
@@ -1197,7 +1197,7 @@ BrHg                  2  Br Hg  1  1                  : Mercury_Bromide
  4  8.191374E+03 -3.964666E-01 -6.775473E+00 -5.191685E-05  6.817211E-09
 BrI                   2  Br  I  1  1                  : Iodine_Bromide
  4  2.130593E+04 -2.359303E-01 -9.979150E+00 -2.689844E-04  3.403166E-08
-BrK                   2  Br  K  1  1                  : Potassium_Bromide
+KBr                   2  Br  K  1  1                  : Potassium_Bromide
  4  4.564680E+04 -5.892057E-01 -6.297816E+00  9.523607E-05 -1.401773E-08
 BrLi                  2  Br Li  1  1                  : Lithium_Bromide
  4  5.095744E+04 -6.793544E-01 -6.312757E+00  7.231449E-05 -7.481713E-09
@@ -1307,7 +1307,7 @@ Br6W                  2  Br  W  6  1                  : Tungsten_Bromide
  4  2.121671E+05  2.705909E-01 -9.002782E+01 -7.386233E-04  4.883707E-08
 CB                    2   C  B  1  1                  : Boron_Carbide
  4  5.359065E+04 -1.300467E+00 -3.972955E+00  3.094683E-04 -1.818808E-08
-BrC                   2   C Br  1  1                  : Bromomethylidyne
+CBr                   2   C Br  1  1                  : Bromomethylidyne
  4  3.815482E+04 -3.753866E-01 -9.470329E+00 -9.308269E-05  4.384008E-09
 CBrF3                 3   C Br  F  1  1  3            : Bromotrifluoromethane
  4  2.058350E+05 -2.925280E+00 -4.339148E+01  1.160181E-03 -6.709091E-08

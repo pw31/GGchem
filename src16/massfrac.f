@@ -12,12 +12,12 @@
 
       msum = 0.Q0
       do el=1,NELEM
-        if (index(trim(elements)," "//trim(elnam(el))//" ")<=0) cycle
+        if (index(elements," "//trim(elnam(el))//" ")<=0) cycle
         msum = msum + eps(el)*mass(el)
       enddo  
       mf = 0.Q0
       do el=1,NELEM
-        if (index(trim(elements)," "//trim(elnam(el))//" ")<=0) cycle
+        if (index(elements," "//trim(elnam(el))//" ")<=0) cycle
         mf(el) = eps(el)*mass(el)/msum
         !print'(A3,2(1pE12.4))',elnam(el),eps(el),mf(el)
       enddo
@@ -38,7 +38,7 @@
 
       eps = 0.Q0
       do el=1,NELEM
-        if (index(trim(elements)," "//trim(elnam(el))//" ")<=0) cycle
+        if (index(elements," "//trim(elnam(el))//" ")<=0) cycle
         eps(el) = mf(el)/mass(el) 
       enddo  
       epsH = eps(H)
