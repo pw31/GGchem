@@ -19,7 +19,7 @@
 !-------------------------------------------------------------------------
       use PARAMETERS,ONLY: Tfast,useDatabase
       use DUST_DATA,ONLY: NELEM,NDUST,dust_nam,dust_nel,dust_nu,dust_el,
-     >                    eps0,elnam,elcode
+     >                    eps0,elnam,elcode,NEPS,elnr
       use CHEMISTRY,ONLY: NewFastLevel,NELM,elnum,iel=>el
       use CONVERSION,ONLY: Nind,Ndep,Iindex,Dindex,is_dust,conv
       use EXCHANGE,ONLY: Fe,Mg,Si,Al,Ca,Ti,C,O,S,Na,Cl,H,Li,Mn,W,Ni,Cr,
@@ -268,8 +268,9 @@
         enddo
       enddo
       worst = 0.Q0
-      do i=1,NELEM
-        worst = MAX(worst,ABS(1.Q0-check(i)/eps0(i)))
+      do i=1,NEPS
+        el = elnr(i)
+        worst = MAX(worst,ABS(1.Q0-check(el)/eps0(el)))
       enddo
       eps00 = check
       if (verbose>0) then
@@ -1302,8 +1303,9 @@
         !  enddo
         !enddo
         !worst = 0.d0
-        !do i=1,NELEM
-        !  worst = MAX(worst,ABS(1.Q0-check(i)/eps00(i)))
+        !do i=1,NEPS
+        !  el = elnr(i)
+        !  worst = MAX(worst,ABS(1.Q0-check(el)/eps00(el)))
         !enddo
         !if (verbose>1.or.worst>1.Q-8) write(*,*) 
      >  !   "element conservation error 2:",worst
@@ -1489,8 +1491,9 @@
       !  enddo
       !enddo
       !worst = 0.d0
-      !do i=1,NELEM
-      !  worst = MAX(worst,ABS(1.Q0-check(i)/eps0(i)))
+      !do i=1,NEPS
+      !  el = elnr(i)
+      !  worst = MAX(worst,ABS(1.Q0-check(el)/eps00(el)))
       !enddo
       !write(*,*) "element conservation error 3:",worst
       !if (worst>1.Q-8) stop

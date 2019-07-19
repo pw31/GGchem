@@ -227,7 +227,7 @@
             nmax  = nion(i)
           endif
         enddo
-        haeufig = (nmax.gt.nHges*1.Q-6)
+        haeufig = (nmax.gt.ngas*1.Q-12)
         if (.not.haeufig) exit
         if (iraus>0) then
           raus(iraus) = .true.

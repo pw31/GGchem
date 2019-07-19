@@ -719,6 +719,9 @@
           else 
             ii = all_to_act(i) 
             delp = -dp(ii)/(anmono(i)*kT)              ! relative change dx/x
+            if (it>itmax-10) then
+              print*,1,catm(i),REAL(dp(ii)),REAL(anmono(i)*kT)
+            endif
             conv(it,i) = delp
             converge(it) = MAX(converge(it),ABS(delp))
             if (ABS(delp)<finish) then
@@ -732,11 +735,6 @@
             endif
           endif  
         enddo
-        if (it<=10) then
-          limit = 1.Q0
-        else
-          dp = dp*limit
-        endif  
         if (verbose>1.and.it==0) then
           write(*,*) 
           print'(7x,A14,A14,A14)',"natom","dnatom","badness" 
@@ -746,6 +744,11 @@
      >           -dp(ii)/(anmono(i)*kT),badness(i)
           enddo
         endif
+        if (it<=10) then
+          limit = 1.Q0
+        else
+          dp = dp*limit
+        endif  
         
 *       ! apply limited NR step
 *       =======================
@@ -760,8 +763,8 @@
           verbose=2
           do ii=1,Nact
             i = act_to_all(ii) 
-            print'(A3,2(1pE12.3))',catm(i),
-     >           anmono(i),-dp(ii)/(anmono(i)*kT) 
+            delp = -dp(ii)/(anmono(i)*kT)
+            print'(A3,99(1pE12.4))',catm(i),anmono(i),delp
           enddo  
         endif  
         crit = MAXVAL(converge(MAX(0,it-1):it))

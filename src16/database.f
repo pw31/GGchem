@@ -271,7 +271,8 @@
         enddo
         deps0 = eps0-check
         errmax = -1.Q0
-        do el=1,NELEM
+        do e=1,NEPS
+          el = elnr(e) 
           error = ABS(1.Q0-check(el)/eps0(el))
           if (error.gt.errmax) then
             errmax = error
