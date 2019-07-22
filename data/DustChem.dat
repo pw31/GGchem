@@ -1,6 +1,6 @@
 dust species
 ============
-227
+230
 
 Al2O3[s]       CORUNDUM(alpha)
 3.97
@@ -2171,6 +2171,28 @@ Li2TiO3[l]     LI-TITANATE       1820.0
  5 O
 # dG-Stock-fit NIST-Janaf l (298-3000)K, +/-0.67 kJ/mol
   5  3.73769E+05 -1.64374E+00 -8.75079E+01  3.62423E-03 -1.84980E-07
+
+Co[s]          COBALT
+8.90           
+ 1
+ 1 Co
+# dG-Stock-fit NIST-Janaf (100-2500)K, +/-0.08 kJ/mol
+  5  5.12469E+04 -7.42605E-01 -1.39362E+01  1.52138E-03 -1.53441E-07
+
+Co[l]          COBALT(liquid)      1768.0
+8.86           
+ 1
+ 1 Co
+# dG-Stock-fit NIST-Janaf (298-4000)K, +/-0.24 kJ/mol
+  5  4.88618E+04 -1.23642E+00 -9.13022E+00  1.61909E-03 -1.36086E-07
+
+CoO[s]         COBALT-MONOOXIDE
+6.44
+ 2
+ 1 Co
+ 1 O
+# dG-Stock-fit NIST-Janaf (100-3000)K, +/-0.22 kJ/mol
+  5  1.10016E+05  2.84709E-01 -3.67779E+01  5.29604E-04 -6.42463E-09
 
 
 ----- deactivated, because leading to artifacts at high T ------

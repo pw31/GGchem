@@ -719,9 +719,6 @@
           else 
             ii = all_to_act(i) 
             delp = -dp(ii)/(anmono(i)*kT)              ! relative change dx/x
-            if (it>itmax-10) then
-              print*,1,catm(i),REAL(dp(ii)),REAL(anmono(i)*kT)
-            endif
             conv(it,i) = delp
             converge(it) = MAX(converge(it),ABS(delp))
             if (ABS(delp)<finish) then
