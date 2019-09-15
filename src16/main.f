@@ -4,7 +4,7 @@
       use PARAMETERS,ONLY: model_dim,model_struc,model_eqcond,
      >                     useDatabase
       use EXCHANGE,ONLY: chemcall,chemiter,ieqcond,ieqconditer,
-     >                   itransform
+     >                   itransform,preEst,preUse,preIter
       use DATABASE,ONLY: NLAST
       implicit none
 
@@ -29,14 +29,18 @@
       endif   
       
       print*
-      print'("         smchem calls = ",I8)',chemcall
-      print'("      iterations/call = ",0pF8.2)',
+      print'("            smchem calls = ",I8)',chemcall
+      print'("         iterations/call = ",0pF8.2)',
      >                     REAL(chemiter)/REAL(chemcall)
+      print'("     pre-iterations/call = ",0pF12.3)',
+     >                      REAL(preIter)/REAL(chemcall)
+      print'("usage of saved estimates = ",0pF12.3,"%")',
+     >                       REAL(preUse)/REAL(preEst)*100.0
       if (model_eqcond) then
-        print'("eq condensation calls = ",I8)',ieqcond
-        print'("   eq iterations/call = ",0pF8.2)',
+        print'("   eq condensation calls = ",I8)',ieqcond
+        print'("      eq iterations/call = ",0pF8.2)',
      >                   REAL(ieqconditer)/REAL(ieqcond)
-        print'("      transform calls = ",I8)',itransform
+        print'("         transform calls = ",I8)',itransform
         NLAST=0         ! also save replaced database entries
         if (useDatabase) call SAVE_DBASE
       endif
@@ -60,7 +64,7 @@
       real(kind=qp) :: nmax,threshold,deps
       real*8  :: Tg,nHges,p,mu,muold,pgas,fold,ff,dfdmu,dmu,mugas
       real*8  :: rhog,rhoc,rhod,d2g,mcond,mgas,Vcon,Vcond,Vgas,ngas
-      integer :: i,imol,iraus,e,aIraus,aIIraus,j,verb,dk,it
+      integer :: i,imol,iraus,e,aIraus,aIIraus,j,verb,dk,it,stindex
       logical :: included,haeufig,raus(NMOLE)
       logical :: rausI(NELEM),rausII(NELEM)
       character(len=10) :: sp
@@ -227,7 +231,7 @@
             nmax  = nion(i)
           endif
         enddo
-        haeufig = (nmax.gt.ngas*1.Q-12)
+        haeufig = (nmax.gt.ngas*1.Q-9)
         if (.not.haeufig) exit
         if (iraus>0) then
           raus(iraus) = .true.
@@ -242,7 +246,28 @@
      >                  nat(aIIraus),nion(aIIraus)/ngas
         endif  
       enddo
-  
+      iraus = stindex(cmol,NMOLE,'O2')
+      if (.not.raus(iraus))
+     >   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
+      iraus = stindex(cmol,NMOLE,'NO')
+      if (.not.raus(iraus))
+     >   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
+      iraus = stindex(cmol,NMOLE,'S3')
+      if (.not.raus(iraus))
+     >   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
+      iraus = stindex(cmol,NMOLE,'S4')
+      if (.not.raus(iraus))
+     >   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
+      iraus = stindex(cmol,NMOLE,'S5')
+      if (.not.raus(iraus))
+     >   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
+      iraus = stindex(cmol,NMOLE,'H2SO4')
+      if (.not.raus(iraus))
+     >   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
+      iraus = stindex(cmol,NMOLE,'SF6')
+      if (.not.raus(iraus))
+     >   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
+          
       print*
       write(*,*) '-----  where are the elements?  -----'
       do e=1,NELM
@@ -323,6 +348,7 @@
  1020 format(a22,1pE15.9,2(0pF10.5))
  4000 format(a7,1pE10.4,a5,1pE10.4)     
  4010 format(' n',a8,1pE12.4,0pF13.9)
+ 4020 format(' n',a8,1pE12.4,1pE13.3)
  5000 format(1x,a20,' S=',1pE9.3)
       RETURN
       end      

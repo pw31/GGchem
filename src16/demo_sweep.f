@@ -283,10 +283,10 @@
           same = same.and.(nHmin==nHmax)
         endif  
         if (same) then
-          deps = eps00(Si)*0.4*fac
-          !eps0(Si) = eps00(Si) + deps
+          deps = eps00(O)*1.E-2*(2.0*fac-1.0)
           eps0(O)  = eps00(O)  + deps
-          eps0(Mg) = eps00(Mg) + deps
+          !eps0(Si) = eps00(Si) + deps
+          !eps0(Mg) = eps00(Mg) + deps
           !eps0(O)  = eps00(O)*(1+0.005*(fac-0.5))
           !eps0(O)  = eps00(O)*(1.0+0.05*fac)
           !eps0(C) = eps00(O)*(0.3+1.1*fac) 

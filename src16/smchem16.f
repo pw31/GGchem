@@ -25,7 +25,7 @@
      >                    nml=>NMOLE,nel=>NELM,cmol,catm,
      >                    m_kind,m_anz,charge,elion,el,
      >                    th1,th2,th3,th4,fit,TT1,TT2,TT3
-      use EXCHANGE,ONLY: chemcall,chemiter
+      use EXCHANGE,ONLY: chemcall,chemiter,preEst,preUse,preIter
       implicit none
 *-----------------------------------------------------------------------
 *  Dimensionierung fuer die Molekuel- und Atom Felder. Hier ist auf
@@ -58,15 +58,16 @@
       integer :: Nact,all_to_act(nel),act_to_all(nel),switchoff(nel)
       integer :: e,i,j,j1,ii,jj,kk,l,it,m1,m2,piter,ifatal,ipull,pullmax
       integer :: Nseq,imin,imax,iloop,imethod,enew,eseq(nel)
+      integer :: NpreLoop,NpreIt,Ntaken,Nestim
       integer,parameter :: itmax=200,Ncmax=16
       real(kind=qp) :: finish,qual,qual0,qual1,qual2,qual3
       real(kind=qp) :: g(0:nml),limit
       real(kind=qp) :: kT,kT1,cc,nelek,ng,Sa,fak,lth,arg,term,f,fs
       real(kind=qp) :: pel,delta,pat,atfrac,atmax
       real(kind=qp) :: nges(nel),pmono1(nel),coeff(-1:Ncmax)
-      real(kind=qp) :: DF(nel,nel),dp(nel),FF(nel),pmol,crit
-      real(kind=qp) :: DF0(nel,nel),FF0(nel),scale(nel),conv(0:500,nel)
-      real(kind=qp) :: converge(0:500),delp,nold,null(nel),nsave(nel)
+      real(kind=qp) :: DF(nel,nel),dp(nel),FF(nel),pmol,crit,delp,nold
+      real(kind=qp) :: DF0(nel,nel),FF0(nel),scale(nel),nsave(nel)
+      real(kind=qp) :: conv(0:itmax,nel),converge(0:itmax),null(nel)
       real(kind=qp) :: soll,haben,abw,sum,maxs
       real(kind=qp) :: pbefore(nel),norm(nel),xx(nel)
       real(kind=qp) :: emax,pges,pwork
@@ -80,7 +81,7 @@
       real(kind=qp),allocatable,save :: amerk(:),ansave(:)
       real(kind=qp),allocatable,save :: badness(:),pcorr(:,:) 
       integer,allocatable,save :: pkey(:)
-!$omp threadprivate(TiC,amerk,ansave,badness,pcorr,pkey)
+!$omp threadprivate(TiC,ilauf,amerk,ansave,badness,pcorr,pkey)
 *-----------------------------------------------------------------------      
 
       ifatal = 0
@@ -142,11 +143,13 @@
       g(TiC) = EXP(MIN(1.1Q+4,-2.30256*arg))
 
 *---------------------------------------------------------------------------
-      if (.not.merk) then
-        badness = 1.Q0
-        pcorr   = 1.Q0
-        pkey    = 0         
-      endif   
+      !print'("smchem16 called ilauf,merk,nml_act=",i5,l2,i4)',
+     &!       ilauf,merk,nml_act
+      !print'("T,n<H>,eps=",0pF10.2,99(1pE11.3))',Tg,anHges,eps
+      NpreLoop = 0
+      NpreIt = 0
+      Ntaken = 0
+      Nestim = 0
       if ((ilauf.gt.10).and.merk) then
         do i=1,nel
           anmono(i) = amerk(i) * anhges
@@ -166,7 +169,7 @@
           if (i==el) cycle 
           ng = anHges * eps(i)
           Sa = g(elion(i))*kT1
-          nelek = nelek + ng/(0.5d0 + SQRT(0.25d0 + ng/Sa))
+          nelek = nelek + ng/(0.5Q0 + SQRT(0.25Q0 + ng/Sa))
         enddo
         anmono(el) = nelek
         pel = nelek*kT
@@ -199,6 +202,13 @@
           emax = norm(e)
           enew = e
         enddo  
+        if (enew==0) then
+          print*,catm 
+          print*,eps
+          print*,ido
+          print*,done
+          stop "*** should not occur."
+        endif  
         if (verbose>1) print*,'estimate p'//trim(catm(enew))//' ...'
         if (enew.ne.pkey(ido)) ptake=.false.
         done(enew) = .true.
@@ -209,7 +219,7 @@
         ! store coeff for Sum_l coeff(l) p^l = pges 
         !-------------------------------------------
         coeff(:) = 0.Q0          
-        mols = ''
+        if (verbose>0) mols = ''
         do i=1,nml
           affect = .false. 
           known  = .true. 
@@ -250,6 +260,7 @@
         if (verbose>1) print*,trim(mols)
         if (enew==el) then
           pel = SQRT(-coeff(-1)/(1.Q0+coeff(+1)))     ! 0 = pel - a/pel + b*pel
+          if (verbose>1) print*,'pel=',anmono(el)*kT,pel
           anmono(el) = pel*kT1
         else   
           !----------------------------------------------
@@ -273,7 +284,9 @@
           if (piter>=99) then
             write(*,*) "*** smchem16 no conv in 1D pre-it "//catm(enew)
             write(*,*) anHges,Tg
-            write(*,*) "eps:",eps
+            do i=1,nel
+              write(*,'(A2,1x,0pF30.26)') catm(i),eps(i)
+            enddo  
             write(*,*) "coeff:",coeff
             goto 1000
           endif  
@@ -288,6 +301,7 @@
  150    continue
         eact(:) = .false.
         Nact = 0
+        !if (verbose>0) print*,"NewFastLevel,ptake=",NewFastLevel,ptake
         do iredo=MAX(1,ido-NewBackIt),ido
           e = eseq(iredo)
           if (norm(e)<NewBackFac*norm(enew)) then
@@ -297,10 +311,12 @@
             act_to_all(Nact) = e
             pbefore(e) = anmono(e)
             if (NewFastLevel<3.and.ptake) then
-              anmono(e) = anmono(e)*pcorr(enew,e) 
+              anmono(e) = anmono(e)*pcorr(enew,e)
+              Ntaken = Ntaken+1
             else
-              pcorr(enew,e) = 1.Q0 
-            endif  
+              pcorr(enew,e) = 1.Q0
+            endif
+            Nestim = Nestim+1
           endif
         enddo
         if (verbose>1) then
@@ -308,6 +324,10 @@
           print*,eact(eseq(1:ido))
           print'("corr",99(1pE11.2))',pcorr(enew,act_to_all(1:Nact))
         endif
+        if (Nact==1) then
+          pkey(ido) = enew
+          cycle
+        endif  
         do i=1,nml
           affect = .false. 
           known  = .true.
@@ -322,8 +342,16 @@
           relevant(i) = (known.and.affect)
         enddo  
         qual = 9.Q+99
-        do iloop=1,3
-          imethod = MOD(NewPreMethod+iloop-2,3)+1
+        do iloop=1,4
+          if (iloop==1) then
+            imethod = NewPreMethod                    ! first choice
+          elseif (iloop==2) then
+            imethod = NewPreMethod                    ! second try with pcorr=1.0
+          elseif (iloop==3) then
+            imethod = MOD(NewPreMethod,3)+1
+          elseif (iloop==4) then
+            imethod = MOD(NewPreMethod+1,3)+1
+          endif
           if (verbose>1) print*,"imethod=",iloop,imethod
           !write(97,*) catm(eseq(1:ido))
           !write(97,*) eact(eseq(1:ido))
@@ -392,8 +420,10 @@
      >        !               it,bem,anmono(act_to_all(1:Nact))*kT,qual
               if (verbose>1) print'(I4,A2,99(1pE11.3E3))',
      >                       it,bem,anmono(act_to_all(1:Nact))*kT,qual
+              NpreIt = NpreIt+1
               if (it>1.and.qual<1.Q-12) exit
-            enddo  
+            enddo
+            NpreLoop = NpreLoop+1
           else if (imethod==2) then
             !-------- method 2: lin-variables with pullback --------
             dp(:) = 0.Q0
@@ -464,6 +494,7 @@
      >        !             it,anmono(act_to_all(1:Nact))*kT,qual
               if (verbose>1) print'(I4,99(1pE11.3))',
      >                     it,anmono(act_to_all(1:Nact))*kT,qual
+              NpreIt = NpreIt+1
               if (it>1.and.qual<1.Q-12) exit
               !--- determine new NR-vector ---
               call GAUSS16(nel,Nact,DF,dp,FF)
@@ -484,6 +515,7 @@
                 endif
               enddo
             enddo  
+            NpreLoop = NpreLoop+1
           else if (imethod==3) then
             !-------- method 3: xx=log(patm)-variables --------
             null = anmono
@@ -534,8 +566,10 @@
      >        !               it,bem,anmono(act_to_all(1:Nact))*kT,qual
               if (verbose>1) print'(I4,99(1pE11.3E3))',
      >                       it,anmono(act_to_all(1:Nact))*kT,fak,qual
+              NpreIt = NpreIt+1
               if (qual<1.Q-12) exit
             enddo  
+            NpreLoop = NpreLoop+1
           endif
           if (qual<1.Q-12) exit
           do ii=1,Nact
@@ -557,6 +591,7 @@
           goto 1000
         endif  
         !--- save ratio after/before for next run ---
+        !print*,"ido,pkey(ido),enew=",ido,pkey(ido),enew
         pkey(ido) = enew
         pcorr(enew,:) = 1.Q0
         do ii=1,Nact
@@ -593,7 +628,7 @@
         enddo
         pel = SQRT(coeff(-1)/(1.Q0+coeff(+1)))     ! 0 = pel - a/pel + b*pel
         anmono(el) = pel/kT
-        !print'(" pecorr =",3(1pE10.3))',pecorr,pel/peest
+        !if (verbose>1) print'(" pecorr =",3(1pE10.3))',pecorr,pel/peest
         !pecorr = pel/peest
       endif  
 
@@ -609,6 +644,7 @@
       if ( alle ) then
         ! alle Molekuele mitrechnen
 *       ===========================
+        anmol = 0.Q0 
         do i=1,nml
           if (verbose>1.and.g(i)>1.Q+300) then
             print'("huge kp",A12,1pE12.3E4,I2)',cmol(i),g(i),fit(i)
@@ -732,6 +768,11 @@
             endif
           endif  
         enddo
+        if (it<=10) then
+          limit = 1.Q0
+        else
+          dp = dp*limit
+        endif  
         if (verbose>1.and.it==0) then
           write(*,*) 
           print'(7x,A14,A14,A14)',"natom","dnatom","badness" 
@@ -741,11 +782,6 @@
      >           -dp(ii)/(anmono(i)*kT),badness(i)
           enddo
         endif
-        if (it<=10) then
-          limit = 1.Q0
-        else
-          dp = dp*limit
-        endif  
         
 *       ! apply limited NR step
 *       =======================
@@ -771,11 +807,12 @@
           write(*,*) '*** keine Konvergenz in SMCHEM16!'
           write(*,*) 'it, converge, ind =',it,converge(it),limit
           write(*,*) '  n<H>, T =',anhges,Tg
+          write(*,*) 'from_merk,NewFastLevel=',from_merk,NewFastLevel
           if (ifatal==0) then
             chemiter  = chemiter + it
             from_merk = .false.
             ifatal  = 1
-            verbose = 2             
+            verbose = 2
             goto 100        ! try again from scratch before giving up
           endif  
           goto 1000
@@ -875,10 +912,10 @@
           enddo
 !$omp critical(fort99)
           ilauf = ilauf+1
-          if (ilauf==1) write(99,'(A9,A10,A4,99(A10))') 
-     >          'Tg','n<H>','it',catm(1:nel)
-          write(99,'(0pF9.3,1pE10.3,I4,99(1pE10.3))') 
-     >          Tg,anHges,it,badness
+          !if (ilauf==1) write(99,'(A9,A10,A4,99(A10))') 
+     >    !      'Tg','n<H>','it',catm(1:nel)
+          !write(99,'(0pF9.3,1pE10.3,I4,99(1pE10.3))') 
+     >    !      Tg,anHges,it,badness
 !$omp end critical(fort99)
         endif  
 
@@ -887,6 +924,7 @@
 *     ! final anmol determination
 *     ===========================
       amerk = anmono/anHges
+      anmol = 0.Q0
       do i=1,nml
         pmol = g(i)
         do j=1,m_kind(0,i)
@@ -951,11 +989,19 @@
       
       if (verbose.gt.0) print '("  ==> smchem used it=",I3,
      &                          " conv=",1pE9.2)',it,crit
-
+      if (verbose.gt.0) print'("number of pre-iterations",I4,
+     &     " -- used saved initial guesses",0pF5.1,"%")',
+     &     NpreIt,REAL(Ntaken)/REAL(Nestim+1)*100
       if (verbose.gt.1) read(*,'(a1)') char
 
+!$omp critical(counters)
       chemcall = chemcall + 1
       chemiter = chemiter + it
+      preIter  = preIter  + NpreIt
+      preUse   = preUse   + Ntaken
+      preEst   = preEst   + Nestim
+!$omp end critical(counters)
+
       return
 
  1000 continue
@@ -973,8 +1019,6 @@
       FUNCTION gk(i)
 ************************************************************************
 *****  kp [cgs] for different fit formula                          *****
-*****  fit=1  :  Gail's polynom                                    *****
-*****  fit=2  :  Tsuji's polynom                                   *****
 ************************************************************************
       use CHEMISTRY,ONLY: a,th1,th2,th3,th4,TT1,TT2,TT3,fit,natom,cmol
       implicit none
@@ -995,12 +1039,14 @@
         !---------------------
         lnk = a(i,0) + a(i,1)*th1 + a(i,2)*th2 
      &               + a(i,3)*th3 + a(i,4)*th4 
+
       else if (fit(i).eq.2) then
         !---------------------------
         ! ***  Tsuji (1973) fit  *** 
         !---------------------------
         lnk = ln10*( - a(i,0) - a(i,1)*th1 - a(i,2)*th2
      &                        - a(i,3)*th3 - a(i,4)*th4 ) 
+
       else if (fit(i).eq.3) then  
         !---------------------------------
         ! ***  Sharp & Huebner (1990)  ***
@@ -1033,6 +1079,7 @@
         print*,cmol(i),"i,fit=",i,fit(i)
         stop "???"
       endif  
+      !print'(A12,I2,99(1pE10.2E3))',cmol(i),fit(i),a(i,:),lnk
       gk = EXP(MIN(1.1Q+4,lnk))
       end FUNCTION gk
 
