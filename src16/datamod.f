@@ -74,7 +74,7 @@
       real*8,allocatable  :: a(:,:)             ! kp fit-coeffs
       real*8,allocatable  :: error(:)           ! kp fit errors
       real*8 :: b_nasa(NELEM,0:13)              ! kp fit-coeffs Added by Yui Kawashima
-      integer :: c_nasa(NELEM)                  ! Added by Yui Kawashima
+      integer :: i_nasa,c_nasa(NELEM)           ! Added by Yui Kawashima
       real*8 :: th1,th2,th3,th4,TT1,TT2,TT3     
       end
 

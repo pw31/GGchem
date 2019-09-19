@@ -1718,40 +1718,9 @@ c     g(TiC)   : siehe oben!
       integer,intent(in) :: i    ! index of molecule
       real(kind=qp) :: gk,dG,lnk ! return kp in [cgs]
 
-      integer*4 :: k                   !Added by Yui Kawashima
+      integer*4 :: k,j                 !Added by Yui Kawashima
       real*8 :: h_rt,s_r               !Added by Yui Kawashima
       real*8 :: dG_rt_ref(NELEM),dG_rt !Added by Yui Kawashima
-
-      
-      !for NASA polynomial fit Added by Yui Kawashima
-      do k=1,NELEM
-         if(c_nasa(k) == 1) then
-            if(TT1 > 1.0d3) then
-               h_rt = b_nasa(k,0) + b_nasa(k,1)*TT1/2.0d0 
-     &              + b_nasa(k,2)*TT1**2.0d0/3.0d0
-     &              + b_nasa(k,3)*TT1**3.0d0/4.0d0
-     &              + b_nasa(k,4)*TT1**4.0d0/5.0d0 + b_nasa(k,5)/TT1
-               
-               s_r = b_nasa(k,0)*log(TT1) + b_nasa(k,1)*TT1
-     &              + b_nasa(k,2)*TT1**2.0d0/2.0d0
-     &              + b_nasa(k,3)*TT1**3.0d0/3.0d0
-     &              + b_nasa(k,4)*TT1**4.0d0/4.0d0 + b_nasa(k,6)
-            else
-               h_rt = b_nasa(k,7) + b_nasa(k,8)*TT1/2.0d0
-     &              + b_nasa(k,9)*TT1**2.0d0/3.0d0
-     &              + b_nasa(k,10)*TT1**3.0d0/4.0d0
-     &              + b_nasa(k,11)*TT1**4.0d0/5.0d0 + b_nasa(k,12)/TT1
-
-               s_r = b_nasa(k,7)*log(TT1) + b_nasa(k,8)*TT1
-     &              + b_nasa(k,9)*TT1**2.0d0/2.0d0
-     &              + b_nasa(k,10)*TT1**3.0d0/3.0d0
-     &              + b_nasa(k,11)*TT1**4.0d0/4.0d0 + b_nasa(k,13)           
-            end if
-            dG_rt_ref(k) = h_rt - s_r
-         end if
-      end do
-
-
       if (i.eq.0) then
         gk = 1.Q-300             ! tiny kp for unassigned molecules
         return
@@ -1817,17 +1786,42 @@ c     g(TiC)   : siehe oben!
      &           + a(i,9)*TT1**2.0d0/2.0d0 + a(i,10)*TT1**3.0d0/3.0d0
      &           + a(i,11)*TT1**4.0d0/4.0d0 + a(i,13)           
          end if
-         
+
          dG_rt = h_rt - s_r
          do k=1,m_kind(0,i)
-            if(c_nasa(elnum(m_kind(k,i)))==0) then
-               print*,"Provide the data in data/ref-elements.dat"
+            j = elnum(m_kind(k,i))
+            if(c_nasa(j)==0) then
+               print*,"Provide the data in data/Burcat_ref-elements.dat"
      &              ," and edit nasa_polynomial.f for "
      &              ,trim(catm(m_kind(k,i)))
                stop
             else
+               if(TT1 > 1.0d3) then
+                  h_rt = b_nasa(j,0) + b_nasa(j,1)*TT1/2.0d0 
+     &                 + b_nasa(j,2)*TT1**2.0d0/3.0d0
+     &                 + b_nasa(j,3)*TT1**3.0d0/4.0d0
+     &                 + b_nasa(j,4)*TT1**4.0d0/5.0d0 + b_nasa(j,5)/TT1
+                  
+                  s_r = b_nasa(j,0)*log(TT1) + b_nasa(j,1)*TT1
+     &                 + b_nasa(j,2)*TT1**2.0d0/2.0d0
+     &                 + b_nasa(j,3)*TT1**3.0d0/3.0d0
+     &                 + b_nasa(j,4)*TT1**4.0d0/4.0d0 + b_nasa(j,6)
+               else
+                  h_rt = b_nasa(j,7) + b_nasa(j,8)*TT1/2.0d0
+     &                 + b_nasa(j,9)*TT1**2.0d0/3.0d0
+     &                 + b_nasa(j,10)*TT1**3.0d0/4.0d0
+     &                 + b_nasa(j,11)*TT1**4.0d0/5.0d0
+     $                 + b_nasa(j,12)/TT1
+
+                  s_r = b_nasa(j,7)*log(TT1) + b_nasa(j,8)*TT1
+     &                 + b_nasa(j,9)*TT1**2.0d0/2.0d0
+     &                 + b_nasa(j,10)*TT1**3.0d0/3.0d0
+     &                 + b_nasa(j,11)*TT1**4.0d0/4.0d0 + b_nasa(j,13)           
+               end if
+               dG_rt_ref(j) = h_rt - s_r
+
                dG_rt = dG_rt
-     &              - dble(m_anz(k,i))*dG_rt_ref(elnum(m_kind(k,i)))
+     &              - dble(m_anz(k,i))*dG_rt_ref(j)
             end if
          end do
 

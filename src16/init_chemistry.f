@@ -3,7 +3,7 @@
 ************************************************************************
       use PARAMETERS,ONLY: elements,initchem_info
       use CHEMISTRY,ONLY: NMOLdim,NMOLE,NELM,catm,cmol,el,
-     &    dispol_file,source,fit,natom,a,error,
+     &    dispol_file,source,fit,natom,a,error,i_nasa,
      &    m_kind,m_anz,elnum,elion,charge,
      &    el,H,He,Li,Be,B,C,N,O,F,Ne,Na,Mg,Al,Si,P,S,Cl,Ar,K,Ca,Sc,
      &    Ti,V,Cr,Mn,Fe,Co,Ni,Cu,Zn,Ga,Ge,As,Se,Br,Kr,Rb,Sr,Y,Zr,W
@@ -89,6 +89,7 @@
       allocate(error(NMOLdim),a(NMOLdim,0:13))
       allocate(source(NMOLdim),m_kind(0:6,NMOLdim),m_anz(6,NMOLdim))
       i=1
+      i_nasa = 0
       do loop=1,4
         filename = trim(dispol_file(loop))
         if (filename=='') exit
@@ -111,7 +112,8 @@
           if (fit(i)==6) then
             read(line,*) fit(i),(a(i,j),j=0,7)
           elseif(fit(i)==7) then
-            read(line,*) fit(i),(a(i,j),j=0,13)
+             i_nasa = 1
+             read(line,*) fit(i),(a(i,j),j=0,13)
           else   
             read(line,*) fit(i),(a(i,j),j=0,4)
           endif  
@@ -187,7 +189,7 @@
       NMOLE = i-1
       allocate(nmol(NMOLE),mmol(NMOLE))
 
-      call NASA_POLYNOMIAL !Added by Yui Kawashima
+      if(i_nasa==1) call NASA_POLYNOMIAL !Added by Yui Kawashima
 
       if (loop>1.and.initchem_info) then
         print* 
