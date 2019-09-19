@@ -13,7 +13,8 @@
       integer :: loop,i,ii,j,iel,e,smax,ret
       character(len=2) :: cel(40),elnam
       character(len=20) :: molname,upper,leer='                    '
-      character(len=200) :: line,filename
+      character(len=200) :: filename
+      character(len=300) :: line
       logical :: found,charged
       real*8 :: fiterr
 
@@ -85,7 +86,7 @@
 
       NMOLdim = 10000
       allocate(cmol(NMOLdim),fit(NMOLdim),natom(NMOLdim))
-      allocate(error(NMOLdim),a(NMOLdim,0:7))
+      allocate(error(NMOLdim),a(NMOLdim,0:13))
       allocate(source(NMOLdim),m_kind(0:6,NMOLdim),m_anz(6,NMOLdim))
       i=1
       do loop=1,4
@@ -98,17 +99,19 @@
         open(unit=12, file=filename, status='old')
         read(12,*) NMOLdim
         do ii=1,NMOLdim
-          read(12,'(A200)') line
+          read(12,'(A300)') line
           read(line,*) molname,iel,cel(1:iel),m_anz(1:iel,i)
           molname=trim(molname)
           fiterr = 0.0
           j = index(line,"+/-")
           if (j>0) read(line(j+3:),*) fiterr
           error(i) = fiterr
-          read(12,'(A200)') line
+          read(12,'(A300)') line
           read(line,*) fit(i)
           if (fit(i)==6) then
             read(line,*) fit(i),(a(i,j),j=0,7)
+          elseif(fit(i)==7) then
+            read(line,*) fit(i),(a(i,j),j=0,13)
           else   
             read(line,*) fit(i),(a(i,j),j=0,4)
           endif  
@@ -183,6 +186,8 @@
       enddo  
       NMOLE = i-1
       allocate(nmol(NMOLE),mmol(NMOLE))
+
+      call NASA_POLYNOMIAL !Added by Yui Kawashima
 
       if (loop>1.and.initchem_info) then
         print* 

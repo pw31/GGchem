@@ -1707,7 +1707,8 @@ c     g(TiC)   : siehe oben!
 *****  fit=1  :  Gail's polynom                                    *****
 *****  fit=2  :  Tsuji's polynom                                   *****
 ************************************************************************
-      use CHEMISTRY,ONLY: a,th1,th2,th3,th4,TT1,TT2,TT3,fit,natom,cmol
+      use CHEMISTRY,ONLY: a,th1,th2,th3,th4,TT1,TT2,TT3,fit,natom,cmol,
+     >                    NELEM,elnum,b_nasa,c_nasa
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       real(kind=qp),parameter :: bar=1.Q+6, atm=1.013Q+6, Rcal=1.987Q+0
@@ -1716,6 +1717,41 @@ c     g(TiC)   : siehe oben!
       real(kind=qp),parameter :: lnatm=LOG(atm), lnbar=LOG(bar)
       integer,intent(in) :: i    ! index of molecule
       real(kind=qp) :: gk,dG,lnk ! return kp in [cgs]
+
+      integer*4 :: k                   !Added by Yui Kawashima
+      real*8 :: h_rt,s_r               !Added by Yui Kawashima
+      real*8 :: dG_rt_ref(NELEM),dG_rt !Added by Yui Kawashima
+
+      
+      !for NASA polynomial fit Added by Yui Kawashima
+      do k=1,NELEM
+         if(c_nasa(k) == 1) then
+            if(TT1 > 1.0d3) then
+               h_rt = b_nasa(k,0) + b_nasa(k,1)*TT1/2.0d0 
+     &              + b_nasa(k,2)*TT1**2.0d0/3.0d0
+     &              + b_nasa(k,3)*TT1**3.0d0/4.0d0
+     &              + b_nasa(k,4)*TT1**4.0d0/5.0d0 + b_nasa(k,5)/TT1
+               
+               s_r = b_nasa(k,0)*log(TT1) + b_nasa(k,1)*TT1
+     &              + b_nasa(k,2)*TT1**2.0d0/2.0d0
+     &              + b_nasa(k,3)*TT1**3.0d0/3.0d0
+     &              + b_nasa(k,4)*TT1**4.0d0/4.0d0 + b_nasa(k,6)
+            else
+               h_rt = b_nasa(k,7) + b_nasa(k,8)*TT1/2.0d0
+     &              + b_nasa(k,9)*TT1**2.0d0/3.0d0
+     &              + b_nasa(k,10)*TT1**3.0d0/4.0d0
+     &              + b_nasa(k,11)*TT1**4.0d0/5.0d0 + b_nasa(k,12)/TT1
+
+               s_r = b_nasa(k,7)*log(TT1) + b_nasa(k,8)*TT1
+     &              + b_nasa(k,9)*TT1**2.0d0/2.0d0
+     &              + b_nasa(k,10)*TT1**3.0d0/3.0d0
+     &              + b_nasa(k,11)*TT1**4.0d0/4.0d0 + b_nasa(k,13)           
+            end if
+            dG_rt_ref(k) = h_rt - s_r
+         end if
+      end do
+
+
       if (i.eq.0) then
         gk = 1.Q-300             ! tiny kp for unassigned molecules
         return
@@ -1759,7 +1795,45 @@ c     g(TiC)   : siehe oben!
         !-------------------------------
         lnk = a(i,0)/TT3 + a(i,1)/TT2 + a(i,2)/TT1 + a(i,3)/TT1**0.05d0
      &      + a(i,4)*LOG(TT1) + a(i,5) + a(i,6)*TT1 + a(i,7)*TT2
+
+      else if (fit(i).eq.7) then
+        !-----------------------------------------------------
+        ! ***  NASA polynomial fit added by Yui Kawashima  ***
+        !-----------------------------------------------------         
+         if(TT1 > 1.0d3) then
+            h_rt = a(i,0) + a(i,1)*TT1/2.0d0 
+     &           + a(i,2)*TT1**2.0d0/3.0d0 + a(i,3)*TT1**3.0d0/4.0d0
+     &           + a(i,4)*TT1**4.0d0/5.0d0 + a(i,5)/TT1
+            
+            s_r = a(i,0)*log(TT1) + a(i,1)*TT1
+     &           + a(i,2)*TT1**2.0d0/2.0d0 + a(i,3)*TT1**3.0d0/3.0d0
+     &           + a(i,4)*TT1**4.0d0/4.0d0 + a(i,6)
+         else
+            h_rt = a(i,7) + a(i,8)*TT1/2.0d0
+     &           + a(i,9)*TT1**2.0d0/3.0d0 + a(i,10)*TT1**3.0d0/4.0d0
+     &           + a(i,11)*TT1**4.0d0/5.0d0 + a(i,12)/TT1
+            
+            s_r = a(i,7)*log(TT1) + a(i,8)*TT1
+     &           + a(i,9)*TT1**2.0d0/2.0d0 + a(i,10)*TT1**3.0d0/3.0d0
+     &           + a(i,11)*TT1**4.0d0/4.0d0 + a(i,13)           
+         end if
          
+         dG_rt = h_rt - s_r
+         do k=1,m_kind(0,i)
+            if(c_nasa(elnum(m_kind(k,i)))==0) then
+               print*,"Provide the data in data/ref-elements.dat"
+     &              ," and edit nasa_polynomial.f for "
+     &              ,trim(catm(m_kind(k,i)))
+               stop
+            else
+               dG_rt = dG_rt
+     &              - dble(m_anz(k,i))*dG_rt_ref(elnum(m_kind(k,i)))
+            end if
+         end do
+
+         dG = -dG_rt
+         lnk = dG + (1-Natom(i))*lnbar
+
       else
         print*,cmol(i),"i,fit=",i,fit(i)
         stop "???"

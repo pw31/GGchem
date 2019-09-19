@@ -30,6 +30,7 @@ OBJECTS  = datamod.o \
 	   equil_cond.o \
 	   is_nan.o \
 	   init.o \
+           nasa_polynomial.o \
            init_chemistry.o \
 	   init_dustchem.o \
 	   ggchem.o \
