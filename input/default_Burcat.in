@@ -5,7 +5,7 @@ H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li F P V Cr Mn Ni Zr W el
 dispol_BarklemCollet.dat                ! dispol_file
 dispol_StockKitzmann_withoutTsuji.dat   ! dispol_file2
 dispol_WoitkeRefit.dat                  ! dispol_file3
-dispol_Kawashima.dat                    ! dispol_file4
+dispol_Burcat.dat                       ! dispol_file4
 
 # abundance options 1=EarthCrust, 2=Ocean, 3=Solar, 4=Meteorites
 3                     ! abund_pick

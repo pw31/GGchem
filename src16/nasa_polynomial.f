@@ -7,7 +7,7 @@
       
 
       c_nasa(1:NELEM) = 0
-      open(10, file = 'data/ref-elements.dat')
+      open(10, file = 'data/Burcat_ref-elements.dat')
 
       do k=1,4
          read(10,*)
