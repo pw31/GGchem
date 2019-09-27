@@ -327,6 +327,8 @@
         endif
         if (Nact==1) then
           pkey(ido) = enew
+          e = eseq(ido)
+          xx(e) = LOG(anmono(e)*kT)
           cycle
         endif  
         do i=1,nml
