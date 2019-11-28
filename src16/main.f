@@ -53,21 +53,28 @@
 ***********************************************************************
       use PARAMETERS,ONLY: nHmax,Tmax,pmax,model_pconst,model_eqcond,
      >                     verbose 
-      use CHEMISTRY,ONLY: NMOLE,NELM,m_kind,elnum,cmol,el
+      use CHEMISTRY,ONLY: NMOLE,NELM,m_kind,m_anz,elnum,cmol,el
       use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,amu,
      >                    muH,mass,mel,
-     >                    dust_nam,dust_mass,dust_Vol,dust_nel,dust_el
+     >                    dust_nam,dust_mass,dust_Vol,
+     >                    dust_nel,dust_el,dust_nu
       use EXCHANGE,ONLY: nel,nat,nion,nmol,mmol,C,N,O,Si
       implicit none
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST)
       real(kind=qp) :: nmax,threshold,deps
-      real*8  :: Tg,nHges,p,mu,muold,pgas,fold,ff,dfdmu,dmu,mugas
+      real*8,parameter :: pi=3.14159265358979D+0
+      real*8  :: Tg,nHges,p,mu,muold,pgas,fold,ff,dfdmu,dmu,mugas,Vol
       real*8  :: rhog,rhoc,rhod,d2g,mcond,mgas,Vcon,Vcond,Vgas,ngas
+      real*8  :: nkey,nkeyt,tchem,tchemtot,AoverV,mic,atyp,alpha,vth
+      real*8  :: yr,Myr,molm,molmass
       integer :: i,imol,iraus,e,aIraus,aIIraus,j,verb,dk,it,stindex
+      integer :: k,keyel,imax
       logical :: included,haeufig,raus(NMOLE)
       logical :: rausI(NELEM),rausII(NELEM)
       character(len=10) :: sp
+      character(len=20) :: limcond
+
 
       !deps = eps0(Si)*0.1*(1.0-108./200.)
       !eps0(Si) = eps0(Si) + deps
@@ -341,11 +348,82 @@
       do i=1,NDUST
         if (Sat(i)<1.Q-2) cycle 
         write(*,5000) dust_nam(i),Sat(i) 
-      enddo  
+      enddo
 
+*     -----------------------------------------------------
+*     ***  Calculation of the condenstation timescales  ***
+*     -----------------------------------------------------
+      print*
+      print'("----- condensation timescales -----")'
+      yr  = 365.25*24.0*3600.0
+      Myr = 1.E+6*yr
+      mic = 1.E-4                ! one micrometer [cm]
+      atyp = 1.0*mic             ! typical particle size
+      AoverV = 3.0*atyp          ! A/V = 4pi a^2/(4pi/3 a^3)
+      alpha = 1.0                ! sticking probability
+      tchemtot = 1.E-99          ! chem.timescale of slowest condensate
+      do i=1,NDUST
+        !--- loop over present condensates ---
+        if (eldust(i)>0.0) then
+          write(*,*) 'n_'//trim(dust_nam(i))//' = ',eldust(i)*nHges
+          !--- find least abundant element in the gas phase   ---
+          !--- print stoichiometry and gas element abundances ---
+          !--- nkey = min (eps(e )*nHges/s_e )  ---
+          nkey = 1.E+99
+          do k=1,dust_nel(i)
+            e = dust_el(i,k)
+            !write(*,'("    Element ",A2,1pE11.4,I2)')
+     >      !        elnam(e), eps(e)*nHges, dust_nu(i,k)
+            nkeyt = eps(e)*nHges/dust_nu(i,k)
+            if (nkeyt<nkey) then
+              nkey = nkeyt
+              keyel = e
+            endif
+          enddo
+          !--- find atom/molecule which contains most ---
+          !--- of the key element                     ---
+          sp = elnam(keyel)
+          nmax = nat(keyel)
+          molmass = mass(keyel)
+          do imol=1,NMOLE
+            included = .false. 
+            molm = 0.0
+            do j=1,m_kind(0,imol)
+              if (m_kind(j,imol)==el) cycle      ! avoid free electrons
+              e = elnum(m_kind(j,imol))
+              if (e==keyel) included=.true.
+              molm = molm + m_anz(j,imol)*mass(e)
+            enddo  
+            if (included.and.nmol(imol)>nmax) then
+              sp = cmol(imol)
+              nmax = nmol(imol)
+              molmass = molm
+            endif  
+          enddo
+          vth = SQRT(8.0*bk*Tg/(pi*molmass))     ! [cm/s]
+          Vol = eldust(i)*nHges*dust_Vol(i)      ! [cm3/cm3]
+          tchem = 1.d0/(vth*alpha*AoverV*Vol)    ! [s]
+          write(*,'(" limiting element = ",A2)') elnam(keyel)
+          write(*,'(" mostly present as ",A10)') sp
+          write(*,'("        nmol,nkey = ",2(1pE11.4)," cm-3")')
+     >          nmax,nkey
+          write(*,'("             mass = ",2(1pE11.4)," amu")')
+     >          molmass/amu,mass(keyel)/amu
+          write(*,'("        timescale = ",1pE11.4," yr")')
+     >          tchem/yr
+          if (tchem>tchemtot) then
+            tchemtot = tchem
+            limcond  = dust_nam(i)
+          endif
+        endif
+      enddo  
+      write(*,'("Limiting condensate ",A22,"  timescale/yr = ",
+     >          1pE11.3)') limcond, tchemtot/yr
+      
  1000 format(a6,1pE9.3)
  1010 format(a6,1pE9.3,a8,1pE9.3)
  1020 format(a22,1pE15.9,2(0pF10.5))
+ 1030 format(a22,1pE12.4)
  4000 format(a7,1pE10.4,a5,1pE10.4)     
  4010 format(' n',a8,1pE12.4,0pF13.9)
  4020 format(' n',a8,1pE12.4,1pE13.3)
