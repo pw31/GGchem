@@ -67,9 +67,9 @@
       real*8  :: Tg,nHges,p,mu,muold,pgas,fold,ff,dfdmu,dmu,mugas,Vol
       real*8  :: rhog,rhoc,rhod,d2g,mcond,mgas,Vcon,Vcond,Vgas,ngas
       real*8  :: nkey,nkeyt,tchem,tchemtot,AoverV,mic,atyp,alpha,vth
-      real*8  :: yr,Myr,molm,molmass
+      real*8  :: yr,Myr,molm,molmass,stoich
       integer :: i,imol,iraus,e,aIraus,aIIraus,j,verb,dk,it,stindex
-      integer :: k,keyel,imax
+      integer :: k,keyel,imax,dustst
       logical :: included,haeufig,raus(NMOLE)
       logical :: rausI(NELEM),rausII(NELEM)
       character(len=10) :: sp
@@ -364,57 +364,60 @@
       tchemtot = 1.E-99          ! chem.timescale of slowest condensate
       do i=1,NDUST
         !--- loop over present condensates ---
-        if (eldust(i)>0.0) then
-          write(*,*) 'n_'//trim(dust_nam(i))//' = ',eldust(i)*nHges
-          !--- find least abundant element in the gas phase   ---
-          !--- print stoichiometry and gas element abundances ---
-          !--- nkey = min (eps(e )*nHges/s_e )  ---
-          nkey = 1.E+99
-          do k=1,dust_nel(i)
-            e = dust_el(i,k)
-            !write(*,'("    Element ",A2,1pE11.4,I2)')
-     >      !        elnam(e), eps(e)*nHges, dust_nu(i,k)
-            nkeyt = eps(e)*nHges/dust_nu(i,k)
-            if (nkeyt<nkey) then
-              nkey = nkeyt
-              keyel = e
-            endif
-          enddo
-          !--- find atom/molecule which contains most ---
-          !--- of the key element                     ---
-          sp = elnam(keyel)
-          nmax = nat(keyel)
-          molmass = mass(keyel)
-          do imol=1,NMOLE
-            included = .false. 
-            molm = 0.0
-            do j=1,m_kind(0,imol)
-              if (m_kind(j,imol)==el) cycle      ! avoid free electrons
-              e = elnum(m_kind(j,imol))
-              if (e==keyel) included=.true.
-              molm = molm + m_anz(j,imol)*mass(e)
-            enddo  
-            if (included.and.nmol(imol)>nmax) then
-              sp = cmol(imol)
-              nmax = nmol(imol)
-              molmass = molm
-            endif  
-          enddo
-          vth = SQRT(8.0*bk*Tg/(pi*molmass))     ! [cm/s]
-          Vol = eldust(i)*nHges*dust_Vol(i)      ! [cm3/cm3]
-          tchem = 1.d0/(vth*alpha*AoverV*Vol)    ! [s]
-          write(*,'(" limiting element = ",A2)') elnam(keyel)
-          write(*,'(" mostly present as ",A10)') sp
-          write(*,'("        nmol,nkey = ",2(1pE11.4)," cm-3")')
-     >          nmax,nkey
-          write(*,'("             mass = ",2(1pE11.4)," amu")')
-     >          molmass/amu,mass(keyel)/amu
-          write(*,'("        timescale = ",1pE11.4," yr")')
-     >          tchem/yr
-          if (tchem>tchemtot) then
-            tchemtot = tchem
-            limcond  = dust_nam(i)
+        if (eldust(i)<=0.0) cycle
+        write(*,*) 'n_'//trim(dust_nam(i))//' = ',eldust(i)*nHges
+        !--- find least abundant element in the gas phase   ---
+        !--- print stoichiometry and gas element abundances ---
+        !--- nkey = min (eps(e )*nHges/s_e )  ---
+        nkey = 1.E+99
+        do k=1,dust_nel(i)
+          e = dust_el(i,k)
+          !write(*,'("    Element ",A2,1pE11.4,I2)')
+     >    !        elnam(e), eps(e)*nHges, dust_nu(i,k)
+          nkeyt = eps(e)*nHges/dust_nu(i,k)
+          if (nkeyt<nkey) then
+            nkey = nkeyt
+            keyel = e
+            dustst = dust_nu(i,k)
           endif
+        enddo
+        !--- find atom/molecule which contains most ---
+        !--- of the key element                     ---
+        sp = elnam(keyel)
+        nmax = nat(keyel)/dustst
+        molmass = mass(keyel)
+        do imol=1,NMOLE
+          included = .false. 
+          molm = 0.0
+          do j=1,m_kind(0,imol)
+            if (m_kind(j,imol)==el) cycle      ! avoid free electrons
+            e = elnum(m_kind(j,imol))
+            if (e==keyel) then
+              included = .true.
+              stoich = m_anz(j,imol)
+            endif  
+            molm = molm + m_anz(j,imol)*mass(e)
+          enddo  
+          if (included.and.nmol(imol)*stoich/dustst>nmax) then
+            sp = cmol(imol)
+            nmax = nmol(imol)*stoich/dustst
+            molmass = molm
+          endif  
+        enddo
+        vth = SQRT(8.0*bk*Tg/(pi*molmass))     ! [cm/s]
+        Vol = eldust(i)*nHges*dust_Vol(i)      ! [cm3/cm3]
+        tchem = 1.d0/(vth*alpha*AoverV*Vol)    ! [s]
+        write(*,'(" limiting element = ",A2)') elnam(keyel)
+        write(*,'(" mostly present as ",A10)') sp
+        write(*,'("        nmax,nkey = ",2(1pE11.4)," cm-3")')
+     >        nmax,nkey
+        write(*,'("             mass = ",2(1pE11.4)," amu")')
+     >        molmass/amu,mass(keyel)/amu
+        write(*,'("        timescale = ",1pE11.4," yr")')
+     >        tchem/yr
+        if (tchem>tchemtot) then
+          tchemtot = tchem
+          limcond  = dust_nam(i)
         endif
       enddo  
       write(*,'("Limiting condensate ",A22,"  timescale/yr = ",
