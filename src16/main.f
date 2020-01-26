@@ -362,6 +362,11 @@
       AoverV = 3.0*atyp          ! A/V = 4pi a^2/(4pi/3 a^3)
       alpha = 1.0                ! sticking probability
       tchemtot = 1.E-99          ! chem.timescale of slowest condensate
+      Vol =0.0                   ! total dust volume per cm3
+      do i=1,NDUST
+        if (eldust(i)<=0.0) cycle
+        Vol = Vol + eldust(i)*nHges*dust_Vol(i)      ! [cm3/cm3]
+      enddo  
       do i=1,NDUST
         !--- loop over present condensates ---
         if (eldust(i)<=0.0) cycle
@@ -405,7 +410,6 @@
           endif  
         enddo
         vth = SQRT(8.0*bk*Tg/(pi*molmass))     ! [cm/s]
-        Vol = eldust(i)*nHges*dust_Vol(i)      ! [cm3/cm3]
         tchem = 1.d0/(vth*alpha*AoverV*Vol)    ! [s]
         write(*,'(" limiting element = ",A2)') elnam(keyel)
         write(*,'(" mostly present as ",A10)') sp
