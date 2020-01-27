@@ -1,6 +1,6 @@
 dust species
 ============
-230
+231
 
 Al2O3[s]       CORUNDUM(alpha)
 3.97
@@ -455,14 +455,25 @@ CO2[s]         C-DIOXIDE(liquid/solid)   194.7
 # pvap Yaws 216-305K:
   6  35.0187E+00 -1.5119E+03 -1.1335E+01  9.3383E-03  7.7626E-10
 
-H2SO4[s]       SULPHURIC-ACID(liquid/solid)   283.5
-1.84
+H2SO4[s]       SULPHURIC-ACID
+1.6       estimated
 3
  2 H
  1 S
  4 O
-# dG-fit NIST-Janaf 100-1000K, +/- 0.35:
-  2  9.70368E+05 -2.53825E+06  9.35422E+02 -4.96224E-02  0.00000E+00
+# pvap NIST-Janaf 100-200K (two data points), +/- 0.0:
+  3 -1.10450E+04  3.64351E+01  0.00000E+00  0.00000E+00  0.00000E+00
+
+H2SO4[l]       SULPHURIC-ACID(liquid)    283.5
+1.83
+3
+ 2 H
+ 1 S
+ 4 O
+# pvap NIST-Janaf 298-1000K, +/- 0.01:
+  3 -1.01294E+04  3.55465E+01 -8.34848E-03  0.00000E+00  0.00000E+00
+# dG-fit NIST-Janaf [s/l] 100-1000K, +/- 0.35:
+# 2  9.70368E+05 -2.53825E+06  9.35422E+02 -4.96224E-02  0.00000E+00
 # pvap Yaws 283-603K: 
 # 6  2.05820E+00 -4.1924E+03  3.2578E+00 -1.1224E-03  5.5371E-07
 

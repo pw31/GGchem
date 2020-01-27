@@ -358,6 +358,7 @@
       write(*,*) '339 = Co_cr'
       write(*,*) '340 = Co_l'
       write(*,*) '341 = CoO_cr'
+      write(*,*) '342 = H2SO4[s/l] pvap'      
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -2691,6 +2692,11 @@
         Edzahl = 2
         stoich(2) = 1.D0
         stoich(3) = 1.D0
+      elseif (specie.eq.342) then
+        call READ_DATEI('H2SO4_l.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('H2SO4.txt'  ,dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop
