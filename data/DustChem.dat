@@ -1,6 +1,6 @@
 dust species
 ============
-231
+232
 
 Al2O3[s]       CORUNDUM(alpha)
 3.97
@@ -2109,7 +2109,17 @@ MgF2[s]        MAGNESIUM-FLUORIDE
  1 Mg
  2 F
 # pvap NIST-Janaf cr/l (100-3000)K, +/- 0.28:
-  3 -4.76043E+04  3.62239E+01  2.91639E-03 -3.02649E-06  5.16807E-10
+# 3 -4.76043E+04  3.62239E+01  2.91639E-03 -3.02649E-06  5.16807E-10
+# pvap NIST-Janaf cr/l (100-1500)K, +/- 0.03:
+  3 -4.79940E+04  3.91839E+01 -2.66245E-03  2.93375E-07  4.74469E-11
+
+MgF2[l]        MAGNESIUM-FLUORIDE    1536.0 
+2.4 
+2
+ 1 Mg
+ 2 F
+# pvap NIST-Janaf cr/l (1600-3000)K, +/- 0.03:
+  3 -4.18746E+04  3.57340E+01 -3.08420E-03  4.65930E-07 -3.45806E-11
 
 HF2K[s]        POTASSIUM-BIFLUORIDE 
 2.37
