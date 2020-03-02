@@ -358,7 +358,19 @@
       write(*,*) '339 = Co_cr'
       write(*,*) '340 = Co_l'
       write(*,*) '341 = CoO_cr'
-      write(*,*) '342 = H2SO4[s/l] pvap'      
+      write(*,*) '342 = H2SO4[s/l] pvap'
+      write(*,*) '343 = Ti3O5_cr'
+      write(*,*) '344 = TiN_cr '
+      write(*,*) '345 = TiN_l '
+      write(*,*) '346 = Mg2TiO4_cr'
+      write(*,*) '347 = TiF4_cr pvap'
+      write(*,*) '348 = TiF3_cr pvap'
+      write(*,*) '349 = TiCl4_cr pvap'
+      write(*,*) '350 = TiCl4_l  pvap'
+      write(*,*) '351 = TiCl3_cr pvap'
+      write(*,*) '352 = TiCl2_cr pvap'
+      write(*,*) '353 = TiH2_cr'
+      write(*,*) '354 = SiF4'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -2697,6 +2709,80 @@
         call READ_DATEI('H2SO4.txt'  ,dG,T,Nmax,N,S,2) 
         Edzahl = 1
         stoich(2) = 1.D0
+      elseif (specie.eq.343) then
+        call READ_DATEI('Ti3O5_cr.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('Ti.txt'      ,dG,T,Nmax,N,S,2)
+        call READ_DATEI('O.txt'       ,dG,T,Nmax,N,S,3)
+        Edzahl = 2
+        stoich(2) = 3.D0
+        stoich(3) = 5.D0
+      elseif (specie.eq.344) then
+        call READ_DATEI('TiN_cr.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('Ti.txt'    ,dG,T,Nmax,N,S,2)
+        call READ_DATEI('N.txt'     ,dG,T,Nmax,N,S,3)
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 1.D0
+      elseif (specie.eq.345) then
+        call READ_DATEI('TiN_l.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('Ti.txt'    ,dG,T,Nmax,N,S,2)
+        call READ_DATEI('N.txt'     ,dG,T,Nmax,N,S,3)
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 1.D0
+      elseif (specie.eq.346) then
+        call READ_DATEI('Mg2TiO4_cr.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('Mg.txt'        ,dG,T,Nmax,N,S,2)
+        call READ_DATEI('Ti.txt'        ,dG,T,Nmax,N,S,3)
+        call READ_DATEI('O.txt'         ,dG,T,Nmax,N,S,4)
+        Edzahl = 3
+        stoich(2) = 2.D0
+        stoich(3) = 1.D0
+        stoich(4) = 4.D0
+      elseif (specie.eq.347) then
+        call READ_DATEI('TiF4_cr.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('TiF4.txt'   ,dG,T,Nmax,N,S,2)
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.348) then
+        call READ_DATEI('TiF3_cr.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('TiF3.txt'   ,dG,T,Nmax,N,S,2)
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.349) then
+        call READ_DATEI('TiCl4_cr.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('TiCl4.txt'   ,dG,T,Nmax,N,S,2)
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.350) then
+        call READ_DATEI('TiCl4_l.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('TiCl4.txt'  ,dG,T,Nmax,N,S,2)
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.351) then
+        call READ_DATEI('TiCl3_cr.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('TiCl3.txt'   ,dG,T,Nmax,N,S,2)
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.352) then
+        call READ_DATEI('TiCl2_cr.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('TiCl2.txt'   ,dG,T,Nmax,N,S,2)
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.353) then
+        call READ_DATEI('TiH2_cr.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('Ti.txt'     ,dG,T,Nmax,N,S,2)      
+        call READ_DATEI('H.txt'      ,dG,T,Nmax,N,S,3)      
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 2.D0
+      elseif (specie.eq.354) then
+        call READ_DATEI('SiF4.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('Si.txt'  ,dG,T,Nmax,N,S,2)      
+        call READ_DATEI('F.txt'   ,dG,T,Nmax,N,S,3)      
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 4.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop

@@ -1,6 +1,6 @@
 dust species
 ============
-232
+245
 
 Al2O3[s]       CORUNDUM(alpha)
 3.97
@@ -2214,6 +2214,118 @@ CoO[s]         COBALT-MONOOXIDE
  1 O
 # dG-Stock-fit NIST-Janaf (100-3000)K, +/-0.22 kJ/mol
   5  1.10016E+05  2.84709E-01 -3.67779E+01  5.29604E-04 -6.42463E-09
+
+Ti3O5[s]       TITANIUM-OXIDE
+4.25
+ 2
+ 3 Ti
+ 5 O
+# dG-fit NIST-Janaf 100-2000K, +/- 0.12:
+# 2  1.53106E+06 -3.94153E+06  1.03804E+03 -2.18150E-02  6.36924E-07
+# dG-Stock-fit NIST-Janaf (100-2000)K, +/-1.3 kJ/mol
+  5  6.14868E+05 -5.09815E+00 -1.14283E+02  7.55404E-03 -5.70464E-07
+
+Ti3O5[l]       TITANIUM-OXIDE(liquid)    2050.0
+3.8     estimated
+ 2
+ 3 Ti
+ 5 O
+# dG-fit NIST-Janaf 2100-4000K, +/- 0.12:
+# 2 -9.26995E+07 -4.83152E+06  1.08553E+03 -1.93110E-02  1.20031E-06
+# dG-Stock-fit NIST-Janaf (2100-4000)K, +/-0.6 kJ/mol
+  5  5.84214E+05 -1.11094E+00 -1.18391E+02  4.68272E-04  1.31866E-07
+
+Mg2TiO4[s]     QANDILIT
+4.03
+ 3
+ 2 Mg
+ 1 Ti
+ 4 O
+# dG-fit NIST-Janaf 100-2000K, +/- 0.12:
+  2  1.53106E+06 -3.94153E+06  1.03804E+03 -2.18150E-02  6.36924E-07 
+# dG-Stock-fit NIST-Janaf (100-2000)K, +/-1.2 kJ/mol
+# 5  4.70853E+05 -5.67026E+00 -8.44275E+01  3.91333E-03  3.84711E-07
+
+Mg2TiO4[l]     QANDILIT(liquid)      2013.0
+3.7     estimated
+ 3
+ 2 Mg
+ 1 Ti
+ 4 O
+# dG-Stock-fit NIST-Janaf (2100-4000)K, +/-0.6 kJ/mol
+  5  4.45378E+05 -1.77612E+00 -9.27270E+01 -2.12482E-04  2.19302E-07
+
+TiN[s]         TITANIUM-NITRIDE
+5.40
+ 2
+ 1 Ti
+ 1 N
+# dG-Stock-fit NIST-Janaf (100-3220)K, +/-0.24 kJ/mol
+  5  1.53851E+05 -2.28175E+00 -2.23116E+01  2.48084E-03 -2.32274E-07
+
+TiN[l]         TITANIUM-NITRIDE(liquid)   3220.0
+5.0     estimated
+ 2
+ 1 Ti
+ 1 N
+# dG-Stock-fit NIST-Janaf (3200-4500)K, +/-0.31 kJ/mol
+  5  1.40049E+05 -8.58684E-01 -2.41161E+01 -3.32083E-19  1.83184E-08
+
+TiF4[s]       TITANIUM-TETRAFLUORIDE
+2.8
+ 2
+ 1 Ti
+ 4 F
+# pvap NIST-Janaf cr (100-1500)K, +/- 0.03:
+  3 -1.22404E+04  3.88125E+01 -6.01473E-03  1.04681E-06  0.00000E+00
+
+TiF3[s]       TITANIUM-TRIFLUORIDE
+3.4
+ 2
+ 1 Ti
+ 3 F
+# pvap NIST-Janaf cr (298-2000)K, +/- 0.10:
+  3 -2.97991E+04  3.95014E+01 -2.94846E-03  7.42856E-07 -1.38542E-10
+
+TiCl4[s]      TITANIUM-TETRACHLORIDE
+1.9    estimated
+ 2
+ 1 Ti
+ 4 Cl
+# pvap NIST-Janaf cr (100-200)K, +/- 0.0:  a1 modified to get correct melting point
+  3 -6.77470E+03  3.71000E+01  0.00000E+00  0.00000E+00  0.00000E+00
+
+TiCl4[l]      TITANIUM-TETRACHLORIDE(liquid)  249.0
+1.73
+ 2
+ 1 Ti
+ 4 Cl
+# pvap NIST-Janaf cr (298-1000)K, +/- 0.007: 
+  3 -5.83535E+03  3.66409E+01 -1.52157E-02  9.01904E-06 -2.51144E-09
+
+TiCl3[s]      TITANIUM-TRICHLORIDE
+2.64
+ 2
+ 1 Ti
+ 3 Cl
+# pvap NIST-Janaf cr (100-1500)K, +/- 0.010:  
+  3 -2.27037E+04  4.02156E+01 -1.04860E-02  6.56457E-06 -1.67199E-09
+
+TiCl2[s]      TITANIUM-DICHLORIDE
+3.13
+ 2
+ 1 Ti
+ 2 Cl
+# pvap NIST-Janaf cr (100-2000)K, +/- 0.007:  
+  3 -3.36735E+04  3.82301E+01 -2.69767E-03  6.26067E-07 -1.03445E-10
+
+TiH2[s]       TITANIUM-HYDRIDE
+3.75
+ 2
+ 1 Ti
+ 2 H
+# dG-Stock-fit NIST-Janaf (100-2000)K, +/-0.57 kJ/mol
+  5  1.25239E+05 -5.72777E+00 -8.92797E+00  3.10061E-03  0.00000E+00
 
 
 ----- deactivated, because leading to artifacts at high T ------

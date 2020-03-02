@@ -72,6 +72,8 @@ TiC4                  2   C Ti  4  1                  : Titanium_Tetracarbide
 VC4                   2   C  V  4  1                  : Vanadium_Tetracarbide
  4  2.903071E+05  2.247894E+00 -8.250557E+01 -1.151506E-03  5.933396E-08
 
+SiF4        2   Si F  1  4         : Woitke NIST ! +/- 1.61
+ 4  2.84967E+05 -5.45527E+00 -2.70820E+01  2.62150E-03 -1.69938E-07
 MNCL2       2 Mn  Cl  1  2
  2   2.35236E+01 -9.02256E+00  3.23944E-01 -4.85866E-02	2.55079E-03
 MNF2        2 Mn  F  1  2
