@@ -5,7 +5,9 @@
       integer :: abund_pick,model_dim,Npoints,model_struc,verbose
       logical :: model_eqcond,model_pconst,pick_mfrac,initchem_info
       logical :: useDataBase,remove_condensates,phyllosilicates
+      logical :: auto_atmos
       real*8  :: Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax
+      real*8  :: Mpl,Rpl,gamma
       end
 
 ************************************************************************
@@ -42,6 +44,9 @@
       real(kind=qp) :: atm=1.013Q+6           ! standard atmosphere pressure
       real(kind=qp) :: rgas=8.3144598Q+0      ! gas constant 
       real(kind=qp) :: mel=9.109389754Q-28    ! electron mass
+      real*8        :: grav=6.6725985D-8      ! gravitational constant
+      real*8        :: MEarth=5.9722D+27      ! Earth mass [g]
+      real*8        :: REarth=6371.D+5        ! Earth radius [cm]
       real(kind=qp) :: muH                    ! rho/n<H>
       end
 

@@ -242,10 +242,11 @@ for isolid in reversed(indices):
   #solid = solid[1:]
   ind = np.where(keyword == 'S'+solid)[0]
   if (np.size(ind) == 0): continue
-  if ('[l]' in solid): continue
+  #if ('[l]' in solid): continue
   ind = ind[0]
+  S = 10**dat[:,ind]  
   logS = dat[:,ind]              # log10 S
-  if (np.max(logS[iii])>-0.2):
+  if (np.max(S[iii])>0.7):
     print solid
     plt.plot(lp,logS,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
     count = count + 1

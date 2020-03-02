@@ -2,7 +2,7 @@
       PROGRAM EQ_CHEMISTRY
 ***********************************************************************
       use PARAMETERS,ONLY: model_dim,model_struc,model_eqcond,
-     >                     useDatabase
+     >                     useDatabase,auto_atmos
       use EXCHANGE,ONLY: chemcall,chemiter,ieqcond,ieqconditer,
      >                   itransform,preEst,preUse,preIter
       use DATABASE,ONLY: NLAST
@@ -16,7 +16,9 @@
       if (model_dim==0) then
         call DEMO_CHEMISTRY
       else if (model_dim==1) then  
-        if (model_struc==0) then 
+        if (auto_atmos) then
+          call AUTO_STRUCTURE
+        else if (model_struc==0) then 
           call DEMO_SWEEP
         else  
           call DEMO_STRUCTURE

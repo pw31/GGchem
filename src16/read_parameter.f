@@ -5,10 +5,10 @@
      >     model_struc,model_eqcond,Npoints,useDatabase,verbose,
      >     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,pick_mfrac,
      >     abund_file,struc_file,remove_condensates,phyllosilicates,
-     >     initchem_info 
+     >     initchem_info,auto_atmos,Mpl,Rpl,gamma 
       use CHEMISTRY,ONLY: NewBackIt,NewFullIt,NewBackFac,NewPreMethod,
      >                    NewFastLevel,dispol_file
-      use DUST_DATA,ONLY: DustChem_file,bar
+      use DUST_DATA,ONLY: DustChem_file,bar,MEarth,REarth
       implicit none
       integer :: iarg,iline,i,dispol_set
       character(len=200) :: ParamFile,line
@@ -27,6 +27,7 @@
       model_eqcond = .false.
       remove_condensates = .false.
       phyllosilicates = .true.
+      auto_atmos   = .false.
       model_dim    = 1
       model_pconst = .true.
       model_struc  = 0
@@ -40,6 +41,9 @@
       pmax         = 1.d0*bar
       nHmin        = 4.d+19
       nHmax        = 4.d+19
+      Mpl          = MEarth
+      Rpl          = REarth
+      gamma        = 7.0/5.0
       UseDataBase  = .true.
       NewFullIt    = .true.
       NewBackIt    = 5
@@ -105,6 +109,16 @@
           read(line,*) nHmax
         else if (index(line,"! nHmin")>0) then 
           read(line,*) nHmin
+        else if (index(line,"! auto_atmos")>0) then 
+          read(line,*) auto_atmos
+        else if (index(line,"! Mplanet")>0) then 
+          read(line,*) Mpl
+          Mpl = Mpl*MEarth
+        else if (index(line,"! Rplanet")>0) then 
+          read(line,*) Rpl
+          Rpl = Rpl*REarth
+        else if (index(line,"! gamma")>0) then 
+          read(line,*) gamma
         else if (index(line,"! Npoints")>0) then 
           read(line,*) Npoints
         else if (index(line,"! NewBackIt")>0) then 
