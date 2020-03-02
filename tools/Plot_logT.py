@@ -149,7 +149,7 @@ ax.xaxis.set_minor_locator(locmin)
 ax.set_xticks(locmaj)
 ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
 sz = np.min([11,1+195.0/count])
-leg = plt.legend(loc='lower right',fontsize=sz,fancybox=True)
+leg = plt.legend(loc='best',fontsize=sz,fancybox=True)
 leg.get_frame().set_alpha(0.7)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
@@ -301,7 +301,7 @@ count = 0
 for i in range(3,4+NELEM+NMOLE): 
   mol = keyword[i]
   yy = dat[:,i]-lntot            # log10 nmol/ntot
-  crit = -1.5
+  crit = -2.5
   ind = np.where(mols == mol)[0]
   if (np.size(ind)>0): crit=-5
   #print i,mol,ind,np.size(ind)

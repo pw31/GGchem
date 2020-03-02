@@ -371,6 +371,8 @@
       write(*,*) '352 = TiCl2_cr pvap'
       write(*,*) '353 = TiH2_cr'
       write(*,*) '354 = SiF4'
+      write(*,*) '355 = FeCl2_cr pvap'
+      write(*,*) '356 = FeCl3_cr pvap'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -2783,6 +2785,16 @@
         Edzahl = 2
         stoich(2) = 1.D0
         stoich(3) = 4.D0
+      elseif (specie.eq.355) then
+        call READ_DATEI('FeCl2_cr.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('FeCl2.txt'   ,dG,T,Nmax,N,S,2)
+        Edzahl = 1
+        stoich(2) = 1.D0
+      elseif (specie.eq.356) then
+        call READ_DATEI('FeCl3_cr.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('FeCl3.txt'   ,dG,T,Nmax,N,S,2)
+        Edzahl = 1
+        stoich(2) = 1.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop

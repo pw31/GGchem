@@ -1,6 +1,6 @@
 dust species
 ============
-245
+249
 
 Al2O3[s]       CORUNDUM(alpha)
 3.97
@@ -2327,7 +2327,38 @@ TiH2[s]       TITANIUM-HYDRIDE
 # dG-Stock-fit NIST-Janaf (100-2000)K, +/-0.57 kJ/mol
   5  1.25239E+05 -5.72777E+00 -8.92797E+00  3.10061E-03  0.00000E+00
 
+FeCl2[s]      IRON-DICHLORIDE
+3.16
+ 2
+ 1 Fe
+ 2 Cl
+# pvap NIST-Janaf cr (100-900)K, +/- 0.022:  
+  3 -2.45703E+04  3.84749E+01 -5.42007E-03  1.73668E-06  0.00000E+00
 
+FeCl2[l]      IRON-DICHLORIDE(liquid)   950.0
+3.0     estimated
+ 2
+ 1 Fe
+ 2 Cl
+# pvap NIST-Janaf cr (1000-2000)K, +/- 0.005:  
+  3 -1.82668E+04  2.97532E+01 -1.55558E-03  0.00000E+00  0.00000E+00
+
+FeCl3[s]      IRON-TRICHLORIDE
+2.90
+ 2
+ 1 Fe
+ 3 Cl
+# pvap NIST-Janaf cr (100-500)K, +/- 0.001:  
+  3 -1.79419E+04  4.04418E+01 -3.93768E-03  0.00000E+00  0.00000E+00
+
+FeCl3[l]      IRON-TRICHLORIDE(liquid)  577.0
+2.7     estimated
+ 2
+ 1 Fe
+ 3 Cl
+# pvap NIST-Janaf cr (600-1500)K, +/- 0.022:  
+  3 -1.19535E+04  2.96064E+01 -3.03724E-03  0.00000E+00  0.00000E+00
+  
 ----- deactivated, because leading to artifacts at high T ------
 AlO3H3[s]                GIBBSITE
  2.44
