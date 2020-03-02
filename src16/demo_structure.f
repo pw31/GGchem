@@ -29,6 +29,7 @@
       character(len=20) :: name,short_name(NDUST),dname,ename
       character(len=1) :: char
       logical :: hasW,efound
+      logical :: outAllHistory=.false.
 
       !-----------------------------
       ! ***  read the structure  ***
@@ -421,7 +422,11 @@
           enddo
           eps0(:) = eps(:) + (1.Q0-fac)*e_reservoir(:)
           estruc(i+Ninc,:) =  eps0(:)  ! for next layer
-          eldust(:) = d_reservoir(:)
+          if (outAllHistory) then                      ! output will contain:
+            eldust(:) = d_reservoir(:)                 ! all condensates ever
+          else 
+            eldust(:) = eldust(:)                      ! only local condensates
+          endif
         endif  
 
         !--- compute supersat ratios and nucleation rates ---

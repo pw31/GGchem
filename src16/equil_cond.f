@@ -215,8 +215,10 @@
         firstCall = .false. 
       endif
 
-      write(*,*)
-      write(*,'("EQUIL_COND started")') 
+      if (verbose>=0) then
+        write(*,*)
+        write(*,'("EQUIL_COND started")')
+      endif  
       call CPU_TIME(time0)
 
       !------------------------
@@ -299,13 +301,15 @@
       xstep(:) = 0.Q0             
       call SUPER(nHtot,T,xstep,eps,Sat0,.false.) ! from scratch
       qual = SQUAL(Sat0,active)
-      print'("it =",I4," qual =",1pE13.4E4)',0,qual
+      if (verbose>=0) then
+        print'("it =",I4," qual =",1pE13.4E4)',0,qual
+      endif  
       act_old = active
       lastit = -99
       iminoff = 0
       limited = .false.
       ifail = 0
-
+      
       do it=1,itmax
         
         !---------------------------------------
@@ -377,7 +381,9 @@
             endif
             if (imaxon>0) then
               active(imaxon) = .true.
-              print*,"switch on ",trim(dust_nam(imaxon))
+              if (verbose>=0) then
+                print*,"switch on ",trim(dust_nam(imaxon))
+              endif  
             endif  
           endif  
           Nact = 0
@@ -460,7 +466,9 @@
                 write(dum6,'(F6.3)') slin(dk)
                 txt = trim(txt)//dum6//" "//trim(dust_nam(dk))
               enddo
-              print*,"linear combination found: "//trim(txt)
+              if (verbose>=0) then
+                print*,"linear combination found: "//trim(txt)
+              endif  
               itried(:) = .false.
               do
                 Smin = 9.Q+99
@@ -498,7 +506,9 @@
               enddo  
               ddust(ioff) = 0.Q0
               eps = eps_save
-              print*,"switch off ",dust_nam(ioff) 
+              if (verbose>=0) then
+                print*,"switch off ",dust_nam(ioff)
+              endif  
             endif  
           endif
         endif  
@@ -519,14 +529,16 @@
           xstep(:)= 0.Q0             
           call SUPER(nHtot,T,xstep,eps,Sat0,NewFastLevel<1)
           qual = SQUAL(Sat0,active)
-          print'("it =",I4," qual =",1pE13.4E4)',it,qual
+          if (verbose>=0) then
+            print'("it =",I4," qual =",1pE13.4E4)',it,qual
+          endif  
           lastit = it
         endif
         if (verbose>0) then
           do i=1,NDUST
             rem = "  "
             if (active(i)) rem=" *"
-            if (active(i).or.Sat0(i)>0.1) then
+            if (verbose>=0.and.(active(i).or.Sat0(i)>0.1)) then
               write(*,'(3x,A18,2(1pE11.3)1pE19.10,A2)') 
      >          dust_nam(i),ddust(i),ddust(i)/dscale(i),Sat0(i),rem
             endif  
@@ -625,7 +637,7 @@
                   write(tnum,'(I2)') e_num(el) 
                   txt2 = trim(txt2)//" "//tnum
                 endif  
-              enddo  
+              enddo
               print*,trim(txt)
               print*," "//trim(txt1)
               print*,trim(txt2)
@@ -680,8 +692,10 @@
               endif
             enddo  
             if (found) then
-              print*,"... exchanging1 "//elnam(Iindex(i))//
+              if (verbose>=0) then
+                print*,"... exchanging1 "//elnam(Iindex(i))//
      >               " for "//elnam(Iindex(j))
+              endif  
               swap = Iindex(i)   
               Iindex(i) = Iindex(j)
               Iindex(j) = swap
@@ -729,8 +743,10 @@
             !print*,deplete1,deplete2
             if (deplete1>1.Q+5*deplete2) found=.false.
             if (found) then
-              print*,"... exchanging2 "//elnam(Iindex(j))//
+              if (verbose>=0) then
+                print*,"... exchanging2 "//elnam(Iindex(j))//
      >               " for "//elnam(Iindex(i))
+              endif  
               swap = Iindex(i)   
               Iindex(i) = Iindex(j)
               Iindex(j) = swap
@@ -748,8 +764,10 @@
             ! there is a linear-combination disregarding hydrogen
             i = Nall
             j = Nact
-            print*,"... exchanging3 "//elnam(Iindex(j))//
+            if (verbose>=0) then
+              print*,"... exchanging3 "//elnam(Iindex(j))//
      >             " for "//elnam(Iindex(i))
+            endif  
             swap = Iindex(i)   
             Iindex(i) = Iindex(j)
             Iindex(j) = swap
@@ -774,8 +792,10 @@
           if (found) then
             ! can't have O as independent variable in this case
             i = Nall
-            print*,"... exchanging4 "//elnam(Iindex(j))//
+            if (verbose>=0) then
+              print*,"... exchanging4 "//elnam(Iindex(j))//
      >           " for "//elnam(Iindex(i))
+            endif  
             swap = Iindex(i)   
             Iindex(i) = Iindex(j)
             Iindex(j) = swap
@@ -1232,7 +1252,7 @@
         limited = (fac<1.Q0)
         !if (iminoff>0.and.(iminoff.ne.laston)) then
         if (iminoff>0) then
-          print*,"switch off ",dust_nam(iminoff) 
+          if (verbose>=0) print*,"switch off ",dust_nam(iminoff) 
           active(iminoff) = .false.
           lastit = -99
           !if (iminoff.eq.laston) then
@@ -1323,8 +1343,10 @@
 
       call CPU_TIME(time1)
       if (it.lt.itmax) then
-        write(*,'("EQUIL_COND converged after ",I3," iter, time =",
-     >            0pF7.3," CPU sec.")') it,time1-time0 
+        if (verbose>=0) then
+          write(*,'("EQUIL_COND converged after ",I3," iter, time =",
+     >          0pF7.3," CPU sec.")') it,time1-time0
+        endif  
       else
         write(*,'("*** EQUIL_COND failed after ",I3," iter,  time =",
      >            0pF9.4," CPU sec.")') it,time1-time0 

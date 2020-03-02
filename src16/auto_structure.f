@@ -17,7 +17,7 @@
       real(kind=qp) :: fac,e_reservoir(NELEM),d_reservoir(NDUST)
       real :: rho,Tg,p,kT,nHges,nges,pgas,ff,fold,mu,muold,dmu,dfdmu
       real :: p1,p2,T1,T2,g1,g2,mu1,mu2,rho1,rho2
-      real :: zz,dz,Hp,kappa,rhog,rhod,dustV,km=1.D+5
+      real :: zz,dz,Hp,kappa,rhog,rhod,dustV,dustM,km=1.D+5
       integer :: i,j,k,e,ip,jj,it,NOUT
       logical :: outAllHistory=.false.
       
@@ -61,7 +61,21 @@
         fold = ff
         print '("p-it=",i3,"  mu=",2(1pE20.12))',it,mu/amu,dmu/mu
         if (ABS(dmu/mu)<1.E-10) exit
-      enddo  
+      enddo
+      dustV = 0.0
+      dustM = 0.0
+      do jj=1,NDUST
+        dustV = dustV + eldust(jj)*dust_Vol(jj)
+        dustM = dustM + eldust(jj)*dust_mass(jj)
+      enddo
+      print*
+      print*,"The planet surface consists of ..."
+      do jj=1,NDUST
+        if (eldust(jj)==0.Q0) cycle
+        print'(A18,"  Vfrac=",0pF12.8," %  Mfrac=",0pF12.8," %")',
+     >         dust_nam(jj),eldust(jj)*dust_Vol(jj)/dustV*100,
+     >         eldust(jj)*dust_mass(jj)/dustM*100
+      enddo
 
       !------------------------------------------------
       ! ***  reset total <- gas element abundances  ***
@@ -77,13 +91,22 @@
       d_reservoir = 0.Q0
       eps00 = eps0
       print*
-      print'("mu[amu]=",1pE11.3)',mu/amu
+      print*,"gas properties ..."
       do e=1,NELM
         if (e==el) cycle
         j = elnum(e) 
         print'("eps(",A2,")=",1pE11.3)',elnam(j),eps(j)
       enddo
-
+      print*
+      print*,"most abundant molecules [mol-fractions]"
+      do j=1,NELEM
+        if (nat(j)>1.E-4*nges) print 3000,catm(j),nat(j)/nges*100
+      enddo
+      do j=1,NMOLE
+        if (nmol(j)>1.E-4*nges) print 3000,cmol(j),nmol(j)/nges*100
+      enddo
+      print'("mu[amu]=",0pF8.4)',mu/amu
+      
       !----------------------------
       ! ***  open output files  ***
       !----------------------------
@@ -206,7 +229,7 @@
         !print*,bk/kappa*(T2-T1),-0.5*(mu1*g1+mu2*g2)*dz
         !print*,p1**(1-gamma)*T1**gamma,p2**(1-gamma)*T2**gamma
         !print*,DLOG(p2/p1)/dz,-0.5/bk*(mu1*g1/T1+mu2*g2/T2)
-
+        
         !--- make step ---
         zz   = zz+dz
         p1   = p2
@@ -226,12 +249,14 @@
      &                       + fac*dust_nu(j,jj)*eldust(j)
             enddo
           enddo  
-          do j=1,NELM
-            if (j==el) cycle 
-            k = elnum(j)
-            print'(A3,2(1pE18.10))',elnam(k),eps(k)/eps00(k),
+          if (verbose>=0) then
+            do j=1,NELM
+              if (j==el) cycle 
+              k = elnum(j)
+              print'(A3,2(1pE18.10))',elnam(k),eps(k)/eps00(k),
      &                      (eps(k)+e_reservoir(k))/eps00(k)
-          enddo
+            enddo
+          endif  
           eps0(:) = eps(:) + (1.Q0-fac)*e_reservoir(:) ! remove elements
           !--- choice of output ---
           if (outAllHistory) then                      ! output will contain:
@@ -257,4 +282,5 @@
  2000 format(9999(1x,A19))
  2010 format(0pF20.6,2(1pE20.6),9999(0pF20.7))
  2011 format(9999(1x,1pE19.10))
+ 3000 format(A8,0pF8.4," %")
       end

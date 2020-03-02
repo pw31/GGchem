@@ -21,9 +21,9 @@ mfrac_MORB.dat
 .true.                ! model_pconst
 .true.                ! auto_atmos (attach polytopic atmosphere)   
 1.2                   ! gamma (polytropic index)
-1000.0                ! Tmax [K]
-1.E+0                 ! pmax [bar]  
-1.E-3                 ! pmin [bar]
+1500.0                ! Tmax [K]
+1.E+2                 ! pmax [bar]  
+1.E-2                 ! pmin [bar]
 200                   ! Npoints
 1.0                   ! Mplanet [MEarth]
 1.0                   ! Rplanet [REarth]
@@ -33,3 +33,5 @@ mfrac_MORB.dat
 1                     ! NewFastLevel
 1400.0                ! Tfast
 .false.               ! initchem_info
+
+-1                    ! verbose

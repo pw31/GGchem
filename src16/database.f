@@ -93,6 +93,7 @@
 **********************************************************************
       SUBROUTINE PUT_DATA(nH,T,eps,ddust,qbest,ibest,active)
 **********************************************************************
+      use PARAMETERS,ONLY: verbose
       use dust_data,ONLY: NELEM,NDUST,NEPS,dust_nam,eps0,elnr
       use DATABASE,ONLY: qp,NDAT,NLAST,NMODI,DMAX,dbase
       implicit none
@@ -108,13 +109,17 @@
       !else 
       if (qbest<1.d-3) then
         i = ibest
-        write(*,'(" ... replacing database entry (",I6,
-     >          ") nH,T=",2(1pE15.7))') i,nH,T
+        if (verbose>=0) then
+          write(*,'(" ... replacing database entry (",I6,") nH,T=",
+     >      2(1pE15.7))') i,nH,T
+        endif  
       else  
         NDAT = NDAT+1
         i = NDAT
-        write(*,'(" ... adding database entry (",I6,
-     >          ") nH,T=",2(1pE15.7))') i,nH,T
+        if (verbose>=0) then
+          write(*,'(" ... adding database entry (",I6,") nH,T=",
+     >      2(1pE15.7))') i,nH,T
+        endif
         if (NDAT>DMAX) then
           print*,"*** NDAT>DMAX in PUT_DATA",NDAT,DMAX
           stop
@@ -145,6 +150,7 @@
 **********************************************************************
       subroutine GET_DATA(nH,T,eps,ddust,qbest,ibest,active,method)
 **********************************************************************
+      use PARAMETERS,ONLY: verbose
       use dust_data,ONLY: NEPS,NELEM,NDUST,eps0,elnam,elnr,
      >                    dust_nel,dust_nu,dust_el,dust_nam
       use DATABASE,ONLY: qp,NDAT,NMODI,NPICK1,NPICK2,DMAX,dbase
@@ -177,8 +183,10 @@
       do e=1,NEPS
         el = elnr(e) 
         prod = prod * eps0(el)
-      enddo  
-      print'("looking for nH,T,eprod=",3(1pE13.5)," ...")',nH,T,prod
+      enddo
+      if (verbose>=0) then
+        print'("looking for nH,T,eprod=",3(1pE13.5)," ...")',nH,T,prod
+      endif  
       ln = LOG(nH)
       lT = LOG(T) 
       lp = LOG(prod)
@@ -222,7 +230,7 @@
           if (qbest<1.d-3) goto 100
         endif  
       enddo
-      write(*,*) "entering full search ..."
+      if (verbose>=0) write(*,*) "entering full search ..."
       !--- check them all ---  
       do i=NDAT,1,-1
         lnread = dbase(i)%ln 
@@ -251,11 +259,13 @@
         enddo
         NPICK2 = NPICK1
         NPICK1 = ibest
-        write(*,'(" ... found best dataset (",I6,
-     >          ")  nH,T,eprod,qual=",4(1pE13.5))')
-     >     ibest,EXP(dbase(ibest)%ln),EXP(dbase(ibest)%lT),
-     >     EXP(dbase(ibest)%eprod),qbest
-        write(*,*) "active condensates: "//trim(condensates)
+        if (verbose>=0) then
+          write(*,'(" ... found best dataset (",I6,")  
+     >      nH,T,eprod,qual=",4(1pE13.5))')
+     >      ibest,EXP(dbase(ibest)%ln),EXP(dbase(ibest)%lT),
+     >      EXP(dbase(ibest)%eprod),qbest
+          write(*,*) "active condensates: "//trim(condensates)
+        endif  
         ecopy = eps
         dcopy = ddust
 
@@ -279,14 +289,16 @@
             elworst = el
           endif   
         enddo
-        print*,"need fitting? "//elnam(elworst),SNGL(errmax)
+        if (verbose>=0) then
+          print*,"need fitting? "//elnam(elworst),SNGL(errmax)
+        endif  
         method = 0
         if (errmax<1.Q-25) return ! perfect fit - nothing to do
 
         !--------------------------------------------------------------
         ! ***  adapt eps and ddust to reach current eps0: method 1  ***
         !--------------------------------------------------------------
-        print*,"adjust with method 1 ..."
+        if (verbose>=0) print*,"adjust with method 1 ..."
         method = 1
 
         !--- 1. sort elements from rare to abundant ---
@@ -349,19 +361,25 @@
           el = ibuf(b) 
           j = jmain(el)
           rest(b) = check(el)
-          write(frmt,'("(A2,2x,",I2,"(I2),A16,2(1pE13.6))")') Nbuf
-          write(*,frmt) elnam(el),INT(stoich(b,1:Nbuf)),
+          if (verbose>=0) then
+            write(frmt,'("(A2,2x,",I2,"(I2),A16,2(1pE13.6))")') Nbuf
+            write(*,frmt) elnam(el),INT(stoich(b,1:Nbuf)),
      &           trim(dust_nam(j)),ddust(j),rest(b)
+          endif  
         enddo  
         call GAUSS16( NEPS, Nbuf, stoich, xx, rest)
         do b=1,Nbuf
           el = ibuf(b)
           j = jmain(el)
-          print'(A3,A16,1pE13.6," ->",1pE13.6)',
+          if (verbose>=0) then
+            print'(A3,A16,1pE13.6," ->",1pE13.6)',
      &         elnam(el),trim(dust_nam(j)),ddust(j),xx(b)
+          endif  
           ddust(j) = xx(b)
           if (xx(b)<0.Q0.or.IS_NAN(DBLE(xx(b)))) then
-            print*,"*** negative dust abund. in database.f method 1"
+            if (verbose>=0) then
+              print*,"*** negative dust abund. in database.f method 1"
+            endif  
             goto 300
             !qbest = 9.d+99
             !return
@@ -381,10 +399,14 @@
           el = isort(i)
           if (jmain(el)==0) then
             tmp = eps0(el)-check(el)
-            print'(A3,A16,1pE13.6," ->",1pE13.6)',
+            if (verbose>=0) then
+              print'(A3,A16,1pE13.6," ->",1pE13.6)',
      &           elnam(el),"gas",eps(el),tmp
+            endif  
             if (tmp<0.Q0.or.IS_NAN(DBLE(tmp))) then
-              print*,"*** negative el. abund. in database.f method 1" 
+              if (verbose>=0) then
+                print*,"*** negative el. abund. in database.f method 1"
+              endif  
               goto 300
               !qbest = 9.d+99
               !return
@@ -393,14 +415,14 @@
             echange = MAX(echange,ABS(LOG10(eps(el)/ecopy(el))))
           endif
         enddo
-        print*,'echange =',REAL(echange)
+        if (verbose>=0) print*,'echange =',REAL(echange)
         if (echange<2.Q0) goto 500
 
  300    continue    
         !--------------------------------------------------------------
         ! ***  adapt eps and ddust to reach current eps0: method 2  ***
         !--------------------------------------------------------------
-        print*,"adjust with method 2 ..."
+        if (verbose>=0) print*,"adjust with method 2 ..."
         method = 2
         !--------------------------------------------------------------
         ! ***  the idea is to minimise the change of eps            ***
@@ -450,7 +472,9 @@
         do jj=1,NDUST
           if (ddust(jj)==0.Q0) cycle
           j = j+1
-          print'(A12,2(1pE12.4))',dust_nam(jj),dcopy(jj),xx(j)
+          if (verbose>=0) then
+            print'(A12,2(1pE12.4))',dust_nam(jj),dcopy(jj),xx(j)
+          endif  
           ddust(jj) = ddust(jj)+xx(j)
           do e=1,dust_nel(jj)
             el = dust_el(jj,e)
@@ -458,17 +482,23 @@
           enddo
           if (ddust(jj)<0.Q0.or.IS_NAN(DBLE(ddust(jj)))) then
             method = 0
-            print*,"*** negative dust abund. in database.f method 2"
+            if (verbose>=0) then
+              print*,"*** negative dust abund. in database.f method 2"
+            endif  
             qbest = 9.d+99
             return
           endif
         enddo 
         do e=1,NEPS
           el = elnr(e)
-          print'(A3,2(1pE12.4))',elnam(el),ecopy(el),eps(el)-ecopy(el)
+          if (verbose>=0) then
+            print'(A3,2(1pE12.4))',elnam(el),ecopy(el),eps(el)-ecopy(el)
+          endif  
           if (eps(el)<0.Q0.or.IS_NAN(DBLE(eps(el)))) then
             method = 0
-            print*,"*** negative el. abund. in database.f method 2"
+            if (verbose>=0) then
+              print*,"*** negative el. abund. in database.f method 2"
+            endif  
             qbest = 9.d+99
             return
           endif

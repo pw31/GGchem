@@ -3,18 +3,21 @@
 *********************************************************************
       use CHEMISTRY,ONLY: NMOLE,cmol
       use DUST_DATA,ONLY: NELEM,NDUST,bk,atm,rgas,bar,fit,cfit,
-     &                    dust_nam,dust_nel,dust_el,dust_nu,elnam,
-     &                    is_liquid,Tcorr
+     &                    dust_nam,dust_nel,dust_el,dust_nu,dust_mass,
+     &                    is_liquid,Tcorr,elnam
       implicit none
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
       real*8,intent(in) :: T
       real(kind=qp),intent(in) :: nat(NELEM),nmol(NMOLE)
       real(kind=qp),intent(out):: Sat(NDUST)
-      real(kind=qp),parameter :: cal=4.184Q+0    ! 1 cal in J
-      real(kind=qp),parameter :: mmHg=1.3328Q+3  ! 1 mmHg in dyn/cm2
+      real(kind=qp),parameter :: cal=4.184Q+0       ! 1 cal in J
+      real(kind=qp),parameter :: mmHg=1.3328Q+3     ! 1 mmHg in dyn/cm2
+      real(kind=qp),parameter :: Joule=1.Q+7        ! 1 Joule in erg
+      real(kind=qp),parameter :: mol=6.02214076Q+23 ! 1 mol
+      real(kind=qp),parameter :: eV=1.60218Q-12     ! 1 eV in erg
 
       real(kind=qp) :: T1,T2,T3,TC,kT,RT,dG,lbruch,pst,psat,dGRT
-      real(kind=qp) :: a(0:4),term,n1
+      real(kind=qp) :: a(0:4),term,n1,natom
       integer :: i,j,l,STINDEX,el,imol,imol1,imol2
       character(len=20) :: search,upper,leer='                    '
 
@@ -48,14 +51,18 @@
           !-----------------------------------
           pst = bar
           dG = a(0)/T1 + a(1) + a(2)*T1 + a(3)*T2 + a(4)*T3
-          dG = dG/RT
+          dGRT = dG/RT
           lbruch = 0.Q0
+          Natom = 0.0          
           do j=1,dust_nel(i)
             el     = dust_el(i,j)
             term   = nat(el)*kT/pst
             lbruch = lbruch + dust_nu(i,j)*LOG(term)
+            Natom  = Natom + dust_nu(i,j)            
           enddo
-          Sat(i) = EXP(lbruch-dG)
+          Sat(i) = EXP(lbruch-dGRT)
+          !print*,dust_nam(i),T1,-dG*Joule/mol/eV/Natom,      ! eV/atom
+     >    !                      -dG*Joule/mol/dust_mass(i)   ! erg/g          
 
         else if (fit(i)==3) then
           !-----------------------------------------
@@ -104,13 +111,17 @@
           pst = bar
           dGRT = a(0)/T1 + a(1)*LOG(T1) + a(2) + a(3)*T1 + a(4)*T2
           lbruch = 0.Q0
+          Natom = 0.0
           do j=1,dust_nel(i)
             el     = dust_el(i,j)
             term   = nat(el)*kT/pst
             lbruch = lbruch + dust_nu(i,j)*LOG(term)
+            Natom  = Natom + dust_nu(i,j)
           enddo
-          !print*,dust_nam(i),T1,dGRT,lbruch
           Sat(i) = EXP(lbruch+dGRT)
+          !dG = dGRT*RT                                      ! Joule/mol
+          !print*,dust_nam(i),T1,dG*Joule/mol/eV/Natom,      ! eV/atom
+     >    !                      dG*Joule/mol/dust_mass(i)   ! erg/g
 
         else if (fit(i)==6) then
           !---------------------------------------------------------------

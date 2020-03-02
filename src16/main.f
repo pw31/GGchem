@@ -255,27 +255,27 @@
      >                  nat(aIIraus),nion(aIIraus)/ngas
         endif  
       enddo
-      iraus = stindex(cmol,NMOLE,'O2')
-      if (.not.raus(iraus))
-     >   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
-      iraus = stindex(cmol,NMOLE,'NO')
-      if (.not.raus(iraus))
-     >   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
-      iraus = stindex(cmol,NMOLE,'S3')
-      if (.not.raus(iraus))
-     >   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
-      iraus = stindex(cmol,NMOLE,'S4')
-      if (.not.raus(iraus))
-     >   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
-      iraus = stindex(cmol,NMOLE,'S5')
-      if (.not.raus(iraus))
-     >   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
-      iraus = stindex(cmol,NMOLE,'H2SO4')
-      if (.not.raus(iraus))
-     >   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
-      iraus = stindex(cmol,NMOLE,'SF6')
-      if (.not.raus(iraus))
-     >   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
+      !iraus = stindex(cmol,NMOLE,'O2')
+      !if (.not.raus(iraus))
+     >!   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
+      !iraus = stindex(cmol,NMOLE,'NO')
+      !if (.not.raus(iraus))
+     >!   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
+      !iraus = stindex(cmol,NMOLE,'S3')
+      !if (.not.raus(iraus))
+     >!   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
+      !iraus = stindex(cmol,NMOLE,'S4')
+      !if (.not.raus(iraus))
+     >!   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
+      !iraus = stindex(cmol,NMOLE,'S5')
+      !if (.not.raus(iraus))
+     >!   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
+      !iraus = stindex(cmol,NMOLE,'H2SO4')
+      !if (.not.raus(iraus))
+     >!   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
+      !iraus = stindex(cmol,NMOLE,'SF6')
+      !if (.not.raus(iraus))
+     >!   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
           
       print*
       write(*,*) '-----  where are the elements?  -----'
