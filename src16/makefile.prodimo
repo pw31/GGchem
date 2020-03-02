@@ -46,6 +46,7 @@ OBJECTS  = datamod.o \
 	   stindex.o \
            upper.o \
            nucleation.o \
+	   auto_structure.o \
            main.o
 
 .SUFFIXES : .o .f .F .f90
