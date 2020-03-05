@@ -355,6 +355,7 @@
 *     -----------------------------------------------------
 *     ***  Calculation of the condenstation timescales  ***
 *     -----------------------------------------------------
+      if (.false.) then
       print*
       print'("----- condensation timescales -----")'
       yr  = 365.25*24.0*3600.0
@@ -428,6 +429,7 @@
       enddo  
       write(*,'("Limiting condensate ",A22,"  timescale/yr = ",
      >          1pE11.3)') limcond, tchemtot/yr
+      endif
       
  1000 format(a6,1pE9.3)
  1010 format(a6,1pE9.3,a8,1pE9.3)
