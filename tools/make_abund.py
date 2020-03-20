@@ -244,6 +244,7 @@ if (epsNe>0):
   f.write("Ne %.9f \n"%(12+np.log10(epsNe/epsH)))
 if (epsAr>0):
   f.write("Ar %.9f \n"%(12+np.log10(epsAr/epsH)))
+<<<<<<< HEAD
 f.close()  
 
 mtot = epsH*massH + epsHe*massHe + epsC*massC + epsO*massO + epsN*massN + epsS*massS \
@@ -292,3 +293,53 @@ if (epsAr>0):
   f.write("Ar  %.9e \n"%((epsAr*massAr)/mtot))
 f.close()  
 
+=======
+f.close()  
+
+mtot = epsH*massH + epsHe*massHe + epsC*massC + epsO*massO + epsN*massN + epsS*massS \
+     + epsCl*massCl + epsF*massF + epsFe*massFe + epsSi*massSi + epsMg*massMg \
+     + epsCa*massCa + epsAl*massAl + epsNa*massNa + epsK*massK + epsTi*massTi \
+     + epsMn*massMn + epsNe*massNe + epsAr*massAr
+
+f = open('mfrac.in','w')
+if (epsH>0):
+  f.write("H   %.9e \n"%((epsH *massH )/mtot))
+if (epsC>0):
+  f.write("C   %.9e \n"%((epsC *massC )/mtot))
+if (epsN>0):
+  f.write("N   %.9e \n"%((epsN *massN )/mtot))
+if (epsO>0):
+  f.write("O   %.9e \n"%((epsO *massO )/mtot))
+if (epsF>0):
+  f.write("F   %.9e \n"%((epsF *massF )/mtot))
+if (epsS>0):
+  f.write("S   %.9e \n"%((epsS *massS )/mtot))
+if (epsCl>0):
+  f.write("Cl  %.9e \n"%((epsCl*massCl)/mtot))
+if (epsFe>0):
+  f.write("Fe  %.9e \n"%((epsFe*massFe)/mtot))
+if (epsMn>0):
+  f.write("Mn  %.9e \n"%((epsMn*massMn)/mtot))
+if (epsSi>0):
+  f.write("Si  %.9e \n"%((epsSi*massSi)/mtot))
+if (epsMg>0):
+  f.write("Mg  %.9e \n"%((epsMg*massMg)/mtot))
+if (epsCa>0):
+  f.write("Ca  %.9e \n"%((epsCa*massCa)/mtot))
+if (epsAl>0):
+  f.write("Al  %.9e \n"%((epsAl*massAl)/mtot))
+if (epsNa>0):
+  f.write("Na  %.9e \n"%((epsNa*massNa)/mtot))
+if (epsK>0):
+  f.write("K   %.9e \n"%((epsK *massK )/mtot))
+if (epsTi>0):
+  f.write("Ti  %.9e \n"%((epsTi*massTi)/mtot))
+if (epsHe>0):
+  f.write("He  %.9e \n"%((epsHe*massHe)/mtot))
+if (epsNe>0):
+  f.write("Ne  %.9e \n"%((epsNe*massNe)/mtot))
+if (epsAr>0):
+  f.write("Ar  %.9e \n"%((epsAr*massAr)/mtot))
+f.close()  
+
+>>>>>>> 17df07757697aeb94c7e78a04dc2789fad4685b5
