@@ -1,5 +1,5 @@
 # selected elements
-H He C N O F Na Mg Al Si P S Cl K Ca Ti Cr Mn Fe el
+H He C N O F S Cl el
 
 # name of file with molecular kp-data
 dispol_BarklemCollet.dat                ! dispol_file
@@ -7,9 +7,9 @@ dispol_StockKitzmann_withoutTsuji.dat   ! dispol_file2
 dispol_WoitkeRefit.dat                  ! dispol_file3
 
 # abundance options 0=custum, 1=EarthCrust, 2=Ocean, 3=Solar, 4=Meteorites
-.true.                ! pick_mfrac
+.false.               ! pick_mfrac
 0                     ! abund_pick
-mfrac_MORB.dat
+abund_Venus.dat
 
 # equilibrium condensation?
 .true.                ! model_eqcond
@@ -21,17 +21,19 @@ mfrac_MORB.dat
 .true.                ! model_pconst
 .true.                ! auto_atmos (attach polytopic atmosphere)   
 1.2                   ! gamma (polytropic index)
-1500.0                ! Tmax [K]
-1.E+2                 ! pmax [bar]  
-1.E-2                 ! pmin [bar]
+735                   ! Tmax [K]
+90.0                  ! pmax [bar]  
+10.E-3                ! pmin [bar]
 200                   ! Npoints
-1.0                   ! Mplanet [MEarth]
-1.0                   ! Rplanet [REarth]
-200                   ! Npoints
-7                     ! NewBackIt  
-1.E+5                 ! NewBackFac
+0.815                 ! Mplanet [MEarth]
+0.950                 ! Rplanet [REarth]
+100                   ! Npoints
+12                    ! NewBackIt  
+1.E+12                ! NewBackFac
 1                     ! NewFastLevel
 1400.0                ! Tfast
 .false.               ! initchem_info
 
--1                    ! verbose
+0                     ! verbose
+
+

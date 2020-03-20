@@ -255,7 +255,7 @@
             if (mfrac(i)==1.Q-50) cycle
             write(*,'(A2,": ",1pE10.3," ->",2(1pE10.3))') 
      &           elnam(i),eps0(i),eps(i),mfrac(i)
-          enddo        
+          enddo
         else   
           epsH = eps(H)
           do i=1,NELEM

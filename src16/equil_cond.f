@@ -1270,7 +1270,7 @@
         dust_save = ddust
         NRstep = 1.Q0
         qold = qual
-        do iback=1,10
+        do iback=1,8
           eps = eps_save
           ddust = dust_save
           do ii=1,Nsolve
@@ -1300,7 +1300,7 @@
           if (qual<qold*1.5) exit
           if (qual<1.0) exit
           if (limdust) exit
-          NRstep = NRstep/2
+            
         enddo
         !del = 0.Q0
         !do i=1,NELM

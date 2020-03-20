@@ -356,12 +356,39 @@ plt.tight_layout()
 plt.savefig(pp,format='pdf')
 plt.clf()
 
+#================== atomic densities ====================
+fig,ax = plt.subplots()
+count = 0
+ymax  = -99
+for i in range(4,4+NELEM): 
+  mol = keyword[i]
+  yy = dat[:,i]            # log10 natom
+  plt.plot(Tg,yy,c=colo[count],ls=styl[count],lw=widt[count],label=mol)
+  ymax = np.max([ymax,np.max(yy)])
+  count = count + 1
+plt.title('atomic particle densities',fontsize=20)
+plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
+plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{at}\ \mathrm{[cm^{-3}]}$',fontsize=20)
+plt.xlim(Tmin,Tmax)
+plt.ylim(ymax-100,ymax+2)
+plt.tick_params(axis='both', labelsize=14)
+plt.tick_params('both', length=6, width=1.5, which='major')
+plt.tick_params('both', length=3, width=1, which='minor')
+#minorLocator = MultipleLocator(0.2)
+#ax.yaxis.set_minor_locator(minorLocator)
+leg = plt.legend(loc='lower right',fontsize=11,fancybox=True)
+leg.get_frame().set_alpha(0.7)
+plt.tight_layout()
+plt.savefig(pp,format='pdf')
+plt.clf()
+
 #================== where are the elements? ================
 ellist = ['H','C','O','N','SI','S','NA','CL','CA','TI','K','AL','MG','FE','LI','F','P','NI','MN','CR','ZN','ZR','RB','CU','B','BR','V','SR','W','el']
 allist = [' ',' ',' ',' ','Si',' ','Na','Cl','Ca','Ti',' ','Al','Mg','Fe','Li',' ',' ','Ni','Mn','Cr','Zn','Zr','Rb','Cu',' ','Br',' ','Sr',' ','+']
 exlist = [' He ',' Cl CL Ca CA Cr CR Co Cu CU ',' ',' Ne NE Na NA Ni NI ',' ',' Si SI Sr SR ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' Fe FE ',' ',' ',' ',' ',' ',' ',' ',' ',' Br BR ',' ',' ',' ',' ',' ']
 titels = ['hydrogen','carbon','oxygen','nitrogen','silicon','sulphur','sodium','chlorine','calcium','titanium','potassium','aluminum','magnesium','iron','lithium','fluorine','phosphorus','nickel','manganese','chromium','zinc','zirconium','rubidium','copper','boron','bromine','vanadium','strontium','tungston','charge carriers']
-limits = [2,5,4,6,6,5,6,4,7,8,6,6,6,6,7,6,6,6,6,6,6,6,6,6,6,6,6,6,6,5]   
+limits = [4,5,4,6,6,5,6,4,7,8,6,6,6,6,7,6,6,6,6,6,6,6,6,6,6,6,6,6,6,5]   
+condensates = indices
 for i in range(0,30):
   fig,ax = plt.subplots()
   el = ellist[i]
@@ -395,9 +422,38 @@ for i in range(0,30):
           if (molname=='el'): nmin = np.min([nmin,np.min(yy[iii])])
           mollist.append(mol)   
           abulist.append(np.mean(yy))
+  for isolid in condensates:
+    solid = solids[isolid]
+    isol = np.where(keyword == 'n'+solid)[0]
+    if (np.size(isol) == 0): continue
+    isol = isol[0]
+    search = el
+    if (len(el)==2): search=al
+    ind = str.find(solid,search)
+    found = 0
+    while (ind>=0):
+      #print solid,ind
+      if (len(search)==2): found=1
+      if (found==0):  
+        if (ind==len(solid)-1): found=2
+      if (found==0):  
+        next1 = solid[ind+1]
+        #print solid,search,next1
+        if (next1.isupper() or next1.isdigit() or next1=='['): found=3
+      if (found>0): break  
+      ind = solid.find(search,ind+1)
+      if (ind<0): break
+      #print 'try again with rest ',ind,len(solid),solid[ind:]
+    if (found>0):
+      yy = dat[:,isol]               # log10 nsolid/n<H>
+      nmax = np.max([nmax,np.max(yy[iii])])
+      maxy = maxy + 10**yy
+      #print found,isol,keyword[isol],np.max(yy[iii])
+      mollist.append(isol)   
+      abulist.append(np.max(yy[iii]))
   if (nmax==-100): continue
-  indices = np.argsort(abulist)
   count = 0
+  indices = np.argsort(abulist)
   maxy = np.log10(maxy)
   nmin = np.min([nmin,np.min(maxy[iii])-limit,nmax-12])
   for ind in reversed(indices):
@@ -405,9 +461,14 @@ for i in range(0,30):
     abu = abulist[ind]
     molname = keyword[mol]
     yy = dat[:,mol]                # log10 nmol [cm-3]
-    yy = yy - lognH                # log10 nmol/n<H>
+    if (mol<=4+NELEM+NMOLE):
+      yy = yy - lognH              # log10 nmol/n<H>
+    else:
+      molname = molname[1:]
+      if (str.find(molname,'[l]')<0):
+        molname = molname+'[s]'
+    #print mol,molname,abu,np.max(yy[iii])
     if (np.max(yy[iii]-maxy[iii])>-limit or molname=='el'):
-      print molname,abu
       plt.plot(Tg,yy,c=colo[count],ls=styl[count],lw=widt[count],label=molname)
       count = count + 1
   plt.title(titel,fontsize=20)

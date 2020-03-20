@@ -154,6 +154,7 @@
       use dust_data,ONLY: NEPS,NELEM,NDUST,eps0,elnam,elnr,
      >                    dust_nel,dust_nu,dust_el,dust_nam
       use DATABASE,ONLY: qp,NDAT,NMODI,NPICK1,NPICK2,DMAX,dbase
+      use CHEMISTRY,ONLY: NELM,elnum,iel=>el
       implicit none
       real*8,intent(in) :: nH,T
       real*8,intent(out) :: qbest
@@ -161,7 +162,7 @@
       real(kind=qp),intent(inout) :: eps(NELEM),ddust(NDUST)
       logical,intent(out) :: active(0:NDUST)
       real*8 :: prod,lp,ln,lT,lpread,lnread,lTread
-      real*8 :: qual,pot,rsort(NEPS)
+      real*8 :: qual,qmodi,pot,pote,potn,rsort(NEPS)
       real(kind=qp) :: check(NELEM),error,errmax,emain,del,sjk,sik
       real(kind=qp) :: stoich(NEPS,NEPS),xx(NEPS),rest(NEPS),tmp,val
       real(kind=qp) :: ecopy(NELEM),dcopy(NDUST),deps0(NELEM),echange
@@ -193,15 +194,18 @@
       qbest  = 9.d+99
       ibest  = 0
       pot    = -0.03
+      pote   = 10.0
+      potn   = 0.05
       !--- try last entry modified first ---
       if (NMODI>0) then
         i=NMODI
         lnread = dbase(i)%ln 
         lTread = dbase(i)%lT
         lpread = dbase(i)%eprod
-        qual = 0.05*ABS(lnread-ln)+ABS((lTread-lT)+pot*(lnread-ln))
-     >       + 10.0*ABS(lpread-lp)
+        qual = potn*ABS(lnread-ln)+ABS((lTread-lT)+pot*(lnread-ln))
+     >       + pote*ABS(lpread-lp)
         qbest = qual
+        qmodi = qual
         ibest = i
         if (qbest<1.d-3) goto 100
       endif  
@@ -210,8 +214,8 @@
         lnread = dbase(i)%ln 
         lTread = dbase(i)%lT
         lpread = dbase(i)%eprod
-        qual = 0.05*ABS(lnread-ln)+ABS((lTread-lT)+pot*(lnread-ln))
-     >       + 10.0*ABS(lpread-lp)
+        qual = potn*ABS(lnread-ln)+ABS((lTread-lT)+pot*(lnread-ln))
+     >       + pote*ABS(lpread-lp)
         if (qual<qbest) then 
           qbest = qual
           ibest = i
@@ -222,8 +226,8 @@
         lnread = dbase(i)%ln 
         lTread = dbase(i)%lT
         lpread = dbase(i)%eprod
-        qual = 0.05*ABS(lnread-ln)+ABS((lTread-lT)+pot*(lnread-ln))
-     >       + 10.0*ABS(lpread-lp)
+        qual = potn*ABS(lnread-ln)+ABS((lTread-lT)+pot*(lnread-ln))
+     >       + pote*ABS(lpread-lp)
         if (qual<qbest) then 
           qbest = qual
           ibest = i
@@ -236,14 +240,15 @@
         lnread = dbase(i)%ln 
         lTread = dbase(i)%lT
         lpread = dbase(i)%eprod
-        qual = 0.05*ABS(lnread-ln)+ABS((lTread-lT)+pot*(lnread-ln))
-     >       + 10.0*ABS(lpread-lp)
+        qual = potn*ABS(lnread-ln)+ABS((lTread-lT)+pot*(lnread-ln))
+     >       + pote*ABS(lpread-lp)
         if (qual<qbest) then 
           qbest = qual
           ibest = i
           if (qbest<1.d-3) goto 100
         endif  
       enddo
+
  100  active = .false.
       condensates = ""
       if (ibest>0) then
@@ -269,6 +274,12 @@
         ecopy = eps
         dcopy = ddust
 
+        !if (NMODI>0) then
+        !  print*,ibest,qbest
+        !  print*,NMODI,qmodi
+        !  read'(A1)',char
+        !endif  
+        
         condensed(:) = .false.
         check = eps
         do i=1,NDUST
@@ -513,7 +524,10 @@
           enddo
         enddo
         errmax = -1.Q0
-        do el=1,NELEM
+        do i=1,NELM
+          if (i==iel) cycle
+          el = elnum(i)
+          !print*,elnam(el),check(el),eps0(el)
           error = ABS(1.Q0-check(el)/eps0(el))
           if (error.gt.errmax) then
             errmax = error

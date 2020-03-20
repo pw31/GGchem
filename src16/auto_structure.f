@@ -8,25 +8,37 @@
      >                    muH,mass,mel,
      >                    dust_nam,dust_mass,dust_Vol,
      >                    dust_nel,dust_el,dust_nu
-      use EXCHANGE,ONLY: nel,nat,nion,nmol,mmol,H,C,N,O
+      use EXCHANGE,ONLY: nel,nat,nion,nmol,mmol,H,C,N,O,Si
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       character(len=20) :: name,short_name(NDUST)
-      real(kind=qp) :: eps(NELEM),eps00(NELEM)
+      real(kind=qp) :: eps(NELEM),eps00(NELEM),eadd
       real(kind=qp) :: Sat(NDUST),eldust(NDUST),out(NDUST)
       real(kind=qp) :: fac,e_reservoir(NELEM),d_reservoir(NDUST)
-      real :: rho,Tg,p,kT,nHges,nges,pgas,ff,fold,mu,muold,dmu,dfdmu
-      real :: p1,p2,T1,T2,g1,g2,mu1,mu2,rho1,rho2
+      real :: rho,Tg,p,kT,nHges,nges,pgas,ff,fold,mu,xx,xold,dx,dfdx
+      real :: muold,dfdmu,dmu
+      real :: p1,p2,T1,T2,g1,g2,mu1,mu2,rho1,rho2,dg,dgold,limit
       real :: zz,dz,Hp,kappa,rhog,rhod,dustV,dustM,km=1.D+5
-      integer :: i,j,k,e,ip,jj,it,NOUT
+      integer :: i,j,k,e,ip,jj,it,NOUT,jbest
+      logical :: out_at(NELEM),out_mol(NMOLE),atom,ex
       logical :: outAllHistory=.false.
       
       !-----------------------------------------------------------
       ! ***  compute base point with equilibrium condensation  ***
       !-----------------------------------------------------------
+      !eadd = 0.2*eps0(Si)
+      !eps0(H) = eps0(H)+1.3Q0*eadd
+      !eps0(O) = eps0(O)+eadd
       Tg = Tmax
       p  = pmax
       mu = muH
+      inquire(file='LastMu.dat',exist=ex)
+      if (ex) then
+        open(12,file='LastMu.dat')
+        read(12,*) mu
+        close(12)
+        mu = mu*muH
+      endif  
       do it=1,99
         nHges = p*mu/(bk*Tg)/muH
         call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
@@ -47,6 +59,7 @@
         if (it==1) then
           muold = mu
           mu = nHges/pgas*(bk*Tg)*muH
+          mu = MAX(0.3*muold,MIN(3.0*muold,mu))
           dmu = mu-muold
         else
           dfdmu = (ff-fold)/(mu-muold)
@@ -57,11 +70,16 @@
           else
             mu = nHges/pgas*(bk*Tg)*muH
           endif  
+          mu = MAX(0.3*muold,MIN(3.0*muold,mu))
         endif
         fold = ff
         print '("p-it=",i3,"  mu=",2(1pE20.12))',it,mu/amu,dmu/mu
         if (ABS(dmu/mu)<1.E-10) exit
       enddo
+      open(12,file='LastMu.dat',status='replace')
+      write(12,*) mu/muH
+      close(12)
+      
       dustV = 0.0
       dustM = 0.0
       do jj=1,NDUST
@@ -69,7 +87,7 @@
         dustM = dustM + eldust(jj)*dust_mass(jj)
       enddo
       print*
-      print*,"The planet surface consists of ..."
+      print'("----- the planet surface consists of ... -----")'
       do jj=1,NDUST
         if (eldust(jj)==0.Q0) cycle
         print'(A18,"  Vfrac=",0pF12.8," %  Mfrac=",0pF12.8," %")',
@@ -91,21 +109,50 @@
       d_reservoir = 0.Q0
       eps00 = eps0
       print*
-      print*,"gas properties ..."
+      print'("----- gas properties ... -----")'
       do e=1,NELM
         if (e==el) cycle
         j = elnum(e) 
         print'("eps(",A2,")=",1pE11.3)',elnam(j),eps(j)
       enddo
       print*
-      print*,"most abundant molecules [mol-fractions]"
-      do j=1,NELEM
-        if (nat(j)>1.E-4*nges) print 3000,catm(j),nat(j)/nges*100
+      print'("----- most abundant molecules [mol-fractions] -----")'
+      out_at=.false.
+      out_mol=.false.
+      do it=1,12
+        limit = 0.0
+        do j=1,NELEM
+          if (nat(j)>limit.and.(.not.out_at(j))) then
+            limit = nat(j)
+            jbest = j
+            atom = .true.
+          endif
+        enddo  
+        do j=1,NMOLE
+          if (nmol(j)>limit.and.(.not.out_mol(j))) then
+            limit = nmol(j)
+            jbest = j
+            atom = .false.
+          endif
+        enddo
+        if (limit<1.E-9*nges) exit
+        if (atom) then
+          print 3000,catm(jbest),nat(jbest)/nges
+          out_at(jbest) = .true.
+        else  
+          print 3000,cmol(jbest),nmol(jbest)/nges
+          out_mol(jbest) = .true.
+        endif
       enddo
-      do j=1,NMOLE
-        if (nmol(j)>1.E-4*nges) print 3000,cmol(j),nmol(j)/nges*100
+      print'("mu[amu] =",0pF8.4)',mu/amu
+      call SUPERSAT(Tg,nat,nmol,Sat)
+      print*
+      print'("----- supersaturation ratios -----")'
+      do i=1,NDUST
+        !if (Sat(i)<1.Q-2) cycle
+        if (index(dust_Nam(i),"H2O")<=0) cycle
+        write(*,'(A18,1pE9.2)') dust_nam(i),Sat(i) 
       enddo
-      print'("mu[amu]=",0pF8.4)',mu/amu
       
       !----------------------------
       ! ***  open output files  ***
@@ -175,66 +222,88 @@
      &       LOG10(MAX(1.Q-300, rhod/rho1)),
      &       LOG10(MAX(1.Q-300, dustV))
         write(71,2011) zz/km,rho1,p1,T1,nHges,mu1/amu,g1/100.0,Hp/km
-
+        
         !-----------------------------------------------------------------
         ! ***  solve chemistry, hydrostatic equilibrium and T~p^kappa  ***
         ! ***  dT/dz = dT/dp dp/dz = -kappa T/p rho g = -kappa mu/k g. ***
         ! ***  eps0(:) and hence muH = rho/n<H> do not change.         ***
+        ! ***  During the iteration, muH is with respect to total      ***
+        ! ***  rho = rho_gas+rho_dust, so muH = rho/n<H>, but mu is    ***
+        ! ***  with respect to rho_gas, so mu = rho_gas/p kT           *** 
         !-----------------------------------------------------------------
         dz  = LOG(pmax/pmin)*Hp/Npoints                 ! step in height
         g2  = grav*Mpl/(Rpl+zz+dz)**2                   ! gravity there
         mu2 = mu1                                       ! initial guess
+        dg  = 0.0                                       ! dust/gas ratio
+        xx  = (1.0+dg)*mu2
         do it=1,99
           T2    = T1 - kappa/bk*0.5*(mu2*g2+mu1*g1)*dz
           p2    = p1*(T2/T1)**(1.0/kappa)               ! target pressure
-          rho2  = p2*mu2/(bk*T2)
-          nHges = rho2/muH                              ! estimated n<H>
+          kT    = bk*T2
+          rho2  = p2/kT*xx                              ! total mass density
+          nHges = rho2/muH                              ! n<H>
           if (model_eqcond) then
             call EQUIL_COND(nHges,T2,eps,Sat,eldust,verbose)
           else
             eps(:) = eps0(:)
           endif  
           call GGCHEM(nHges,T2,eps,.false.,0)
-          kT = bk*T2
           nges = nel
+          rhog = nel*mel
           do j=1,NELEM
             nges = nges + nat(j)
+            rhog = rhog + nat(j)*mass(j)
           enddo
           do j=1,NMOLE
             nges = nges + nmol(j)
+            rhog = rhog + nmol(j)*mmol(j)
           enddo
-          pgas = nges*kT                                ! gas pressure
-          ff   = p2-pgas                                ! remaining error
+          dgold = dg
+          dg    = rho2/rhog-1.0
+          pgas  = nges*kT
+          ff    = p2-pgas                               ! remaining error
           if (it==1) then
+            xold  = xx
             muold = mu2
-            mu2 = nHges/pgas*(bk*T2)*muH
-            dmu = mu2-muold
+            mu2   = rhog*kT/pgas
+            xx    = (1.0+dg)*mu2
+            dx    = xx-xold
+            dmu   = mu2-muold
+            write(98,'(I3,99(1pE14.7))')
+     >            it,xold/amu,xx/amu,dx/xx,0.0,ff,0.0,dgold,dg
           else
+            dfdx  = (ff-fold)/(xx-xold)
+            dx    = -ff/dfdx
             dfdmu = (ff-fold)/(mu2-muold)
             dmu   = -ff/dfdmu
-            !write(98,'(I3,99(1pE14.7))')
-     >      !     it,muold,mu2,fold,ff,dfdmu,dmu/mu2
+            xold  = xx
             muold = mu2
-            if ((dmu>0.0).or.ABS(dmu/mu2)<0.7) then
-              mu2 = muold+dmu
+            if (ABS(dx/xold)<0.7) then
+              xx  = xold+dx
+              mu2 = muold+dmu 
             else
-              mu2 = nHges/pgas*(bk*T2)*muH
+              mu2 = rhog*kT/pgas
+              xx  = (1.0+dg)*mu2
+              dx  = xx-xold
+              dmu = mu2-muold
             endif  
+            write(98,'(I3,99(1pE14.7))')
+     >            it,xold/amu,xx/amu,dx/xx,fold,ff,dfdx,dgold,dg
           endif
           fold = ff
-          print '("p-it=",i3,"  mu=",2(1pE20.12))',it,mu2/amu,dmu/mu2
-          if (ABS(dmu/mu2)<1.E-10) exit
+          print '("p-it=",i3,"  mu=",2(1pE20.12))',it,mu2/amu,dx/xx
+          if (ABS(dx/xx)<1.E-10) exit
         enddo  
-        !print*,p2,pgas
+        print*,p2,pgas
         !print*,bk/kappa*(T2-T1),-0.5*(mu1*g1+mu2*g2)*dz
         !print*,p1**(1-gamma)*T1**gamma,p2**(1-gamma)*T2**gamma
-        !print*,DLOG(p2/p1)/dz,-0.5/bk*(mu1*g1/T1+mu2*g2/T2)
+        !print*,LOG(p2/p1)/dz,-0.5/bk*(mu1*g1/T1+mu2*g2/T2)
         
         !--- make step ---
         zz   = zz+dz
         p1   = p2
         T1   = T2
-        rho1 = rho2
+        rho1 = rhog
         mu1  = mu2
         g1   = g2
 
@@ -282,5 +351,5 @@
  2000 format(9999(1x,A19))
  2010 format(0pF20.6,2(1pE20.6),9999(0pF20.7))
  2011 format(9999(1x,1pE19.10))
- 3000 format(A8,0pF8.4," %")
+ 3000 format(A8,0pF13.9)
       end
