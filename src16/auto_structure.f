@@ -153,6 +153,7 @@
         if (index(dust_Nam(i),"H2O")<=0) cycle
         write(*,'(A18,1pE9.2)') dust_nam(i),Sat(i) 
       enddo
+      return
       
       !----------------------------
       ! ***  open output files  ***

@@ -1,5 +1,5 @@
 # selected elements
-H He C N O F S Cl el
+H C N O F S Cl Fe Mn Si Mg Ca Al Na K Ti He Ne Ar el
 
 # name of file with molecular kp-data
 dispol_BarklemCollet.dat                ! dispol_file
@@ -9,7 +9,7 @@ dispol_WoitkeRefit.dat                  ! dispol_file3
 # abundance options 0=custum, 1=EarthCrust, 2=Ocean, 3=Solar, 4=Meteorites
 .false.               ! pick_mfrac
 0                     ! abund_pick
-abund_Venus.dat
+abund_Venus.in
 
 # equilibrium condensation?
 .true.                ! model_eqcond
@@ -36,4 +36,4 @@ abund_Venus.dat
 
 0                     ! verbose
 
-
+# try 6000 4000 2000 1700 1400 1200 1000 800 735
