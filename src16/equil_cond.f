@@ -47,7 +47,7 @@
       real(kind=qp) :: deplete1,deplete2,small=1.Q-30
       integer,parameter :: itmax=5000
       integer,dimension(NELEM) :: elem,Nslot,eind
-      integer,dimension(NDUST) :: dind,dlin
+      integer,dimension(NDUST) :: dind,dlin,switchedON,switchedOFF
       integer,dimension(NELEM,NDUST) :: dustkind,stoich
       integer :: it,i,j,m,el,el2,Nact,Nact_read,Neq,slots,sl,dk,eq
       integer :: itry,knowns,unknowns,unknown,ii,jj,lastit,laston
@@ -231,29 +231,33 @@
       !--------------------------------------------
       ! ***  load initial state from database?  ***
       !--------------------------------------------
-      call GET_DATA(nHtot,T,epsread,ddustread,qread,iread,
-     >              act_read,method)
       Nact = 0
-      if (qread.lt.1.0.and.useDatabase) then
-        eps    = epsread
-        ddust  = ddustread
-        active = act_read
-        text = "active solids:"
-        Nact_read = 0
-        do i=1,NDUST
-          if (.not.act_read(i)) cycle
-          Nact_read = Nact_read + 1
-          text = trim(text)//" "//trim(dust_nam(i))
-        enddo
-        Nact = Nact_read
-        !verbose = 0
-        !if (qread>1.Q-3.and.Nact>0) verbose=2
-        !if (qread>1.Q-3.and.iread==207) verbose=2
-        !if (method==2) verbose=2
-        if (verbose>0) then
-          write(*,'(" ... using database entry (",I6,
-     >          ") qual=",1pE15.7)') iread,qread
-          write(*,*) trim(text)
+      Nact_read = 0
+      act_read = .false.
+      if (useDatabase) then
+        call GET_DATA(nHtot,T,epsread,ddustread,qread,iread,
+     >                act_read,method)
+        if (qread.lt.1.0) then
+          eps    = epsread
+          ddust  = ddustread
+          active = act_read
+          text = "active solids:"
+          Nact_read = 0
+          do i=1,NDUST
+            if (.not.act_read(i)) cycle
+            Nact_read = Nact_read + 1
+            text = trim(text)//" "//trim(dust_nam(i))
+          enddo
+          Nact = Nact_read
+          !verbose = 0
+          !if (qread>1.Q-3.and.Nact>0) verbose=2
+          !if (qread>1.Q-3.and.iread==207) verbose=2
+          !if (method==2) verbose=2
+          if (verbose>0) then
+            write(*,'(" ... using database entry (",I6,
+     >            ") qual=",1pE15.7)') iread,qread
+            write(*,*) trim(text)
+          endif  
         endif  
       endif
   
@@ -304,6 +308,9 @@
       if (verbose>=0) then
         print'("it =",I4," qual =",1pE13.4E4)',0,qual
       endif  
+      switchedON(:) = 0
+      switchedOFF(:) = 0
+      if (verbose>0) write(97,*)
       act_old = active
       lastit = -99
       iminoff = 0
@@ -337,8 +344,8 @@
                 emax = REAL(dust_nu(i,j),kind=qp)
               endif
             enddo
-            esum = esum**2   ! simple condensates first
-            pot(i)  = 1.0/(0.0*emax+1.0*esum)
+            esum = esum**1.75   ! simple condensates first
+            pot(i)  = 1.0/(0.0*emax+1.0*esum+1.0*switchedOFF(i))
             Sat1(i) = Sat0(i)**pot(i)
             !print'(A20,3(0pF8.3),1pE10.3)',
      >      !     dust_nam(i),emax,esum,pot(i),Sat1(i)
@@ -518,6 +525,10 @@
         do i=1,NDUST
           if (active(i).and.(.not.act_old(i))) then
             laston = i
+            switchedON(i) = switchedON(i)+1
+            if (verbose>0) then
+              write(97,*) it,"on  ",dust_nam(i),switchedON(i)
+            endif  
           endif
         enddo
   
@@ -539,8 +550,9 @@
             rem = "  "
             if (active(i)) rem=" *"
             if (verbose>=0.and.(active(i).or.Sat0(i)>0.1)) then
-              write(*,'(3x,A18,2(1pE11.3)1pE19.10,A2)') 
-     >          dust_nam(i),ddust(i),ddust(i)/dscale(i),Sat0(i),rem
+              write(*,'(3x,A18,2(1pE11.3)1pE19.10,I3,1pE11.3,A2)') 
+     >          dust_nam(i),ddust(i),ddust(i)/dscale(i),Sat0(i),
+     >          switchedOFF(i),pot(i),rem
             endif  
           enddo
           do i=1,NDUST
@@ -1255,6 +1267,10 @@
           if (verbose>=0) print*,"switch off ",dust_nam(iminoff) 
           active(iminoff) = .false.
           lastit = -99
+          switchedOFF(iminoff) = switchedOFF(iminoff)+1
+          if (verbose>0) then
+            write(97,*) it,"off ",dust_nam(iminoff),switchedOFF(iminoff)
+          endif  
           !if (iminoff.eq.laston) then
           !  print*,"=> fall back"
           !  active = save_active
@@ -1334,8 +1350,9 @@
         !xstep(:) = 0.Q0
         !call SUPER(nHtot,T,xstep,eps,Sat0,NewFastLevel<1)
         !qual = SQUAL(Sat0,active)
+        Smax = maxval(Sat0)
         print'("it =",I4," qual =",1pE13.4E4)',it,qual
-        if (qual<1.Q-20) exit
+        if ((Smax<1.Q0+1.Q-15).and.(qual<1.Q-20)) exit
         if (verbose>0) read(*,'(a1)') char1
 
       enddo  
@@ -1437,7 +1454,7 @@
           qual = qual + (Sat(i)-1.Q0/Sat(i))**2
          !qual = qual + LOG(Sat(i))**2
         else if (Sat(i).gt.1.Q0) then
-          qual = qual + MIN(Sat(i)-1.Q0,1.Q0)
+         !qual = qual + MIN(Sat(i)-1.Q0,1.Q0)
         endif  
       enddo
       SQUAL = qual

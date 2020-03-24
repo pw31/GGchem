@@ -2,7 +2,8 @@
       SUBROUTINE AUTO_STRUCTURE
 ***********************************************************************
       use PARAMETERS,ONLY: Rpl,Mpl,Tmax,pmin,pmax,gamma,verbose,
-     >                     model_eqcond,remove_condensates,Npoints
+     >                     model_eqcond,remove_condensates,Npoints,
+     >                     useDataBase
       use CHEMISTRY,ONLY: NELM,NMOLE,elnum,cmol,catm,el,charge
       use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,amu,grav,
      >                    muH,mass,mel,
@@ -137,7 +138,7 @@
         enddo
         if (limit<1.E-9*nges) exit
         if (atom) then
-          print 3000,catm(jbest),nat(jbest)/nges
+          print 3000,elnam(jbest),nat(jbest)/nges
           out_at(jbest) = .true.
         else  
           print 3000,cmol(jbest),nmol(jbest)/nges
@@ -153,7 +154,7 @@
         if (index(dust_Nam(i),"H2O")<=0) cycle
         write(*,'(A18,1pE9.2)') dust_nam(i),Sat(i) 
       enddo
-      return
+      !return
       
       !----------------------------
       ! ***  open output files  ***
@@ -195,6 +196,8 @@
       rho1  = rho                    ! gas mass density [g/cm3]
       mu1   = mu                     ! mean molecular weight [g]
       g1    = grav*Mpl/(Rpl+zz)**2   ! gravity [cm/s2]
+      useDataBase = .false.
+      !verbose = 1
 
       do ip=1,Npoints
         Hp  = bk*T1/(mu1*g1)         ! pressure scale height
@@ -231,6 +234,8 @@
         ! ***  During the iteration, muH is with respect to total      ***
         ! ***  rho = rho_gas+rho_dust, so muH = rho/n<H>, but mu is    ***
         ! ***  with respect to rho_gas, so mu = rho_gas/p kT           *** 
+        ! ***  => rho_gas = rho*(1+dg) = p*mu/kT*(1+dg) = p/kT * xx    ***
+        ! ***  The iteration is done in xx                             ***         
         !-----------------------------------------------------------------
         dz  = LOG(pmax/pmin)*Hp/Npoints                 ! step in height
         g2  = grav*Mpl/(Rpl+zz+dz)**2                   ! gravity there
@@ -279,7 +284,7 @@
             dmu   = -ff/dfdmu
             xold  = xx
             muold = mu2
-            if (ABS(dx/xold)<0.7) then
+            if (ABS(dx/xold)<0.7.and.ABS(dmu/muold)<0.7) then
               xx  = xold+dx
               mu2 = muold+dmu 
             else

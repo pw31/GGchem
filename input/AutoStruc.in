@@ -31,9 +31,9 @@ abund_Venus.in
 12                    ! NewBackIt  
 1.E+12                ! NewBackFac
 1                     ! NewFastLevel
-1400.0                ! Tfast
+1600.0                ! Tfast
 .false.               ! initchem_info
 
-0                     ! verbose
+-1                     ! verbose
 
-# try 6000 4000 2000 1700 1400 1200 1000 800 735
+# try 4000 2000 1700 1400 1200 1000 735
