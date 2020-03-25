@@ -10,6 +10,7 @@
      >                    dust_nam,dust_mass,dust_Vol,
      >                    dust_nel,dust_el,dust_nu
       use EXCHANGE,ONLY: nel,nat,nion,nmol,mmol,H,C,N,O,Si
+      use DATABASE,ONLY: NLAST
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       character(len=20) :: name,short_name(NDUST)
@@ -154,6 +155,8 @@
         if (index(dust_Nam(i),"H2O")<=0) cycle
         write(*,'(A18,1pE9.2)') dust_nam(i),Sat(i) 
       enddo
+      NLAST=0      
+      if (useDatabase) call SAVE_DBASE
       !return
       
       !----------------------------
@@ -196,7 +199,7 @@
       rho1  = rho                    ! gas mass density [g/cm3]
       mu1   = mu                     ! mean molecular weight [g]
       g1    = grav*Mpl/(Rpl+zz)**2   ! gravity [cm/s2]
-      useDataBase = .false.
+      !useDataBase = .false.
       !verbose = 1
 
       do ip=1,Npoints
@@ -300,7 +303,7 @@
           print '("p-it=",i3,"  mu=",2(1pE20.12))',it,mu2/amu,dx/xx
           if (ABS(dx/xx)<1.E-10) exit
         enddo  
-        print*,p2,pgas
+        !print*,p2,pgas
         !print*,bk/kappa*(T2-T1),-0.5*(mu1*g1+mu2*g2)*dz
         !print*,p1**(1-gamma)*T1**gamma,p2**(1-gamma)*T2**gamma
         !print*,LOG(p2/p1)/dz,-0.5/bk*(mu1*g1/T1+mu2*g2/T2)
@@ -324,7 +327,8 @@
      &                       + fac*dust_nu(j,jj)*eldust(j)
             enddo
           enddo  
-          if (verbose>=0) then
+          if (verbose>0) then
+            print*,"fractions of elements still in the gas phase ..."
             do j=1,NELM
               if (j==el) cycle 
               k = elnum(j)

@@ -23,7 +23,8 @@
       use CHEMISTRY,ONLY: NewFastLevel,NELM,elnum,iel=>el
       use CONVERSION,ONLY: Nind,Ndep,Iindex,Dindex,is_dust,conv
       use EXCHANGE,ONLY: Fe,Mg,Si,Al,Ca,Ti,C,O,S,Na,Cl,H,Li,Mn,W,Ni,Cr,
-     >                   Kalium=>K,Zr,V,itransform,ieqcond,ieqconditer
+     >                   Fluor=>F,Kalium=>K,Zr,V,
+     >                   itransform,ieqcond,ieqconditer
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       real*8,intent(in) :: nHtot                ! H nuclei density [cm-3]
@@ -45,6 +46,7 @@
       real(kind=qp) :: deps1,deps2,deps,esum,emax,NRstep
       real(kind=qp) :: det(2),converge(5000,NELEM),crit,cbest
       real(kind=qp) :: deplete1,deplete2,small=1.Q-30
+      real(kind=qp) :: dterm,dtmax,dlim,target
       integer,parameter :: itmax=5000
       integer,dimension(NELEM) :: elem,Nslot,eind
       integer,dimension(NDUST) :: dind,dlin,switchedON,switchedOFF
@@ -86,7 +88,7 @@
       integer,save :: iS_l=0,iK2SiO3=0,iK2SiO3_l=0,iTiC_l=0,iTi=0
       integer,save :: iTi_l=0,iTiO=0,iTiO_l=0,iSiS2_l=0,iLiOH=0
       integer,save :: iLiOH_l=0,iMnS=0,iW=0,iW_l=0,iZrO2=0,iZrSiO4=0
-      integer,save :: iVO=0,iV2O3=0,iCr=0
+      integer,save :: iVO=0,iV2O3=0,iCr=0,iH2SO4=0,iS2=0
       integer,save :: iNi=0,iNi_l,iNi3S2=0,iFe3O4=0,iKMg3AlSi3O12H2=0
       integer,save :: iKFe3AlSi3O12H2=0,iMg3Si2O9H4=0,iFe3Si2O9H4=0
       integer,save :: iMgCr2O4=0,iCr2O3=0,iMn3Al2Si3O12=0,iMn2SiO4=0
@@ -211,6 +213,8 @@
           if (dust_nam(i).eq.'NaMg3AlSi3O12H2[s]') iNaMg3AlSi3O12H2=i
           if (dust_nam(i).eq.'VO[s]')         iVO=i
           if (dust_nam(i).eq.'V2O3[s]')       iV2O3=i
+          if (dust_nam(i).eq.'H2SO4[s]')      iH2SO4=i
+          if (dust_nam(i).eq.'S2[s]')         iS2=i
         enddo
         firstCall = .false. 
       endif
@@ -1156,18 +1160,18 @@
           jj = jj+1
           act_to_elem(jj) = j
           el = Iindex(j) 
-          deps1 = +1.Q-6*eps(el)            ! limited by el abundance
-          deps2 = -1.Q-6*eps(el)            ! limited by el abundance
+          deps1 = +1.Q-7*eps(el)            ! limited by el abundance
+          deps2 = -1.Q-7*eps(el)            ! limited by el abundance
           if (T<Tfast) then
-            deps1 = +1.Q-12*eps(el)         ! quadrupole precision chemistry calls
-            deps2 = -1.Q-12*eps(el) 
+            deps1 = +1.Q-14*eps(el)         ! quadrupole precision chemistry calls
+            deps2 = -1.Q-14*eps(el) 
           endif  
           do i=1,Ndep
             if (conv(i,j)==0.Q0) cycle
             if (is_dust(i)) cycle
             el2 = Dindex(i)                 ! limited by dep. element?
-            del = 1.Q-6*eps(el2)/conv(i,j)
-            if (T<Tfast) del=1.Q-12*eps(el2)/conv(i,j)
+            del = 1.Q-7*eps(el2)/conv(i,j)
+            if (T<Tfast) del=1.Q-14*eps(el2)/conv(i,j)
             if (del>0.Q0) deps2=MAX(deps2,-del)
             if (del<0.Q0) deps1=MIN(deps1,-del)
             !if (verbose>1) print*,elnam(el)//" "//elnam(el2),
@@ -1175,15 +1179,34 @@
           enddo
           deps = deps2
           if (ABS(deps1)>ABS(deps2)) deps=deps1
-          xstep(:) = 0.Q0
-          xstep(j) = deps
           scale(j) = eps(el)
-          call SUPER(nHtot,T,xstep,eps,Sat2,NewFastLevel<1)
-          do ii=1,Nsolve
-            i  = act_to_dust(ii) 
-            dk = Dindex(i)
-            !DF(ii,jj) = (Sat2(dk)-Sat0(dk))/deps*scale(j)
-            DF(ii,jj) = LOG(Sat0(dk)/Sat2(dk))/deps*scale(j)
+          if (T>Tfast) then
+            dlim = 1.Q-12
+            target = 1.Q-4
+          else
+            dlim = 1.Q-30
+            target = 1.Q-8
+          endif  
+          do
+            xstep(:) = 0.Q0
+            xstep(j) = deps
+            call SUPER(nHtot,T,xstep,eps,Sat2,NewFastLevel<1)
+            dtmax = 0.Q0
+            do ii=1,Nsolve
+              i  = act_to_dust(ii) 
+              dk = Dindex(i)
+              !DF(ii,jj) = (Sat2(dk)-Sat0(dk))/deps*scale(j)
+              dterm = LOG(Sat0(dk)/Sat2(dk))
+              dtmax = MAX(dtmax,ABS(dterm))
+              DF(ii,jj) = dterm/deps*scale(j)
+            enddo  
+            !if (verbose>1) then
+            !  print'(A3,3(1pE11.3))',elnam(el),deps/eps(el),
+     >      !                         dtmax,dtmax/deps*scale(j)
+            !endif  
+            if (dtmax<target.or.ABS(deps)<dlim*eps(el)) exit
+            !--- decrease deps to get more precice DF-entry ---
+            deps = deps * 2.Q-1
           enddo  
         enddo            
         if (verbose>1) then

@@ -125,14 +125,14 @@
           stop
         endif  
       endif  
-      prod = 1.0
+      prod = 0.0
       do e=1,NEPS
         el = elnr(e) 
-        prod = prod * eps0(el)
+        prod = prod + LOG(eps0(el))
       enddo  
       dbase(i)%ln    = LOG(nH)
       dbase(i)%lT    = LOG(T)
-      dbase(i)%eprod = LOG(prod)
+      dbase(i)%eprod = prod
       dbase(i)%eps   = eps
       do j=1,NDUST
         !if (ddust(j)>0.Q0) print*,active(j),dust_nam(j),real(ddust(j))
@@ -150,7 +150,7 @@
 **********************************************************************
       subroutine GET_DATA(nH,T,eps,ddust,qbest,ibest,active,method)
 **********************************************************************
-      use PARAMETERS,ONLY: verbose
+      use PARAMETERS,ONLY: verbose,remove_condensates
       use dust_data,ONLY: NEPS,NELEM,NDUST,eps0,elnam,elnr,
      >                    dust_nel,dust_nu,dust_el,dust_nam
       use DATABASE,ONLY: qp,NDAT,NMODI,NPICK1,NPICK2,DMAX,dbase
@@ -180,17 +180,17 @@
         firstCall = .false.
       endif  
 
-      prod = 1.0
+      prod = 0.0
       do e=1,NEPS
         el = elnr(e) 
-        prod = prod * eps0(el)
+        prod = prod + LOG(eps0(el))
       enddo
       if (verbose>=0) then
         print'("looking for nH,T,eprod=",3(1pE13.5)," ...")',nH,T,prod
       endif  
       ln = LOG(nH)
       lT = LOG(T) 
-      lp = LOG(prod)
+      lp = prod
       qbest  = 9.d+99
       ibest  = 0
       pot    = -0.03
@@ -268,7 +268,7 @@
           write(*,'(" ... found best dataset (",I6,")  
      >      nH,T,eprod,qual=",4(1pE13.5))')
      >      ibest,EXP(dbase(ibest)%ln),EXP(dbase(ibest)%lT),
-     >      EXP(dbase(ibest)%eprod),qbest
+     >      dbase(ibest)%eprod,qbest
           write(*,*) "active condensates: "//trim(condensates)
         endif  
         ecopy = eps
@@ -280,6 +280,25 @@
         !  read'(A1)',char
         !endif  
         
+        if (remove_condensates) then
+          !--- check whether ddust=0 would result in perfect fit ---
+          errmax = -1.Q0
+          do e=1,NEPS
+            el = elnr(e) 
+            error = ABS(1.Q0-eps(el)/eps0(el))
+            if (error.gt.errmax) then
+              errmax = error
+              elworst = el
+            endif   
+          enddo
+          if (verbose>1) print*,"checking ddust=0",errmax
+          if (errmax<1.Q-25) then
+            ddust = 0.Q0
+            qbest = MIN(qbest,0.01)
+            return
+          endif
+        endif
+  
         condensed(:) = .false.
         check = eps
         do i=1,NDUST
@@ -540,6 +559,8 @@
           print*,elnam(elworst),errmax
           stop
         endif  
+        !--- for remove_condensates models: force new entry --- 
+        if (echange==0.Q0.and.maxval(ddust)==0.Q0) qbest=MIN(qbest,0.01)
       endif
 
       end

@@ -7,9 +7,9 @@ dispol_StockKitzmann_withoutTsuji.dat   ! dispol_file2
 dispol_WoitkeRefit.dat                  ! dispol_file3
 
 # abundance options 0=custum, 1=EarthCrust, 2=Ocean, 3=Solar, 4=Meteorites
-.true.                ! pick_mfrac
+.false.               ! pick_mfrac
 0                     ! abund_pick
-mfrac_CIcond.dat
+abund_Venus.in
 
 # equilibrium condensation?
 .true.                ! model_eqcond
@@ -20,18 +20,19 @@ mfrac_CIcond.dat
 1                     ! model_dim (0,1,2)
 .true.                ! model_pconst
 .true.                ! auto_atmos (attach polytopic atmosphere)   
-1.25                  ! gamma (polytropic index)
-400                   ! Tmax [K]
-1.0                   ! pmax [bar]  
+1.2                   ! gamma (polytropic index)
+735                   ! Tmax [K]
+90.0                  ! pmax [bar]  
 10.E-3                ! pmin [bar]
 300                   ! Npoints
-1.0                   ! Mplanet [MEarth]
-1.0                   ! Rplanet [REarth]
+0.815                 ! Mplanet [MEarth]
+0.950                 ! Rplanet [REarth]
+100                   ! Npoints
 12                    ! NewBackIt  
-1.E+12                ! NewBackFac
+1.E+14                ! NewBackFac
 1                     ! NewFastLevel
 1600.0                ! Tfast
 .false.               ! initchem_info
 
--1                     ! verbose
+0                     ! verbose
 
