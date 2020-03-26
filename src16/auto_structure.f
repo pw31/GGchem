@@ -245,6 +245,7 @@
         mu2 = mu1                                       ! initial guess
         dg  = 0.0                                       ! dust/gas ratio
         xx  = (1.0+dg)*mu2
+        ff  = p2
         do it=1,99
           T2    = T1 - kappa/bk*0.5*(mu2*g2+mu1*g1)*dz
           p2    = p1*(T2/T1)**(1.0/kappa)               ! target pressure
@@ -267,42 +268,44 @@
             nges = nges + nmol(j)
             rhog = rhog + nmol(j)*mmol(j)
           enddo
-          dgold = dg
-          dg    = rho2/rhog-1.0
           pgas  = nges*kT
           ff    = p2-pgas                               ! remaining error
+          dgold = dg
+          dg    = rho2/rhog-1.0
           if (it==1) then
-            xold  = xx
             muold = mu2
+            xold  = xx
             mu2   = rhog*kT/pgas
             xx    = (1.0+dg)*mu2
             dx    = xx-xold
             dmu   = mu2-muold
-            write(98,'(I3,99(1pE14.7))')
-     >            it,xold/amu,xx/amu,dx/xx,0.0,ff,0.0,dgold,dg
+            xold  = xx
+            fold  = ff
+            muold = mu2
           else
+            mu2   = rhog*kT/pgas
+            xx    = (1.0+dg)*mu2
             dfdx  = (ff-fold)/(xx-xold)
             dx    = -ff/dfdx
             dfdmu = (ff-fold)/(mu2-muold)
             dmu   = -ff/dfdmu
             xold  = xx
+            fold  = ff
             muold = mu2
-            if (ABS(dx/xold)<0.7.and.ABS(dmu/muold)<0.7) then
-              xx  = xold+dx
-              mu2 = muold+dmu 
-            else
-              mu2 = rhog*kT/pgas
-              xx  = (1.0+dg)*mu2
-              dx  = xx-xold
-              dmu = mu2-muold
-            endif  
-            write(98,'(I3,99(1pE14.7))')
-     >            it,xold/amu,xx/amu,dx/xx,fold,ff,dfdx,dgold,dg
+            if (ABS(dx/xold)<0.5.and.ABS(dmu/mu2)<0.5) then
+              xx   = xx+dx
+              !mu2 = xx/(1.0+dg)
+              mu2  = mu2+dmu 
+            endif
           endif
-          fold = ff
+          !write(98,'(I3,99(2(1pE14.7),2x))')
+     >    !        it,xx/amu,dx/xx,mu2/amu,dmu/mu2,dg-dgold
           print '("p-it=",i3,"  mu=",2(1pE20.12))',it,mu2/amu,dx/xx
-          if (ABS(dx/xx)<1.E-10) exit
+          if (ABS(dmu/mu2)<1.E-7.and.ABS(dx/xx)<1.E-7) exit
         enddo  
+        if (it.ge.99) then
+          stop "mu-iteration in auto_structure.f not converging."
+        endif  
         !print*,p2,pgas
         !print*,bk/kappa*(T2-T1),-0.5*(mu1*g1+mu2*g2)*dz
         !print*,p1**(1-gamma)*T1**gamma,p2**(1-gamma)*T2**gamma

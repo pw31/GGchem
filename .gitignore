@@ -3,6 +3,7 @@ fort.*
 GIT.commands
 src16/*.o
 src16/*.mod
+src16/*.bak
 src16/makefile
 src16/ggchem16
 src16/*~
@@ -17,11 +18,13 @@ TEAout*old
 ggchem*.atm
 ggchem*.pdf
 Summer*
+LastMu.dat
 data/JANAF/a.out
 data/JANAF/*~
 data/JANAF/fitout*
 data/JANAF/*.pdf
 data/JANAF/*fitdata*
+data/JANAF/AlJanaf
 tools/kp.pdf
 *.in
 logfile
