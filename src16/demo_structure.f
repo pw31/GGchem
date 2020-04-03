@@ -6,11 +6,12 @@
      >                     model_struc,struc_file,remove_condensates,
      >                     model_eqcond
       use CHEMISTRY,ONLY: NELM,NMOLE,elnum,cmol,catm,el,charge
-      use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,muH,mass,
+      use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,
+     >                    muH,mass,mel,
      >                    amu,dust_nam,dust_mass,dust_Vol,
      >                    dust_nel,dust_el,dust_nu
-      use EXCHANGE,ONLY: nel,nat,nion,nmol,H,C,N,O,W
-      use STRUCTURE,ONLY: Npmax,Tgas,press,pelec,dens,nHtot,estruc
+      use EXCHANGE,ONLY: nel,nat,nion,nmol,mmol,H,C,N,O,W
+      use STRUCTURE,ONLY: Npmax,Tgas,press,pelec,dens,nHtot,estruc,zz
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       real(kind=qp) :: eps(NELEM),eps00(NELEM)
@@ -18,7 +19,7 @@
       real(kind=qp) :: fac,e_reservoir(NELEM),d_reservoir(NDUST)
       real :: dat(1000),ddust
       real :: tau,p,pe,Tg,rho,nHges,nges,kT,pgas,mu
-      real :: muold,dmu,ff,fold,dfdmu
+      real :: muold,dmu,ff,fold,dfdmu,km=1.D+5
       real :: Jstar,Nstar,rhog,dustV,rhod,L3,bmix,emono,zdum
       integer :: i,j,k,l,e,jj,iz,dk,NOUT,Nfirst,Nlast,Ninc,iW,idum
       integer :: it,n1,n2,n3,n4,n5,Ndat,dind(1000),ek,eind(1000)
@@ -66,7 +67,7 @@
         Ninc   = -1  ! botton to top
 
       !--------------------------------------------------------
-      else if (model_struc==2) then
+      else if (model_struc==2) then    ! tp_w18.dat
       !--------------------------------------------------------
         open(3,file=filename,status='old')
         Npoints = 48
@@ -185,7 +186,7 @@
         Ninc   = -1            ! bottom to top
 
       !--------------------------------------------------------
-      else if (model_struc==5) then
+      else if (model_struc==5) then   ! Jup-T-p.dat
       !--------------------------------------------------------
         open(3,file=filename,status='old')
         do i=1,1
@@ -206,7 +207,7 @@
         Ninc   = 1             ! bottom to top
 
       !--------------------------------------------------------
-      else if (model_struc==6) then
+      else if (model_struc==6) then   ! StaticWeather output
       !--------------------------------------------------------
         open(3,file=filename,status='old')
         read(3,'(A200)') line
@@ -215,6 +216,7 @@
         read(3,'(A200)') line
         do i=1,999999
           read(3,*,end=666) dat(1:5)
+          zz(i)    = dat(1)
           Tgas(i)  = dat(2)
           nHtot(i) = dat(3)
           dens(i)  = dat(4)
@@ -286,10 +288,10 @@
         close(3)
         Nfirst = Npoints
         Nlast  = 1
-        Ninc   = -1            ! top to bottom to top
+        Ninc   = -1            ! top to bottom 
 
       !--------------------------------------------------------
-      else if (model_struc==7) then
+      else if (model_struc==7) then     ! VenusHighFit.dat
       !--------------------------------------------------------
         open(3,file=filename,status='old')
         do i=1,1
@@ -298,6 +300,7 @@
         read(3,*) Npoints
         do i=1,Npoints
           read(3,*) idum,zdum,p,Tg
+          zz(i) = zdum*km
           Tgas(i)  = Tg
           press(i) = p*bar
           estruc(i,:) = eps0(:)
@@ -338,6 +341,9 @@
      &               ('eps'//trim(elnam(elnum(j))),j=1,el-1),
      &               ('eps'//trim(elnam(elnum(j))),j=el+1,NELM),
      &               'dust/gas','dustVol/H','Jstar(W)','Nstar(W)'
+      open(unit=71,file='Structure.dat',status='replace')
+      write(71,2000) 'z[km]','rho[g/cm3]','pgas[dyn/cm2]','T[K]',
+     &               'n<H>[cm-3]','mu[amu]','g[m/s2]','Hp[km]'
 
       !-------------------------------------
       ! ***  run chemistry on structure  ***
@@ -373,14 +379,17 @@
           call GGCHEM(nHges,Tg,eps,.false.,0)
           kT = bk*Tg
           nges = nel
+          rhog = nel*mel
           do j=1,NELEM
             nges = nges + nat(j)
+            rhog = rhog + nat(j)*mass(j)
           enddo
           do j=1,NMOLE
             nges = nges + nmol(j)
+            rhog = rhog + nmol(j)*mmol(j)
           enddo
           pgas = nges*kT
-          ff    = p-pgas
+          ff   = p-pgas
           if (it==1) then
             muold = mu
             mu = nHges/pgas*(bk*Tg)*muH
@@ -440,7 +449,6 @@
         endif  
 
         !--- compute dust/gas density ratio ---
-        rhog  = nHges*muH
         rhod  = 0.0
         dustV = 0.0
         do jj=1,NDUST
@@ -470,16 +478,19 @@
      &       LOG10(MAX(1.Q-300, dustV)),
      &       LOG10(MAX(1.Q-300, Jstar)), 
      &       MIN(999999.99999,Nstar)
+        write(71,2011) zz(i)/km,rhog,pgas,Tg,nHges,rhog/nges/amu,0.0,0.0
 
         if (verbose>0) read(*,'(a1)') char
 
       enddo  
 
       close(70)
+      close(71)
 
  1000 format(4(' eps(',a2,') = ',1pD8.2))
  1010 format(A4,0pF8.2,3(a6,1pE9.2),1(a11,1pE9.2))
  2000 format(9999(1x,A19))
  2010 format(0pF20.6,2(1pE20.6),9999(0pF20.7))
+ 2011 format(9999(1x,1pE19.10))
       end  
 

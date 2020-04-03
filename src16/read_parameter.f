@@ -7,7 +7,7 @@
      >     abund_file,struc_file,remove_condensates,phyllosilicates,
      >     initchem_info,auto_atmos,Mpl,Rpl,gamma 
       use CHEMISTRY,ONLY: NewBackIt,NewFullIt,NewBackFac,NewPreMethod,
-     >                    NewFastLevel,dispol_file
+     >                    NewFastLevel,Natmax,dispol_file
       use DUST_DATA,ONLY: DustChem_file,bar,MEarth,REarth
       implicit none
       integer :: iarg,iline,i,dispol_set
@@ -50,6 +50,7 @@
       NewBackFac   = 1.E+2
       NewFastLevel = 1
       NewPreMethod = 3
+      Natmax       = 16
 
       !-------------------------------------------
       ! ***  change parameters via input file  ***
@@ -131,6 +132,8 @@
           read(line,*) NewFastLevel
         else if (index(line,"! NewPreMethod")>0) then 
           read(line,*) NewPreMethod
+        else if (index(line,"! Natmax")>0) then 
+          read(line,*) Natmax
         else if (index(line,"! useDatabase")>0) then 
           read(line,*) useDatabase
         else if (index(line,"! dispol_file2")>0) then 

@@ -4,7 +4,7 @@
       use PARAMETERS,ONLY: elements,initchem_info
       use CHEMISTRY,ONLY: NMOLdim,NMOLE,NELM,catm,cmol,el,
      &    dispol_file,source,fit,natom,a,error,i_nasa,
-     &    m_kind,m_anz,elnum,elion,charge,
+     &    m_kind,m_anz,elnum,elion,charge,Natmax,Ncmax,STOImax,
      &    el,H,He,Li,Be,B,C,N,O,F,Ne,Na,Mg,Al,Si,P,S,Cl,Ar,K,Ca,Sc,
      &    Ti,V,Cr,Mn,Fe,Co,Ni,Cu,Zn,Ga,Ge,As,Se,Br,Kr,Rb,Sr,Y,Zr,W
       use DUST_DATA,ONLY: mass,mel,amu
@@ -15,6 +15,7 @@
       character(len=20) :: molname,upper,leer='                    '
       character(len=200) :: filename
       character(len=300) :: line
+      character(len=1) :: char
       logical :: found,charged
       real*8 :: fiterr
 
@@ -88,8 +89,8 @@
       allocate(cmol(NMOLdim),fit(NMOLdim),natom(NMOLdim))
       allocate(error(NMOLdim),a(NMOLdim,0:13))
       allocate(source(NMOLdim),m_kind(0:6,NMOLdim),m_anz(6,NMOLdim))
-      i=1
       i_nasa = 0
+      i = 1
       do loop=1,4
         filename = trim(dispol_file(loop))
         if (filename=='') exit
@@ -111,9 +112,11 @@
           read(line,*) fit(i)
           if (fit(i)==6) then
             read(line,*) fit(i),(a(i,j),j=0,7)
-          elseif(fit(i)==7) then
-             i_nasa = 1
-             read(line,*) fit(i),(a(i,j),j=0,13)
+          else if (fit(i)==7) then
+            i_nasa = 1
+            read(line,*) fit(i),(a(i,j),j=0,13)
+          else if (fit(i)==8) then
+            read(line,*) fit(i),(a(i,j),j=0,13)
           else   
             read(line,*) fit(i),(a(i,j),j=0,4)
           endif  
@@ -127,7 +130,7 @@
             smax = MAX(smax,ABS(m_anz(j,i)))
           enddo  
           if (.not.found) cycle    ! molecule has unselected element 
-          if (smax>16) cycle       ! stoichiometric coefficient > 16
+          if (smax>Natmax) cycle   ! stoichiometric coefficient > Natmax
           if (m_kind(0,i)==1.and.natom(i)==1) cycle  ! pure atom
           j = index(molname,"_")
           if (j>1) then
@@ -189,7 +192,7 @@
       NMOLE = i-1
       allocate(nmol(NMOLE),mmol(NMOLE))
 
-      if(i_nasa==1) call NASA_POLYNOMIAL !Added by Yui Kawashima
+      if (i_nasa==1) call NASA_POLYNOMIAL !Added by Yui Kawashima
 
       if (loop>1.and.initchem_info) then
         print* 
@@ -212,24 +215,28 @@
       !close(1)
       !stop
 
+      STOImax(:) = 0
       do i=1,NMOLE
         mmol(i) = 0.d0
         do j=1,m_kind(0,i)
-          if (m_kind(j,i)==el) then
+          e = m_kind(j,i)
+          if (e==el) then
             mmol(i) = mmol(i) + m_anz(j,i)*mel
           else
-            mmol(i) = mmol(i) + m_anz(j,i)*mass(elnum(m_kind(j,i)))
+            mmol(i) = mmol(i) + m_anz(j,i)*mass(elnum(e))
           endif
+          STOImax(e) = MAX(STOImax(e),m_anz(j,i))
         enddo
         !print*,cmol(i),mmol(i)/amu
       enddo  
+      Ncmax = MAXVAL(STOImax)   ! maximum stoichiometric factor
 
       print* 
       print*,NMOLE,' species'
       print*,NELM,' elements'
       print'(99(A4))',(trim(catm(j)),j=1,NELM)
       print'(99(I4))',elnum(1:NELM)
-      !print'(99(I4))',H,He,C,N,O,Si,Mg,Fe,Na,Al,S,Ca,Ti,Cl,K,Li,el
+      print'(99(I4))',STOImax(1:NELM)
       if (charge) then
         print'(1x,99(A4))',(trim(cmol(elion(j))),j=1,el-1),'  ',
      >                     (trim(cmol(elion(j))),j=el+1,NELM)
@@ -252,6 +259,7 @@
       integer,intent(OUT) :: ret
       integer :: i,j,jj,el,ambi
       logical :: found,allfound,eqname,eqsource
+      character(len=1) :: char1
 
       ret  = 0
       ambi = 0
@@ -274,7 +282,7 @@
             exit                            ! different stoich.fac.
           endif
         enddo
-        if (.not.allfound) cycle
+        if (.not.allfound) cycle            
         eqname = (trim(molname)==trim(cmol(i)))
         eqsource = (loop==source(i))
         if (eqname.and.eqsource) then
@@ -302,6 +310,14 @@
           endif  
           ret = 0
           return
+        else if (trim(dispol_file(loop))=="dispol_BURCAT.dat") then
+          print*,"*** "//trim(molname)//", "//trim(cmol(ambi))//
+     &         " ambiguous names in ..."
+          print*,trim(dispol_file(loop))//
+     &         ", "//trim(dispol_file(source(ambi)))
+          print*,"will overwrite ..."
+          ret = ambi
+          !read(*,'(A1)') char1
         else  
           print*,"*** "//trim(molname)//", "//trim(cmol(ambi))//
      &         " ambiguous names in ..."

@@ -25,14 +25,14 @@ for i in range(0,NBC*2,2):
   tmp = lines[i+1].split()[1:6]
   for j in range(0,5):
     BCdat[i/2,j] = float(tmp[j])
-print "BC species",BCname
+print "BC species",NBC,BCname
 
 f = open('../data/dispol_GGchem.dat','r')
 header = f.readline()
 lines = f.readlines()[:]
 f.close
 NGG = int(header)
-GGname = np.empty(NGG, dtype="S12")
+GGname = np.empty(NGG, dtype="S18")
 GGdat  = np.zeros([NGG,5])
 GGcode = np.zeros(NGG,dtype='int')
 for i in range(0,NGG*2,2):
@@ -42,7 +42,25 @@ for i in range(0,NGG*2,2):
   dat = lines[i+1].split()[1:6]
   for j in range(0,5):
     GGdat[i/2,j] = float(dat[j])
-print "GG species",GGname
+print "GG species",NGG,GGname
+
+f = open('../data/dispol_BURCAT.dat','r')
+header = f.readline()
+lines = f.readlines()[:]
+f.close
+NBU = int(header)
+BUname = np.empty(NBU, dtype="S18")
+BUdat  = np.zeros([NBU,14])
+BUcode = np.zeros(NBU,dtype='int')
+for i in range(0,NBU*2,2):
+  #print lines[i]
+  BUname[i/2] = lines[i].split()[0]
+  BUcode[i/2] = int(lines[i+1].split()[0])
+  dat = lines[i+1].split()[1:15]
+  for j in range(0,14):
+    BUdat[i/2,j] = float(dat[j])
+np.set_printoptions(threshold=3000)
+print "BU species",NBU,BUname
 
 f = open('../data/dispol_StockKitzmann.dat','r')
 header = f.readline()
@@ -57,7 +75,7 @@ for i in range(0,NSK*2,2):
   dat = lines[i+1].split()[1:6]
   for j in range(0,5):
     SKdat[i/2,j] = float(dat[j])
-print "SK species",SKname
+print "SK species",NSK,SKname
 
 f = open('../data/dispol_Tsuji.dat','r')
 header = f.readline()
@@ -117,8 +135,8 @@ if (len(ind1)>0):
     #print "GGchem",GGname[ind1[0]],a
     plt.plot(T,lnkp1/ln10,c='black',lw=2.5,label='old GGchem')
     print "GGchem",GGname[ind1[0]],a
-    kpmean = kpmean+lnkp1
-    Nmean = Nmean+1
+    #kpmean = kpmean+lnkp1
+    #Nmean = Nmean+1
   else:
     ind1=''  
 
@@ -140,8 +158,8 @@ if (len(ind4)>0):
     lnkp4 = -dG/(Rcal*T) + (1-Natom)*np.log(atm)
     print 'S&H',SHname[ind4[0]],a
     plt.plot(T,lnkp4/ln10,c='orange',lw=1.5,label='Sharp & Huebner')
-    kpmean = kpmean+lnkp4
-    Nmean = Nmean+1
+    #kpmean = kpmean+lnkp4
+    #Nmean = Nmean+1
   else:
     ind4 = ''
     
@@ -160,10 +178,31 @@ if (len(ind3)>0):
   a     = BCdat[ind3[0],0:5]
   dGRT  = a[0]/T + a[1]*np.log(T) + a[2] + a[3]*T + a[4]*T**2
   lnkp3 = dGRT + (1-Natom)*np.log(bar)
-  print 'BC',BCname[ind3[0]],a
+  print 'B&C',BCname[ind3[0]],a
   plt.plot(T,lnkp3/ln10,c='blue',ls='--',lw=1.5,label='Barklem & Collet')
   kpmean = kpmean+lnkp3
   Nmean = Nmean+1
+
+ind6 = np.where(name.upper()==BUname)[0]
+if (len(ind6)>0):
+  a = BUdat[ind6[0],0:14]
+  lnkp6 = 0.0*T 
+  j = 0
+  for Tg in T:
+    if (Tg>1000.0):
+      H_RT = a[0]            + a[1]*Tg/2.0 + a[2]*Tg**2/3.0 +  a[3]*Tg**3/4.0 +  a[4]*Tg**4/5.0 +  a[5]/Tg
+      S_R  = a[0]*np.log(Tg) + a[1]*Tg     + a[2]*Tg**2/2.0 +  a[3]*Tg**3/3.0 +  a[4]*Tg**4/4.0 +  a[6]
+    else:  
+      H_RT = a[7]            + a[8]*Tg/2.0 + a[9]*Tg**2/3.0 + a[10]*Tg**3/4.0 + a[11]*Tg**4/5.0 + a[12]/Tg
+      S_R  = a[7]*np.log(Tg) + a[8]*Tg     + a[9]*Tg**2/2.0 + a[10]*Tg**3/3.0 + a[11]*Tg**4/4.0 + a[13]
+    dGRT = H_RT - S_R
+    lnkp6[j] = -dGRT + (1-Natom)*np.log(bar)
+    j += 1
+  print "BURCAT",BUname[ind6[0]],a
+  plt.plot(T,lnkp6/ln10,c='red',ls=':',lw=2.0,label='BURCAT')
+  kpmean = kpmean+lnkp6
+  Nmean = Nmean+1
+
 
 kpmean = kpmean/Nmean
 plt.xlabel(r'$T\,\mathrm{[K]}$',fontsize=15)
@@ -219,6 +258,12 @@ if (len(ind3)>0):
   ymax = np.max([ymax,np.max(lnkp3[iT]-kpmean[iT])])
   print "BC",ymin,ymax
 
+if (len(ind6)>0):
+  plt.plot(T,(lnkp6-kpmean)/ln10,c='red',ls=':',lw=2.0,label='BURCAT')
+  ymin = np.min([ymin,np.min(lnkp6[iT]-kpmean[iT])])
+  ymax = np.max([ymax,np.max(lnkp6[iT]-kpmean[iT])])
+  print "BU",ymin,ymax
+
 plt.xlabel(r'$T\,\mathrm{[K]}$',fontsize=15)
 plt.ylabel(r'$\log_{10} k_p - \langle\log_{10} k_p\rangle \mathrm{[cgs]}$',fontsize=15)
 plt.title(name)
@@ -244,8 +289,8 @@ Nmean = 0
 fig,ax = plt.subplots(figsize=(4,4))
 if (len(ind1)>0):
   dG  = ((1-Natom)*np.log(bar) - lnkp1)*R*T/1000
-  Gmean = Gmean+dG
-  Nmean = Nmean+1
+  #Gmean = Gmean+dG
+  #Nmean = Nmean+1
   plt.plot(T,dG,c='black',lw=2.5,label='old GGchem')
 
 if (len(ind2)>0):
@@ -271,6 +316,12 @@ if (len(ind3)>0):
   Gmean = Gmean+dG
   Nmean = Nmean+1
   plt.plot(T,dG,c='blue',ls='--',lw=1.5,label='Barklem & Collet')
+
+if (len(ind6)>0):
+  dG  = ((1-Natom)*np.log(bar) - lnkp6)*R*T/1000
+  Gmean = Gmean+dG
+  Nmean = Nmean+1
+  plt.plot(T,dG,c='red',ls=':',lw=2.0,label='BURCAT')
 
 Gmean = Gmean/Nmean
 plt.xlabel(r'$T\,\mathrm{[K]}$',fontsize=15)
@@ -329,6 +380,13 @@ if (len(ind3)>0):
   ymin = np.min([ymin,np.min(dG[iT]-Gmean[iT])])
   ymax = np.max([ymax,np.max(dG[iT]-Gmean[iT])])
   print "BK",ymin,ymax
+
+if (len(ind6)>0):
+  dG = ((1-Natom)*np.log(bar) - lnkp6)*R*T/1000
+  plt.plot(T,dG-Gmean,c='red',ls=':',lw=2.0,label='BURCAT')
+  ymin = np.min([ymin,np.min(dG[iT]-Gmean[iT])])
+  ymax = np.max([ymax,np.max(dG[iT]-Gmean[iT])])
+  print "BU",ymin,ymax
 
 plt.xlabel(r'$T\,\mathrm{[K]}$',fontsize=15)
 plt.ylabel(r'$\Delta G_{\rm f}^\theta - \langle\Delta G_{\rm f}^\theta\rangle \mathrm{[kJ/mol]}$',fontsize=15)
