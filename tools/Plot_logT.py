@@ -215,18 +215,30 @@ if (ymax>-99):
         outp=outp+' '+keyword[i][1:]
     print Tg[iT],iact,outp  
 
-  #================== log10 supersaturation ratios ===================
+#================== log10 supersaturation ratios ===================
+count = 0
+for isolid in reversed(indices):
+  solid = solids[isolid]
+  ind = np.where(keyword == 'S'+solid)[0]
+  if (np.size(ind) == 0): continue
+  ind = ind[0]
+  logS = dat[:,ind]              # log10 S
+  if (np.max(logS[iii])>-6):
+    count = count + 1
+if (count>0):
   fig,ax = plt.subplots()
   count = 0
   for isolid in reversed(indices):
     solid = solids[isolid]
     ind = np.where(keyword == 'S'+solid)[0]
+    print solid,ind
     if (np.size(ind) == 0): continue
+    if (count>=50): break
     ind = ind[0]
     logS = dat[:,ind]              # log10 S
     if (np.max(logS[iii])>-6):
       plt.plot(Tg,logS,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
-      count = count + 1
+      count = count+1
   plt.title('supersaturation ratios',fontsize=20)
   plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
   plt.ylabel(r'$\mathrm{log}_{10}\ S$',fontsize=20)
@@ -252,7 +264,6 @@ if (ymax>-99):
   plt.clf()
 
 #================== supersaturation ratios ===================
-fig,ax = plt.subplots()
 count = 0
 for isolid in reversed(indices):
   solid = solids[isolid]
@@ -262,32 +273,43 @@ for isolid in reversed(indices):
   #print solid,ind
   S = 10**dat[:,ind]              # S
   if (np.max(S[iii])>0.7):
-    plt.plot(Tg,S,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
     count = count + 1
-    if (count>100): break  
-plt.title('supersaturation ratios',fontsize=20)
-plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
-plt.ylabel(r'$S$',fontsize=20)
-plt.xscale('log')
-plt.xlim(Tmin,Tmax)
-plt.ylim(0,1.05)
-plt.tick_params(axis='both', labelsize=14)
-plt.tick_params('both', length=6, width=1.5, which='major')
-plt.tick_params('both', length=3, width=1, which='minor')
-ax.xaxis.set_minor_locator(locmin)
-ax.set_xticks(locmaj)
-ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
-sz = np.min([13,1+195.0/count])
-col = 1
-if (count>30): 
-  sz = np.min([13,1+195.0/count*2])
-  col = 2
-leg = plt.legend(loc='best',fontsize=10,fancybox=True,
+if (count>0):
+  fig,ax = plt.subplots()
+  count = 0
+  for isolid in reversed(indices):
+    solid = solids[isolid]
+    ind = np.where(keyword == 'S'+solid)[0]
+    if (np.size(ind) == 0): continue
+    if (count>=50): break
+    ind = ind[0]
+    S = 10**dat[:,ind]              # S
+    if (np.max(S[iii])>0.7):
+      plt.plot(Tg,S,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
+      count = count + 1
+  plt.title('supersaturation ratios',fontsize=20)
+  plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
+  plt.ylabel(r'$S$',fontsize=20)
+  plt.xscale('log')
+  plt.xlim(Tmin,Tmax)
+  plt.ylim(0,1.05)
+  plt.tick_params(axis='both', labelsize=14)
+  plt.tick_params('both', length=6, width=1.5, which='major')
+  plt.tick_params('both', length=3, width=1, which='minor')
+  ax.xaxis.set_minor_locator(locmin)
+  ax.set_xticks(locmaj)
+  ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
+  sz = np.min([13,1+195.0/count])
+  col = 1
+  if (count>30): 
+    sz = np.min([13,1+195.0/count*2])
+    col = 2
+    leg = plt.legend(loc='best',fontsize=10,fancybox=True,
                  handlelength=3,prop={'size':sz},ncol=col)
-leg.get_frame().set_alpha(0.7)
-plt.tight_layout()
-plt.savefig(pp,format='pdf')
-plt.clf()
+  leg.get_frame().set_alpha(0.7)
+  plt.tight_layout()
+  plt.savefig(pp,format='pdf')
+  plt.clf()
 
 #================== some important molecules ====================
 fig,ax = plt.subplots()
@@ -301,9 +323,9 @@ count = 0
 for i in range(3,4+NELEM+NMOLE): 
   mol = keyword[i]
   yy = dat[:,i]-lntot            # log10 nmol/ntot
-  crit = -2.5
+  crit = -1.0
   ind = np.where(mols == mol)[0]
-  if (np.size(ind)>0): crit=-5
+  if (np.size(ind)>0): crit=-1.0
   #print i,mol,ind,np.size(ind)
   if (np.max(yy[iii])>crit):
     plt.plot(Tg,yy,c=colo[count],ls=styl[count],lw=widt[count],label=mol)
@@ -331,7 +353,7 @@ ellist = ['H','C','O','N','SI','S','NA','CL','CA','TI','K','AL','MG','FE','LI','
 allist = [' ',' ',' ',' ','Si',' ','Na','Cl','Ca','Ti',' ','Al','Mg','Fe','Li',' ',' ','Ni','Mn','Cr','Zn','Zr','Rb','Cu',' ','Br',' ','Sr',' ','+']
 exlist = [' He ',' Cl CL Ca CA Cr CR Co Cu CU ',' ',' Na NA Ni NI Ne NE ',' ',' Si SI Sr SR ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' Fe FE ',' ',' ',' ',' ',' ',' ',' ',' ',' Br BR ',' ',' ',' ',' ',' ']
 titels = ['hydrogen','carbon','oxygen','nitrogen','silicon','sulphur','sodium','chlorine','calcium','titanium','potassium','aluminum','magnesium','iron','lithium','fluorine','phosphorus','nickel','manganese','chromium','zinc','zirconium','rubidium','copper','boron','bromine','vanadium','strontium','tungston','charge carriers']
-limits = [2,5,5,5,6,5,6,4,7,8,6,6,6,6,7,6,6,6,6,6,6,6,6,6,6,6,6,6,6,5]
+limits = [1,1,5,5,6,5,6,4,7,8,6,6,6,6,7,6,6,6,6,6,6,6,6,6,6,6,6,6,6,1.2]
 condensates = indices
 for i in range(0,30):
   fig,ax = plt.subplots()

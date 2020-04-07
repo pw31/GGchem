@@ -21,7 +21,7 @@ mfrac_CIcond.dat
 .true.                ! model_pconst
 .true.                ! auto_atmos (attach polytopic atmosphere)   
 1.25                  ! gamma (polytropic index)
-400                   ! Tmax [K]
+800                   ! Tmax [K]
 1.0                   ! pmax [bar]  
 10.E-3                ! pmin [bar]
 300                   ! Npoints

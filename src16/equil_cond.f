@@ -46,7 +46,7 @@
       real(kind=qp) :: deps1,deps2,deps,esum,emax,NRstep
       real(kind=qp) :: det(2),converge(5000,NELEM),crit,cbest
       real(kind=qp) :: deplete1,deplete2,small=1.Q-30
-      real(kind=qp) :: dterm,dtmax,dlim,target
+      real(kind=qp) :: dterm,dtmax,dlim,target,Qfinish,Sfinish
       integer,parameter :: itmax=5000
       integer,dimension(NELEM) :: elem,Nslot,eind
       integer,dimension(NDUST) :: dind,dlin,switchedON,switchedOFF
@@ -312,6 +312,13 @@
       if (verbose>=0) then
         print'("it =",I4," qual =",1pE13.4E4)',0,qual
       endif  
+      if (T>Tfast) then
+        Qfinish = 1.Q-12
+        Sfinish = 1.Q-09
+      else
+        Qfinish = 1.Q-20
+        Sfinish = 1.Q-15
+      endif
       switchedON(:) = 0
       switchedOFF(:) = 0
       if (verbose>0) write(97,*)
@@ -1375,7 +1382,7 @@
         !qual = SQUAL(Sat0,active)
         Smax = maxval(Sat0)
         print'("it =",I4," qual =",1pE13.4E4)',it,qual
-        if ((Smax<1.Q0+1.Q-15).and.(qual<1.Q-20)) exit
+        if ((Smax<1.Q0+Sfinish).and.(qual<Qfinish)) exit
         if (verbose>0) read(*,'(a1)') char1
 
       enddo  

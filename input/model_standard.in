@@ -24,6 +24,6 @@ dispol_WoitkeRefit.dat                  ! dispol_file3
 300                   ! Npoints      
 6                     ! NewBackIt  
 1.E+5                 ! NewBackFac
-2                     ! NewPreMethod
-1000.0                ! Tfast
+3                     ! NewPreMethod
+400.0                 ! Tfast
 
