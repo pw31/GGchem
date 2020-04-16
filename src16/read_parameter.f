@@ -5,7 +5,7 @@
      >     model_struc,model_eqcond,Npoints,useDatabase,verbose,
      >     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,pick_mfrac,
      >     abund_file,struc_file,remove_condensates,phyllosilicates,
-     >     initchem_info,auto_atmos,Mpl,Rpl,gamma 
+     >     initchem_info,auto_atmos,stop_after_init,Mpl,Rpl,gamma 
       use CHEMISTRY,ONLY: NewBackIt,NewFullIt,NewBackFac,NewPreMethod,
      >                    NewFastLevel,Natmax,dispol_file
       use DUST_DATA,ONLY: DustChem_file,bar,MEarth,REarth
@@ -28,6 +28,7 @@
       remove_condensates = .false.
       phyllosilicates = .true.
       auto_atmos   = .false.
+      stop_after_init = .false.
       model_dim    = 1
       model_pconst = .true.
       model_struc  = 0
@@ -112,6 +113,8 @@
           read(line,*) nHmin
         else if (index(line,"! auto_atmos")>0) then 
           read(line,*) auto_atmos
+        else if (index(line,"! stop_after_init")>0) then 
+          read(line,*) stop_after_init
         else if (index(line,"! Mplanet")>0) then 
           read(line,*) Mpl
           Mpl = Mpl*MEarth

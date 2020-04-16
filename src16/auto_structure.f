@@ -3,7 +3,7 @@
 ***********************************************************************
       use PARAMETERS,ONLY: Rpl,Mpl,Tmax,pmin,pmax,gamma,verbose,
      >                     model_eqcond,remove_condensates,Npoints,
-     >                     useDataBase
+     >                     useDataBase,stop_after_init
       use CHEMISTRY,ONLY: NELM,NMOLE,elnum,cmol,catm,el,charge
       use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,amu,grav,
      >                    muH,mass,mel,
@@ -157,7 +157,7 @@
       enddo
       NLAST=0      
       if (useDatabase) call SAVE_DBASE
-      !return
+      if (stop_after_init) return
       
       !----------------------------
       ! ***  open output files  ***
