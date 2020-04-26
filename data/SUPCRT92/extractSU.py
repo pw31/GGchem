@@ -93,8 +93,48 @@ for iline in range(0,999):
       lfit.append(cfit)
 GGnam   = np.array(lnam,dtype='str')
 GGcoeff = np.array(lfit)
+
+#==========================================================================
+# read BURCAT data
+#==========================================================================
+f = open('../../data/DustChem_BURCAT.dat','r')
+lines = f.readlines()[:]
+f.close
+i = 0
+lnam = []
+lfit = []
+for iline in range(0,9999):
+  if (i>=len(lines)): break
+  line = lines[i]
+  i = i+1
+  if (line.find('[s]')>0):
+    form = line.split()[0]
+    name = line.split()[1]
+    line = lines[i+1]
+    Nel  = int(line.split()[0])
+    i = i+Nel+2
+    found = 0
+    cfit = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]
+    print form,name
+    for j in range(0,99):
+      info = lines[i].split()
+      i = i+1
+      #print info
+      if (len(info)<1): break
+      if (info[0]=='7'): tmp=info[1:17]
+      if (info[1]=='7'): tmp=info[2:18]
+      if (info[0]=='7' or info[1]=='7'): found=1
+    if (found==1):  
+      for j in range(0,16):
+        cfit[j] = float(tmp[j])
+      #print cfit
+      lnam.append(form)
+      lfit.append(cfit)
+BUnam   = np.array(lnam,dtype='str')
+BUcoeff = np.array(lfit)
 print GGnam
 print SHnam
+print BUnam
 #sys.exit()
 
 #==========================================================================
@@ -447,6 +487,44 @@ for icond in range(0,Ncond):
     dGmean = dGmean + dG_gg
     plt.plot(T2,dG_gg/1000,c='green',lw=1.5,label='old GGchem')
     
+  # search for BURCAT data
+  has_BU=0
+  ind = np.where(BUnam==form+'[s]')[0]
+  if (len(ind)>0):
+    has_BU = 1
+    iBU = ind[0]
+    a0 = BUcoeff[iBU,0]
+    a1 = BUcoeff[iBU,1]
+    a2 = BUcoeff[iBU,2]
+    a3 = BUcoeff[iBU,3]
+    a4 = BUcoeff[iBU,4]
+    a5 = BUcoeff[iBU,5]
+    a6 = BUcoeff[iBU,6]
+    b0 = BUcoeff[iBU,7]
+    b1 = BUcoeff[iBU,8]
+    b2 = BUcoeff[iBU,9]
+    b3 = BUcoeff[iBU,10]
+    b4 = BUcoeff[iBU,11]
+    b5 = BUcoeff[iBU,12]
+    b6 = BUcoeff[iBU,13]
+    Tmin = BUcoeff[iBU,14]
+    Tmax = BUcoeff[iBU,15]
+    print form,"has BUchem data"
+    print BUcoeff[iBU,0:16]
+    dG_bu = 0.0*T2
+    i=0
+    for T in T2:
+      if (T>1000.0):
+        dGRT = a0*(1-np.log(T)) -a1*T/2 -a2*T**2/6 -a3*T**3/12 - a4*T**4/20 \
+             + a5/T - a6  
+      else:
+        dGRT = b0*(1-np.log(T)) -b1*T/2 -b2*T**2/6 -b3*T**3/12 - b4*T**4/20 \
+             + b5/T - b6  
+      dG_bu[i] = dGRT*(R*T)
+      i += 1
+    dGmean = dGmean + dG_bu
+    plt.plot(T2,dG_bu/1000,c='red',lw=1.5,label='BURCAT')
+    
   plt.plot(T2,dG_su_fit/1000  ,c='blue',lw=2.0,label='SUPCRTBL fit')
   plt.plot(T1,dG_su/1000 ,c='black',ls='--',lw=3.5,label='SUPCRTBL data')
   plt.xlim(0.0,1.05*Tmax2)
@@ -458,7 +536,7 @@ for icond in range(0,Ncond):
 
   if (has_GG+has_SH>0):
     plt.subplot(212)
-    dGmean = dGmean/(1+has_GG+has_SH)
+    dGmean = dGmean/(1+has_GG+has_SH+has_BU)
     plt.plot(T2,(dG_su_fit-dGmean)/1000,c='blue',lw=2.0,label='SUPCRTBL - MEAN')
     ymin = np.min((dG_su_fit-dGmean)/1000)
     ymax = np.max((dG_su_fit-dGmean)/1000)
@@ -470,6 +548,10 @@ for icond in range(0,Ncond):
       plt.plot(T2,(dG_gg-dGmean)/1000,c='green',lw=1.5,label='GGCHEM - MEAN')
       ymin = np.min([ymin,np.min((dG_gg-dGmean)/1000)])
       ymax = np.max([ymax,np.max((dG_gg-dGmean)/1000)])
+    if (has_BU):
+      plt.plot(T2,(dG_bu-dGmean)/1000,c='red',lw=1.5,label='BURCAT - MEAN')
+      ymin = np.min([ymin,np.min((dG_bu-dGmean)/1000)])
+      ymax = np.max([ymax,np.max((dG_bu-dGmean)/1000)])
     ymin = np.min([ymin,-ymax])  
     ymax = np.max([ymax,-ymin])  
     plt.xlim(0.0,1.05*Tmax2)

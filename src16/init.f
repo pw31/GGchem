@@ -311,6 +311,6 @@
       enddo
       write(*,'("rho = n<H> *",1pE12.4," amu")') muH/amu
       write(*,'("C/O =",0pF6.3)') eps(C)/eps(O)
-      
+
       RETURN
       end

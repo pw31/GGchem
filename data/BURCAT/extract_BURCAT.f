@@ -2,11 +2,12 @@
       implicit none
       real*8 :: aatm(80,14),amol(3000,14),amol9(3000,5,10),aa(14)
       real*8 :: Trange(3000,5,2),stoich(3000,5),st,sto(4)
+      real*8 :: Tmin(3000),Tmax(3000)
       integer :: Natom,Nmol,Nvalid,i,j,k,ifit,Nfit(3000),Nat(3000)
       integer :: nomatch
-      logical :: ivalid(3000)
+      logical :: ivalid(3000),ok
       character(len=200) :: line,frmt,outmol,info,text(10),tmp,oldi
-      character(len=18) :: spnam(3000),sp
+      character(len=18) :: spnam(3000),sp,cname(3000)
       character(len=60) :: fullname(3000)
       character(len=2) :: atnam(80),elnam(3000,5),enam,eln(4)
       character(len=1) :: type(3000),ty,oldt
@@ -40,12 +41,12 @@
           read(1,'(A200)',end=2000) line
           if (line(80:80)=="1") exit
         enddo
-        read(line,'(24x,4(A2,F3.0),A1)') 
+        read(line,'(24x,4(A2,F3.0),A1,2(F10.3))') 
      >       elnam(Nmol,1),stoich(Nmol,1),
      >       elnam(Nmol,2),stoich(Nmol,2),
      >       elnam(Nmol,3),stoich(Nmol,3),
      >       elnam(Nmol,4),stoich(Nmol,4),
-     >       type(Nmol)                         ! stoichiometry
+     >       type(Nmol),Tmin(Nmol),Tmax(Nmol)   ! stoichiometry
         i=index(line,' ')
         spnam(Nmol) = line(1:i)                 ! name of species
         if (type(Nmol)=="G") spnam(Nmol) = upper(line(1:i))        
@@ -245,7 +246,7 @@
           Nvalid = Nvalid+1
         endif  
       enddo  
-      open(1,file='../dispol_BURCAT.dat')
+      open(1,file='dispol_BURCAT.dat')
       write(1,*) Nvalid
       Nvalid = 0
       do i=1,Nmol
@@ -265,7 +266,7 @@
           do k=1,Natom
             if (enam==atnam(k)) exit
           enddo
-          if (k>Natom) stop "element not found."
+          if (k>Natom) stop "element not found 2."
           !print*,atnam(k),aatm(k,1:14)
           aa(1:14) = aa(1:14) - st*aatm(k,1:14)
         enddo
@@ -277,6 +278,74 @@
         write(1,'(I2,14(1pE16.8))') 8,aa(1:14)
       enddo
       close(1)
+
+      Nvalid = 0
+      ivalid = .false.
+      do i=1,Nmol
+        if (type(i)=='S'.or.type(i)=='L') then
+          ivalid(i)=.true.
+          Nvalid = Nvalid+1
+        else if (type(i).ne.'G') then
+          print*,"unknown type",type(i)
+          stop
+        endif  
+      enddo  
+      open(1,file='DustChem_BURCAT.dat')
+      write(1,'("dust species")')
+      write(1,'("============")')
+      write(1,*) Nvalid
+
+      Nvalid = 1
+      cname(:) = " "
+      do i=1,Nmol
+        if (.not.ivalid(i)) cycle
+        sp = checkname(spnam(i))
+        sp = modify_condname(sp,fullname(i))
+        sp = check_iso(sp,i,cname,stoich,elnam)
+        cname(i) = sp
+        info = underscore(fullname(i))
+        print'(I5,1x,A18," (",a1,") ",4(A2,1x,F4.1,2x))',
+     >        Nvalid,sp,type(i),
+     >        (elnam(i,j),stoich(i,j),j=1,Nat(i))
+        aa(1:14) = amol(i,1:14)
+        ok = .true.
+        do j=1,Nat(i)
+          enam = elnam(i,j)
+          st   = stoich(i,j)
+          do k=1,Natom
+            if (enam==atnam(k)) exit
+          enddo
+          if (k>Natom) then
+            print*,"element not found 1."
+            print*,"####"//enam//"####"
+            ok = .false.
+            exit
+          endif
+          !print*,atnam(k),aatm(k,1:14)
+          aa(1:14) = aa(1:14) - st*aatm(k,1:14)
+        enddo
+        if (.not.ok) cycle
+        Nvalid = Nvalid+1
+        write(1,*)
+        if (index(sp,'[l]')>0) then
+          write(1,'(A18,A50,F15.3)') sp,info,Tmin(i)
+        else
+          write(1,'(A18,A50)') sp,info
+        endif
+        write(1,'("3.00    estimated")')
+        write(1,'(I1)') Nat(i)
+        do j=1,Nat(i)
+          if (1.0*int(stoich(i,j)).ne.stoich(i,j)) then
+            stop "*** broken stoichiometry."
+          endif  
+          write(1,'(I2,1x,A2)') INT(stoich(i,j)),elnam(i,j)
+        enddo  
+        write(1,'("# BURCAT",2(F10.3),":")') Tmin(i),Tmax(i)
+        write(1,'("  7",14(1pE16.8),2(0pF10.3))') 
+     >          aa(1:14),Tmin(i),Tmax(i)
+      enddo
+      close(1)
+      stop
 
       contains
 
@@ -307,10 +376,24 @@
       character(26),parameter :: low = 'abcdefghijklmnopqrstuvwxyz'
       string = str
       do i = 1,LEN_TRIM(str)
+        if (str(i:LEN_TRIM(str))=='(cis)') exit
         ic = index(low, str(i:i))
         if (ic>0) string(i:i) = cap(ic:ic)
       enddo
       end function upper
+
+!-------------------------------------------------------------------------
+      function underscore(str) result(string)
+!-------------------------------------------------------------------------
+      implicit none
+      character(*),intent(In) :: str
+      character(len(str)) :: string
+      integer :: ic,i
+      string = str
+      do i = 1,LEN_TRIM(str)
+        if (str(i:i)==' ') string(i:i)='_'
+      enddo
+      end function underscore
 
 !-------------------------------------------------------------------------
       function checkname(str) result(string)
@@ -348,21 +431,37 @@
       integer,intent(IN) :: N
       character(len=18),intent(IN) :: spnam(3000)
       real*8,intent(IN) :: stoich(3000,5)
-      character(len(str)) :: string
+      character(len(str)) :: string,short
       character(len=2) :: elnam(3000,5)
-      character(len=5) :: add
+      character(len=2) :: add
+      character(len=3) :: kind
       character(len=1) :: char
-      logical :: double,is_double
-      integer :: i,j
+      logical :: double,is_double,is_solid,found
+      integer :: i,j,ibra
       string = str
       is_double=.false.
       add = ':1'
+      is_solid=.false.
+      ibra = index(str,"[")
+      if (ibra>0) then
+        is_solid=.true.
+        add='_a'
+        kind=str(ibra:)
+        short=str(1:ibra-1)
+      endif  
       do i=1,N-1
         if (str==spnam(i)) then
           double=.true.
           do j=1,4
-            if ( elnam(i,j).ne. elnam(N,j)) double=.false.
-            if (stoich(i,j).ne.stoich(N,j)) double=.false.
+            if (elnam(N,j)=="  ") exit
+            found = .false.
+            do k=1,4
+              if (elnam(i,k).eq.elnam(N,j)) then
+                if (stoich(i,k).ne.stoich(N,j)) double=.false.
+                found = .true.
+              endif
+            enddo
+            if (.not.found) double=.false.
           enddo
           if (double) then
             !print*,i,N
@@ -383,13 +482,80 @@
         if (trim(str)//':a'==spnam(i)) add=':b'
         if (trim(str)//':b'==spnam(i)) add=':c'
         if (trim(str)//':c'==spnam(i)) stop
+        if (trim(short)//'_a'//trim(kind)==spnam(i)) add='_b'
+        if (trim(short)//'_b'//trim(kind)==spnam(i)) add='_c'
+        if (trim(short)//'_c'//trim(kind)==spnam(i)) add='_d'
+        if (trim(short)//'_d'//trim(kind)==spnam(i)) add='_e'
+        if (trim(short)//'_e'//trim(kind)==spnam(i)) stop
       enddo
       if (is_double) then
-        string=trim(str)//add
+        if (is_solid) then
+          string=trim(short)//trim(add)//trim(kind)
+        else
+          string=trim(str)//trim(add)
+        endif  
         print*,"*** changed species name from "//trim(str)//
      >         " -> "//trim(string)
+        if (index(string,"_a_")>0) stop
         !read(*,'(A1)') char
       endif  
       end function check_iso
+
+!-------------------------------------------------------------------------
+      function modify_condname(str,fullname) result(string)
+!-------------------------------------------------------------------------
+      implicit none
+      character(*),intent(In) :: str,fullname
+      character(20) :: string,code,newcode
+      integer :: i1,i2
+      print*,trim(str)//"   "//trim(fullname)
+      i1 = index(str,"(",.true.)
+      i2 = index(str,")",.true.)
+      if (i1==0.or.i2==0) then
+        stop "*** no brackets in condensate name."
+      endif
+      code = str(i1:i2)
+      select case (code)
+        case ("(cr)")
+          newcode='[s]'
+        case ("(S)")
+          newcode='[s]'
+        case ("(s)")
+          newcode='[s]'
+        case ("(a)")
+          newcode='[s]'
+        case ("(b)")
+          newcode='[s]'
+        case ("(c)")
+          newcode='[s]'
+        case ("(d)")
+          newcode='[s]'
+        case ("(a')")
+          newcode='[s]'
+        case ("(I)")
+          newcode='[s]'
+        case ("(II)")
+          newcode='[s]'
+        case ("(III)")
+          newcode='[s]'
+        case ("(IV)")
+          newcode='[s]'
+        case ("(V)")
+          newcode='[s]'
+        case ("(I')")
+          newcode='[s]'
+        case ("(liq)")
+          newcode='[l]'
+        case ("(L)")
+          newcode='[l]'
+        case ("(l)")
+          newcode='[l]'
+        case default
+          print*,trim(code)
+          stop "*** cannot interpret condensation-code."
+      end select
+      string = str(1:i1-1)//trim(str(i2+1:))//trim(newcode)
+      print*,trim(str)//" -> "//trim(string)
+      end function modify_condname
 
       end

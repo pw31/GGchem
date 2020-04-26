@@ -461,9 +461,9 @@ PF2                   2   F  P  2  1                  : Phosphorus_Fluoride
  4  1.154753E+05 -1.844182E+00 -1.445542E+01  5.335543E-04 -3.799321E-08
 SF2                   2   F  S  2  1                  : Sulfur_Fluoride
  4  8.764926E+04 -2.039579E+00 -1.440504E+01  5.637853E-04 -3.413598E-08
-F2S2(1)                2   F  S  2  2                  : Difluorodisulfane
+FSSF                  2   F  S  2  2                  : Difluorodisulfane
  4  1.258355E+05 -1.935929E+00 -3.112729E+01  7.161601E-04 -4.520539E-08
-F2S2(2)                2   F  S  2  2                  : Thiothionyl_Fluoride
+F2S2                  2   F  S  2  2                  : Thiothionyl_Fluoride
  4  1.336126E+05 -2.143724E+00 -2.998401E+01  7.925708E-04 -4.952714E-08
 SiF2                  2   F Si  2  1                  : Difluorosilylene
  4  1.435482E+05 -1.804295E+00 -1.607252E+01  4.454301E-04 -2.718632E-08
@@ -535,9 +535,9 @@ NH                    2   H  N  1  1                  : Imidogen
  4  3.724833E+04 -1.853156E+00  1.804689E+00  3.610423E-04 -1.424779E-08
 HNO                   3   H  N  O  1  1  1            : Nitrosyl_Hydride
  4  1.001854E+05 -3.463808E+00 -2.622129E+00  9.452507E-04 -5.140883E-08
-HNO2(trans)            3   H  N  O  1  1  2            : Nitrous_Acid_Trans
+HONO                  3   H  N  O  1  1  2            : Nitrous_Acid_Trans
  4  1.515332E+05 -4.064118E+00 -1.495436E+01  1.285523E-03 -6.988606E-08
-HNO2(cis)             3   H  N  O  1  1  2            : Nitrous_Acid_Cis
+HNO2                  3   H  N  O  1  1  2            : Nitrous_Acid_Cis
  4  1.512655E+05 -4.147275E+00 -1.441782E+01  1.326022E-03 -7.236814E-08
 HNO3                  3   H  N  O  1  1  3            : Nitric_Acid
  4  1.880026E+05 -5.147506E+00 -2.565058E+01  1.859512E-03 -1.027301E-07

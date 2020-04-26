@@ -63,7 +63,7 @@
       real*8 :: nsave(nel),null(nel)
       real*8 :: conv(0:itmax,nel),converge(0:itmax)
       real*8 :: soll,haben,abw,sum,maxs
-      real*8 :: pbefore(nel),norm(nel),pscale(el),xx(nel)
+      real*8 :: pbefore(nel),norm(nel),pscale(nel),xx(nel)
       real*8 :: emax,pges,pwork,pp,psc,ptest,aim
       real*8 :: work(nel*(nel+1))
       real*8 :: condnum1,work2(nel)

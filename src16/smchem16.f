@@ -63,7 +63,7 @@
       real(kind=qp) :: nsave(nel),null(nel)
       real(kind=qp) :: conv(0:itmax,nel),converge(0:itmax)
       real(kind=qp) :: soll,haben,abw,sum,maxs
-      real(kind=qp) :: pbefore(nel),norm(nel),pscale(el),xx(nel)
+      real(kind=qp) :: pbefore(nel),norm(nel),pscale(nel),xx(nel)
       real(kind=qp) :: emax,pges,pwork,pp,psc,ptest,aim
       logical :: from_merk,eact(nel),redo(nel),done(nel),affect,known
       logical :: relevant(nml)
@@ -827,7 +827,7 @@
             chemiter  = chemiter + it
             from_merk = .false.
             ifatal  = 1
-            verbose = 2
+            if (.false.) verbose = 2
             goto 100        ! try again from scratch before giving up
           endif  
           goto 1000
