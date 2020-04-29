@@ -62,7 +62,7 @@
       real*8 :: DF0(nel,nel),FF0(nel),xscale(nel),fscale(nel)
       real*8 :: nsave(nel),null(nel)
       real*8 :: conv(0:itmax,nel),converge(0:itmax)
-      real*8 :: soll,haben,abw,sum,maxs
+      real*8 :: soll,haben,abw,sum,maxs,mcharge
       real*8 :: pbefore(nel),norm(nel),pscale(nel),xx(nel)
       real*8 :: emax,pges,pwork,pp,psc,ptest,aim
       real*8 :: work(nel*(nel+1))
@@ -169,6 +169,7 @@
         enddo
         anmono(el) = nelek
         pel = nelek*kT
+        mcharge = pel
         !peest = pel
         !pel = pecorr*pel
         !anmono(el) = pecorr*anmono(el) 
@@ -260,7 +261,8 @@
           pel = SQRT(-coeff(-1)/(1.d0+coeff(+1)))    ! 0 = pel - a/pel + b*pel
           if (verbose>1) print*,'pel=',anmono(el)*kT,pel
           anmono(el) = pel*kT1
-          pscale(el) = 1.d0
+          mcharge = MAX(pel,MAX(coeff(-1)/pel,coeff(1)*pel))
+          pscale(el) = 1.d0/mcharge
         else   
           !---------------------------------------
           ! scale to make coeff(:) fit into real*8  
@@ -393,9 +395,15 @@
               do ii=1,Nact
                 i = act_to_all(ii)
                 xx(i) = LOG(anmono(i)*kT)
-                FF(ii) = anHges*eps(i)*kT - anmono(i)*kT
+                xscale(i) = anmono(i)*kT
+                if (i==el) then
+                  fscale(ii) = 1.d0/mcharge
+                else  
+                  fscale(ii) = 1.d0/(anHges*eps(i)*kT)
+                endif  
+                FF(ii) = fscale(ii)*(anHges*eps(i)*kT - anmono(i)*kT)
                 DF(ii,:)  = 0.d0
-                DF(ii,ii) = -anmono(i)*kT
+                DF(ii,ii) = -fscale(ii)*anmono(i)*kT
               enddo  
               do i=1,nml
                 if (.not.relevant(i)) cycle 
@@ -408,7 +416,7 @@
                   m1 = m_kind(j,i)
                   if (.not.eact(m1)) cycle
                   ii = all_to_act(m1)
-                  term = m_anz(j,i) * pmol
+                  term = fscale(ii)*m_anz(j,i)*pmol
                   FF(ii) = FF(ii) - term
                   do l=1,m_kind(0,i)
                     m2 = m_kind(l,i)
@@ -447,6 +455,7 @@
               if (it>1.and.qual<1.d-10) exit
             enddo
             NpreLoop = NpreLoop+1
+
           else if (imethod==2) then
             !-------- method 2: lin-variables with pullback --------
             dp(:) = 0.d0
@@ -468,9 +477,14 @@
                 do ii=1,Nact
                   i = act_to_all(ii) 
                   xscale(i) = anmono(i)*kT
-                  FF(ii) = anHges*eps(i)*kT - anmono(i)*kT
-                  DF(ii,:)  = 0.Q0
-                  DF(ii,ii) = -anmono(i)*kT
+                  if (i==el) then
+                    fscale(ii) = 1.d0/mcharge
+                  else  
+                    fscale(ii) = 1.d0/(anHges*eps(i)*kT)
+                  endif  
+                  FF(ii) = fscale(ii)*(anHges*eps(i)*kT - anmono(i)*kT)
+                  DF(ii,:) = 0.d0
+                  DF(ii,ii) = -fscale(ii)*anmono(i)*kT
                 enddo
                 do i=1,nml
                   if (.not.relevant(i)) cycle 
@@ -483,7 +497,7 @@
                     m1 = m_kind(j,i)
                     if (.not.eact(m1)) cycle
                     ii = all_to_act(m1)
-                    term = m_anz(j,i)*pmol
+                    term = fscale(ii)*m_anz(j,i)*pmol
                     FF(ii) = FF(ii) - term
                     do l=1,m_kind(0,i)
                       m2 = m_kind(l,i)
@@ -497,7 +511,7 @@
                 qual = 0.d0
                 do ii=1,Nact
                   i = act_to_all(ii)
-                  qual = qual+(FF(ii)/(anHges*norm(i)*kT))**2
+                  qual = qual + FF(ii)**2
                 enddo  
                 if (qual<qual0) exit
                 if (ipull==pullmax) exit
@@ -532,6 +546,7 @@
               enddo
             enddo  
             NpreLoop = NpreLoop+1
+
           else if (imethod==3) then
             !-------- method 3: xx=log(patm)-variables --------
             null = anmono
@@ -539,9 +554,15 @@
               do ii=1,Nact
                 i = act_to_all(ii)
                 xx(i) = LOG(anmono(i)*kT)
-                FF(ii) = anHges*eps(i)*kT - anmono(i)*kT
+                xscale(i) = anmono(i)*kT
+                if (i==el) then
+                  fscale(ii) = 1.d0/mcharge
+                else  
+                  fscale(ii) = 1.d0/(anHges*eps(i)*kT)
+                endif  
+                FF(ii) = fscale(ii)*(anHges*eps(i)*kT - anmono(i)*kT)
                 DF(ii,:)  = 0.d0
-                DF(ii,ii) = -anmono(i)*kT
+                DF(ii,ii) = -fscale(ii)*anmono(i)*kT
               enddo  
               do i=1,nml
                 if (.not.relevant(i)) cycle 
@@ -554,7 +575,7 @@
                   m1 = m_kind(j,i)
                   if (.not.eact(m1)) cycle
                   ii = all_to_act(m1)
-                  term = m_anz(j,i) * pmol
+                  term = fscale(ii)*m_anz(j,i)*pmol
                   FF(ii) = FF(ii) - term
                   do l=1,m_kind(0,i)
                     m2 = m_kind(l,i)
@@ -639,6 +660,7 @@
           coeff(l) = coeff(l)+EXP(pmol)
         enddo
         pel = SQRT(coeff(-1)/(1.d0+coeff(+1)))     ! 0 = pel - a/pel + b*pel
+        mcharge = MAX(pel,MAX(coeff(-1)/pel,coeff(1)*pel))
         if (verbose>1) print'(" redo pel =",1pE17.10," ->",1pE17.10)',
      >                        anmono(el)*kT,pel
         anmono(el) = pel*kT1
@@ -671,17 +693,16 @@
           ii = ii+1
           all_to_act(i) = ii
           act_to_all(ii) = i
-          xscale(i) = anmono(i)*kT
           xx(i) = LOG(anmono(i)*kT)
+          xscale(i) = anmono(i)*kT
           if (i==el) then
-            fscale(ii) = 1.d+0/(anmono(el)*kT)
-            FF(ii) = -xscale(i)*fscale(ii)          ! (0 - anmono(i)*kT)*fscale(ii) 
-          else
-            fscale(ii) = 1.d+0/(anHges*eps(i)*kT) 
-            FF(ii) = 1.d+0 - xscale(i)*fscale(ii)   ! (anHges*eps(i)*kT - anmono(i)*kT)*fscale(ii) 
+            fscale(ii) = 1.d0/mcharge
+          else  
+            fscale(ii) = 1.d0/(anHges*eps(i)*kT)
           endif  
+          FF(ii) = fscale(ii)*(anHges*eps(i)*kT - anmono(i)*kT)
           DF(ii,:)  = 0.d0
-          DF(ii,ii) = -xscale(i)*fscale(ii)         
+          DF(ii,ii) = -fscale(ii)*anmono(i)*kT
         enddo	
         do i=1,nml
           pmol = g(i)
@@ -754,10 +775,10 @@
           enddo
           if (verbose>1.and.it<100) then
             print*,"ind,fak=",ind,fak
-            print'(7x,A14,A14,A14)',"natom","dnatom","badness" 
+            print'(7x,A14,A14,A14)',"patom","dpatom","badness" 
             do ii=1,Nact
               i = act_to_all(ii) 
-              print'(A7,3(1pE14.6))',catm(i),anmono(i),
+              print'(A7,3(1pE14.6))',catm(i),anmono(i)*kT,
      >             -dp(ii),badness(i)
             enddo
           endif
@@ -806,17 +827,17 @@
           endif  
           if (verbose>1.and.it==0) then
             write(*,*) 
-            print'(7x,A14,A14,A14)',"natom","dnatom","badness" 
+            print'(7x,A14,A14,A14)',"patom","dpatom","badness" 
             do ii=1,Nact
               i = act_to_all(ii) 
-              print'(A7,3(1pE14.6))',catm(i),anmono(i),
+              print'(A7,3(1pE14.6))',catm(i),anmono(i)*kT,
      >             -dp(ii)/(anmono(i)*kT),badness(i)
             enddo
           endif
 
 *         ! apply limited NR step
 *         =======================
-          !fak = 1.Q0+4.Q0*EXP(-(MAX(0,it-20))/13.Q0)
+          !fak = 1.d0+4.d0*EXP(-(MAX(0,it-20))/13.d0)
           do ii=1,nact
             i = act_to_all(ii)
             delp = -dp(ii)*kT1
@@ -841,11 +862,13 @@
           write(*,*) 'it, converge, ind =',it,converge(it),limit
           write(*,*) '  n<H>, T =',anhges,Tg
           write(*,*) 'from_merk,NewFastLevel=',from_merk,NewFastLevel
-          if (ifatal==0) then
+          if (ifatal<=1) then
             chemiter  = chemiter + it
             from_merk = .false.
-            ifatal  = 1
-            verbose = 2
+            badness   = 1.Q0
+            pcorr     = 1.Q0
+            ifatal    = ifatal+1
+            if (ifatal==2) verbose=2
             goto 100        ! try again from scratch before giving up
           endif  
           goto 1000
@@ -922,7 +945,9 @@
           enddo  
           if (piter>=99) then
             write(*,*) "*** no convergence in post-it "//catm(e)
+            write(*,*) anHges,Tg
             write(*,*) coeff
+            goto 1000
           endif  
           anmono(e) = pat*psc*kT1
         enddo
@@ -931,13 +956,13 @@
 *       ================================
         if (.not.from_merk) then
           if (verbose>1) print'(7x,3(A14))',
-     >                   "natom","conv.","init.guess"
+     >                   "patom","conv.","init.guess"
           do i=1,nel
             badness(i) = anmono(i)/ansave(i)
             switch = switchoff(i)
             if (switch==0) switch=it-1
             if (verbose>1) then
-              print'(A7,3(1pE14.6))',catm(i),anmono(i),
+              print'(A7,3(1pE14.6))',catm(i),anmono(i)*kT,
      >              conv(switch,i),badness(i)
             endif  
           enddo

@@ -193,8 +193,8 @@ allist = [' ',' ',' ',' ','Si',' ','Na','Cl','Ca','Ti',' ','Al','Mg','Fe','Li','
 exlist = [' He ',' Cl CL Ca CA Cr CR Co Cu CU ',' ',' Na NA Ni NI ',' ',' Si SI Sr SR ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' Fe FE ',' ',' ',' ',' ',' ',' ',' ',' ',' Br BR ',' ',' ',' ',' ',' ']
 titels = ['hydrogen','carbon','oxygen','nitrogen','silicon','sulphur','sodium','chlorine','calcium','titanium','potassium','aluminum','magnesium','iron','lithium','fluorine','phosphorus','nickel','manganese','chromium','zinc','zirconium','rubidium','copper','boron','bromine','vanadium','strontium','tungsten','charge carriers']
 #         H  C   O  N SiS Na ClCa Ti
-limits = [2,4.5,3.5,4,7,5,10,3,10,5,10,6,6,12,6,3.5,5,10,10,10,10,10,10,10,10,10,10,10,10,5]    #Orich
-#limits = [2,5,3.5,6,6,5,6,4,6,6,6,6,6,6,6.5,5]  #Crich
+limits = [2,4.5,3.5,4,7,5,10,3,10,5,10,6,6,12,6,3.5,5,10,10,10,10,10,10,10,10,10,10,10,10,3]    #Orich
+#limits = [2,5,3.5,6,6,5,6,4,6,6,6,6,6,6,6.5,3]  #Crich
 for i in range(0,30):
   el = ellist[i]
   al = allist[i]
