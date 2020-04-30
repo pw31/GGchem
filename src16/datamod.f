@@ -37,6 +37,9 @@
       
       integer :: fit(NDUSTmax)                ! fit-formular identifier
       real*8  :: cfit(NDUSTmax,0:4)           ! pvap fit coefficients
+      integer :: Nfit(NDUSTmax)               ! number of BURCAT fits
+      real*8  :: Tfit(NDUSTmax,9)             ! BURCAT Tfit
+      real*8  :: Bfit(NDUSTmax,8,14)          ! BURCAT fit coefficients
       
       real(kind=qp) :: bk=1.380662Q-16        ! Boltzman constant
       real(kind=qp) :: bar=1.Q+6              ! 1 bar in dyn/cm2

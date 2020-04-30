@@ -4,7 +4,7 @@
       use CHEMISTRY,ONLY: NMOLE,cmol
       use DUST_DATA,ONLY: NELEM,NDUST,bk,atm,rgas,bar,fit,cfit,
      &                    dust_nam,dust_nel,dust_el,dust_nu,dust_mass,
-     &                    is_liquid,Tcorr,elnam
+     &                    is_liquid,Tcorr,elnam,Nfit,Tfit,Bfit
       implicit none
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
       real*8,intent(in) :: T
@@ -17,12 +17,12 @@
       real(kind=qp),parameter :: eV=1.60218Q-12     ! 1 eV in erg
 
       real(kind=qp) :: T1,T2,T3,TC,kT,RT,dG,lbruch,pst,psat,dGRT
-      real(kind=qp) :: a(0:4),term,n1,natom
-      integer :: i,j,l,STINDEX,el,imol,imol1,imol2
+      real(kind=qp) :: a(0:4),term,n1,natom,aa(0:6)
+      integer :: i,j,l,STINDEX,el,imol,imol1,imol2,ifit
       character(len=20) :: search,upper,leer='                    '
 
 
-      T1  = MAX(T,100.Q0)
+      T1  = T
       T2  = T1**2
       T3  = T1**3
       kT  = bk*T1
@@ -144,6 +144,40 @@
           endif
           Sat(i) = n1*kT/psat
 
+        else if (fit(i)==7) then
+          !---------------------
+          !***  BURCAT data  ***
+          !---------------------
+          do ifit=1,Nfit(i)
+            if (T1<Tfit(i,ifit+1)) exit
+            if (ifit==Nfit(i)) exit
+          enddo
+          if (T1>1000.0) then
+            aa(0:6) = Bfit(i,ifit,1:7)
+          else
+            aa(0:6) = Bfit(i,ifit,8:14)
+          endif  
+          dGRT = aa(0) *(log(T1)-1.d0) 
+     &         + aa(1) *T1   / 2.d0
+     &         + aa(2) *T1**2/ 6.d0    
+     &         + aa(3) *T1**3/12.d0
+     &         + aa(4) *T1**4/20.d0    
+     &         - aa(5) /T1  
+     &         + aa(6)
+          lbruch = 0.Q0
+          Natom = 0.0
+          do j=1,dust_nel(i)
+            el     = dust_el(i,j)
+            term   = nat(el)*kT/pst
+            lbruch = lbruch + dust_nu(i,j)*LOG(term)
+            Natom  = Natom + dust_nu(i,j)
+          enddo
+          Sat(i) = EXP(lbruch+dGRT)
+          !print*,dust_nam(i),"BURCAT:",T1,ifit,dGRT,Sat(i)
+          if (T1>1.2*Tfit(i,Nfit(i)+1)) then
+            Sat(i) = 1.Q-999   ! BURCAT-fits go crasy beyond fit-regime
+          endif  
+          
         else if (fit(i)==99) then
           !-----------------------
           !***  special cases  ***

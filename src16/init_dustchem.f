@@ -6,6 +6,7 @@
       use DUST_DATA,ONLY: NDUSTmax,NEPS,NELEM,NDUST,eps0,amu,
      &                    dust_nam,dust_rho,dust_vol,dust_mass,
      &                    dust_nel,dust_nu,dust_el,fit,cfit,
+     &                    Nfit,Tfit,Bfit,
      &                    elnr,elcode,elnam,mass,Tmelt,Tcorr,
      &                    DustChem_file
       use EXCHANGE,ONLY: H,Si,Al,Ca
@@ -85,16 +86,25 @@
           read(12,1000) zeile
           if (trim(zeile)=='') exit
           if (zeile(1:1)=='#') cycle
-          read(zeile,*) fit(NDUST),cfit(NDUST,0:4)
+          read(zeile,*) fit(NDUST)
           prec(NDUST) = 0.0
-          j1 = index(lastzeile,'+/-')
-          j2 = index(lastzeile,':')
-          if (j1>0) then
-            tmp = lastzeile(j1+3:)
-            if (j2>j1) tmp=lastzeile(j1+3:j2-1)            
-            read(tmp,*) prec(NDUST)
+          if (fit(NDUST).ne.7) then
+            read(zeile,*) fit(NDUST),cfit(NDUST,0:4)
+            j1 = index(lastzeile,'+/-')
+            j2 = index(lastzeile,':')
+            if (j1>0) then
+              tmp = lastzeile(j1+3:)
+              if (j2>j1) tmp=lastzeile(j1+3:j2-1)            
+              read(tmp,*) prec(NDUST)
+            endif  
+            !print*,trim(tmp),prec(NDUST)
+          else
+            read(zeile,*) fit(NDUST),Nfit(NDUST),
+     >                    Tfit(NDUST,1:Nfit(NDUST)+1)
+            do k=1,Nfit(NDUST)
+              read(12,*) Bfit(NDUST,k,1:14)
+            enddo  
           endif  
-          !print*,trim(tmp),prec(NDUST)
           found = .true.
         enddo
         if (.not.found) then
