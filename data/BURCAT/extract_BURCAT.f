@@ -2,15 +2,15 @@
       implicit none
       real*8 :: aatm(80,14),amol(3000,14),amol9(3000,5,10),aa(14)
       real*8 :: Trange(3000,5,2),stoich(3000,5),st,sto(4)
-      real*8 :: Tmin(3000),Tmax(3000)
+      real*8 :: Tmin(3000),Tmax(3000),Tseq(10)
       integer :: Natom,Nmol,Nvalid,i,j,k,ifit,Nfit(3000),Nat(3000)
-      integer :: nomatch
-      logical :: ivalid(3000),ok
-      character(len=200) :: line,frmt,outmol,info,text(10),tmp,oldi
+      integer :: Ncont(3000),nomatch,icont,ii,iseq(10)
+      logical :: ivalid(3000),is_cont(3000),ok
+      character(len=200) :: line,frmt,info,text(10),tmp,oldi
       character(len=18) :: spnam(3000),sp,cname(3000)
       character(len=60) :: fullname(3000)
       character(len=2) :: atnam(80),elnam(3000,5),enam,eln(4)
-      character(len=1) :: type(3000),ty,oldt
+      character(len=1) :: type(3000),ty,oldt,char1
 
       !-----------------------------------------------------------------
       Natom = 1
@@ -203,7 +203,7 @@
         !print*,trim(line)
         i=index(line,' ')
         spnam(Nmol) = line(1:i)                 ! name of species
-        read(1,'(I2,8x,5(A2,F6.2))') Nfit,    
+        read(1,'(I2,8x,5(A2,F6.2))') Nfit(Nmol),    
      >       elnam(Nmol,1),stoich(Nmol,1),
      >       elnam(Nmol,2),stoich(Nmol,2),
      >       elnam(Nmol,3),stoich(Nmol,3),
@@ -223,7 +223,7 @@
         enddo  
         if (Nat(Nmol)==1.and.stoich(Nmol,1)==1) then
           print*,trim(line)
-          print*,spnam(Nmol),Nat,Nfit
+          print*,spnam(Nmol),Nat,Nfit(Nmol)
         endif  
         Nmol = Nmol + 1
       enddo 
@@ -235,13 +235,11 @@
       ! ***  create output file ***
       !----------------------------
       Nvalid = 0
-      outmol = ' CO H2 N2 H- H+ SH ALO ALO2- CNO- CH '
       do i=1,Nmol
         if (type(i).ne.'G') then
           ivalid(i)=.false.
         else if (Nat(i)==1.and.stoich(i,1)==1) then  
           ivalid(i)=.false.
-        !else if (index(outmol," "//trim(spnam(i))//" ")<=0) cycle
         else if (ivalid(i)) then
           Nvalid = Nvalid+1
         endif  
@@ -253,7 +251,7 @@
         if (.not.ivalid(i)) cycle
         Nvalid = Nvalid+1
         sp = checkname(spnam(i))
-        sp = check_iso(sp,i,spnam,stoich,elnam)
+        sp = check_iso(sp,i,spnam,stoich,elnam,icont,Tmin,Tmax)
         spnam(i) = sp
         print'(I5,1x,A18," (",a1,") ",4(A2,1x,F4.1,2x))',
      >        Nvalid,sp,type(i),
@@ -293,21 +291,25 @@
       open(1,file='DustChem_BURCAT.dat')
       write(1,'("dust species")')
       write(1,'("============")')
-      write(1,*) Nvalid
 
       Nvalid = 1
+      Ncont = 0
       cname(:) = " "
       do i=1,Nmol
         if (.not.ivalid(i)) cycle
         sp = checkname(spnam(i))
         sp = modify_condname(sp,fullname(i))
-        sp = check_iso(sp,i,cname,stoich,elnam)
+        sp = check_iso(sp,i,cname,stoich,elnam,icont,Tmin,Tmax)
         cname(i) = sp
-        info = underscore(fullname(i))
-        print'(I5,1x,A18," (",a1,") ",4(A2,1x,F4.1,2x))',
-     >        Nvalid,sp,type(i),
-     >        (elnam(i,j),stoich(i,j),j=1,Nat(i))
         aa(1:14) = amol(i,1:14)
+        if (aa(1)==0.0.and.aa(2)==0.0.and.aa(3)==0.0.and.aa(4)==0.0
+     >          .and.aa(5)==0.0.and.aa(6)==0.0.and.aa(7)==0.0) then
+          aa(1:7) = aa(8:14)
+        endif  
+        if (aa(8)==0.0.and.aa(9)==0.0.and.aa(10)==0.0.and.aa(11)==0.0
+     >          .and.aa(12)==0.0.and.aa(13)==0.0.and.aa(14)==0.0) then
+          aa(8:14) = aa(1:7)
+        endif  
         ok = .true.
         do j=1,Nat(i)
           enam = elnam(i,j)
@@ -324,15 +326,31 @@
           !print*,atnam(k),aatm(k,1:14)
           aa(1:14) = aa(1:14) - st*aatm(k,1:14)
         enddo
-        if (.not.ok) cycle
-        Nvalid = Nvalid+1
+        amol(i,1:14) = aa(1:14)
+        if (.not.ok) then
+          ivalid(i) = .false.
+          cycle
+        endif  
+        if (icont>0) then
+          is_cont(i) = .true.
+          Ncont(icont) = i
+        else  
+          Nvalid = Nvalid+1
+        endif
+      enddo  
+      write(1,*) Nvalid
+      do i=1,Nmol
+        if (.not.ivalid(i)) cycle
+        if (is_cont(i)) cycle
+        sp = cname(i)
+        info = underscore(fullname(i))
         write(1,*)
         if (index(sp,'[l]')>0) then
           write(1,'(A18,A50,F15.3)') sp,info,Tmin(i)
         else
           write(1,'(A18,A50)') sp,info
         endif
-        write(1,'("3.00    estimated")')
+        write(1,'("3.00    which is wrong")')
         write(1,'(I1)') Nat(i)
         do j=1,Nat(i)
           if (1.0*int(stoich(i,j)).ne.stoich(i,j)) then
@@ -340,9 +358,27 @@
           endif  
           write(1,'(I2,1x,A2)') INT(stoich(i,j)),elnam(i,j)
         enddo  
-        write(1,'("# BURCAT",2(F10.3),":")') Tmin(i),Tmax(i)
-        write(1,'("  7",14(1pE16.8),2(0pF10.3))') 
-     >          aa(1:14),Tmin(i),Tmax(i)
+        ifit = 1
+        ii = i
+        Tseq(ifit) = Tmin(ii)
+        iseq(ifit) = ii
+        do
+          if (Ncont(ii)==0) exit
+          ii = Ncont(ii)
+          ifit = ifit + 1
+          Tseq(ifit) = Tmin(ii)
+          iseq(ifit) = ii
+        enddo
+        Tseq(ifit+1) = Tmax(ii)
+        write(1,'("# BURCAT",2(F10.3),":")') Tseq(1),Tseq(ifit+1)
+        write(1,'("  7",i4,99(F10.3))') ifit,Tseq(1:ifit+1)
+        ii=i
+        do 
+          write(1,'(14(1pE16.8),2(0pF10.3))') amol(ii,1:14)
+          ii = Ncont(ii)
+          if (ii==0) exit
+        enddo  
+        !if (ifit>1) read(*,'(A1)') char1
       enddo
       close(1)
       stop
@@ -424,13 +460,15 @@
       end function checkname
 
 !-------------------------------------------------------------------------
-      function check_iso(str,N,spnam,stoich,elnam) result(string)
+      function check_iso(str,N,spnam,stoich,elnam,icont,Tmin,Tmax) 
+     >  result(string)
 !-------------------------------------------------------------------------
       implicit none
       character(*),intent(IN) :: str
       integer,intent(IN) :: N
+      integer,intent(OUT) :: icont
       character(len=18),intent(IN) :: spnam(3000)
-      real*8,intent(IN) :: stoich(3000,5)
+      real*8,intent(IN) :: stoich(3000,5),Tmin(3000),Tmax(3000)
       character(len(str)) :: string,short
       character(len=2) :: elnam(3000,5)
       character(len=2) :: add
@@ -438,6 +476,8 @@
       character(len=1) :: char
       logical :: double,is_double,is_solid,found
       integer :: i,j,ibra
+
+      icont = 0
       string = str
       is_double=.false.
       add = ':1'
@@ -445,7 +485,7 @@
       ibra = index(str,"[")
       if (ibra>0) then
         is_solid=.true.
-        add='_a'
+        add=''
         kind=str(ibra:)
         short=str(1:ibra-1)
       endif  
@@ -482,12 +522,35 @@
         if (trim(str)//':a'==spnam(i)) add=':b'
         if (trim(str)//':b'==spnam(i)) add=':c'
         if (trim(str)//':c'==spnam(i)) stop
-        if (trim(short)//'_a'//trim(kind)==spnam(i)) add='_b'
-        if (trim(short)//'_b'//trim(kind)==spnam(i)) add='_c'
-        if (trim(short)//'_c'//trim(kind)==spnam(i)) add='_d'
-        if (trim(short)//'_d'//trim(kind)==spnam(i)) add='_e'
-        if (trim(short)//'_e'//trim(kind)==spnam(i)) stop
+        if (trim(short)//trim(kind)==spnam(i)) then
+          icont = i
+          add='_a'
+        else if (trim(short)//'_a'//trim(kind)==spnam(i)) then
+          icont = i
+          add='_b'
+        else if (trim(short)//'_b'//trim(kind)==spnam(i)) then
+          icont = i
+          add='_c'
+        else if (trim(short)//'_c'//trim(kind)==spnam(i)) then
+          icont = i
+          add='_d'
+        else if (trim(short)//'_d'//trim(kind)==spnam(i)) then
+          icont = i
+          add='_e'
+        else if (trim(short)//'_e'//trim(kind)==spnam(i)) then
+          stop
+        endif  
       enddo
+      if (is_solid.and.icont>0) then
+        print*,"--> found cont "//trim(short)//trim(kind)//trim(add)
+        print*,i,icont,is_double
+        print*,Tmax(icont),Tmin(i)
+        if (Tmax(icont)==Tmin(i)) then
+          string=trim(short)//trim(kind)
+          return
+        endif
+      endif  
+      icont = 0
       if (is_double) then
         if (is_solid) then
           string=trim(short)//trim(add)//trim(kind)
