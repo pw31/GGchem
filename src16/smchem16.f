@@ -50,20 +50,20 @@
       integer :: stindex,Nconv,switch,ido,iredo,nu
       integer :: Nact,all_to_act(nel),act_to_all(nel),switchoff(nel)
       integer :: e,i,j,j1,ii,jj,l,it,m1,m2,piter,ifatal,ipull,pullmax
-      integer :: Nseq,iloop,imethod,enew,eseq(nel)
+      integer :: lmin,lmax,Nseq,iloop,imethod,enew,eseq(nel)
       integer :: NpreLoop,NpreIt,Ntaken,Nestim
       integer,parameter :: itmax=200
       real(kind=qp) :: finish,qual,qual0,qual1,qual2,qual3
       real(kind=qp) :: g(0:nml),limit
       real(kind=qp) :: kT,kT1,cc,nelek,ng,Sa,fak,lth,arg,term,f,fs
       real(kind=qp) :: pel,delta,pat,atfrac,atmax,lnp
-      real(kind=qp) :: nges(nel),coeff(-1:Ncmax),lnc(-1:Ncmax)
+      real(kind=qp) :: nges(nel),coeff(-3:Ncmax),lnc(-3:Ncmax)
       real(kind=qp) :: DF(nel,nel),dp(nel),FF(nel),pmol,crit,delp,nold
       real(kind=qp) :: DF0(nel,nel),FF0(nel),xscale(nel),fscale(nel)
       real(kind=qp) :: nsave(nel),null(nel)
       real(kind=qp) :: conv(0:itmax,nel),converge(0:itmax)
       real(kind=qp) :: soll,haben,abw,sum,maxs,mcharge
-      real(kind=qp) :: pbefore(nel),norm(nel),pscale(nel),xx(nel)
+      real(kind=qp) :: pbefore(nel),norm(nel),xx(nel)
       real(kind=qp) :: emax,pges,pwork,pp,psc,ptest,aim
       logical :: from_merk,eact(nel),redo(nel),done(nel),affect,known
       logical :: relevant(nml)
@@ -217,6 +217,8 @@
         coeff(:) = 0.Q0   
         lnc(:) = 0.Q0
         pwork = pges
+        lmin = +99
+        lmax = -99
         do e=1,nel
           if (.not.done(e)) cycle
           xx(e) = LOG(anmono(e)*kT)
@@ -242,6 +244,8 @@
           if (.not.affect) cycle  
           if (.not.known) cycle
           if (verbose>0) mols = trim(mols)//" "//cmol(i)
+          lmin = MIN(lmin,l)
+          lmax = MAX(lmax,l)
           coeff(l) = coeff(l) + l*EXP(lnp)
           lnc(l) = MAX(lnc(l),LOG(REAL(l,kind=qp))+lnp)
           if (l>0) then
@@ -260,32 +264,32 @@
           if (verbose>1) print*,'pel=',REAL(anmono(el)*kT),REAL(pel)
           anmono(el) = pel*kT1
           mcharge = MAX(pel,MAX(coeff(-1)/pel,coeff(1)*pel))
-          pscale(el) = 1.Q0/mcharge
         else   
           !----------------------------------------
           ! scale to make coeff(:) fit into real*16  
           !----------------------------------------
-          psc = 1.Q0
           aim = LOG(1.Q+10)
-          do l=1,STOImax(enew)
-            if (lnc(l)>0.Q0) then
-              ptest = EXP((aim-lnc(l))/l)            ! lnc(l)+l*LOG(psc) = aim
-              psc = MAX(psc,1.Q0/ptest)
+          psc = -LOG(pges)                           ! when atom dominates
+          do l=lmin,lmax
+            if (lnc(l).ne.0.Q0) then
+              ptest = (aim-lnc(l))/l                 ! lnc(l)+l*ln(psc) = aim
+              psc = MAX(psc,-ptest)
              !print*,l,ptest
             endif
           enddo  
-          psc = 1.Q0/psc
-          pscale(enew) = psc
+          psc = -psc
           !if (verbose>1) print*,"pwork=",REAL(pwork),"  psc=",REAL(psc)
           !------------------------------------------------
           ! store coeff for Sum_l coeff(l) (p*psc)^l = pges 
           !------------------------------------------------
-          do l=-1,STOImax(enew)
+          do l=lmin,lmax
             if (lnc(l).ne.0.Q0) then
-              coeff(l) = EXP(lnc(l)+l*LOG(psc))
+              coeff(l) = EXP(lnc(l)+l*psc)
             endif
-          enddo  
-          !if (verbose>1) print*,"coeff=",coeff(1:STOImax(enew))
+          enddo
+          psc = EXP(psc)
+          !if (verbose>1) print'(" coeff(",I2,":",I2,")=",99(1pE10.2))',
+     >    !               lmin,lmax,coeff(lmin:lmax)
           !----------------------------------------------
           ! solve 1d equation above with Newton's method 
           !----------------------------------------------
@@ -293,7 +297,7 @@
           do piter=1,99                  
             f  = pp*psc-pges
             fs = psc
-            do l=1,STOImax(enew)
+            do l=lmin,lmax
               if (coeff(l)==0.Q0) cycle
               f  = f  + coeff(l)*pp**l
               fs = fs + coeff(l)*l*pp**(l-1)
@@ -735,7 +739,7 @@
 
 *       ! apply limited NR step and check convergence 	  
 *       =============================================
-        if (.false.) then        
+        if (.true.) then        
           qual = 0.Q0
           do ii=1,Nact
             qual = MAX(qual,ABS(dp(ii)))
@@ -885,8 +889,8 @@
           atmax = 0.Q0 
           e = 0
           do i=1,nel
-            if (redo(i)) cycle   
             xx(i) = LOG(anmono(i)*kT)
+            if (redo(i)) cycle   
             atfrac = anmono(i)/anHges
             if (atfrac>1.Q-100) cycle   
             if (atfrac<atmax) cycle
@@ -895,42 +899,53 @@
           enddo  
           if (e==0) exit
           redo(e) = .true.
-          pwork = anmono(e)*kT
-          psc = pscale(e) 
+          psc = xx(e)
           coeff(:) = 0.Q0
+          lmin = +99
+          lmax = -99
           do i=1,nml
             pmol = g(i)
-            l=0
+            affect = .false.
             do j=1,m_kind(0,i)
-              pat = anmono(m_kind(j,i))*kT
+              nu = m_anz(j,i)   
               if (m_kind(j,i)==e) then
-                l = m_anz(j,i)   
-                pmol = pmol + l*LOG(psc)
+                l = nu
+                affect = .true.
+                pmol = pmol + l*psc
               else
-                pmol = pmol + m_anz(j,i)*xx(m_kind(j,i))
+                pmol = pmol + nu*xx(m_kind(j,i))
               endif  
             enddo
-            if (l.ne.0) coeff(l)=coeff(l)+EXP(pmol)
+            if (.not.affect) cycle
+            lmin = MIN(lmin,l)
+            lmax = MAX(lmax,l)
+            coeff(l) = coeff(l)+EXP(pmol)
           enddo
-          if (verbose>1) print'(2x,A25,A10)',
-     >                   "redo rare element patom","dp/patom"
-          pat = pwork/psc
+          psc = EXP(psc)
+          if (verbose>1) then
+            print'("redo rare element patom dp/patom ",A2)',catm(e)
+            print*,"psc=",psc
+            print'(" coeff(",I2,":",I2,")=",99(1pE10.2))',
+     >                   lmin,lmax,coeff(lmin:lmax)
+          endif  
+          pat = anmono(e)*kT/psc
           do piter=1,99
             f  = pat*psc-eps(e)*anHges*kT
             fs = psc
-            do l=-1,STOImax(e)
+            do l=lmin,lmax
               if (coeff(l)==0.Q0) cycle
               f  = f  + coeff(l)*l*pat**l
               fs = fs + coeff(l)*l**2*pat**(l-1)
             enddo
             delta = f/fs
-            if (verbose>1) print'(A2,1pE25.15,1pE10.2)',
+            if (verbose>1) print'(1x,A2,1pE25.15,1pE10.2)',
      >                            catm(e),pat*psc,delta/pat
             pat = pat-delta
             if (ABS(delta)<finish*ABS(pat)) exit 
           enddo  
           if (piter>=99) then
             write(*,*) "*** no convergence in post-it "//catm(e)
+            write(*,*) psc
             write(*,*) anHges,Tg
             write(*,*) coeff
             goto 1000

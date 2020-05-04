@@ -18,14 +18,14 @@
       real(kind=qp) :: eps(NELEM),eps00(NELEM)
       real(kind=qp) :: Sat(NDUST),eldust(NDUST),out(NDUST)
       real(kind=qp) :: fac,deps,e_reservoir(NELEM),d_reservoir(NDUST)
-      integer :: it,i,j,jj,k,l,NOUT,iW,stindex
+      integer :: it,i,j,jj,k,l,NOUT,iW,stindex,Ncond
       character(len=5000) :: species,NISTspecies,elnames
       character(len=20) :: frmt,name,short_name(NDUST),test1,test2
       character(len=4) :: sup
       character(len=2) :: test3
       character(len=1) :: char
       integer :: verbose=0
-      logical :: isOK,hasW,same,TEAinterface=.false.
+      logical :: isOK,hasW,same,no_solution,TEAinterface=.false.
 
       !----------------------------
       ! ***  open output files  ***
@@ -294,6 +294,7 @@
           !print*,"C/O=",eps0(C)/eps0(O)
         endif   
         eldust = 0.Q0
+        no_solution = .false.
 
         !--- run chemistry (+phase equilibrium)    ---
         !--- iterate to achieve requested pressure ---
@@ -336,7 +337,20 @@
           fold = ff
           print '("p-it=",i3,"  mu=",2(1pE20.12))',it,mu/amu,dmu/mu
           if (ABS(dmu/mu)<1.E-10) exit
+          if (model_pconst.and.dmu>0.0) then
+            Ncond = 0
+            do j=1,NDUST
+              if (eldust(j)>0.Q0) Ncond=Ncond+1
+            enddo
+            if ((charge.and.Ncond==NELM-1).or.(Ncond==NELM)) then
+              print*,"... all elements are condensing"
+              print*," => no solution for prescibed pressure."
+              no_solution = .true.
+              exit
+            endif  
+          endif  
         enddo  
+        if (no_solution) exit
 
         !--- remove all condensates and put them in reservoir? ---
         if (remove_condensates) then
