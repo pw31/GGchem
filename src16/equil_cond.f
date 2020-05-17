@@ -1271,7 +1271,7 @@
               fac2 = (-ddust(dk)-small*dscale(dk))/del
               if (verbose>0) print*,"*** limiting dust "
      >                              //dust_nam(dk),REAL(fac2)
-              if (fac2<fac) then
+              if (fac2<fac.and.Nact>2) then
                 fac = fac2 
                 iminoff = dk
                 limdust = .true.
@@ -1346,7 +1346,11 @@
           if (qual<qold*1.5) exit
           if (qual<1.0) exit
           if (limdust) exit
-            
+          if (iback==1) then
+            NRstep = 0.9*NRstep
+          else  
+            NRstep = 0.5*NRstep
+          endif  
         enddo
         !del = 0.Q0
         !do i=1,NELM

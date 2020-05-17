@@ -859,8 +859,8 @@
 
         endif
         crit = MAXVAL(converge(MAX(0,it-1):it))
-        if (verbose>1) print'(i3,i3,2(1pE9.1)," converged(",i2,"):",
-     >                    A50)',it,Nact,converge(it),limit,Nconv,txt
+        if (verbose>1) print'(3(i3),2(1pE9.1)," converged(",i2,"):",
+     >                 A50)',it,Nact,ind,converge(it),limit,Nconv,txt
         if (it==itmax) then 
           write(*,*) '*** keine Konvergenz in SMCHEM8!'
           write(*,*) 'it, converge, ind =',it,converge(it),limit

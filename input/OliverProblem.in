@@ -5,26 +5,27 @@ H C N O F Na Mg Al Si P S Cl K Ca Ti Cr Mn Fe el
 dispol_BarklemCollet.dat                ! dispol_file
 dispol_StockKitzmann_withoutTsuji.dat   ! dispol_file2
 dispol_WoitkeRefit.dat                  ! dispol_file3
+dispol_BURCATselected.dat               ! dispol_file4
 
 # abundance options 0=custum, 1=EarthCrust, 2=Ocean, 3=Solar, 4=Meteorites
 .true.                ! pick_mfrac
 0                     ! abund_pick
-mfrac_schaefer_BSE.dat
+mfrac_schaefer_CC.dat
 
 # equilibrium condensation?
 .true.                ! model_eqcond
-.false.               ! phyllosilicates
+.true.                ! phyllosilicates
 
 # model options
 1                     ! model_dim  (0,1,2)
 .true.                ! model_pconst
-4000.0                ! Tmax [K]
-500.0                 ! Tmin [K]      (if model_dim>0)
+5000.0                ! Tmax [K]
+100.0                 ! Tmin [K]      (if model_dim>0)
 1.E+2                 ! pmax [bar]    (if pconst=.true.)
 1.E+2                 ! pmin [bar]
-100                   ! Npoints
+250                   ! Npoints
 7                     ! NewBackIt  
-1.E+5                 ! NewBackFac
+1.E+10                ! NewBackFac
 1                     ! NewFastLevel
 800.0                 ! Tfast
 

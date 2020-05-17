@@ -271,21 +271,19 @@
           aim = LOG(1.Q+10)
           psc = -LOG(pges)                           ! when atom dominates
           do l=lmin,lmax
-            if (lnc(l).ne.0.Q0) then
-              ptest = (aim-lnc(l))/l                 ! lnc(l)+l*ln(psc) = aim
-              psc = MAX(psc,-ptest)
-             !print*,l,ptest
-            endif
+            if (lnc(l)==0.Q0) cycle
+            ptest = (aim-lnc(l))/l                   ! lnc(l)+l*ln(psc) = aim
+            psc = MAX(psc,-ptest)
           enddo  
           psc = -psc
           !if (verbose>1) print*,"pwork=",REAL(pwork),"  psc=",REAL(psc)
           !------------------------------------------------
           ! store coeff for Sum_l coeff(l) (p*psc)^l = pges 
           !------------------------------------------------
+          coeff(:) = 0.Q0
           do l=lmin,lmax
-            if (lnc(l).ne.0.Q0) then
-              coeff(l) = EXP(lnc(l)+l*psc)
-            endif
+            if (lnc(l)==0.Q0) cycle
+            coeff(l) = EXP(lnc(l)+l*psc)
           enddo
           psc = EXP(psc)
           !if (verbose>1) print'(" coeff(",I2,":",I2,")=",99(1pE10.2))',
@@ -314,8 +312,17 @@
             write(*,*) anHges,Tg
             do i=1,nel
               write(*,'(A2,1x,0pF30.26)') catm(i),eps(i)
-            enddo  
-            write(*,*) "coeff:",coeff
+            enddo 
+            write(*,*) "psc=",real(psc),lmin,lmax
+            write(*,*) "  lnc:",lnc(lmin:lmax)
+            write(*,*) "coeff:",coeff(lmin:lmax)
+            if (ifatal<=1) then
+              from_merk = .false.
+              badness   = 1.Q0
+              pcorr     = 1.Q0
+              ifatal    = ifatal+1
+              goto 100        ! try again from scratch before giving up
+            endif  
             goto 1000
           endif  
           anmono(enew) = pp*psc*kT1
@@ -624,6 +631,13 @@
           print*,catm(eseq(1:ido))
           print*,eact(eseq(1:ido))
           print*,pcorr(enew,act_to_all(1:Nact))
+          if (ifatal<=1) then
+            from_merk = .false.
+            badness   = 1.Q0
+            pcorr     = 1.Q0
+            ifatal    = ifatal+1
+            goto 100            ! try again from scratch before giving up
+          endif  
           goto 1000
         endif  
         !--- save ratio after/before for next run ---
@@ -945,9 +959,17 @@
           enddo  
           if (piter>=99) then
             write(*,*) "*** no convergence in post-it "//catm(e)
-            write(*,*) psc
+            write(*,*) anmono(e),eps(e)
+            write(*,*) psc,lmin,lmax
             write(*,*) anHges,Tg
-            write(*,*) coeff
+            write(*,*) coeff(lmin:lmax)
+            if (ifatal<=1) then
+              from_merk = .false.
+              badness   = 1.Q0
+              pcorr     = 1.Q0
+              ifatal    = ifatal+1
+              goto 100        ! try again from scratch before giving up
+            endif  
             goto 1000
           endif  
           anmono(e) = pat*psc*kT1

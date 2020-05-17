@@ -2,7 +2,7 @@
       PROGRAM EQ_CHEMISTRY
 ***********************************************************************
       use PARAMETERS,ONLY: model_dim,model_struc,model_eqcond,
-     >                     useDatabase,auto_atmos
+     >                     useDatabase,auto_atmos,adapt_cond
       use EXCHANGE,ONLY: chemcall,chemiter,ieqcond,ieqconditer,
      >                   itransform,preEst,preUse,preIter
       use DATABASE,ONLY: NLAST
@@ -14,7 +14,11 @@
       call INIT_DUSTCHEM
       
       if (model_dim==0) then
-        call DEMO_CHEMISTRY
+        if (adapt_cond) then
+          call ADAPT_CONDENSATES
+        else
+          call DEMO_CHEMISTRY
+        endif  
       else if (model_dim==1) then  
         if (auto_atmos) then
           call AUTO_STRUCTURE
@@ -60,7 +64,7 @@
      >                    muH,mass,mel,
      >                    dust_nam,dust_mass,dust_Vol,
      >                    dust_nel,dust_el,dust_nu
-      use EXCHANGE,ONLY: nel,nat,nion,nmol,mmol,C,N,O,Si
+      use EXCHANGE,ONLY: nel,nat,nion,nmol,mmol,H,C,N,O,Si
       implicit none
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST)
@@ -351,6 +355,10 @@
         if (Sat(i)<1.Q-2) cycle 
         write(*,5000) dust_nam(i),Sat(i) 
       enddo
+      write(*,'(" epsH=",2(0pF10.6))') eps0(H),eps(H)/eps(H)
+      write(*,'(" epsN=",2(0pF10.6))') eps0(N),eps(N)/eps(H)
+      write(*,'(" epsO=",2(0pF10.6))') eps0(O),eps(O)/eps(H)
+      write(*,'(" epsC=",2(0pF10.6))') eps0(C),eps(C)/eps(H)
 
 *     -----------------------------------------------------
 *     ***  Calculation of the condenstation timescales  ***

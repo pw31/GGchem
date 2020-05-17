@@ -171,7 +171,7 @@
       character(len=1) :: char
       character(len=80) :: frmt
       character(len=999) :: condensates
-      logical :: IS_NAN,found,contain1,contain2,corrected
+      logical :: IS_NAN,found,contain1,contain2,corrected,modified
       logical :: condensed(NELEM),used(NDUST)
       logical,save :: firstCall=.true.
       
@@ -271,15 +271,29 @@
      >      dbase(ibest)%eprod,qbest
           write(*,*) "active condensates: "//trim(condensates)
         endif  
+
+        condensed(:) = .false.
+        do i=1,NDUST
+          do j=1,dust_nel(i)
+            if (ddust(i)==0.Q0) cycle
+            el = dust_el(i,j)
+            condensed(el) = .true.
+          enddo
+        enddo
+        modified = .false.
+        do i=1,NELM
+          if (i==iel) cycle
+          el = elnum(i)
+          if (.not.condensed(el)) then
+            !print*,elnam(el)," has no condensates"
+            if (ABS(eps(el)/eps0(el)-1.Q0).gt.1.E-4) modified=.true.
+            eps(el) = eps0(el)
+          endif
+        enddo
+        if (modified) qbest=MIN(qbest,0.2)
         ecopy = eps
         dcopy = ddust
 
-        !if (NMODI>0) then
-        !  print*,ibest,qbest
-        !  print*,NMODI,qmodi
-        !  read'(A1)',char
-        !endif  
-        
         if (remove_condensates) then
           !--- check whether ddust=0 would result in perfect fit ---
           errmax = -1.Q0
@@ -299,14 +313,12 @@
           endif
         endif
   
-        condensed(:) = .false.
         check = eps
         do i=1,NDUST
           do j=1,dust_nel(i)
             if (ddust(i)==0.Q0) cycle
             el = dust_el(i,j)
             check(el) = check(el) + ddust(i)*dust_nu(i,j)    
-            condensed(el) = .true.
           enddo
         enddo
         deps0 = eps0-check
@@ -546,7 +558,7 @@
         do i=1,NELM
           if (i==iel) cycle
           el = elnum(i)
-          !print*,elnam(el),check(el),eps0(el)
+          !print*,elnam(el),jmain(el),check(el),eps0(el)
           error = ABS(1.Q0-check(el)/eps0(el))
           if (error.gt.errmax) then
             errmax = error
