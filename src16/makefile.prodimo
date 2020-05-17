@@ -6,7 +6,7 @@ F90LINKER    = ifort
 # for IFORT-Compiler
 #===================
 DEFS      = -D IFORT -diag-disable 8290,8291 
-#FFLAGS   = -r8 -g -traceback -check all,noarg_temp_created -fpe0
+#FFLAGS   = -r8 -g -traceback -check all,noarg_temp_created -fpe0 -warn all,notruncated_source
 FFLAGS    = -r8 -g -traceback -O3 -xHOST -prec-div -fp-model source
 INCLUDES  = 
 LFLAGS    = $(FFLAGS)
@@ -27,6 +27,7 @@ OBJECTS  = datamod.o \
            demo_sweep.o \
            demo_structure.o \
 	   demo_phasediagram.o \
+	   adapt_condensates.o \
 	   equil_cond.o \
 	   is_nan.o \
 	   init.o \
@@ -40,8 +41,8 @@ OBJECTS  = datamod.o \
 	   massfrac.o \
 	   linpack_q.o \
 	   slatec_routines.o \
-           smchem16.o \
            smchem8.o \
+           smchem16.o \
            supersat.o \
 	   stindex.o \
            upper.o \
