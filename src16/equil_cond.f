@@ -282,13 +282,14 @@
         el = elnr(i)
         worst = MAX(worst,ABS(1.Q0-check(el)/eps0(el)))
       enddo
-      eps00 = check
+      !eps00 = check
+      eps00 = eps0
       if (verbose>0) then
         write(*,*) "element conservation error 1:",worst
         write(*,*) "initial gas fractions ..."
         do i=1,NELEM
           if (elcode(i)==0) cycle
-          print'(3x,A2,2(1pE15.6))',elnam(i),eps(i),eps(i)/eps00(i)
+          print'(3x,A2,2(1pE15.6))',elnam(i),eps(i),eps(i)/eps0(i)
         enddo
       endif  
       if (worst>1.Q-8) stop "*** worst>1.Q-8 in equil_cond"
@@ -336,13 +337,15 @@
         changed = .false.
         Smax = maxval(Sat0)
         ioff = 0
-        if ((qread<0.5).and.(it<=3).and.(Nact_read>0)) then
+        if ((qread<0.5).and.(it<=3).and.(Nact_read>0)
+     >                             .and.(qual>0.Q0)) then
           active = act_read
           Nact = Nact_read
         else if (it>lastit+3) then
           maxon   = 0.Q0 
           minoff  = 0.Q0 
           imaxon  = 0
+          if (qual==0.Q0) limited=.false.
           do i=1,NDUST
             xmin = 9.Q+99 
             esum = 0.Q0
@@ -1216,14 +1219,14 @@
             deps = deps * 2.Q-1
           enddo  
         enddo            
-        if (verbose>1) then
-          print'(12x,99(A11))',elnam(Iindex(act_to_elem(1:Nsolve)))
-          do ii=1,Nsolve
-            i  = act_to_dust(ii) 
-            dk = Dindex(i)
-            print'(A18,99(1pE11.3))',dust_nam(dk),DF(ii,1:Nsolve),FF(ii)
-          enddo  
-        endif
+        !if (verbose>1) then
+        !  print'(12x,99(A11))',elnam(Iindex(act_to_elem(1:Nsolve)))
+        !  do ii=1,Nsolve
+        !    i  = act_to_dust(ii) 
+        !    dk = Dindex(i)
+        !    print'(A18,99(1pE11.3))',dust_nam(dk),DF(ii,1:Nsolve),FF(ii)
+        !  enddo  
+        !endif
 
         !--------------------------------
         ! ***  Newton-Raphson step dx ***
@@ -1250,7 +1253,7 @@
           i  = act_to_elem(ii) 
           el = Iindex(i)
           if (eps(el)+dx(ii)<0.05*eps(el)) then
-            fac2 = (-0.95*eps(el))/dx(ii)        ! eps+fac*dx = 0.05*eps
+            fac2 = (-0.95*eps(el))/dx(ii)               ! eps+fac*dx = 0.05*eps
             if (verbose>0) print'(" *** limiting element1 ",A2,
      >        " eps=",1pE9.2,"  fac=",1pE9.2)',elnam(el),eps(el),fac2
             if (fac2<fac) then
@@ -1267,11 +1270,18 @@
           enddo 
           if (is_dust(j)) then
             dk = Dindex(j)
-            if (ddust(dk)+del<0.Q0) then
-              fac2 = (-ddust(dk)-small*dscale(dk))/del
-              if (verbose>0) print*,"*** limiting dust "
+            if (del<0.Q0.and.ddust(dk)>0.1*dscale(dk)) then
+              fac2 = (-ddust(dk)+0.05*dscale(dk))/del   ! ddust+fac*del = 0.05*dscale
+              if (fac2<1.0.and.verbose>0) print*,"*** limiting dust 1 "
      >                              //dust_nam(dk),REAL(fac2)
-              if (fac2<fac.and.Nact>2) then
+              if (fac2<fac) then
+                fac = fac2 
+              endif  
+            else if (ddust(dk)+del<0.Q0) then
+              fac2 = (-ddust(dk)-small*dscale(dk))/del  ! ddust+fac*del = -small*dscale
+              if (fac2<1.0.and.verbose>0) print*,"*** limiting dust 2 "
+     >                              //dust_nam(dk),REAL(fac2)
+              if (fac2<fac) then
                 fac = fac2 
                 iminoff = dk
                 limdust = .true.
@@ -1280,7 +1290,7 @@
           else  
             el = Dindex(j)
             if (eps(el)+del<0.05*eps(el)) then
-              fac2 = (-0.95*eps(el))/del        ! eps+fac*dx = 0.05*eps
+              fac2 = (-0.95*eps(el))/del                ! eps+fac*dx = 0.05*eps
               if (verbose>0) print'(" *** limiting element2 ",A2,
      >        " eps=",1pE9.2,"  fac=",1pE9.2)',elnam(el),eps(el),fac2
               if (fac2<fac) then
@@ -1403,6 +1413,46 @@
      >            0pF9.4," CPU sec.")') it,time1-time0 
         stop
       endif
+
+      !-------------------------
+      ! ***  check solution  ***
+      !-------------------------
+      do i=1,NDUST
+        if (ddust(i)>0.Q0.and.Sat(i)<0.9999999) then
+          print*,"*** error: ddust>0 but S<1"
+          print*,dust_nam(i),REAL(ddust(i)),REAL(Sat(i))
+          stop
+        endif
+        if (Sat(i)>1.0000001) then
+          print*,"*** error: S>1"
+          print*,dust_nam(i),REAL(ddust(i)),REAL(Sat(i))
+          stop
+        endif
+        if (ddust(i)<-10*small*dscale(i)) then
+          print*,"*** error: ddust<0"
+          print*,dust_nam(i),REAL(ddust(i)),REAL(Sat(i))
+          stop
+        endif  
+      enddo  
+
+      !-------------------------------------
+      ! ***  check element conservation  ***
+      !-------------------------------------
+      check = eps
+      do i=1,NDUST
+        do j=1,dust_nel(i)
+          el = dust_el(i,j)
+          check(el) = check(el) + ddust(i)*dust_nu(i,j)
+        enddo
+      enddo
+      do i=1,NEPS
+        el = elnr(i)
+        if (ABS(1.Q0-check(el)/eps00(el))>1.Q-8) then
+          print*,"*** element conservation error"
+          print*,elnam(el),check(el),eps00(el)
+          stop
+        endif  
+      enddo
 
       !----------------------------------
       ! ***  save result to database  ***

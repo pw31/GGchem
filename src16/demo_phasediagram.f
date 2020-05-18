@@ -1,7 +1,7 @@
 ***********************************************************************
       SUBROUTINE DEMO_PHASEDIAGRAM
 ***********************************************************************
-      use PARAMETERS,ONLY: Tmin,Tmax,pmin,pmax,nHmin,nHmax,
+      use PARAMETERS,ONLY: Tmin,Tmax,pmin,pmax,nHmin,nHmax,Tfast,
      >                     model_eqcond,model_pconst,Npoints
       use CHEMISTRY,ONLY: NELM,NMOLE,elnum,cmol,catm,el,charge
       use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,muH,
@@ -13,7 +13,7 @@
       real :: ff,fold,dmu,dfdmu
       real :: rhog,rhod,Jstar,Nstar
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST),out(NDUST)
-      integer :: it,i,ii,j,jj,NOUT,ic,stindex
+      integer :: it,i,ii,j,jj,NOUT,stindex,iC,iW,iH2O,iH2Ol
       character(len=20) :: name,short_name(NDUST)
       integer :: verbose=0
 
@@ -25,8 +25,12 @@
         j=index(name,"[s]")
         short_name(i) = name
         if (j>0) short_name(i)=name(1:j-1)
+        if (name=='C[s]') iC=i
+        if (name=='H2O[s]') iH2O=i
+        if (name=='H2O[l]') iH2Ol=i
       enddo
-      eps  = eps0
+      iW = stindex(dust_nam,NDUST,'W[s]')
+      eps = eps0
       NOUT = NELM
       if (charge) NOUT=NOUT-1
       open(unit=70,file='Static_Conc_2D.dat',status='replace')
@@ -48,7 +52,8 @@
       !-------------------------------------
       mu = muH
       do i=1,Npoints
-        do ii=1,Npoints
+        do ii=1,Npoints 
+          mu = muH     ! only useful to make it reproducible
           fac = REAL(i-1)/REAL(Npoints-1) 
           if (model_pconst) then
             p = EXP(LOG(pmax)+fac*LOG(pmin/pmax))
@@ -56,7 +61,19 @@
             nHges = EXP(LOG(nHmax)+fac*LOG(nHmin/nHmax))
           endif  
           Tg = EXP(LOG(Tmax)+LOG(Tmin/Tmax)*REAL(ii-1)/REAL(Npoints-1))
+          if (Tmax<100.0) then
+            !--- interprete as variation of epsC and epsO ---
+            p  = 1.0*bar
+            Tg = Tfast-1.E-8
+            fac = REAL(i-1)/REAL(Npoints-1) 
+            eps0(O) = (pmin+fac*(pmax-pmin))/bar
+            fac = REAL(ii-1)/REAL(Npoints-1) 
+            eps0(C) = Tmin+fac*(Tmax-Tmin)
+            write(60,'(2(i4),99(1pE13.6))') i,ii,
+     &            eps0(H),eps0(C),eps0(N),eps0(O)
+          endif  
           eldust = 0.0
+          eps = eps0
           !--- iterate to achieve requested pressure ---
           do it=1,99
             if (model_pconst) nHges = p*mu/(bk*Tg)/muH
@@ -82,8 +99,8 @@
             else
               dfdmu = (ff-fold)/(mu-muold)
               dmu   = -ff/dfdmu
-              write(98,'(I3,99(1pE14.7))')
-     >              it,muold,mu,fold,ff,dfdmu,dmu/mu
+              !write(98,'(I3,99(1pE14.7))')
+     >        !      it,muold,mu,fold,ff,dfdmu,dmu/mu
               muold = mu
               if ((dmu>0.0).or.ABS(dmu/mu)<0.7) then
                 mu = muold+dmu
@@ -98,9 +115,8 @@
           
           !--- compute supersat ratios and nucleation rates ---
           call SUPERSAT(Tg,nat,nmol,Sat)
-          ic = stindex(dust_nam,NDUST,'W[s]')
-          call NUCLEATION('W',Tg,dust_vol(ic),nat(W),
-     &                    Sat(ic),Jstar,Nstar)
+          call NUCLEATION('W',Tg,dust_vol(iW),nat(W),
+     &                    Sat(iW),Jstar,Nstar)
 
           !--- compute dust/gas density ratio ---
           rhog = nHges*muH
@@ -129,6 +145,16 @@
      &       LOG10(MAX(1.Q-300, rhod/rhog)),
      &       LOG10(MAX(1.Q-300, Jstar)), 
      &       MIN(999999.99999,Nstar)
+          
+          if (model_eqcond) then
+            write(60,'(2(i4),99(1pE13.6))') i,ii,
+     &               eps(H),eps(C),eps(N),eps(O),
+     &               eldust(iC),eldust(iH2O),eldust(iH2Ol)
+          else  
+            write(60,'(2(i4),99(1pE13.6))') i,ii,
+     &               eps(H),eps(C),eps(N),eps(O),
+     &               Sat(iC),Sat(iH2O),Sat(iH2Ol)
+          endif  
 
         enddo
       enddo  
