@@ -535,7 +535,6 @@
         endif  
         if (ioff>0) itransform=itransform+1
 
-        laston = 0
         do i=1,NDUST
           if (active(i).and.(.not.act_old(i))) then
             laston = i
@@ -1270,16 +1269,22 @@
           enddo 
           if (is_dust(j)) then
             dk = Dindex(j)
+            if (ddust(dk)+del<0.Q0) 
+     >        print*,"dk,laston,it,lastit=",dk,laston,it,lastit
             if (del<0.Q0.and.ddust(dk)>0.1*dscale(dk)) then
               fac2 = (-ddust(dk)+0.05*dscale(dk))/del   ! ddust+fac*del = 0.05*dscale
               if (fac2<1.0.and.verbose>0) print*,"*** limiting dust 1 "
      >                              //dust_nam(dk),REAL(fac2)
-              if (fac2<fac) then
-                fac = fac2 
-              endif  
+              if (fac2<fac) fac=fac2 
+            else if (ddust(dk)+del<0.Q0.and.
+     >               dk==laston.and.it<lastit+5) then
+              fac2 = -0.9*ddust(dk)/del                 ! ddust+fac*del = ddust/10
+              if (fac2<1.0.and.verbose>0) print*,"*** limiting dust 2 "
+     >                              //dust_nam(dk),REAL(fac2)
+              if (fac2<fac) fac=fac2 
             else if (ddust(dk)+del<0.Q0) then
               fac2 = (-ddust(dk)-small*dscale(dk))/del  ! ddust+fac*del = -small*dscale
-              if (fac2<1.0.and.verbose>0) print*,"*** limiting dust 2 "
+              if (fac2<1.0.and.verbose>0) print*,"*** limiting dust 3 "
      >                              //dust_nam(dk),REAL(fac2)
               if (fac2<fac) then
                 fac = fac2 
@@ -1418,12 +1423,12 @@
       ! ***  check solution  ***
       !-------------------------
       do i=1,NDUST
-        if (ddust(i)>0.Q0.and.Sat(i)<0.9999999) then
+        if (ddust(i)>0.Q0.and.Sat(i)<0.9999) then
           print*,"*** error: ddust>0 but S<1"
           print*,dust_nam(i),REAL(ddust(i)),REAL(Sat(i))
           stop
         endif
-        if (Sat(i)>1.0000001) then
+        if (Sat(i)>1.00001) then
           print*,"*** error: S>1"
           print*,dust_nam(i),REAL(ddust(i)),REAL(Sat(i))
           stop
