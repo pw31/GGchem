@@ -52,7 +52,7 @@
       integer,dimension(NDUST) :: dind,dlin,switchedON,switchedOFF
       integer,dimension(NELEM,NDUST) :: dustkind,stoich
       integer :: it,i,j,m,el,el2,Nact,Nact_read,Neq,slots,sl,dk,eq
-      integer :: itry,knowns,unknowns,unknown,ii,jj,lastit,laston
+      integer :: itry,knowns,unknowns,unknown,ii,jj,lastit,laston=0
       integer :: imaxon,iminoff,info,ipvt(NELEM)
       integer :: e_num(NELEM),e_num_save(NELEM)
       integer :: Nunsolved,unsolved(NELEM),Nvar1,Nvar2,var(NELEM)
