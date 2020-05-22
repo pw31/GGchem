@@ -4,16 +4,16 @@
       use PARAMETERS,ONLY: Tmin,Tmax,pmin,pmax,nHmin,nHmax,Tfast,
      >                     model_eqcond,model_pconst,Npoints
       use CHEMISTRY,ONLY: NELM,NMOLE,elnum,cmol,catm,el,charge
-      use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,muH,
+      use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,muH,mass,
      >                    amu,dust_nam,dust_mass,dust_Vol
       use EXCHANGE,ONLY: nel,nat,nion,nmol,H,C,N,O,W
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       real :: p,Tg,nHges,nges,kT,pgas,mu,muold,fac
-      real :: ff,fold,dmu,dfdmu
-      real :: rhog,rhod,Jstar,Nstar
+      real :: ff,fold,dmu,dfdmu,xx,yy,epsH,epsO,epsC
+      real :: rhog,rhod,Jstar,Nstar,xmin,xmax,ymin,ymax
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST),out(NDUST)
-      integer :: it,i,ii,j,jj,NOUT,stindex,iC,iW,iH2O,iH2Ol
+      integer :: i,it,ix,iy,j,jj,NOUT,stindex,iC,iW,iH2O,iH2Ol
       character(len=20) :: name,short_name(NDUST)
       integer :: verbose=0
 
@@ -51,27 +51,52 @@
       ! ***  run chemistry on structure  ***
       !-------------------------------------
       mu = muH
-      do i=1,Npoints
-        do ii=1,Npoints 
-          mu = muH     ! only useful to make it reproducible
-          fac = REAL(i-1)/REAL(Npoints-1) 
+      do ix=1,Npoints
+        do iy=1,Npoints 
+          fac = REAL(ix-1)/REAL(Npoints-1) 
           if (model_pconst) then
             p = EXP(LOG(pmax)+fac*LOG(pmin/pmax))
           else  
             nHges = EXP(LOG(nHmax)+fac*LOG(nHmin/nHmax))
           endif  
-          Tg = EXP(LOG(Tmax)+LOG(Tmin/Tmax)*REAL(ii-1)/REAL(Npoints-1))
-          if (Tmax<100.0) then
+          Tg = EXP(LOG(Tmax)+LOG(Tmin/Tmax)*REAL(iy-1)/REAL(Npoints-1))
+          if (Tmax==Tmin.and.pmax==pmin) then
             !--- interprete as variation of epsC and epsO ---
-            p  = 1.0*bar
-            Tg = Tfast-1.E-8
-            fac = REAL(i-1)/REAL(Npoints-1) 
-            eps0(O) = (pmin+fac*(pmax-pmin))/bar
-            fac = REAL(ii-1)/REAL(Npoints-1) 
-            eps0(C) = Tmin+fac*(Tmax-Tmin)
-            write(60,'(2(i4),99(1pE13.6))') i,ii,
+            p  = pmax
+            Tg = Tmax
+            xmin = 1.E-6
+            xmax = 0.4
+            ymin =-1.0+1.E-6
+            ymax = 1.0-1.E-6
+            xx = xmin + (xmax-xmin)*REAL(ix-1)/REAL(Npoints-1)
+            yy = ymin + (ymax-ymin)*REAL(iy-1)/REAL(Npoints-1)
+            !epsH = yy                              ! y = H
+            !epsC = (1.0+xx)/2.0*(1.0-yy)           ! x = (C-O)/(C+O)
+            !epsO = epsC*(1.0-xx)/(1.0+xx)          ! 1 = H+O+C
+            epsC = xx                              ! x = C
+            epsO = 0.5*(1.0+yy-xx*yy-xx)           ! y = (O-H)/(O+H)
+            epsH = 0.5*(1.0-yy+xx*yy-xx)           ! 1 = H+O+C
+            eps0(O) = epsO/epsH
+            eps0(C) = epsC/epsH
+            eps0(N) = 1.E-3*(eps0(H)+eps0(O)+eps0(C))
+            !print*,epsH,epsC,epsO
+            !print*,yy,(epsO-epsH)/(epsO+epsH)
+            !print*,xx,epsC/(epsH+epsO+epsC)
+            !print*,1.0,(epsH+epsO+epsC)
+            !print*,xx,eps0(C)/(eps0(H)+eps0(O)+eps0(C))
+            !print*,yy,(eps0(O)-eps0(H))/(eps0(O)+eps0(H))
+            !print*,eps0(H),eps0(C),eps0(N),eps0(O)
+            !stop
+            write(60,'(2(i4),99(1pE13.6))') ix,iy,
      &            eps0(H),eps0(C),eps0(N),eps0(O)
+            muH = 0.0
+            do i=1,NELM
+              j = elnum(i)
+              if (j==el) cycle
+              muH = muH + eps0(j)*mass(j)
+            enddo  
           endif  
+          mu = muH     ! only useful to make it reproducible
           eldust = 0.0
           eps = eps0
           !--- iterate to achieve requested pressure ---
@@ -128,7 +153,7 @@
           enddo  
 
           print'(i4,i4," Tg[K] =",0pF8.2,"  n<H>[cm-3] =",1pE10.3)',
-     >          i,ii,Tg,nHges
+     >          ix,iy,Tg,nHges
           write(*,1010) ' Tg=',Tg,' n<H>=',nHges,
      &                  ' p=',pgas/bar,' mu=',mu/amu,
      &                  ' dust/gas=',rhod/rhog
@@ -147,11 +172,11 @@
      &       MIN(999999.99999,Nstar)
           
           if (model_eqcond) then
-            write(60,'(2(i4),99(1pE13.6))') i,ii,
+            write(60,'(2(i4),99(1pE13.6))') ix,iy,
      &               eps(H),eps(C),eps(N),eps(O),
      &               eldust(iC),eldust(iH2O),eldust(iH2Ol)
           else  
-            write(60,'(2(i4),99(1pE13.6))') i,ii,
+            write(60,'(2(i4),99(1pE13.6))') ix,iy,
      &               eps(H),eps(C),eps(N),eps(O),
      &               Sat(iC),Sat(iH2O),Sat(iH2Ol)
           endif  
