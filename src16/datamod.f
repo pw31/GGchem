@@ -114,6 +114,6 @@
       integer,parameter :: Cu=29,Zn=30,Ga=31,Ge=32,As=33,Se=34
       integer,parameter :: Br=35,Kr=36,Rb=37,Sr=38,Y=39,Zr=40,W=41
       integer*8 :: chemcall=0,chemiter=0,itransform=0,ieqcond=0
-      integer*8 :: preIter=0,preEst=0,preUse=0
+      integer*8 :: preIter=0,preEst=0,preUse=0,DUALcorr=0,HCOcorr=0
       integer*8 :: ieqconditer=0
       end

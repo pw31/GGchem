@@ -4,7 +4,8 @@
       use PARAMETERS,ONLY: model_dim,model_struc,model_eqcond,
      >                     useDatabase,auto_atmos,adapt_cond
       use EXCHANGE,ONLY: chemcall,chemiter,ieqcond,ieqconditer,
-     >                   itransform,preEst,preUse,preIter
+     >                   itransform,preEst,preUse,preIter,
+     >                   DUALcorr,HCOcorr
       use DATABASE,ONLY: NLAST
       implicit none
 
@@ -38,10 +39,14 @@
       print'("            smchem calls = ",I8)',chemcall
       print'("         iterations/call = ",0pF8.2)',
      >                     REAL(chemiter)/REAL(chemcall)
-      print'("     pre-iterations/call = ",0pF12.3)',
+      print'("     pre-iterations/call = ",0pF9.3)',
      >                      REAL(preIter)/REAL(chemcall)
-      print'("usage of saved estimates = ",0pF12.3,"%")',
+      print'("usage of saved estimates = ",0pF9.3," %")',
      >                       REAL(preUse)/REAL(preEst)*100.0
+      print'("   dual corrections/call = ",0pF9.3)',
+     >                     REAL(DUALcorr)/REAL(chemcall)
+      print'("  H-C-O corrections/call = ",0pF9.3)',
+     >                      REAL(HCOcorr)/REAL(chemcall)
       if (model_eqcond) then
         print'("   eq condensation calls = ",I8)',ieqcond
         print'("      eq iterations/call = ",0pF8.2)',
