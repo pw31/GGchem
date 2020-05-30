@@ -341,6 +341,7 @@
      >                             .and.(qual>0.Q0)) then
           active = act_read
           Nact = Nact_read
+          pot = 0.0
         else if (it>lastit+3) then
           maxon   = 0.Q0 
           minoff  = 0.Q0 
@@ -762,11 +763,11 @@
                 exit
               endif 
             enddo
-            deplete1 = eps(Iindex(i))/eps0(Iindex(i))
-            deplete2 = eps(Iindex(j))/eps0(Iindex(j))
+            deplete1 = eps(Iindex(i))**2/eps0(Iindex(i))
+            deplete2 = eps(Iindex(j))**2/eps0(Iindex(j))
             !print*,elnam(Iindex(i)),elnam(Iindex(j))
             !print*,deplete1,deplete2
-            if (deplete1>1.Q+5*deplete2) found=.false.
+            if (deplete1>1.Q+2*deplete2) found=.false.
             if (found) then
               if (verbose>=0) then
                 print*,"... exchanging2 "//elnam(Iindex(j))//
@@ -1257,7 +1258,6 @@
      >        " eps=",1pE9.2,"  fac=",1pE9.2)',elnam(el),eps(el),fac2
             if (fac2<fac) then
               fac = fac2 
-              limdust = .false.
             endif
           endif  
         enddo
@@ -1275,13 +1275,21 @@
               fac2 = (-ddust(dk)+0.05*dscale(dk))/del   ! ddust+fac*del = 0.05*dscale
               if (fac2<1.0.and.verbose>0) print*,"*** limiting dust 1 "
      >                              //dust_nam(dk),REAL(fac2)
-              if (fac2<fac) fac=fac2 
+              if (fac2<fac) then
+                fac = fac2
+                iminoff = 0
+                limdust = .true.
+              endif  
             else if (ddust(dk)+del<0.Q0.and.
      >               dk==laston.and.it<lastit+5) then
               fac2 = -0.9*ddust(dk)/del                 ! ddust+fac*del = ddust/10
               if (fac2<1.0.and.verbose>0) print*,"*** limiting dust 2 "
      >                              //dust_nam(dk),REAL(fac2)
-              if (fac2<fac) fac=fac2 
+              if (fac2<fac) then
+                fac = fac2
+                iminoff = 0
+                limdust = .true.
+              endif  
             else if (ddust(dk)+del<0.Q0) then
               fac2 = (-ddust(dk)-small*dscale(dk))/del  ! ddust+fac*del = -small*dscale
               if (fac2<1.0.and.verbose>0) print*,"*** limiting dust 3 "
@@ -1300,6 +1308,7 @@
      >        " eps=",1pE9.2,"  fac=",1pE9.2)',elnam(el),eps(el),fac2
               if (fac2<fac) then
                 fac = fac2 
+                iminoff = 0
                 limdust = .false.
               endif  
             endif
