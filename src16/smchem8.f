@@ -433,6 +433,7 @@
           endif
           pmol = eps(i2)*anHges*kT/s2
           if (eps(i1)*anHges*kT-s1*pmol<0.d0) possible=.false.
+          if (i2==el) possible=.false.
         endif  
         if (possible) then
           !print*,catm(i1),cmol(i),cmol(imaj2(i1)),
@@ -526,6 +527,14 @@
           anmono(H) = EXP(lpH)*kT1
           anmono(O) = EXP(lpO)*kT1
           anmono(C) = EXP(lpC)*kT1
+          pbefore(H) = anmono(H)
+          pbefore(O) = anmono(O)
+          pbefore(C) = anmono(C)
+          if (NewFastLevel<3.and.ptake) then
+            anmono(H) = anmono(H)*pcorr(enew,H)
+            anmono(O) = anmono(O)*pcorr(enew,O)
+            anmono(C) = anmono(C)*pcorr(enew,C)
+          endif  
           HCOco = HCOco + 1
         endif  
           

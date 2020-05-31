@@ -379,7 +379,11 @@
                 imaxon = i
               endif  
             endif  
-          enddo  
+          enddo
+          if (qual>maxon) then  ! keep on iterating without switching on yet
+            maxon = 0.0
+            imaxon = 0
+          endif  
           if (verbose>0) print'("limited=",L1,
      >                   "  Smax=",1pE10.3,2x,A18)',
      >                   limited,Smax,dust_nam(imax)
@@ -1173,15 +1177,15 @@
           deps1 = +1.Q-7*eps(el)            ! limited by el abundance
           deps2 = -1.Q-7*eps(el)            ! limited by el abundance
           if (T<Tfast) then
-            deps1 = +1.Q-14*eps(el)         ! quadrupole precision chemistry calls
-            deps2 = -1.Q-14*eps(el) 
+            deps1 = +1.Q-15*eps(el)         ! quadrupole precision chemistry calls
+            deps2 = -1.Q-15*eps(el) 
           endif  
           do i=1,Ndep
             if (conv(i,j)==0.Q0) cycle
             if (is_dust(i)) cycle
             el2 = Dindex(i)                 ! limited by dep. element?
             del = 1.Q-7*eps(el2)/conv(i,j)
-            if (T<Tfast) del=1.Q-14*eps(el2)/conv(i,j)
+            if (T<Tfast) del=1.Q-15*eps(el2)/conv(i,j)
             if (del>0.Q0) deps2=MAX(deps2,-del)
             if (del<0.Q0) deps1=MIN(deps1,-del)
             !if (verbose>1) print*,elnam(el)//" "//elnam(el2),
@@ -1192,10 +1196,10 @@
           scale(j) = eps(el)
           if (T>Tfast) then
             dlim = 1.Q-12
-            target = 1.Q-4
+            target = 1.Q-5
           else
             dlim = 1.Q-30
-            target = 1.Q-8
+            target = 1.Q-10
           endif  
           do
             xstep(:) = 0.Q0
@@ -1210,10 +1214,7 @@
               dtmax = MAX(dtmax,ABS(dterm))
               DF(ii,jj) = dterm/deps*scale(j)
             enddo  
-            !if (verbose>1) then
-            !  print'(A3,3(1pE11.3))',elnam(el),deps/eps(el),
-     >      !                         dtmax,dtmax/deps*scale(j)
-            !endif  
+            !print*,"JAC:",elnam(el),REAL(eps(el)),REAL(deps),REAL(dtmax)
             if (dtmax<target.or.ABS(deps)<dlim*eps(el)) exit
             !--- decrease deps to get more precice DF-entry ---
             deps = deps * 2.Q-1
