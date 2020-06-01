@@ -479,6 +479,9 @@
           DF(2,1) = s1
           DF(2,2) = s2
           call GAUSS16(nel,2,DF,dp,FF)
+          possible = (dp(1)<1000.0).and.(dp(2)<1000.0)
+        endif
+        if (possible) then
           anmono(i1) = EXP(dp(1))*kT1
           anmono(i2) = EXP(dp(2))*kT1
           !print'(A2,9(1pE16.8))',catm(i1),eps(i1)*anHges*kT,

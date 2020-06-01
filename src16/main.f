@@ -360,10 +360,10 @@
         if (Sat(i)<1.Q-2) cycle 
         write(*,5000) dust_nam(i),Sat(i) 
       enddo
-      write(*,'(" epsH=",2(0pF10.6))') eps0(H),eps(H)/eps(H)
-      write(*,'(" epsN=",2(0pF10.6))') eps0(N),eps(N)/eps(H)
-      write(*,'(" epsO=",2(0pF10.6))') eps0(O),eps(O)/eps(H)
-      write(*,'(" epsC=",2(0pF10.6))') eps0(C),eps(C)/eps(H)
+      write(*,'(" epsH=",2(1pE12.4))') eps0(H),eps(H)
+      write(*,'(" epsC=",2(1pE12.4))') eps0(C),eps(C)
+      write(*,'(" epsN=",2(1pE12.4))') eps0(N),eps(N)
+      write(*,'(" epsO=",2(1pE12.4))') eps0(O),eps(O)
 
 *     -----------------------------------------------------
 *     ***  Calculation of the condenstation timescales  ***
