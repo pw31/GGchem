@@ -418,7 +418,7 @@
             s2 = m_anz(j,i)
           endif  
         enddo
-        possible = (qmost>1.0)
+        possible = (qmost>0.95)
         if (possible) then
           imaj2(i2) = imaj(i2)
           imaj(i2) = i
@@ -772,7 +772,7 @@
                 xx(i) = xx(i) - fak*dp(ii)
                 anmono(i) = exp(xx(i))*kT1
                 if (IS_NAN(anmono(i))) then
-                  qual=2.Q+99
+                  qual=2.d+99
                   exit
                 endif  
               enddo
@@ -781,11 +781,11 @@
               if (verbose>1) print'(I4,99(1pE11.3E3))',
      >                       it,anmono(act_to_all(1:Nact))*kT,fak,qual
               NpreIt = NpreIt+1
-              if (qual<1.Q-12.or.qual>1.Q+99) exit
+              if (qual<1.d-10.or.qual>1.d+99) exit
             enddo  
             NpreLoop = NpreLoop+1
           endif
-          if (qual<1.d-10) exit
+          if (qual<1.d-5) exit
           do ii=1,Nact
             i = act_to_all(ii)
             anmono(i) = pbefore(i)    ! do not use pre-it corrections again

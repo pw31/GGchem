@@ -394,7 +394,7 @@
             if (eact(e)) affect=.true.
           enddo  
           relevant(i) = (known.and.affect)
-        enddo 
+        enddo
 
         !---------------------------------------------------------
         !***  check if new important molecule has huge impact  ***
@@ -423,7 +423,7 @@
             s2 = m_anz(j,i)
           endif  
         enddo
-        possible = (qmost>1.0)
+        possible = (qmost>0.95)
         if (possible) then
           imaj2(i2) = imaj(i2)
           imaj(i2) = i

@@ -253,7 +253,8 @@
         if (.not.haeufig) exit
         if (iraus>0) then
           raus(iraus) = .true.
-          write(*,4010) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
+          write(*,4010) cmol(iraus),nmol(iraus),
+     >                  nmol(iraus)/ngas,nmol(iraus)/ngas
         else if (aIraus>0) then 
           rausI(aIraus) = .true.
           write(*,4010) elnam(aIraus)//"I       ",
@@ -264,27 +265,26 @@
      >                  nat(aIIraus),nion(aIIraus)/ngas
         endif  
       enddo
-      !iraus = stindex(cmol,NMOLE,'O2')
-      !if (.not.raus(iraus))
-     >!   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
-      !iraus = stindex(cmol,NMOLE,'NO')
-      !if (.not.raus(iraus))
-     >!   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
-      !iraus = stindex(cmol,NMOLE,'S3')
-      !if (.not.raus(iraus))
-     >!   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
-      !iraus = stindex(cmol,NMOLE,'S4')
-      !if (.not.raus(iraus))
-     >!   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
-      !iraus = stindex(cmol,NMOLE,'S5')
-      !if (.not.raus(iraus))
-     >!   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
-      !iraus = stindex(cmol,NMOLE,'H2SO4')
-      !if (.not.raus(iraus))
-     >!   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
-      !iraus = stindex(cmol,NMOLE,'SF6')
-      !if (.not.raus(iraus))
-     >!   write(*,4020) cmol(iraus),nmol(iraus),nmol(iraus)/ngas
+      iraus = stindex(cmol,NMOLE,'H2')
+      if (.not.raus(iraus))
+     >   write(*,4010) cmol(iraus),nmol(iraus),
+     >                 nmol(iraus)/ngas,nmol(iraus)/ngas
+      iraus = stindex(cmol,NMOLE,'O2')
+      if (.not.raus(iraus))
+     >   write(*,4010) cmol(iraus),nmol(iraus),
+     >                 nmol(iraus)/ngas,nmol(iraus)/ngas
+      iraus = stindex(cmol,NMOLE,'CH4')
+      if (.not.raus(iraus))
+     >   write(*,4010) cmol(iraus),nmol(iraus),
+     >                 nmol(iraus)/ngas,nmol(iraus)/ngas
+      iraus = stindex(cmol,NMOLE,'CO2')
+      if (.not.raus(iraus))
+     >   write(*,4010) cmol(iraus),nmol(iraus),
+     >                 nmol(iraus)/ngas,nmol(iraus)/ngas
+      iraus = stindex(cmol,NMOLE,'NH3')
+      if (.not.raus(iraus))
+     >   write(*,4010) cmol(iraus),nmol(iraus),
+     >                 nmol(iraus)/ngas,nmol(iraus)/ngas
           
       print*
       write(*,*) '-----  where are the elements?  -----'
@@ -361,9 +361,11 @@
         write(*,5000) dust_nam(i),Sat(i) 
       enddo
       write(*,'(" epsH=",2(1pE12.4))') eps0(H),eps(H)
-      write(*,'(" epsC=",2(1pE12.4))') eps0(C),eps(C)
+      write(*,'(" epsC=",2(1pE12.4),"   C/(H+O+C)=",1pE12.4)') 
+     >         eps0(C),eps(C),eps(C)/(eps(H)+eps(O)+eps(C))
       write(*,'(" epsN=",2(1pE12.4))') eps0(N),eps(N)
-      write(*,'(" epsO=",2(1pE12.4))') eps0(O),eps(O)
+      write(*,'(" epsO=",2(1pE12.4)," (O-H)/(O+H)=",1pE12.4)') 
+     >         eps0(O),eps(O),(eps(O)-eps(H))/(eps(O)+eps(H))
 
 *     -----------------------------------------------------
 *     ***  Calculation of the condenstation timescales  ***
@@ -449,7 +451,7 @@
  1020 format(a22,1pE15.9,2(0pF10.5))
  1030 format(a22,1pE12.4)
  4000 format(a7,1pE10.4,a5,1pE10.4)     
- 4010 format(' n',a8,1pE12.4,0pF13.9)
+ 4010 format(' n',a8,1pE12.4,0pF13.9,1pE12.4)
  4020 format(' n',a8,1pE12.4,1pE13.3)
  5000 format(1x,a20,' S=',1pE9.3)
       RETURN
