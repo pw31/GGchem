@@ -53,20 +53,20 @@
       integer,dimension(NELEM,NDUST) :: dustkind,stoich
       integer :: it,i,j,m,el,el2,Nact,Nact_read,Neq,slots,sl,dk,eq
       integer :: itry,knowns,unknowns,unknown,ii,jj,lastit,laston=0
-      integer :: dtry,imaxon,iminoff,info,ipvt(NELEM)
+      integer :: dtry,dtry_last=0,imaxon,iminoff,info,ipvt(NELEM)
       integer :: e_num(NELEM),e_num_save(NELEM)
       integer :: Nunsolved,unsolved(NELEM),Nvar1,Nvar2,var(NELEM)
       integer :: Nsolve,ebest,dbest,nonzero,itrivial,iread,ioff,method
-      integer :: ifail,Nall,imax,swap,irow,erow,Eact,Nlin,iback
+      integer :: ifail,Nall,imax,swap,irow,erow,Eact,Nlin,iback,e1,e2
       integer :: act_to_elem(NELEM),act_to_dust(NELEM)
       integer :: Nzero,Ntrivial,etrivial(NELEM),dtrivial(NELEM)
       logical,dimension(NELEM) :: e_resolved,e_act,e_taken,is_esolved
-      logical,dimension(NELEM) :: e_eliminated
+      logical,dimension(NELEM) :: e_eliminated,eblocked
       logical,dimension(0:NDUST) :: active,act_read,act_old
       logical,dimension(NDUST) :: is_dsolved,d_resolved,d_eliminated
       logical,dimension(NDUST) :: itried
       logical :: action,changed,solved,limited,ok,found,all_two
-      logical :: limdust
+      logical :: limdust,dtry_break
       character(len=1) :: char1,txt0
       character(len=2) :: rem,tnum
       character(len=6) :: dum6
@@ -218,6 +218,14 @@
         enddo
         firstCall = .false. 
       endif
+
+      !open(unit=1,file='Last_abund.in',status='replace')
+      !do i=1,NEPS
+      !  el = elnr(i)
+      !  write(1,'(A2,2x,0pF25.20)') elnam(el),12.0+LOG10(eps0(el))
+      !enddo
+      !write(1,*) nHtot,T
+      !close(1)
 
       if (verbose>=0) then
         write(*,*)
@@ -643,6 +651,26 @@
         !-----------------------------------------------
         ! ***  check and correct choice of elements  ***
         !-----------------------------------------------
+        eblocked(:) = .false.
+        do dk=1,NDUST
+          if (.not.active(dk)) cycle
+          e1 = 0
+          e2 = 0
+          do j=1,dust_nel(dk)
+            el=dust_el(dk,j)
+            if (e_num(el)==1) then
+              e2 = e1
+              e1 = el
+            endif
+          enddo
+          if (e1>0.and.e2>0) then
+            eblocked(e1) = .true.
+            eblocked(e2) = .true.
+            if (verbose>1) then
+              print*,"*** blocked ",dust_nam(dk),elnam(e1),elnam(e2)
+            endif  
+          endif  
+        enddo  
         e_num_save(:) = e_num(:)
         dtry = 0
  200    continue
@@ -840,9 +868,15 @@
           endif  
         endif   
 
-        if (verbose>1) print*,"solving for ... ",
-     >                      (elnam(Iindex(i))//" ",i=1,Nind)
-        if (verbose>1) print'(99(1pE11.3))',(Iabund(i),i=1,Nind)
+ 210    continue
+        dtry_break = .false.
+        if (verbose>1) then
+          print*,"dependent elements ... ",
+     >         (elnam(Iindex(i))//" ",i=Nind+1,Nall)
+          print*,"solving for ... ",
+     >         (elnam(Iindex(i))//" ",i=1,Nind)
+          print'(99(1pE11.3))',(Iabund(i),i=1,Nind)
+        endif
 
         !------------------------------------------------
         ! ***  determine dependent dust and elements  ***
@@ -992,6 +1026,9 @@
      >                 elnam(var(Nvar1+1:Nvar1+Nvar2))
             if (Nunsolved/=Nvar1+Nvar2) then
               print*,"... is impossible"
+              dtry = dtry+1
+              dtry_break = .true.
+              if (dtry<5) exit
               stop
             endif  
             if (Nunsolved==Nvar1+Nvar2) then
@@ -1027,10 +1064,9 @@
               call QGEDI ( DF, NELEM, Nunsolved, ipvt, det, work, 1 )
               if (info.ne.0) then
                 print*,"*** singular matrix in QGEFA: info=",info
-                if (dtry==0) then
-                  dtry = 1
-                  exit
-                endif  
+                dtry = dtry+1
+                dtry_break = .true.
+                if (dtry<5) exit
                 do i=1,Nunsolved
                   print'(99(1pE12.3))',(DFsav(i,j),j=1,Nunsolved)
                 enddo
@@ -1067,12 +1103,33 @@
                 enddo  
               enddo  
             endif
-            if (dtry==1) exit
+            if (dtry>0.and.dtry_break) exit
           endif    
           if (itry==100) stop "*** itry==100"
         enddo
         if (.not.solved) then
           if (dtry==1) goto 200   ! may work by relaxing the depletion-criterium
+          i = Nind
+          dtry_last = dtry_last+1
+          do j=Nind+dtry_last,Nall
+            if (.not.eblocked(Iindex(j))) exit
+          enddo
+          !print*,i,j,Nind,Nall
+          !print*,elnam(Iindex(i))
+          !print*,elnam(Iindex(j))
+          if (j<=Nall) then
+            if (verbose>1) then
+              print*,"... dtry_last=",dtry_last
+              print*,"... exchanging5 "//elnam(Iindex(i))//
+     >               " for "//elnam(Iindex(j))
+            endif  
+            swap = Iindex(i)   
+            Iindex(i) = Iindex(j)
+            Iindex(j) = swap
+            e_act(Iindex(i)) = .true.
+            e_act(Iindex(j)) = .false.
+            goto 210
+          endif
           write(*,*) "*** couldn't resolve the conversion matrix."
           stop
         endif   
