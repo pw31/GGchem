@@ -4,6 +4,7 @@ GIT.commands
 src16/*.o
 src16/*.mod
 src16/*.bak
+src16/*__genmod*
 src16/makefile
 src16/ggchem16
 src16/*~
@@ -11,6 +12,7 @@ Static_*.dat
 Static_*.bak
 database.dat
 database.bak
+fatal.case
 paper
 TEA
 TEA.*

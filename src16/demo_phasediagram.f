@@ -10,7 +10,7 @@
       implicit none
       integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       real :: p,Tg,nHges,nges,kT,pgas,mu,muold,fac
-      real :: ff,fold,dmu,dfdmu,xx,yy,epsH,epsO,epsC
+      real :: ff,fold,dmu,dfdmu,xx,yy,epsH,epsO,epsC,epsN
       real :: rhog,rhod,Jstar,Nstar,xmin,xmax,ymin,ymax
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST),out(NDUST)
       integer :: i,it,ix,iy,j,jj,NOUT,stindex,iC,iW,iH2O,iH2Ol
@@ -76,9 +76,10 @@
             epsC = xx                              ! x = C
             epsO = 0.5*(1.0+yy-xx*yy-xx)           ! y = (O-H)/(O+H)
             epsH = 0.5*(1.0-yy+xx*yy-xx)           ! 1 = H+O+C
+            epsN = 1.0
             eps0(O) = epsO/epsH
             eps0(C) = epsC/epsH
-            eps0(N) = 1.E-3*(eps0(H)+eps0(O)+eps0(C))
+            eps0(N) = epsN/epsH
             !print*,epsH,epsC,epsO
             !print*,yy,(epsO-epsH)/(epsO+epsH)
             !print*,xx,epsC/(epsH+epsO+epsC)

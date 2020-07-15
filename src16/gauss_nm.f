@@ -14,7 +14,9 @@
       real(kind=qp),intent(out) :: x(Mdim)
       integer,intent(out) :: info
       integer :: i,j,k,kmax,D
-      real(kind=qp) :: c,Amax
+      real(kind=qp) :: c,Amax !,crit1,crit2
+
+      !write(89,*) "GAUS_NM ..."
 
       D = min(N-1,M)
 
@@ -73,6 +75,8 @@
       !-------------------
       info = 0
       x(:) = 0.Q0
+      !crit1 = 0.Q0
+      !crit2 = 9.Q+99
       do i=M,1,-1
         if (A(i,i)==0.Q0) then
           info = 2
@@ -83,6 +87,7 @@
           c = c + A(i,j) * x(j)
         enddo  
         x(i) = (b(i) - c) / A(i,i)
+        !crit1 = MAX(crit1,ABS(x(i)))
         if (ABS(x(i))>1.Q+25) info=2
       enddo  
 
@@ -96,10 +101,12 @@
           do j=1,M
             c = c + A(i,j)*x(j)
           enddo
-          !print'(2(1pE18.11))',c,b(i)
+          !crit2 = MIN(crit2,ABS(c-b(i)))
           if (ABS(c-b(i))>1.Q-25) info=1 
         enddo 
       endif   
+
+      !write(89,*) "GAUS_NM: crit1,crit2=",REAL(crit1),REAL(crit2)
 
       !if (info==0) then
       !  print*,'solution found.'

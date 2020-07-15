@@ -1085,7 +1085,7 @@
             xx(i) = LOG(anmono(i)*kT)
             if (redo(i)) cycle   
             atfrac = anmono(i)/anHges
-            if (atfrac>1.Q-100) cycle   
+            if (atfrac>1.Q-30) cycle   
             if (atfrac<atmax) cycle
             atmax = atfrac
             e = i
