@@ -1584,7 +1584,7 @@
         if (verbose>0) then
           print'(99(A8))',elnam(Iindex(1:Nact))
           print'(99(1pE8.1))',Iabund(1:Nact)
-          !print'(20x,99(A4))',elnam(Iindex(1:Nact))
+          print'(20x,99(A4))',elnam(Iindex(1:Nact))
         endif  
         DF(:,:) = 0.Q0
         do ii=1,Nsolve
@@ -1596,8 +1596,8 @@
             jj = e_num(el)
             DF(ii,jj) = dust_nu(i,j)
           enddo
-          !if (verbose>1) print'(A20,99(0pF4.0),A20)',
-     >    !               dust_nam(i),DF(ii,1:Nact)
+          if (verbose>1) print'(A20,99(0pF4.0),A20)',
+     >                   dust_nam(i),DF(ii,1:Nact)
         enddo
         !--------------------------------------------------------------
         ! ***  ... by triangulation of the stoichiometry matrix DF  ***
@@ -1651,10 +1651,10 @@
           enddo  
         enddo  
         if (verbose>0) then
-          !print'(99(A6))',elnam(Iindex(1:Nact))
-          !do ii=1,Nsolve
-          !  print'(99(0pF6.2))',DF(ii,1:Nact)
-          !enddo  
+          print'(99(A6))',elnam(Iindex(1:Nact))
+          do ii=1,Nsolve
+            print'(99(0pF6.2))',DF(ii,1:Nact)
+          enddo  
           do ii=1,Nsolve
             i = act_to_dust(ii)
             text = ''
@@ -1665,7 +1665,7 @@
               text = trim(text)//" "//trim(txt1)//" "
      >               //trim(dust_nam(j))
             enddo
-            print'(" base-vec ",A2,": ",A)',elnam(Iindex(ii)),trim(text)
+            print'(" base-vec ",I2,": ",A)',ii,trim(text)
             text = ''
             do i=1,NELM
               if (i==iel) cycle
@@ -1708,7 +1708,13 @@
         LastRow = 0.Q0
         LastDev = 9.Q+99
         do jj=1,Nsolve
-          scale(jj) = eps(Iindex(jj))
+          scale(jj) = 9.Q+99
+          do i=1,NELM
+            if (i==iel) cycle
+            el = elnum(i)
+            if (base_el(jj,el)==0.Q0) cycle
+            scale(jj) = MIN(scale(jj),eps(el))
+          enddo  
           del = varfac*scale(jj)             ! tiny amount of lin.comb.of.cond. to evaporate
           do itJac=1,99
             check(:) = eps(:) + del*base_el(jj,:)
