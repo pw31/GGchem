@@ -1082,8 +1082,10 @@
         endif  
         it = it + 1
         if (verbose.gt.1) read(*,'(a1)') char
-        if ((it==1).or.((crit>finish*1.Q-5).and.(Nact>0).and.
-     >      (MAX(crit,crit1,crit2)>finish*1.Q+4))) goto 300   ! continue iterating
+        if (it==1) goto 300                                       ! at least two iterations
+        if ((crit>finish*1.Q-5).and.(Nact>0).and.
+     >      (MAX(crit,crit1,crit2)>finish*1.Q+4).and.
+     >      (MAX(crit,crit1,crit2)>finish*1.Q+8.or.it<100)) goto 300   ! continue iterating
 *
 *       ! redo rare elements
 *       ====================

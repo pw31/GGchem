@@ -1,0 +1,31 @@
+# selected elements
+H C N O F Na Mg Al Si P S Cl K Ca Ti Cr Mn Fe el
+
+# name of files with molecular kp-data
+dispol_BarklemCollet.dat                ! dispol_file
+dispol_StockKitzmann_withoutTsuji.dat   ! dispol_file2
+dispol_WoitkeRefit.dat                  ! dispol_file3
+
+# abundance options 0=custom 1=EarthCrust, 2=Ocean, 3=Solar, 4=Meteorites
+.true.                ! pick_mfrac
+0                     ! abund_pick
+mfrac_melis_BSE.dat
+
+# equilibrium condensation?
+.true.                ! model_eqcond
+.true.                ! phyllosilicates
+
+# model options
+0                     ! model_dim  (0,1,2)
+.false.               ! model_pconst
+600.0                   ! Tmax [K]
+6.5E+18                 ! nHmax
+
+12                    ! NewBackIt
+1.E+12                ! NewBackFac
+1                     ! NewFastLevel
+1600.0                ! Tfast
+.false.               ! initchem_info
+
+2 ! method_eqcond
+0 ! verbose

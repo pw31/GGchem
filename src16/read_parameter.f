@@ -47,7 +47,7 @@
       Mpl          = MEarth
       Rpl          = REarth
       gamma        = 7.0/5.0
-      method_eqcond= 1
+      method_eqcond= 2
       UseDataBase  = .true.
       NewFullIt    = .true.
       NewBackIt    = 5

@@ -1584,7 +1584,7 @@
         if (verbose>0) then
           print'(99(A8))',elnam(Iindex(1:Nact))
           print'(99(1pE8.1))',Iabund(1:Nact)
-          print'(20x,99(A4))',elnam(Iindex(1:Nact))
+          !print'(20x,99(A4))',elnam(Iindex(1:Nact))
         endif  
         DF(:,:) = 0.Q0
         do ii=1,Nsolve
@@ -1596,8 +1596,8 @@
             jj = e_num(el)
             DF(ii,jj) = dust_nu(i,j)
           enddo
-          if (verbose>1) print'(A20,99(0pF4.0),A20)',
-     >                   dust_nam(i),DF(ii,1:Nact)
+          !if (verbose>1) print'(A20,99(0pF4.0),A20)',
+     >    !               dust_nam(i),DF(ii,1:Nact)
         enddo
         !--------------------------------------------------------------
         ! ***  ... by triangulation of the stoichiometry matrix DF  ***
@@ -1651,10 +1651,10 @@
           enddo  
         enddo  
         if (verbose>0) then
-          print'(99(A6))',elnam(Iindex(1:Nact))
-          do ii=1,Nsolve
-            print'(99(0pF6.2))',DF(ii,1:Nact)
-          enddo  
+          !print'(99(A6))',elnam(Iindex(1:Nact))
+          !do ii=1,Nsolve
+          !  print'(99(0pF6.2))',DF(ii,1:Nact)
+          !enddo  
           do ii=1,Nsolve
             i = act_to_dust(ii)
             text = ''
