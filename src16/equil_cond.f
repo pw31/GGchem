@@ -17,7 +17,7 @@
 ! ***  eps(NELEM) and ddust(NDUST) are changed by dx(NELEM) separately ***
 ! ***  to avoid numerical problems close to complete condensation      ***
 !-------------------------------------------------------------------------
-      use PARAMETERS,ONLY: Tfast,useDatabase
+      use PARAMETERS,ONLY: Tfast,useDatabase,method_eqcond
       use DUST_DATA,ONLY: NELEM,NDUST,dust_nam,dust_nel,dust_nu,dust_el,
      >                    eps0,elnam,elcode,NEPS,elnr
       use CHEMISTRY,ONLY: NewFastLevel,NELM,elnum,iel=>el
@@ -35,23 +35,25 @@
       integer,intent(inout) :: verbose
       real(kind=qp),dimension(NELEM) :: eps00,epsread,check,FF,Fsav,dx
       real(kind=qp),dimension(NELEM) :: eps_save,vec,xstep,Iabund,work
-      real(kind=qp),dimension(NELEM) :: scale,bvec,LastRow
+      real(kind=qp),dimension(NELEM) :: null,scale,bvec,LastRow
       real(kind=qp),dimension(NDUST) :: ddustread,dscale,pot,dust_save
-      real(kind=qp),dimension(NDUST) :: Sat0,Sat1,Sat2,xvec,slin
-      real(kind=qp),dimension(NELEM,NELEM) :: DF,DFsav,emat,vecs
+      real(kind=qp),dimension(NDUST) :: Sat0,Sat1,Sat2,xvec,slin,tmp2
+      real(kind=qp),dimension(NDUST) :: dstep
+      real(kind=qp),dimension(NELEM,NELEM) :: DF,DFsav,emat,vecs,base_el
       real(kind=qp),dimension(NDUST,NELEM) :: mat
-      real(kind=qp),dimension(NELEM,NDUST) :: AA
-      real(kind=qp) :: worst,xmin,Smax,Smin,qual,qold,SQUAL,del,abun
+      real(kind=qp),dimension(NELEM,NDUST) :: AA,base
+      real(kind=qp) :: worst,xmin,Smax,Smin,qual,qold,SQUAL,del
+      real(kind=qp) :: abun,tmp1,amax
       real(kind=qp) :: turnon,maxon,minoff,fac,fac2,amount,Nt,dscalemax
-      real(kind=qp) :: deps1,deps2,deps,esum,emax,NRstep,dev,LastDev
-      real(kind=qp) :: det(2),converge(5000,NELEM),crit,cbest
+      real(kind=qp) :: deps,esum,emax,NRstep,dev,LastDev,val1,val2,test
+      real(kind=qp) :: det(2),converge(5000,NELEM),crit,cbest,qualDF
       real(kind=qp) :: deplete1,deplete2,small=1.Q-30
-      real(kind=qp) :: dterm,dtmax,dlim,target,Qfinish,Sfinish
+      real(kind=qp) :: dterm,dtmax,dlim,varfac,target,Qfinish,Sfinish
       integer,parameter :: itmax=5000
       integer,dimension(NELEM) :: elem,Nslot,eind
       integer,dimension(NDUST) :: dind,dlin,switchedON,switchedOFF
       integer,dimension(NELEM,NDUST) :: dustkind,stoich
-      integer :: it,i,j,el,el2,Nact,Nact_read,Neq,slots,sl,dk,eq
+      integer :: it,i,j,k,el,el2,Nact,Nact_read,Neq,slots,sl,dk,eq
       integer :: itry,knowns,unknowns,unknown,ii,jj,lastit,laston=0
       integer :: dtry,dtry_last=0,imaxon,iminoff,info,ipvt(NELEM)
       integer :: e_num(NELEM),e_num_save(NELEM)
@@ -60,7 +62,7 @@
       integer :: ifail,Nall,imax,swap,irow,erow,Eact,Nlin,iback,e1,e2
       integer :: act_to_elem(NELEM),act_to_dust(NELEM)
       integer :: Nzero,Ntrivial,etrivial(NELEM),dtrivial(NELEM)
-      integer :: no_action
+      integer :: no_action,itJac,last_tri
       logical,dimension(NELEM) :: e_resolved,e_act,e_taken,is_esolved
       logical,dimension(NELEM) :: e_eliminated,eblocked
       logical,dimension(0:NDUST) :: active,act_read,act_old
@@ -294,7 +296,7 @@
       !eps00 = check
       eps00 = eps0
       if (verbose>0) then
-        write(*,*) "element conservation error 1:",worst
+        write(*,*) "element conservation error:",worst
         write(*,*) "initial gas fractions ..."
         do i=1,NELEM
           if (elcode(i)==0) cycle
@@ -317,29 +319,34 @@
       enddo   
       dscalemax = MAXVAL(dscale(1:NDUST))
 
-      xstep(:) = 0.Q0             
-      call SUPER(nHtot,T,xstep,eps,Sat0,.false.) ! from scratch
+      null(:) = 0.Q0             
+      call SUPER(nHtot,T,null,eps,Sat0,.false.) ! from scratch
       qual = SQUAL(Sat0,active)
+      Smax = maxval(Sat0)
       if (verbose>=0) then
-        print'("it =",I4," qual =",1pE13.4E4)',0,qual
+        print'("it =",I4,"  qual =",1pE11.4,"  Smax-1 =",1pE11.2E4)',
+     >          0,qual,Smax-1.Q0
       endif  
       if (T>Tfast) then
-        Qfinish = 1.Q-12
+        Qfinish = 1.Q-11
         Sfinish = 1.Q-09
       else
-        Qfinish = 1.Q-20
+        Qfinish = 1.Q-18
         Sfinish = 1.Q-15
       endif
       switchedON(:) = 0
       switchedOFF(:) = 0
-      if (verbose>0) write(97,*)
+      if (verbose>-1) write(97,*)
       act_old = active
       lastit = -99
       iminoff = 0
       limited = .false.
       ifail = 0
       no_action = 0
+      method = method_eqcond
       
+!---------------------------  start of main iteration loop  ----------------------------
+
       do it=1,itmax
 
         !---------------------------------------
@@ -469,14 +476,14 @@
                 do j=1,dust_nel(i)
                   el = dust_el(i,j)
                   erow = eind(el)
-                  AA(erow,irow) = dust_nu(i,j)  
+                  AA(erow,irow) = REAL(dust_nu(i,j),kind=qp)  
                 enddo
               else
                 dind(Nact) = i
                 do j=1,dust_nel(i)
                   el = dust_el(i,j)
                   erow = eind(el)
-                  bvec(erow) = dust_nu(i,j)  
+                  bvec(erow) = REAL(dust_nu(i,j),kind=qp)  
                 enddo
               endif  
             enddo  
@@ -549,7 +556,7 @@
               ddust(ioff) = 0.Q0
               eps = eps_save
               if (verbose>=0) then
-                print*,"switch off ",dust_nam(ioff)
+                print*,"switching off ",dust_nam(ioff)
               endif  
             endif  
           endif
@@ -562,13 +569,13 @@
             action = .true.
             laston = i
             switchedON(i) = switchedON(i)+1
-            if (verbose>0) then
+            if (verbose>-1) then
               write(97,*) it,"on  ",dust_nam(i),switchedON(i)
             endif  
           else if (act_old(i).and.(.not.active(i))) then
             action = .true.
             switchedOFF(i) = switchedOFF(i)+1
-            if (verbose>0) then
+            if (verbose>-1) then
               write(97,*) it,"off ",dust_nam(i),switchedOFF(i)
             endif  
           endif
@@ -581,12 +588,8 @@
           do i=1,NDUST
             if (active(i)) Nact=Nact+1
           enddo
-          xstep(:)= 0.Q0             
-          call SUPER(nHtot,T,xstep,eps,Sat0,NewFastLevel<1)
+          call SUPER(nHtot,T,null,eps,Sat0,NewFastLevel<1)
           qual = SQUAL(Sat0,active)
-          if (verbose>=0) then
-            print'("it =",I4," qual =",1pE13.4E4)',it,qual
-          endif  
           lastit = it
         endif
         if (verbose>0) then
@@ -609,11 +612,13 @@
         endif
         act_old = active
         if (Nact==0.and.qual<1.Q-30) exit   ! no solid supersaturated 
-        if (it>1.and.(.not.changed)) goto 100
 
+        !----------------------------  use method 1  ------------------------------------
+        if (method==1) then
         !--------------------------------------
         ! ***  select independent elements  ***
         !--------------------------------------
+        if (it>1.and.(.not.changed)) goto 100
         Nind = 1
         Iabund(1) = 9.E+99
         e_act(:) = .false.
@@ -897,7 +902,7 @@
      >         (elnam(Iindex(i))//" ",i=Nind+1,Nall)
           print*,"solving for ... ",
      >         (elnam(Iindex(i))//" ",i=1,Nind)
-          print'(99(1pE11.3))',(Iabund(i),i=1,Nind)
+          print'(99(1pE11.3))',(eps(Iindex(i)),i=1,Nind)
         endif
 
         !------------------------------------------------
@@ -1248,8 +1253,8 @@
             dk = Dindex(dbest)
             is_esolved(ebest) = .true.
             is_dsolved(dbest) = .true.
-            !print*,elnam(el)//" (->"//trim(dust_nam(dk))//
-     >      !       ") has converged."
+            print*,elnam(el)//" (->"//trim(dust_nam(dk))//
+     >             ") has converged."
           endif  
         endif  
         !-----------------------------------------------
@@ -1273,44 +1278,39 @@
         !------------------------------------------
         ! ***  compute numerical derivative DF  ***
         !------------------------------------------
+        if (T>Tfast) then
+          varfac = 1.Q-7
+          target = 1.Q-6
+          dlim   = 1.Q-12
+        else
+          varfac = 1.Q-20
+          target = 1.Q-19
+          dlim   = 1.Q-30
+        endif  
         jj = 0
         do j=1,Nind
           if (is_esolved(j)) cycle
           jj = jj+1
           act_to_elem(jj) = j
           el = Iindex(j) 
-          deps1 = +1.Q-7*eps(el)            ! limited by el abundance
-          deps2 = -1.Q-7*eps(el)            ! limited by el abundance
-          if (T<Tfast) then
-            deps1 = +1.Q-14*eps(el)         ! quadrupole precision chemistry calls
-            deps2 = -1.Q-14*eps(el) 
-          endif  
-          do i=1,Ndep
-            if (conv(i,j)==0.Q0) cycle
-            !if (ABS(conv(i,j))>1000) stop "here"
+          deps = -varfac*eps(el)                 ! limited by el abundance
+          scale(j) = eps(el)                     ! consider decrease of el
+          do i=1,Ndep                            
             if (is_dust(i)) cycle
-            el2 = Dindex(i)                 ! limited by dep. element?
-            del = 1.Q-7*eps(el2)/conv(i,j)
-            if (T<Tfast) del=1.Q-14*eps(el2)/conv(i,j)
-            if (del>0.Q0) deps2=MAX(deps2,-del)
-            if (del<0.Q0) deps1=MIN(deps1,-del)
-            !if (verbose>1) print*,elnam(el)//" "//elnam(el2),
-     >      !               REAL((/conv(i,j),deps1,deps2/))
+            if (conv(i,j)==0.Q0) cycle
+            el2 = Dindex(i)                       
+            del = -varfac*eps(el2)/conv(i,j)        
+            !print'(A3," <-",A3,99(1pE10.2))',elnam(el),elnam(el2),
+     >      !     eps(el),deps,del,conv(i,j)
+            if (ABS(del)<ABS(deps)) then         ! limited by dep. element?
+              deps = del                         ! consider decrease of el2
+              scale(j) = eps(el2)
+            endif  
           enddo
-          deps = deps2
-          if (ABS(deps1)>ABS(deps2)) deps=deps1
-          scale(j) = eps(el)
-          !scale(j) = 1.Q0
-          if (T>Tfast) then
-            dlim = 1.Q-12
-            target = 1.Q-5
-          else
-            dlim = 1.Q-30
-            target = 1.Q-10
-          endif  
+          !print*,elnam(el),REAL(eps(el)),REAL(deps)
           LastRow = 0.Q0
           LastDev = 9.Q+99
-          do
+          do itJac=1,99
             xstep(:) = 0.Q0
             xstep(j) = deps
             call SUPER(nHtot,T,xstep,eps,Sat2,NewFastLevel<1)
@@ -1325,23 +1325,48 @@
             enddo  
             !print'("JAC:",A3,99(1pE11.3))',elnam(el),
      >      !    eps(el),deps/eps(el),dtmax,DF(1:Nsolve,jj)
-            if (dtmax<target.or.ABS(deps)<dlim*eps(el)) exit
+            if (dtmax<target) exit
             dev = 0.Q0
-            do i=1,Nsolve
-              dev = dev+(LastRow(i)-DF(i,jj))**2
+            do ii=1,Nsolve
+              val1 = LastRow(ii)+SIGN(1.Q-8,LastRow(ii))
+              val2 = DF(ii,jj)  +SIGN(1.Q-8,DF(ii,jj))
+              dev = dev+(val1/val2-1.Q0)**2
             enddo
             !print*,"dev=",dev
-            if (dev<1.Q-20.and.dev<LastDev) exit
-            if (LastDev<1.E-2.and.dev>LastDev) then
+            if (itJac>1.and.dev<1.Q-10.and.dev<LastDev) exit
+            if (itJac>1.and.LastDev<1.E-2.and.dev>LastDev) then
               DF(1:Nsolve,jj) = LastRow(1:Nsolve) 
               exit
             endif  
+            if (ABS(deps)<dlim*scale(j)) exit
             !--- decrease deps to get more precice DF-entries ---
             deps = deps * 2.Q-1
             LastRow(1:Nsolve) = DF(1:Nsolve,jj)
             LastDev = dev
           enddo  
-        enddo            
+        enddo
+        !---- check functionality of DF ----
+        !do jj=1,Nsolve
+        !  j  = act_to_elem(jj)
+        !  el = Iindex(j)
+        !  deps = 1.Q+5*varfac*scale(j)
+        !  xstep(:) = 0.Q0
+        !  xstep(j) = deps
+        !  call SUPER(nHtot,T,xstep,eps,Sat2,NewFastLevel<1)
+        !  qualDF = 0.Q0
+        !  do ii=1,Nsolve
+        !    i  = act_to_dust(ii) 
+        !    dk = Dindex(i)
+        !    val1 = deps/scale(j)*DF(ii,jj)
+        !    val2 = FF(ii)-LOG(Sat2(dk))
+        !    qualDF = MAX(qualDF,ABS(val1-val2))
+        !    print'(A14,A3,99(1pE18.11))',dust_nam(dk),elnam(el),
+     >  !           LOG(Sat0(dk)),val1,val2,val1-val2
+        !  enddo
+        !enddo  
+        !print*,"quality of DF():",REAL(qualDF)
+
+        !---- print DF and FF ----
         !if (verbose>1) then
         !  print'(12x,99(A11))',elnam(Iindex(act_to_elem(1:Nsolve)))
         !  do ii=1,Nsolve
@@ -1351,9 +1376,9 @@
         !  enddo  
         !endif
 
-        !--------------------------------
-        ! ***  Newton-Raphson step dx ***
-        !--------------------------------
+        !---------------------------------
+        ! ***  Newton-Raphson step dx  ***
+        !---------------------------------
         Fsav  = FF
         DFsav = DF
         !call GAUSS16( NELEM, Nsolve, DF, dx, FF)
@@ -1362,7 +1387,11 @@
         call QGESL( DF, NELEM, Nsolve, ipvt, FF, 0 )
         dx = FF
         if (verbose>1) print*,"QGESL info=",info
-
+        if (info.ne.0) then
+          print*,"*** singular matrix in QGEFA NR-step: info=",info
+          stop
+        endif
+  
         !--- re-scale ---
         if (it>1) converge(it,:) = converge(it-1,:)
         do ii=1,Nsolve
@@ -1393,7 +1422,7 @@
         do j=Ndep,1,-1
           del = 0.Q0 
           do ii=1,Nsolve
-            i = act_to_elem(ii) 
+            i = act_to_elem(ii)
             del = del + conv(j,i)*dx(ii)
           enddo 
           if (is_dust(j)) then
@@ -1433,7 +1462,7 @@
           else  
             el = Dindex(j)
             if (eps(el)+del<0.3*eps(el)) then
-              fac2 = (-0.7*eps(el))/del                ! eps+fac*dx = 0.3*eps
+              fac2 = (-0.7*eps(el))/del                 ! eps+fac*del = 0.3*eps
               if (verbose>0) print'(" *** limiting element2 ",A2,
      >          " eps=",1pE9.2,"  fac=",1pE9.2)',elnam(el),eps(el),fac2
               if (fac2<fac) then
@@ -1458,7 +1487,7 @@
         limited = (fac<1.Q0)
         !if (iminoff>0.and.(iminoff.ne.laston)) then
         if (iminoff>0) then
-          if (verbose>=0) print*,"switch off ",dust_nam(iminoff) 
+          if (verbose>=0) print*,"will switch off ",dust_nam(iminoff) 
           active(iminoff) = .false.
           lastit = -99
           !if (iminoff.eq.laston) then
@@ -1487,7 +1516,7 @@
           do j=1,Ndep
             del = 0.Q0 
             do ii=1,Nsolve
-              i = act_to_elem(ii) 
+              i = act_to_elem(ii)
               del = del + conv(j,i)*NRstep*dx(ii)  ! effect of indep.element i
             enddo 
             if (is_dust(j)) then
@@ -1498,8 +1527,7 @@
               eps(el) = eps(el) + del
             endif  
           enddo
-          xstep(:) = 0.Q0
-          call SUPER(nHtot,T,xstep,eps,Sat0,NewFastLevel<1)
+          call SUPER(nHtot,T,null,eps,Sat0,NewFastLevel<1)
           qual = SQUAL(Sat0,active)
           if (verbose>0) print'("--> pullback",i3,0pF6.3," Q=",1pE11.3,
      >                          " ->",1pE11.3)',iback,NRstep,qold,qual
@@ -1512,15 +1540,368 @@
             NRstep = 0.5*NRstep
           endif  
         enddo
-        !del = 0.Q0
-        !do i=1,NELM
-        !  if (i==iel) cycle
-        !  el = elnum(i)
-        !  del = MAX(del,ABS(LOG10(work(el)/eps(el))))
-        !  print'(A3,1pE10.3," -> ",1pE10.3,0pF5.2)',
-     >  !       elnam(el),work(el),eps(el),LOG10(work(el)/eps(el))
-        !enddo
-        !print*,"epsilon max-log-change =",REAL(del)
+        endif ! method 1
+
+
+        !--------------------------  use method 2  ------------------------------------
+        if (method==2) then
+        !------------------------
+        ! ***  sort elements  ***
+        !------------------------
+        if (it>1.and.(.not.changed).and.(it<last_tri+10)) goto 300
+        last_tri = it
+        Nact = 0
+        Iabund(1) = 9.E+99
+        e_act(:) = .false.
+        ii = 0
+        do i=1,NDUST
+          if (.not.active(i)) cycle         
+          ii = ii+1
+          act_to_dust(ii) = i               ! index of active condensate 
+          do j=1,dust_nel(i)
+            el = dust_el(i,j)
+            if (e_act(el)) cycle
+            e_act(el) = .true.
+            Nact = Nact + 1
+            do k=1,Nact               
+              if (eps(el)<Iabund(k)) exit   ! sort by element abundance 
+            enddo
+            Iindex(k+1:Nact+1) = Iindex(k:Nact)
+            Iabund(k+1:Nact+1) = Iabund(k:Nact)
+            Iindex(k) = el
+            Iabund(k) = eps(el) 
+          enddo  
+        enddo  
+        Nsolve = ii
+        do i=1,Nact
+          el = Iindex(i)
+          e_num(el) = i
+        enddo  
+
+        !---------------------------------------------------------------
+        ! ***  find useful linear combination of solids to vary ...  ***
+        !---------------------------------------------------------------
+        if (verbose>0) then
+          print'(99(A8))',elnam(Iindex(1:Nact))
+          print'(99(1pE8.1))',Iabund(1:Nact)
+          print'(20x,99(A4))',elnam(Iindex(1:Nact))
+        endif  
+        DF(:,:) = 0.Q0
+        do ii=1,Nsolve
+          i = act_to_dust(ii)
+          base(ii,:) = 0.Q0
+          base(ii,i) = 1.Q0
+          do j=1,dust_nel(i)
+            el = dust_el(i,j)
+            jj = e_num(el)
+            DF(ii,jj) = dust_nu(i,j)
+          enddo
+          if (verbose>1) print'(A20,99(0pF4.0),A20)',
+     >                   dust_nam(i),DF(ii,1:Nact)
+        enddo
+        !--------------------------------------------------------------
+        ! ***  ... by triangulation of the stoichiometry matrix DF  ***
+        !--------------------------------------------------------------
+        do ii=1,Nsolve-1
+          imax = ii
+          amax = ABS(DF(ii,ii))
+          do i=ii+1,Nsolve
+            if (ABS(DF(i,ii))>amax) then
+              imax = i
+              amax = ABS(DF(i,ii))
+            endif
+          enddo  
+          if (imax>ii) then
+            do jj=1,Nact
+              tmp1        = DF(ii,jj)
+              DF(ii,jj)   = DF(imax,jj)
+              DF(imax,jj) = tmp1 
+            enddo
+            tmp2(:)      = base(ii,:)
+            base(ii,:)   = base(imax,:)
+            base(imax,:) = tmp2(:) 
+          endif
+          if (DF(ii,ii)==0.Q0) then
+            print*,"*** WARNING: triangulation impossible in equil_cond"
+            cycle  
+          endif  
+          do k=ii+1,Nsolve
+            fac = DF(k,ii)/DF(ii,ii)
+            do jj=1,Nact
+              DF(k,jj) = DF(k,jj) - fac*DF(ii,jj)
+            enddo
+            DF(k,ii) = 0.Q0                            ! exact by construction
+            base(k,:) = base(k,:) - fac*base(ii,:)
+          enddo
+        enddo  
+        base_el = 0.Q0                                 ! effect of 1 base-vec on elements
+        do ii=1,Nsolve
+          do k=1,Nsolve
+            i = act_to_dust(k)
+            if (base(ii,i)==0.Q0) cycle
+            do j=1,dust_nel(i)
+              el = dust_el(i,j)
+              base_el(ii,el) = base_el(ii,el) + base(ii,i)*dust_nu(i,j)
+            enddo
+          enddo
+          do i=1,NELM
+            if (i==iel) cycle
+            el = elnum(i)
+            if (ABS(base_el(ii,el))<1.Q-10) base_el(ii,el)=0.Q0   ! avoid round-off errors
+          enddo  
+        enddo  
+        if (verbose>0) then
+          print'(99(A6))',elnam(Iindex(1:Nact))
+          do ii=1,Nsolve
+            print'(99(0pF6.2))',DF(ii,1:Nact)
+          enddo  
+          do ii=1,Nsolve
+            i = act_to_dust(ii)
+            text = ''
+            do jj=1,Nsolve
+              j = act_to_dust(jj)
+              if (base(ii,j)==0.Q0) cycle
+              write(txt1,'(0pF7.4)') base(ii,j)
+              text = trim(text)//" "//trim(txt1)//" "
+     >               //trim(dust_nam(j))
+            enddo
+            print'(" base-vec ",A2,": ",A)',elnam(Iindex(ii)),trim(text)
+            text = ''
+            do i=1,NELM
+              if (i==iel) cycle
+              el = elnum(i)
+              if (base_el(ii,el)==0.Q0) cycle
+              text = trim(text)//" "//trim(elnam(el))
+            enddo
+            print'("          modifies: ",A)',trim(text)
+          enddo
+        endif
+  
+ 300    continue
+        !-----------------------------------------------
+        ! ***  fill in r.h.s. vector FF and          ***
+        ! ***  determine current quality of solution ***
+        !-----------------------------------------------
+        Nind = 0  
+        Ndep = 0  
+        !not necessary call SUPER(nHtot,T,null,eps,Sat0,NewFastLevel<1)
+        qual = SQUAL(Sat0,active)
+        ii = 0
+        do ii=1,Nsolve
+          i = act_to_dust(ii)                ! index of active condensate 
+          FF(ii) = LOG(Sat0(i))              ! the function to be nullified
+        enddo  
+
+        !------------------------------------------
+        ! ***  compute numerical derivative DF  ***
+        !------------------------------------------
+        if (T>Tfast) then
+          varfac = 1.Q-7
+          target = 1.Q-5
+          dlim   = 1.Q-12
+        else
+          varfac = 1.Q-20
+          target = 1.Q-18
+          dlim   = 1.Q-30
+        endif  
+        DF(:,:) = 0.Q0
+        LastRow = 0.Q0
+        LastDev = 9.Q+99
+        do jj=1,Nsolve
+          scale(jj) = eps(Iindex(jj))
+          del = varfac*scale(jj)             ! tiny amount of lin.comb.of.cond. to evaporate
+          do itJac=1,99
+            check(:) = eps(:) + del*base_el(jj,:)
+            call SUPER(nHtot,T,null,check,Sat2,NewFastLevel<1)
+            dtmax = 0.Q0            
+            do ii=1,Nsolve
+              i = act_to_dust(ii) 
+              dterm = LOG(Sat0(i)/Sat2(i))
+              dtmax = MAX(dtmax,ABS(dterm))
+              DF(ii,jj) = dterm/del*scale(jj)
+            enddo  
+            !print'("JAC: base-vec ",I2,99(1pE10.2))',
+     >      !    jj,del/scale(jj),dtmax,DF(1:Nsolve,jj)
+            if (dtmax<target) exit
+            dev = 0.Q0
+            do ii=1,Nsolve
+              val1 = LastRow(ii)+SIGN(1.Q-8,LastRow(ii))
+              val2 = DF(ii,jj)  +SIGN(1.Q-8,DF(ii,jj))
+              dev = dev+(val1/val2-1.Q0)**2
+            enddo
+            !print*,"dev=",dev
+            if (itJac>1.and.dev<1.Q-10.and.dev<LastDev) exit
+            if (itJac>1.and.LastDev<1.E-2.and.dev>LastDev) then
+              DF(1:Nsolve,jj) = LastRow(1:Nsolve) 
+              exit
+            endif  
+            if (ABS(del)<dlim*scale(jj)) exit
+            !--- decrease del to get more precice DF-entries ---
+            del = del * 2.Q-1
+            LastRow(1:Nsolve) = DF(1:Nsolve,jj)
+            LastDev = dev
+          enddo
+          !j = act_to_dust(jj)
+          !print'("JAC:",A18,99(1pE10.2))',
+     >    !     trim(dust_nam(j)),DF(1:Nsolve,jj)
+        enddo
+  
+        !---- check functionality of DF ----
+        !do jj=1,Nsolve
+        !  j = act_to_dust(jj)
+        !  del = 1.Q-5*scale(jj)
+        !  check = eps             
+        !  do i=1,dust_nel(j)
+        !    el = dust_el(j,i)
+        !    check(el) = check(el)+del*dust_nu(j,i)
+        !  enddo
+        !  call SUPER(nHtot,T,null,check,Sat2,NewFastLevel<1)
+        !  qualDF = 0.Q0
+        !  do ii=1,Nsolve
+        !    i  = act_to_dust(ii) 
+        !    val1 = del/scale(jj)*DF(ii,jj)
+        !    val2 = FF(ii)-LOG(Sat2(i))
+        !    qualDF = MAX(qualDF,ABS(val1-val2))
+        !    !print'(A14,A14,99(1pE18.11))',dust_nam(i),dust_nam(j),
+     >  !    !       LOG(Sat0(i)),val1,val2,val1-val2
+        !  enddo
+        !enddo  
+        !if (verbose>1) print*,"quality of DF():",REAL(qualDF)
+
+        !---------------------------------
+        ! ***  Newton-Raphson step dx  ***
+        !---------------------------------
+        Fsav  = FF
+        DFsav = DF
+        call GAUSS16( NELEM, Nsolve, DF, dx, FF )    
+        dstep = 0.Q0                 ! the NR-step in condensate abundances 
+        do ii=1,Nsolve
+          dx(ii) = dx(ii)*scale(ii)  ! de-normalisation
+          do k=1,Nsolve
+            i = act_to_dust(k)
+            if (base(ii,i)==0.Q0) cycle
+            dstep(i) = dstep(i) + dx(ii)*base(ii,i)
+          enddo
+          !test = 0.Q0
+          !do jj=1,Nsolve
+          !  test = test + DFsav(ii,jj)*(dx(jj)/scale(jj))
+          !enddo
+          !print'(I3,2(1pE18.10),1pE9.2)',ii,Fsav(ii),test, 
+     >    !                                  Fsav(ii)/test-1.Q0
+        enddo  
+        xstep = 0.Q0                 ! the corresponding NR-step in element abundances
+        do ii=1,Nsolve
+          xstep(:) = xstep(:) + dx(ii)*base_el(ii,:)
+        enddo  
+
+        !-----------------------------------
+        ! ***  limit NR step physically  ***
+        !-----------------------------------
+        fac = 1.Q0
+        iminoff = 0
+        limdust = .false.
+        do ii=1,Nsolve
+          i = act_to_dust(ii)
+          del = -dstep(i)
+          if (del<0.Q0.and.ddust(i)>0.1*dscale(i)) then ! try small ddust before switching off
+            fac2 = (-ddust(i)+0.05*dscale(i))/del       ! ddust+fac*del = 0.05*dscale
+            if (fac2<1.Q0.and.verbose>0) print*,"*** limiting dust 1 "
+     >                                   //dust_nam(i),REAL(fac2)
+            if (fac2<fac) then
+              fac = fac2
+              iminoff = 0
+              !limdust = .true.
+            endif  
+          else if (ddust(i)+del<0.Q0.and.
+     >             i==laston.and.it<lastit+5) then      ! just switched on: keep on trying
+            fac2 = -0.9*ddust(i)/del                    ! ddust+fac*del = ddust/10
+            if (fac2<1.Q0.and.verbose>0) print*,"*** limiting dust 2 "
+     >                                  //dust_nam(i),REAL(fac2)
+            if (fac2<fac) then
+              fac = fac2
+              iminoff = 0
+              limdust = .true.
+            endif  
+          else if (ddust(i)+del<0.Q0) then              ! preparation to switch off next
+            fac2 = (-ddust(i)-small*dscale(i))/del      ! ddust+fac*del = -small*dscale
+            if (fac2<1.Q0.and.verbose>0) print*,"*** limiting dust 3 "
+     >                                   //dust_nam(i),REAL(fac2)
+            if (fac2<fac) then
+              fac = fac2 
+              iminoff = i
+              limdust = .true.
+            endif
+          endif  
+        enddo
+        do i=1,NELM
+          if (i==iel) cycle
+          el = elnum(i)
+          del = xstep(el)
+          if (eps(el)+del<0.02*eps(el)) then
+            fac2 = (-0.98*eps(el))/del                  ! eps+fac*del = 0.02*eps
+            if (verbose>0) print'(" *** limiting element ",A2,
+     >        " eps=",1pE9.2,"  fac=",1pE9.2)',elnam(el),eps(el),fac2
+            if (fac2<fac) then
+              fac = fac2 
+              iminoff = 0
+              limdust = .false.
+            endif
+          endif
+        enddo  
+        dstep = dstep*fac
+        xstep = xstep*fac
+        limited = (fac<1.Q0)
+        if (iminoff>0) then
+          if (verbose>=0) print*,"will switch off ",dust_nam(iminoff) 
+          active(iminoff) = .false.
+          lastit = -99
+        endif
+
+        !if (verbose>0) then
+        !  do ii=1,Nsolve
+        !    i = act_to_dust(ii) 
+        !    print'(A16,3(1pE18.10))',dust_nam(i),ddust(i),-dstep(i)
+        !  enddo  
+        !  do i=1,NELM
+        !    if (i==iel) cycle
+        !    el = elnum(i)
+        !    print'(A3,2(1pE18.10))',elnam(el),eps(el),xstep(el)
+        !  enddo
+        !endif  
+
+        !------------------------------------------------
+        ! ***  apply dstep to ddust and xstep to eps  ***
+        !------------------------------------------------
+        eps_save = eps
+        dust_save = ddust
+        NRstep = 1.Q0
+        qold = qual
+        do iback=1,7
+          eps = eps_save
+          ddust = dust_save
+          do ii=1,Nsolve
+            i = act_to_dust(ii)
+            ddust(i) = ddust(i) - NRstep*dstep(i)
+          enddo
+          do i=1,NELM
+            if (i==iel) cycle
+            el = elnum(i)
+            eps(el) = eps(el) + NRstep*xstep(el)
+          enddo  
+          call SUPER(nHtot,T,null,eps,Sat0,NewFastLevel<1)
+          qual = SQUAL(Sat0,active)
+          if (verbose>0) print'("--> pullback",i3,0pF6.3," Q=",1pE11.3,
+     >                          " ->",1pE11.3)',iback,NRstep,qold,qual
+          if (qual<qold*1.5) exit
+          if (qual<1.0) exit
+          if (limdust) exit
+          if (iback==1) then
+            NRstep = 0.9*NRstep
+          else  
+            NRstep = 0.5*NRstep
+          endif  
+        enddo
+        endif ! method 2
 
         !-------------------------------------
         ! ***  check element conservation  ***
@@ -1532,22 +1913,24 @@
         !    check(el) = check(el) + ddust(i)*dust_nu(i,j)    
         !  enddo
         !enddo
-        !worst = 0.d0
+        !worst = 0.Q0
         !do i=1,NEPS
         !  el = elnr(i)
         !  worst = MAX(worst,ABS(1.Q0-check(el)/eps00(el)))
         !enddo
-        !if (verbose>1.or.worst>1.Q-8) write(*,*) 
-     >  !   "element conservation error 2:",worst
-        !if (worst>1.Q-8) stop
+        !print*,"element conservation error 2:",worst
 
+        !--- not necessary to call again ---
         !xstep(:) = 0.Q0
         !call SUPER(nHtot,T,xstep,eps,Sat0,NewFastLevel<1)
         !qual = SQUAL(Sat0,active)
         Smax = maxval(Sat0)
-        print'("it =",I4," qual =",1pE13.4E4)',it,qual
+        print'("it =",I4,"  qual =",1pE11.4,"  Smax-1 =",1pE11.2E4)',
+     >          it,qual,Smax-1.Q0
         if ((Smax<1.Q0+Sfinish).and.(qual<Qfinish)) exit
         if (verbose>0) read(*,'(a1)') char1
+        if (verbose>0.and.char1=='1') method=1;changed=.true.
+        if (verbose>0.and.char1=='2') method=2
 
       enddo  
       Sat = Sat0
@@ -1598,8 +1981,8 @@
       do i=1,NEPS
         el = elnr(i)
         if (ABS(1.Q0-check(el)/eps00(el))>1.Q-8) then
-          print*,"*** element conservation error"
-          print*,elnam(el),check(el),eps00(el)
+          print*,"*** element conservation error 1"
+          print*,elnam(el),check(el),eps0(el),eps00(el)
           stop
         endif  
       enddo
@@ -1646,7 +2029,7 @@
         if (is_dust(j)) cycle
         dx = 0.Q0 
         do i=1,Nind
-          dx = dx + conv(j,i)*xx(i)  ! effect of indep.element i on el j
+          dx = dx + conv(j,i)*xx(i)  ! effect of indep.elements i on el j
         enddo 
         el = Dindex(j)
         eps1(el) = eps1(el) + dx
@@ -1685,8 +2068,8 @@
       do i=1,NDUST
         if (active(i)) then
          !qual = qual + (1.Q0-Sat(i))**2
-          qual = qual + (Sat(i)-1.Q0/Sat(i))**2
-         !qual = qual + LOG(Sat(i))**2
+         !qual = qual + (Sat(i)-1.Q0/Sat(i))**2
+          qual = qual + LOG(Sat(i))**2
         else if (Sat(i).gt.1.Q0) then
          !qual = qual + MIN(Sat(i)-1.Q0,1.Q0)
         endif  

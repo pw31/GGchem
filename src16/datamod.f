@@ -3,6 +3,7 @@
 ************************************************************************
       character(len=200) :: elements,abund_file,struc_file
       integer :: abund_pick,model_dim,Npoints,model_struc,verbose
+      integer :: method_eqcond
       logical :: model_eqcond,model_pconst,pick_mfrac,initchem_info
       logical :: useDataBase,remove_condensates,phyllosilicates
       logical :: auto_atmos,adapt_cond,stop_after_init

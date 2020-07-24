@@ -6,7 +6,7 @@
      >     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,pick_mfrac,
      >     abund_file,struc_file,remove_condensates,phyllosilicates,
      >     initchem_info,auto_atmos,stop_after_init,Mpl,Rpl,gamma,
-     >     adapt_cond 
+     >     adapt_cond,method_eqcond 
       use CHEMISTRY,ONLY: NewBackIt,NewFullIt,NewBackFac,NewPreMethod,
      >                    NewFastLevel,Natmax,dispol_file
       use DUST_DATA,ONLY: DustChem_file,bar,MEarth,REarth
@@ -47,6 +47,7 @@
       Mpl          = MEarth
       Rpl          = REarth
       gamma        = 7.0/5.0
+      method_eqcond= 1
       UseDataBase  = .true.
       NewFullIt    = .true.
       NewBackIt    = 5
@@ -143,6 +144,8 @@
           read(line,*) Natmax
         else if (index(line,"! useDatabase")>0) then 
           read(line,*) useDatabase
+        else if (index(line,"! method_eqcond")>0) then 
+          read(line,*) method_eqcond
         else if (index(line,"! dispol_file2")>0) then 
           i = index(line,"!")
           read(line(1:i-1),*) dispol_file(2)

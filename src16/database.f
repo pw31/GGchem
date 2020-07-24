@@ -163,15 +163,15 @@
       logical,intent(out) :: active(0:NDUST)
       real*8 :: prod,lp,ln,lT,lpread,lnread,lTread
       real*8 :: qual,qmodi,pot,pote,potn,rsort(NEPS)
-      real(kind=qp) :: check(NELEM),error,errmax,emain,del,sjk,sik
+      real(kind=qp) :: check(NELEM),error,errmax,sjk,sik
       real(kind=qp) :: stoich(NEPS,NEPS),xx(NEPS),rest(NEPS),tmp,val
       real(kind=qp) :: ecopy(NELEM),dcopy(NDUST),deps0(NELEM),echange
-      integer :: i,j,k,it,el,el2,elworst,b,bb,Nbuf,iloop,jj,ii,Nact,e
+      integer :: i,j,k,el,elworst,b,bb,Nbuf,jj,ii,Nact,e
       integer :: isort(NEPS),jmain(NELEM),ibuf(NELEM)
       character(len=1) :: char
       character(len=80) :: frmt
       character(len=999) :: condensates
-      logical :: IS_NAN,found,contain1,contain2,corrected,modified
+      logical :: IS_NAN,modified
       logical :: condensed(NELEM),used(NDUST)
       logical,save :: firstCall=.true.
       
@@ -305,8 +305,8 @@
               elworst = el
             endif   
           enddo
-          if (verbose>1) print*,"checking ddust=0",errmax
           if (errmax<1.Q-25) then
+            if (verbose>-1) print*,"return with ddust=0",errmax
             ddust = 0.Q0
             qbest = MIN(qbest,0.01)
             return
@@ -572,7 +572,7 @@
           stop
         endif  
         !--- for remove_condensates models: force new entry --- 
-        if (echange==0.Q0.and.maxval(ddust)==0.Q0) qbest=MIN(qbest,0.01)
+        if (maxval(ddust)==0.Q0) qbest=MIN(qbest,0.01)
       endif
 
       end

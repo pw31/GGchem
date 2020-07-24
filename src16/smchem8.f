@@ -395,152 +395,155 @@
         !***  check if new important molecule has huge impact  ***
         !---------------------------------------------------------
         i = imaj(enew)
-        pmol = g(i)
-        do j=1,m_kind(0,i)
-          pmol = pmol + m_anz(j,i)*LOG(anmono(m_kind(j,i))*kT)
-        enddo
-        pmol = EXP(pmol)
-        i1 = 0
-        s1 = 0
-        qmost = 0.Q0
-        do j=1,m_kind(0,i)
-          e = m_kind(j,i) 
-          if (e==enew) then
-            i1 = enew
-            s1 = m_anz(j,i) 
-            cycle
-          endif
-          qq = pmol*m_anz(j,i)/(eps(e)*anHges*kT)
-          !print*,catm(e),cmol(i),REAL(qq)
-          if (qq>qmost) then
-            qmost = qq
-            i2 = e
-            s2 = m_anz(j,i)
-          endif  
-        enddo
-        possible = (qmost>0.95)
-        if (possible) then
-          imaj2(i2) = imaj(i2)
-          imaj(i2) = i
-          pmol = eps(i2)*anHges*kT/s2
-          if (eps(i1)*anHges*kT-s1*pmol<0.d0) then
-            tmp= i1
-            i1 = i2
-            i2 = tmp
-            tmp= s1
-            s1 = s2
-            s2 = tmp
-          endif
-          pmol = eps(i2)*anHges*kT/s2
-          if (eps(i1)*anHges*kT-s1*pmol<0.d0) possible=.false.
-          if (i2==el) possible=.false.
-        endif  
-        if (possible) then
-          !print*,catm(i1),cmol(i),cmol(imaj2(i1)),
-     >    !       REAL(eps(i1)*anHges*kT-s1*pmol)
-          !print*,catm(i2),cmol(i),cmol(imaj2(i2)),
-     >    !       REAL(eps(i2)*anHges*kT-s2*pmol)
-          i3 = imaj2(i1)   ! second most important carrier of i1
-          s3 = 0
-          s4 = 0
-          lnp3 = g(i3)
-          do j=1,m_kind(0,i3)
-            e = m_kind(j,i3) 
-            if (e==i1) then
-              s3 = m_anz(j,i3)
-              cycle
-            endif  
-            if (e==i2) then
-              s4 = m_anz(j,i3)
-              cycle
-            endif  
-            lnp3 = lnp3 + m_anz(j,i3)*LOG(anmono(e)*kT)
-          enddo
-          lnp = g(i)
+        if (i>0) then
+          pmol = g(i)
           do j=1,m_kind(0,i)
-            e = m_kind(j,i)
-            if (e==i1.or.e==i2) cycle
-            lnp = lnp + m_anz(j,i)*LOG(anmono(e)*kT)
+            pmol = pmol + m_anz(j,i)*LOG(anmono(m_kind(j,i))*kT)
           enddo
-          if (verbose>1) print*,"readjusting "//catm(i1)//" "//catm(i2)
+          pmol = EXP(pmol)
+          i1 = 0
+          s1 = 0
+          qmost = 0.Q0
+          do j=1,m_kind(0,i)
+            e = m_kind(j,i) 
+            if (e==enew) then
+              i1 = enew
+              s1 = m_anz(j,i) 
+              cycle
+            endif
+            qq = pmol*m_anz(j,i)/(eps(e)*anHges*kT)
+            !print*,catm(e),cmol(i),REAL(qq)
+            if (qq>qmost) then
+              qmost = qq
+              i2 = e
+              s2 = m_anz(j,i)
+            endif  
+          enddo
+          possible = (qmost>0.95)
+          if (possible) then
+            imaj2(i2) = imaj(i2)
+            imaj(i2) = i
+            pmol = eps(i2)*anHges*kT/s2
+            if (eps(i1)*anHges*kT-s1*pmol<0.d0) then
+              tmp= i1
+              i1 = i2
+              i2 = tmp
+              tmp= s1
+              s1 = s2
+              s2 = tmp
+            endif
+            pmol = eps(i2)*anHges*kT/s2
+            if (eps(i1)*anHges*kT-s1*pmol<0.d0) possible=.false.
+            if (i2==el) possible=.false.
+          endif  
+          if (possible) then
+            !print*,catm(i1),cmol(i),cmol(imaj2(i1)),
+     >      !       REAL(eps(i1)*anHges*kT-s1*pmol)
+            !print*,catm(i2),cmol(i),cmol(imaj2(i2)),
+     >      !       REAL(eps(i2)*anHges*kT-s2*pmol)
+            i3 = imaj2(i1)   ! second most important carrier of i1
+            s3 = 0
+            s4 = 0
+            lnp3 = g(i3)
+            do j=1,m_kind(0,i3)
+              e = m_kind(j,i3) 
+              if (e==i1) then
+                s3 = m_anz(j,i3)
+                cycle
+              endif  
+              if (e==i2) then
+                s4 = m_anz(j,i3)
+                cycle
+              endif  
+              lnp3 = lnp3 + m_anz(j,i3)*LOG(anmono(e)*kT)
+            enddo
+            lnp = g(i)
+            do j=1,m_kind(0,i)
+              e = m_kind(j,i)
+              if (e==i1.or.e==i2) cycle
+              lnp = lnp + m_anz(j,i)*LOG(anmono(e)*kT)
+            enddo
+            if (verbose>1) print*,"readjusting "//catm(i1)//" "
+     >                   //catm(i2)
      >                   //" with molecules "//trim(cmol(i))//" "
      >                   //trim(cmol(i3))//" ..."
-          !--- solve eps(i1)*anHges*kT = s1*pmol + s3*p_second ---
-          !--- with  eps(i2)*anHges*kT = s2*pmol               ---
-          FF(1) = LOG((eps(i1)*anHges*kT-s1*pmol)/s3)-lnp3
-          FF(2) = LOG((eps(i2)*anHges*kT)/s2)-lnp
-          DF(1,1) = s3
-          DF(1,2) = s4
-          DF(2,1) = s1
-          DF(2,2) = s2
-          call GAUSS8(nel,2,DF,dp,FF)
-          possible = (dp(1)<1000.0).and.(dp(2)<1000.0)
+            !--- solve eps(i1)*anHges*kT = s1*pmol + s3*p_second ---
+            !--- with  eps(i2)*anHges*kT = s2*pmol               ---
+            FF(1) = LOG((eps(i1)*anHges*kT-s1*pmol)/s3)-lnp3
+            FF(2) = LOG((eps(i2)*anHges*kT)/s2)-lnp
+            DF(1,1) = s3
+            DF(1,2) = s4
+            DF(2,1) = s1
+            DF(2,2) = s2
+            call GAUSS8(nel,2,DF,dp,FF)
+            possible = (dp(1)<1000.0).and.(dp(2)<1000.0)
+          endif
+          if (possible) then
+            anmono(i1) = EXP(dp(1))*kT1
+            anmono(i2) = EXP(dp(2))*kT1
+            !print'(A2,9(1pE16.8))',catm(i1),eps(i1)*anHges*kT,
+     >      !                       s1*EXP(lnp+s1*dp(1)+s2*dp(2))
+     >      !                      +s3*EXP(lnp3+s3*dp(1)+s4*dp(2))
+            !print'(A2,9(1pE16.8))',catm(i2),eps(i2)*anHges*kT,
+     >      !                       s2*EXP(lnp+s1*dp(1)+s2*dp(2))
+            pbefore(i1) = anmono(i1)
+            pbefore(i2) = anmono(i2)
+            if (NewFastLevel<3.and.ptake) then
+              anmono(i1) = anmono(i1)*pcorr(enew,i1)
+              anmono(i2) = anmono(i2)*pcorr(enew,i2)
+            endif  
+            DUALco = DUALco+1
+          endif  
+          !--- special case CH4+CO2+H2O ---
+          HCOproblem = (Nact>2).and.(enew==H.or.enew==C.or.enew==O)
+     >                 .and.(CH4>0).and.(H2O>0).and.(CO2>0)
+          if (HCOproblem) then
+            hasH = .false.
+            hasC = .false.
+            hasO = .false.
+            do ii=1,Nact
+              i = act_to_all(ii)
+              if (i==H) hasH=.true.
+              if (i==C) hasC=.true.
+              if (i==O) hasO=.true.
+            enddo  
+            HCOproblem = hasH.and.hasO.and.hasC
+          endif  
+          if (HCOproblem) then
+            pH2O = (2*eps(O)-4*eps(C)+eps(H))*anHges*kT/4
+            pCO2 = (2*eps(O)+4*eps(C)-eps(H))*anHges*kT/8
+            pCH4 = (eps(H)+4*eps(C)-2*eps(O))*anHges*kT/8
+            HCOproblem = (pH2O>0).and.(pCO2>0).and.(pCH4>0)
+          endif  
+          if (HCOproblem) then
+            lpH2O = LOG(pH2O)
+            lpCO2 = LOG(pCO2)
+            lpCH4 = LOG(pCH4)
+            lpH = (lpCH4+lpH2O*2+g(CO2)-lpCO2-g(CH4)-g(H2O)*2)/8
+            lpO = (lpCO2+lpH2O*2+g(CH4)-lpCH4-g(CO2)-g(H2O)*2)/4
+            lpC = (lpCH4+lpCO2+g(H2O)*2-lpH2O*2-g(CH4)-g(CO2))/2
+            if (verbose>1) print*,"applying H2O-CH4-CO2 correction ..."
+            !print'(2(1pE16.8))',2*pH2O+4*pCH4,anHges*kT*eps(H)
+            !print'(2(1pE16.8))',  pH2O+2*pCO2,anHges*kT*eps(O)
+            !print'(2(1pE16.8))',  pCH4+  pCO2,anHges*kT*eps(C)
+            !print'(2(1pE16.8))',pH2O,EXP(lpH*2+lpO+g(H2O))
+            !print'(2(1pE16.8))',pCO2,EXP(lpC+lpO*2+g(CO2))
+            !print'(2(1pE16.8))',pCH4,EXP(lpC+lpH*4+g(CH4))
+            anmono(H) = EXP(lpH)*kT1
+            anmono(O) = EXP(lpO)*kT1
+            anmono(C) = EXP(lpC)*kT1
+            pbefore(H) = anmono(H)
+            pbefore(O) = anmono(O)
+            pbefore(C) = anmono(C)
+            if (NewFastLevel<3.and.ptake) then
+              anmono(H) = anmono(H)*pcorr(enew,H)
+              anmono(O) = anmono(O)*pcorr(enew,O)
+              anmono(C) = anmono(C)*pcorr(enew,C)
+            endif  
+            HCOco = HCOco + 1
+          endif  
         endif
-        if (possible) then
-          anmono(i1) = EXP(dp(1))*kT1
-          anmono(i2) = EXP(dp(2))*kT1
-          !print'(A2,9(1pE16.8))',catm(i1),eps(i1)*anHges*kT,
-     >    !                       s1*EXP(lnp+s1*dp(1)+s2*dp(2))
-     >    !                      +s3*EXP(lnp3+s3*dp(1)+s4*dp(2))
-          !print'(A2,9(1pE16.8))',catm(i2),eps(i2)*anHges*kT,
-     >    !                       s2*EXP(lnp+s1*dp(1)+s2*dp(2))
-          pbefore(i1) = anmono(i1)
-          pbefore(i2) = anmono(i2)
-          if (NewFastLevel<3.and.ptake) then
-            anmono(i1) = anmono(i1)*pcorr(enew,i1)
-            anmono(i2) = anmono(i2)*pcorr(enew,i2)
-          endif  
-          DUALco = DUALco+1
-        endif  
-        !--- special case CH4+CO2+H2O ---
-        HCOproblem = (Nact>2).and.(enew==H.or.enew==C.or.enew==O)
-     >               .and.(CH4>0).and.(H2O>0).and.(CO2>0)
-        if (HCOproblem) then
-          hasH = .false.
-          hasC = .false.
-          hasO = .false.
-          do ii=1,Nact
-            i = act_to_all(ii)
-            if (i==H) hasH=.true.
-            if (i==C) hasC=.true.
-            if (i==O) hasO=.true.
-          enddo  
-          HCOproblem = hasH.and.hasO.and.hasC
-        endif  
-        if (HCOproblem) then
-          pH2O = (2*eps(O)-4*eps(C)+eps(H))*anHges*kT/4
-          pCO2 = (2*eps(O)+4*eps(C)-eps(H))*anHges*kT/8
-          pCH4 = (eps(H)+4*eps(C)-2*eps(O))*anHges*kT/8
-          HCOproblem = (pH2O>0).and.(pCO2>0).and.(pCH4>0)
-        endif  
-        if (HCOproblem) then
-          lpH2O = LOG(pH2O)
-          lpCO2 = LOG(pCO2)
-          lpCH4 = LOG(pCH4)
-          lpH = (lpCH4+lpH2O*2+g(CO2)-lpCO2-g(CH4)-g(H2O)*2)/8
-          lpO = (lpCO2+lpH2O*2+g(CH4)-lpCH4-g(CO2)-g(H2O)*2)/4
-          lpC = (lpCH4+lpCO2+g(H2O)*2-lpH2O*2-g(CH4)-g(CO2))/2
-          if (verbose>1) print*,"applying H2O-CH4-CO2 correction ..."
-          !print'(2(1pE16.8))',2*pH2O+4*pCH4,anHges*kT*eps(H)
-          !print'(2(1pE16.8))',  pH2O+2*pCO2,anHges*kT*eps(O)
-          !print'(2(1pE16.8))',  pCH4+  pCO2,anHges*kT*eps(C)
-          !print'(2(1pE16.8))',pH2O,EXP(lpH*2+lpO+g(H2O))
-          !print'(2(1pE16.8))',pCO2,EXP(lpC+lpO*2+g(CO2))
-          !print'(2(1pE16.8))',pCH4,EXP(lpC+lpH*4+g(CH4))
-          anmono(H) = EXP(lpH)*kT1
-          anmono(O) = EXP(lpO)*kT1
-          anmono(C) = EXP(lpC)*kT1
-          pbefore(H) = anmono(H)
-          pbefore(O) = anmono(O)
-          pbefore(C) = anmono(C)
-          if (NewFastLevel<3.and.ptake) then
-            anmono(H) = anmono(H)*pcorr(enew,H)
-            anmono(O) = anmono(O)*pcorr(enew,O)
-            anmono(C) = anmono(C)*pcorr(enew,C)
-          endif  
-          HCOco = HCOco + 1
-        endif  
-          
+  
         !--- solve with different methods ---
         if (verbose>1) then 
           print'("corr",99(1pE11.2))',pcorr(enew,act_to_all(1:Nact))
