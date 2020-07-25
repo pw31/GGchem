@@ -3,6 +3,7 @@ calc() { awk "BEGIN{ printf \"%.3f\n\", $* }"; }
 
 testlist=`ls -d model*.in`
 # testlist=model_benchmark1.in
+rm -rf logfile*
 
 echo
 echo "=============== TESTING GGchem ==============="
@@ -36,6 +37,7 @@ for test in ${testlist}; do
   echo "------------------------------"
   printf "./ggchem "$test" ...  "
   rm -rf database.dat
+  rm -rf Last_abund.in LastMu.dat
   logfile='input/TestCases/logfile_'$nr
   starttime=`date +%s%N`
   ./ggchem input/TestCases/$test > $logfile
@@ -53,6 +55,5 @@ for test in ${testlist}; do
   let nr=$nr+1
 done  
 cd input/TestCases
-rm -rf Last*
 echo "all tests completed."
 echo
