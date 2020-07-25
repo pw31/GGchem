@@ -25,5 +25,5 @@ dispol_WoitkeRefit.dat                  ! dispol_file3
 .true.                ! NewFullIt  
 4                     ! NewBackIt  
 1.E+3                 ! NewBackFac
-500.0                 ! Tfast
+300.0                 ! Tfast
 

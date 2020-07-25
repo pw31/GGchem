@@ -19,19 +19,14 @@ mfrac_BSE_15water.dat
 # model options
 0                     ! model_dim (0,1,2)
 .true.                ! model_pconst
-.true.                ! auto_atmos (attach polytopic atmosphere)   
-1.25                  ! gamma (polytropic index)
 370.0                   ! Tmax [K]
 1.0                   ! pmax [bar]
 1.E-2                 ! pmin [bar]
-300                   ! Npoints
-1.0                   ! Mplanet [MEarth]
-1.0                   ! Rplanet [REarth]
 12                    ! NewBackIt
 1.E+12                ! NewBackFac
 1                     ! NewFastLevel
-1600.0                ! Tfast
+1000.0                ! Tfast
 .false.               ! initchem_info
 
-1                     ! method_eqcond
+2                     ! method_eqcond
 0                     ! verbose

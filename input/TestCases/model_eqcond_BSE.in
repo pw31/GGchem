@@ -24,7 +24,7 @@ mfrac_melis_BSE.dat
 12                    ! NewBackIt
 1.E+12                ! NewBackFac
 1                     ! NewFastLevel
-1600.0                ! Tfast
+1000.0                ! Tfast
 .false.               ! initchem_info
 
 2 ! method_eqcond

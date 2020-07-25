@@ -28,8 +28,10 @@ data/JANAF/*.pdf
 data/JANAF/*fitdata*
 data/JANAF/AlJanaf
 tools/kp.pdf
+input/NOT_CONVERGING
+input/TestCases/logfile*
 *.in
-logfile
+logfile*
 perform.dat
 out.ps
 phase*.png

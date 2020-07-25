@@ -1,0 +1,58 @@
+#!/bin/bash
+calc() { awk "BEGIN{ printf \"%.3f\n\", $* }"; }
+
+testlist=`ls -d model*.in`
+# testlist=model_benchmark1.in
+
+echo
+echo "=============== TESTING GGchem ==============="
+date
+echo "host is "$HOSTNAME
+cat /proc/cpuinfo | grep 'model name' | uniq
+lsb_release -d
+printf "%s\n" "kernel-version  "`uname -r`
+cd ../../src16
+echo
+COMPILER=`grep ^"F90 " makefile | tail -1`
+FLAGS=`grep ^FFLAGS makefile | tail -1`
+echo "COMPILER" $COMPILER
+echo $FLAGS
+printf "COMPILING GGchem ..."
+make realclean > /dev/null
+make > /dev/null
+if [ -e ggchem16 ]; then
+  echo "  S U C C E S S"
+else
+  echo "  F A I L E D."
+  exit
+fi
+echo
+
+cd ..
+let nr=1
+for test in ${testlist}; do
+  echo "------------------------------"
+  echo "TEST "$nr": "$test
+  echo "------------------------------"
+  printf "./ggchem "$test" ...  "
+  rm -rf database.dat
+  logfile='input/TestCases/logfile_'$nr
+  starttime=`date +%s%N`
+  ./ggchem input/TestCases/$test > $logfile
+  endtime=`date +%s%N`
+  if grep -q 'smchem calls' $logfile
+  then
+    echo "S U C C E S S"
+    grep -A20 'smchem calls' $logfile
+    time=`calc $((endtime-starttime))/1000000000`
+    printf "               USER time =     %.3f sec\n" $time
+  else
+    echo "F A I L E D"
+  fi
+  echo
+  let nr=$nr+1
+done  
+cd input/TestCases
+rm -rf Last*
+echo "all tests completed."
+echo

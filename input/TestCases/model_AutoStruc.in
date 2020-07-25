@@ -24,13 +24,13 @@ mfrac_BSE_8water.dat
 500.0                 ! Tmax [K]
 1.0                   ! pmax [bar]
 1.E-2                 ! pmin [bar]
-300                   ! Npoints
+100                   ! Npoints
 1.0                   ! Mplanet [MEarth]
 1.0                   ! Rplanet [REarth]
 12                    ! NewBackIt
 1.E+12                ! NewBackFac
 1                     ! NewFastLevel
-1500.0                ! Tfast
+1000.0                ! Tfast
 .false.               ! initchem_info
 
 2   ! method_eqcond
