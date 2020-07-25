@@ -14,6 +14,7 @@ lsb_release -d
 printf "%s\n" "kernel-version  "`uname -r`
 cd ../../src16
 echo
+echo "GIT "`git log -1 | head -3 | tail -2`
 COMPILER=`grep ^"F90 " makefile | tail -1`
 FLAGS=`grep ^FFLAGS makefile | tail -1`
 echo "COMPILER" $COMPILER
@@ -54,6 +55,8 @@ for test in ${testlist}; do
   echo
   let nr=$nr+1
 done  
+rm -rf database.dat
+rm -rf Last_abund.in LastMu.dat
 cd input/TestCases
 echo "all tests completed."
 echo
