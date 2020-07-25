@@ -1,0 +1,143 @@
+
+=============== TESTING GGchem ===============
+Sat 25 Jul 17:14:29 BST 2020
+host is prodimo
+model name	: Intel(R) Core(TM) i7-2600K CPU @ 3.40GHz
+Description:	Ubuntu 16.04.6 LTS
+kernel-version  4.15.0-60-generic
+
+COMPILER F90 = ifort
+FFLAGS = -r8 -g -traceback -O3 -xHOST -prec-div -fp-model source
+COMPILING GGchem ...  S U C C E S S
+
+------------------------------
+TEST 1: model_AutoStruc.in
+------------------------------
+./ggchem model_AutoStruc.in ...  S U C C E S S
+            smchem calls =    21675
+         iterations/call =     2.12
+     pre-iterations/call =    17.354
+usage of saved estimates =    99.276 %
+   dual corrections/call =     0.171
+  H-C-O corrections/call =     0.000
+   eq condensation calls =      272
+      eq iterations/call =     8.22
+         transform calls =        5
+               USER time =     98.437 sec
+
+------------------------------
+TEST 2: model_benchmark1.in
+------------------------------
+./ggchem model_benchmark1.in ...  S U C C E S S
+            smchem calls =      286
+         iterations/call =     3.67
+     pre-iterations/call =    47.762
+usage of saved estimates =    99.301 %
+   dual corrections/call =     0.000
+  H-C-O corrections/call =     0.000
+               USER time =     0.501 sec
+
+------------------------------
+TEST 3: model_eqcond_BSE_15water.in
+------------------------------
+./ggchem model_eqcond_BSE_15water.in ...  S U C C E S S
+            smchem calls =     8784
+         iterations/call =     3.06
+     pre-iterations/call =    18.878
+usage of saved estimates =    98.688 %
+   dual corrections/call =     0.922
+  H-C-O corrections/call =     0.179
+   eq condensation calls =        8
+      eq iterations/call =    95.25
+         transform calls =        9
+               USER time =     48.625 sec
+
+------------------------------
+TEST 4: model_eqcond_BSE.in
+------------------------------
+./ggchem model_eqcond_BSE.in ...  S U C C E S S
+            smchem calls =     8264
+         iterations/call =     2.41
+     pre-iterations/call =    31.902
+usage of saved estimates =    97.154 %
+   dual corrections/call =     0.550
+  H-C-O corrections/call =     0.410
+   eq condensation calls =        1
+      eq iterations/call =   644.00
+         transform calls =       13
+               USER time =     47.276 sec
+
+------------------------------
+TEST 5: model_eqcond_MORB.in
+------------------------------
+./ggchem model_eqcond_MORB.in ...  S U C C E S S
+            smchem calls =     9459
+         iterations/call =     2.28
+     pre-iterations/call =    48.785
+usage of saved estimates =    95.964 %
+   dual corrections/call =     1.215
+  H-C-O corrections/call =     0.655
+   eq condensation calls =        7
+      eq iterations/call =    98.43
+         transform calls =       16
+               USER time =     17.995 sec
+
+------------------------------
+TEST 6: model_Jupiter.in
+------------------------------
+./ggchem model_Jupiter.in ...  S U C C E S S
+            smchem calls =     5438
+         iterations/call =     2.32
+     pre-iterations/call =     9.177
+usage of saved estimates =    99.507 %
+   dual corrections/call =     0.438
+  H-C-O corrections/call =     0.000
+   eq condensation calls =      150
+      eq iterations/call =     5.43
+         transform calls =        0
+               USER time =     12.162 sec
+
+------------------------------
+TEST 7: model_Schaefer_CC.in
+------------------------------
+./ggchem model_Schaefer_CC.in ...  S U C C E S S
+            smchem calls =    24307
+         iterations/call =     9.44
+     pre-iterations/call =    22.080
+usage of saved estimates =    99.091 %
+   dual corrections/call =     0.562
+  H-C-O corrections/call =     0.651
+   eq condensation calls =      306
+      eq iterations/call =     4.63
+         transform calls =       40
+               USER time =     70.828 sec
+
+------------------------------
+TEST 8: model_simple2D.in
+------------------------------
+./ggchem model_simple2D.in ...  S U C C E S S
+            smchem calls =     9444
+         iterations/call =     2.00
+     pre-iterations/call =     9.758
+usage of saved estimates =    98.303 %
+   dual corrections/call =     0.264
+  H-C-O corrections/call =     0.251
+               USER time =     3.502 sec
+
+------------------------------
+TEST 9: model_standard_eqcond.in
+------------------------------
+./ggchem model_standard_eqcond.in ...  S U C C E S S
+            smchem calls =    20413
+         iterations/call =     1.83
+     pre-iterations/call =    16.553
+usage of saved estimates =    99.153 %
+   dual corrections/call =     0.000
+  H-C-O corrections/call =     0.000
+   eq condensation calls =      239
+      eq iterations/call =     5.08
+         transform calls =        4
+               USER time =     52.709 sec
+
+all tests completed.
+
