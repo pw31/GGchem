@@ -14,9 +14,16 @@ lsb_release -d
 printf "%s\n" "kernel-version  "`uname -r`
 cd ../../src16
 echo
+echo "GIT "`git log -1 | head -1`
 echo "GIT "`git log -1 | head -3 | tail -2`
 COMPILER=`grep ^"F90 " makefile | tail -1`
 FLAGS=`grep ^FFLAGS makefile | tail -1`
+if [[ $COMPILER =~ "ifort" ]]; then
+  COMPILER=`ifort --version | head -1`
+fi
+if [[ $COMPILER =~ "gfortran" ]]; then
+  COMPILER=`gfortran --version | head -1`
+fi
 echo "COMPILER" $COMPILER
 echo $FLAGS
 printf "COMPILING GGchem ..."
@@ -37,8 +44,7 @@ for test in ${testlist}; do
   echo "TEST "$nr": "$test
   echo "------------------------------"
   printf "./ggchem "$test" ...  "
-  rm -rf database.dat
-  rm -rf Last_abund.in LastMu.dat
+  rm -rf database.dat Last_abund.in LastMu.dat
   logfile='input/TestCases/logfile_'$nr
   starttime=`date +%s%N`
   ./ggchem input/TestCases/$test > $logfile
@@ -55,8 +61,7 @@ for test in ${testlist}; do
   echo
   let nr=$nr+1
 done  
-rm -rf database.dat
-rm -rf Last_abund.in LastMu.dat
+rm -rf database.dat Last_abund.in LastMu.dat
 cd input/TestCases
 echo "all tests completed."
 echo
