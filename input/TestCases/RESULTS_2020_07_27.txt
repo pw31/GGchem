@@ -1,12 +1,16 @@
 
 =============== TESTING GGchem ===============
-Sat 25 Jul 17:14:29 BST 2020
-host is prodimo
+Mon 27 Jul 08:29:01 BST 2020
+
+COMPUTER:       host is prodimo
 model name	: Intel(R) Core(TM) i7-2600K CPU @ 3.40GHz
 Description:	Ubuntu 16.04.6 LTS
 kernel-version  4.15.0-60-generic
 
-COMPILER F90 = ifort
+GIT commit 84b1dbacedbb6a2c6cc399e76231b1917c40290f
+GIT Author: Peter Woitke <pw31@st-and.ac.uk>
+GIT Date: Mon Jul 27 08:27:49 2020 +0100
+COMPILER ifort (IFORT) 16.0.2 20160204
 FFLAGS = -r8 -g -traceback -O3 -xHOST -prec-div -fp-model source
 COMPILING GGchem ...  S U C C E S S
 
@@ -14,16 +18,16 @@ COMPILING GGchem ...  S U C C E S S
 TEST 1: model_AutoStruc.in
 ------------------------------
 ./ggchem model_AutoStruc.in ...  S U C C E S S
-            smchem calls =    21675
+            smchem calls =    21554
          iterations/call =     2.12
-     pre-iterations/call =    17.354
-usage of saved estimates =    99.276 %
-   dual corrections/call =     0.171
+     pre-iterations/call =    17.312
+usage of saved estimates =    99.303 %
+   dual corrections/call =     0.167
   H-C-O corrections/call =     0.000
-   eq condensation calls =      272
-      eq iterations/call =     8.22
-         transform calls =        5
-               USER time =     98.437 sec
+   eq condensation calls =      275
+      eq iterations/call =     8.09
+         transform calls =        7
+               USER time =     97.163 sec
 
 ------------------------------
 TEST 2: model_benchmark1.in
@@ -35,7 +39,7 @@ TEST 2: model_benchmark1.in
 usage of saved estimates =    99.301 %
    dual corrections/call =     0.000
   H-C-O corrections/call =     0.000
-               USER time =     0.501 sec
+               USER time =     0.502 sec
 
 ------------------------------
 TEST 3: model_eqcond_BSE_15water.in
@@ -50,7 +54,7 @@ usage of saved estimates =    98.688 %
    eq condensation calls =        8
       eq iterations/call =    95.25
          transform calls =        9
-               USER time =     48.625 sec
+               USER time =     48.593 sec
 
 ------------------------------
 TEST 4: model_eqcond_BSE.in
@@ -65,7 +69,7 @@ usage of saved estimates =    97.154 %
    eq condensation calls =        1
       eq iterations/call =   644.00
          transform calls =       13
-               USER time =     47.276 sec
+               USER time =     47.199 sec
 
 ------------------------------
 TEST 5: model_eqcond_MORB.in
@@ -80,7 +84,7 @@ usage of saved estimates =    95.964 %
    eq condensation calls =        7
       eq iterations/call =    98.43
          transform calls =       16
-               USER time =     17.995 sec
+               USER time =     17.910 sec
 
 ------------------------------
 TEST 6: model_Jupiter.in
@@ -95,7 +99,7 @@ usage of saved estimates =    99.507 %
    eq condensation calls =      150
       eq iterations/call =     5.43
          transform calls =        0
-               USER time =     12.162 sec
+               USER time =     12.225 sec
 
 ------------------------------
 TEST 7: model_Schaefer_CC.in
@@ -110,7 +114,7 @@ usage of saved estimates =    99.091 %
    eq condensation calls =      306
       eq iterations/call =     4.63
          transform calls =       40
-               USER time =     70.828 sec
+               USER time =     70.629 sec
 
 ------------------------------
 TEST 8: model_simple2D.in
@@ -122,7 +126,7 @@ TEST 8: model_simple2D.in
 usage of saved estimates =    98.303 %
    dual corrections/call =     0.264
   H-C-O corrections/call =     0.251
-               USER time =     3.502 sec
+               USER time =     3.496 sec
 
 ------------------------------
 TEST 9: model_standard_eqcond.in
@@ -137,7 +141,7 @@ usage of saved estimates =    99.153 %
    eq condensation calls =      239
       eq iterations/call =     5.08
          transform calls =        4
-               USER time =     52.709 sec
+               USER time =     52.907 sec
 
 all tests completed.
 
