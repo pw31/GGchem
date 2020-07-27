@@ -8,14 +8,16 @@ rm -rf logfile*
 echo
 echo "=============== TESTING GGchem ==============="
 date
-echo "host is "$HOSTNAME
+echo
+echo "COMPUTER:       host is "$HOSTNAME
 cat /proc/cpuinfo | grep 'model name' | uniq
 lsb_release -d
 printf "%s\n" "kernel-version  "`uname -r`
 cd ../../src16
 echo
 echo "GIT "`git log -1 | head -1`
-echo "GIT "`git log -1 | head -3 | tail -2`
+echo "GIT "`git log -1 | head -2 | tail -1`
+echo "GIT "`git log -1 | head -3 | tail -1`
 COMPILER=`grep ^"F90 " makefile | tail -1`
 FLAGS=`grep ^FFLAGS makefile | tail -1`
 if [[ $COMPILER =~ "ifort" ]]; then
