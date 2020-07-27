@@ -317,14 +317,15 @@
             if (included) then
               if ((eldust(dk).gt.nmax).and.(.not.raus(dk))) then
                 iraus = dk
-                raus(dk) = .true.
                 nmax = eldust(dk)
               endif  
             endif
           enddo  
-          if (nmax==0.Q0) exit
+          haeufig = (nmax.gt.eps0(i)*1.D-2)
+          if (.not.haeufig) exit
           write(*,'(1x,A18,1pE10.3)') 
      >          "n"//trim(dust_nam(iraus)),eldust(iraus)*nHges 
+          raus(iraus) = .true.
         enddo  
 
         raus = .false.
