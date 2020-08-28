@@ -238,7 +238,7 @@
         ! ***  rho = rho_gas+rho_dust, so muH = rho/n<H>, but mu is    ***
         ! ***  with respect to rho_gas, so mu = rho_gas/p kT           *** 
         ! ***  => rho_gas = rho*(1+dg) = p*mu/kT*(1+dg) = p/kT * xx    ***
-        ! ***  The iteration is done in xx                             ***         
+        ! ***  The iteration is done in xx                             *** 
         !-----------------------------------------------------------------
         dz  = LOG(pmax/pmin)*Hp/Npoints                 ! step in height
         g2  = grav*Mpl/(Rpl+zz+dz)**2                   ! gravity there
@@ -296,6 +296,9 @@
               xx   = xx+dx
               !mu2 = xx/(1.0+dg)
               mu2  = mu2+dmu 
+            else
+              xx   = xx *EXP(dx/xx)
+              mu2  = mu2*EXP(dmu/mu2)
             endif
           endif
           !write(98,'(I3,99(2(1pE14.7),2x))')
