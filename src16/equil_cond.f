@@ -62,14 +62,14 @@
       integer :: ifail,Nall,imax,swap,irow,erow,Eact,Nlin,iback,e1,e2
       integer :: act_to_elem(NELEM),act_to_dust(NELEM)
       integer :: Nzero,Ntrivial,etrivial(NELEM),dtrivial(NELEM)
-      integer :: no_action,itJac,last_tri
+      integer :: no_action,itJac,last_tri,method_failed
       logical,dimension(NELEM) :: e_resolved,e_act,e_taken,is_esolved
       logical,dimension(NELEM) :: e_eliminated,eblocked
       logical,dimension(0:NDUST) :: active,act_read,act_old
       logical,dimension(NDUST) :: is_dsolved,d_resolved,d_eliminated
       logical,dimension(NDUST) :: itried
       logical :: action,changed,solved,limited,ok,found
-      logical :: limdust,dtry_break
+      logical :: limdust,dtry_break,IS_NAN
       character(len=1) :: char1,txt0
       character(len=2) :: rem,tnum
       character(len=6) :: dum6
@@ -343,7 +343,6 @@
       limited = .false.
       ifail = 0
       no_action = 0
-      method = method_eqcond
       
 !---------------------------  start of main iteration loop  ----------------------------
 
@@ -613,6 +612,10 @@
         act_old = active
         if (Nact==0.and.qual<1.Q-30) exit   ! no solid supersaturated 
 
+        method = method_eqcond
+        method_failed = 0
+ 50     continue
+        
         !----------------------------  use method 1  ------------------------------------
         if (method==1) then
         !--------------------------------------
@@ -1382,13 +1385,23 @@
         Fsav  = FF
         DFsav = DF
         !call GAUSS16( NELEM, Nsolve, DF, dx, FF)
-
         call QGEFA( DF, NELEM, Nsolve, ipvt, info )
         call QGESL( DF, NELEM, Nsolve, ipvt, FF, 0 )
         dx = FF
         if (verbose>1) print*,"QGESL info=",info
         if (info.ne.0) then
           print*,"*** singular matrix in QGEFA NR-step: info=",info
+          if (method_failed==0) then
+            method_failed = method_failed+1
+            method = 2
+            Nact = 0 
+            do i=1,NDUST
+              if (active(i)) Nact=Nact+1
+            enddo
+            changed = .true.
+            print*,"trying eqcond_method 2 ..."
+            goto 50
+          endif  
           stop
         endif
   
@@ -1779,7 +1792,25 @@
         !---------------------------------
         Fsav  = FF
         DFsav = DF
-        call GAUSS16( NELEM, Nsolve, DF, dx, FF )    
+        call QGEFA( DF, NELEM, Nsolve, ipvt, info )
+        call QGESL( DF, NELEM, Nsolve, ipvt, FF, 0 )
+        dx = FF
+        if (verbose>1) print*,"QGESL info=",info
+        if (info.ne.0) then
+          print*,"*** singular matrix in QGEFA NR-step: info=",info
+          if (method_failed==0) then
+            method_failed = method_failed+1
+            method = 1
+            Nact = 0 
+            do i=1,NDUST
+              if (active(i)) Nact=Nact+1
+            enddo
+            changed = .true.
+            print*,"trying eqcond_method 1 ..."
+            goto 50
+          endif  
+          stop
+        endif
         dstep = 0.Q0                 ! the NR-step in condensate abundances 
         do ii=1,Nsolve
           dx(ii) = dx(ii)*scale(ii)  ! de-normalisation
@@ -1794,6 +1825,14 @@
           !enddo
           !print'(I3,2(1pE18.10),1pE9.2)',ii,Fsav(ii),test, 
      >    !                                  Fsav(ii)/test-1.Q0
+          if (IS_NAN(REAL(dx(ii)))) then
+            print*,NELEM,Nsolve
+            do i=1,Nsolve
+              print'(99(1pE13.6))',DFsav(i,1:Nsolve),Fsav(i)
+            enddo  
+            print'(99(1pE13.6))',dx(1:Nsolve)
+            stop "*** dx=NaN"
+          endif  
         enddo  
         xstep = 0.Q0                 ! the corresponding NR-step in element abundances
         do ii=1,Nsolve
