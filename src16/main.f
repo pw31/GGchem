@@ -78,19 +78,15 @@
       real*8  :: Tg,nHges,p,mu,muold,pgas,fold,ff,dfdmu,dmu,mugas,Vol
       real*8  :: rhog,rhoc,rhod,d2g,mcond,mgas,Vcon,Vcond,Vgas,ngas
       real*8  :: nkey,nkeyt,tchem,tchemtot,AoverV,mic,atyp,alpha,vth
-      real*8  :: yr,Myr,molm,molmass,stoich
+      real*8  :: yr,Myr,molm,molmass,stoich,HH,OO,CC,NN
       integer :: i,imol,iraus,e,aIraus,aIIraus,j,verb,dk,it,stindex
       integer :: k,keyel,imax,dustst
+      integer :: H2O,CO2,CH4,O2,H2,N2,NH3
       logical :: included,haeufig,raus(NMOLE)
       logical :: rausI(NELEM),rausII(NELEM)
       character(len=10) :: sp
       character(len=20) :: limcond
 
-
-      !deps = eps0(Si)*0.1*(1.0-108./200.)
-      !eps0(Si) = eps0(Si) + deps
-      !eps0(O)  = eps0(O)  + deps*2
-      
       Tg    = Tmax
       nHges = nHmax
       p     = pmax
@@ -361,12 +357,76 @@
         if (Sat(i)<1.Q-2) cycle 
         write(*,5000) dust_nam(i),Sat(i) 
       enddo
-      write(*,'(" epsH=",2(1pE12.4))') eps0(H),eps(H)
-      write(*,'(" epsC=",2(1pE12.4),"   C/(H+O+C)=",1pE12.4)') 
+
+*     ----------------------------------------------------
+*     ***  atmosphere types and low-temp expectations  ***
+*     ----------------------------------------------------
+      if (.true.) then
+        print*
+        write(*,'(" epsH=",2(1pE12.4))') eps0(H),eps(H)
+        write(*,'(" epsC=",2(1pE12.4),"   C/(H+O+C)=",1pE12.4)') 
      >         eps0(C),eps(C),eps(C)/(eps(H)+eps(O)+eps(C))
-      write(*,'(" epsN=",2(1pE12.4))') eps0(N),eps(N)
-      write(*,'(" epsO=",2(1pE12.4)," (O-H)/(O+H)=",1pE12.4)') 
-     >         eps0(O),eps(O),(eps(O)-eps(H))/(eps(O)+eps(H))
+        write(*,'(" epsO=",2(1pE12.4)," (O-H)/(O+H)=",1pE12.4)') 
+     >     eps0(O),eps(O),(eps(O)-eps(H))/(eps(O)+eps(H))
+        write(*,'(" epsN=",2(1pE12.4))') eps0(N),eps(N)
+        print*
+        HH = eps(H)
+        OO = eps(O)
+        CC = eps(C)
+        NN = eps(N)
+        H2O = stindex(cmol,NMOLE,'H2O')
+        CO2 = stindex(cmol,NMOLE,'CO2')
+        CH4 = stindex(cmol,NMOLE,'CH4')
+        H2  = stindex(cmol,NMOLE,'H2')
+        N2  = stindex(cmol,NMOLE,'N2')
+        O2  = stindex(cmol,NMOLE,'O2')
+        NH3 = stindex(cmol,NMOLE,'NH3')
+        if (HH>2*OO+4*CC) then
+          if (3*NN<HH-2*OO-4*CC) then
+            print'("type A1")'
+            print'("H2O:",2(0pF8.4))',nmol(H2O)/ngas,
+     >                                     (2*OO)/(HH-NN-2*CC)
+            print'("CH4:",2(0pF8.4))',nmol(CH4)/ngas,
+     >                                     (2*CC)/(HH-NN-2*CC)
+            print'("NH3:",2(0pF8.4))',nmol(NH3)/ngas,
+     >                                     (2*NN)/(HH-NN-2*CC)
+            print'(" H2:",2(0pF8.4))',nmol(H2)/ngas,
+     >                        (HH-2*OO-4*CC-3*NN)/(HH-NN-2*CC)
+          else  
+            print'("type A2")'
+            print'("H2O:",2(0pF8.4))',nmol(H2O)/ngas,
+     >                                     (6*OO)/(HH+2*CC+3*NN+4*OO)
+            print'("CH4:",2(0pF8.4))',nmol(CH4)/ngas,
+     >                                     (6*CC)/(HH+2*CC+3*NN+4*OO)
+            print'("NH3:",2(0pF8.4))',nmol(NH3)/ngas,
+     >                           (2*HH-8*CC-4*OO)/(HH+2*CC+3*NN+4*OO)
+            print'(" N2:",2(0pF8.4))',nmol(N2)/ngas,
+     >                        (3*NN+4*CC+2*OO-HH)/(HH+2*CC+3*NN+4*OO)
+          endif
+        else if (OO>0.5*HH+2*CC) then
+          print'("type B")'
+          print'("H2O:",2(0pF8.4))',nmol(H2O)/ngas,
+     >                                     (2*HH)/(HH+2*OO+2*NN)
+          print'("CO2:",2(0pF8.4))',nmol(CO2)/ngas,
+     >                                     (4*CC)/(HH+2*OO+2*NN)
+          print'(" N2:",2(0pF8.4))',nmol(N2)/ngas,
+     >                                     (2*NN)/(HH+2*OO+2*NN)
+          print'(" O2:",2(0pF8.4))',nmol(O2)/ngas,
+     >                             (2*OO-HH-4*CC)/(HH+2*OO+2*NN)
+        else if (CC>0.25*HH+0.5*OO) then
+          print*,"forbidden by graphite condensation"
+        else 
+          print'("type C")'
+          print'("H2O:",2(0pF8.4))',nmol(H2O)/ngas,
+     >                             (HH+2*OO-4*CC)/(HH+2*OO+2*NN)
+          print'("CO2:",2(0pF8.4))',nmol(CO2)/ngas,
+     >                           (OO+2*CC-0.5*HH)/(HH+2*OO+2*NN)
+          print'("CH4:",2(0pF8.4))',nmol(CH4)/ngas,
+     >                           (0.5*HH-OO+2*CC)/(HH+2*OO+2*NN)
+          print'(" N2:",2(0pF8.4))',nmol(N2)/ngas,
+     >                                     (2*NN)/(HH+2*OO+2*NN)
+        endif
+      endif
 
 *     -----------------------------------------------------
 *     ***  Calculation of the condenstation timescales  ***
