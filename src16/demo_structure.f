@@ -1,14 +1,14 @@
 ***********************************************************************
       SUBROUTINE DEMO_STRUCTURE
 ***********************************************************************
-      use PARAMETERS,ONLY: Tmin,Tmax,pmin,pmax,nHmin,nHmax,
+      use PARAMETERS,ONLY: Mpl,Rpl,Tmin,Tmax,pmin,pmax,nHmin,nHmax,
      >                     model_eqcond,model_pconst,Npoints,
      >                     model_struc,struc_file,remove_condensates,
      >                     model_eqcond
       use CHEMISTRY,ONLY: NELM,NMOLE,elnum,cmol,catm,el,charge
       use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,
-     >                    muH,mass,mel,
-     >                    amu,dust_nam,dust_mass,dust_Vol,
+     >                    muH,mass,mel,amu,grav,
+     >                    dust_nam,dust_mass,dust_Vol,
      >                    dust_nel,dust_el,dust_nu
       use EXCHANGE,ONLY: nel,nat,nion,nmol,mmol,H,C,N,O,W
       use STRUCTURE,ONLY: Npmax,Tgas,press,pelec,dens,nHtot,estruc,zz
@@ -18,7 +18,7 @@
       real(kind=qp) :: Sat(NDUST),eldust(NDUST),out(NDUST)
       real(kind=qp) :: fac,e_reservoir(NELEM),d_reservoir(NDUST)
       real :: dat(1000),ddust
-      real :: tau,p,pe,Tg,rho,nHges,nges,kT,pgas,mu
+      real :: tau,p,pe,Tg,rho,nHges,nges,kT,pgas,mu,gg,Hp,mugas
       real :: muold,dmu,ff,fold,dfdmu,km=1.D+5
       real :: Jstar,Nstar,rhog,dustV,rhod,L3,bmix,emono,zdum
       integer :: i,j,k,l,e,jj,iz,dk,NOUT,Nfirst,Nlast,Ninc,iW,idum
@@ -478,7 +478,10 @@
      &       LOG10(MAX(1.Q-300, dustV)),
      &       LOG10(MAX(1.Q-300, Jstar)), 
      &       MIN(999999.99999,Nstar)
-        write(71,2011) zz(i)/km,rhog,pgas,Tg,nHges,rhog/nges/amu,0.0,0.0
+        gg = grav*Mpl/(Rpl+zz(i))**2
+        mugas = rhog/nges
+        Hp = bk*Tg/(mugas*gg)
+        write(71,2011) zz(i)/km,rhog,pgas,Tg,nHges,mugas/amu,gg,Hp
 
         if (verbose>0) read(*,'(a1)') char
 

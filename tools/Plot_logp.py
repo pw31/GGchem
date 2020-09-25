@@ -160,7 +160,7 @@ for i in range(4+NELEM+NMOLE,4+NELEM+NMOLE+NDUST,1):
   #print solid[1:],ind,np.max(yy[iii])
 indices = np.argsort(smean)
 if (ymax>-99):
-  ymin = ymax-8
+  ymin = ymax-12
   print solids
   fig,ax = plt.subplots()
   count = 0
@@ -187,8 +187,8 @@ if (ymax>-99):
   #ax.xaxis.set_minor_locator(minorLocator)
   #minorLocator = MultipleLocator(1.0)
   #ax.yaxis.set_minor_locator(minorLocator)
-  sz = np.min([11,1+195.0/count])
-  leg = plt.legend(loc='lower right',fontsize=11,fancybox=True,
+  sz = np.min([10,1+195.0/count])
+  leg = plt.legend(loc='upper left',fontsize=11,fancybox=True,
              handlelength=2.5,prop={'size':sz})
   leg.get_frame().set_alpha(0.7)
   plt.tight_layout()
