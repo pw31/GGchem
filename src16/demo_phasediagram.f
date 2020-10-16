@@ -70,13 +70,10 @@
             ymax = 1.0-1.E-6
             xx = xmin + (xmax-xmin)*REAL(ix-1)/REAL(Npoints-1)
             yy = ymin + (ymax-ymin)*REAL(iy-1)/REAL(Npoints-1)
-            !epsH = yy                              ! y = H
-            !epsC = (1.0+xx)/2.0*(1.0-yy)           ! x = (C-O)/(C+O)
-            !epsO = epsC*(1.0-xx)/(1.0+xx)          ! 1 = H+O+C
             epsC = xx                              ! x = C
-            epsO = 0.5*(1.0+yy-xx*yy-xx)           ! y = (O-H)/(O+H)
-            epsH = 0.5*(1.0-yy+xx*yy-xx)           ! 1 = H+O+C
-            epsN = 1.0
+            epsO = 0.5*((1.0-xx)*(yy+1.0))         ! y = (O-H)/(O+H)
+            epsH = 0.5*((xx-1.0)*(yy-1.0))         ! 1 = H+O+C
+            epsN = 1.E-3
             eps0(O) = epsO/epsH
             eps0(C) = epsC/epsH
             eps0(N) = epsN/epsH

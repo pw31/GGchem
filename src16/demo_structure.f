@@ -304,11 +304,12 @@
           Tgas(i)  = Tg
           press(i) = p*bar
           estruc(i,:) = eps0(:)
+          if (p*bar<pmin) exit
         enddo
         close(3)
         model_pconst = .true.
         Nfirst = 1
-        Nlast  = Npoints
+        Nlast  = MIN(Npoints,i)
         Ninc   = 1             ! bottom to top
 
       else

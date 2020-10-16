@@ -63,7 +63,7 @@
       SUBROUTINE DEMO_CHEMISTRY
 ***********************************************************************
       use PARAMETERS,ONLY: nHmax,Tmax,pmax,model_pconst,model_eqcond,
-     >                     verbose 
+     >                     verbose,Nseq,Tseq 
       use CHEMISTRY,ONLY: NMOLE,NELM,m_kind,m_anz,elnum,cmol,el
       use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,amu,
      >                    muH,mass,mel,
@@ -81,14 +81,15 @@
       real*8  :: yr,Myr,molm,molmass,stoich,HH,OO,CC,NN
       integer :: i,imol,iraus,e,aIraus,aIIraus,j,verb,dk,it,stindex
       integer :: k,keyel,imax,dustst
-      integer :: H2O,CO2,CH4,O2,H2,N2,NH3
+      integer :: H2O,CO2,CH4,O2,H2,N2,NH3,CO,OCS,SO2,S2,H2S
       logical :: included,haeufig,raus(NMOLE)
       logical :: rausI(NELEM),rausII(NELEM)
       character(len=10) :: sp
       character(len=20) :: limcond
-
-      Tg    = Tmax
+      integer :: iseq
+      
       nHges = nHmax
+      Tseq(Nseq) = Tmax
       p     = pmax
       eps   = eps0
       mu    = muH
@@ -96,41 +97,44 @@
       verb = verbose
       if (model_eqcond) verb=0
 
-      do it=1,999
-        if (model_pconst) nHges = p*mu/(bk*Tg)/muH
-        if (model_eqcond) then
-          call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
-        endif
-        call GGCHEM(nHges,Tg,eps,.false.,verb)
-        ngas = nel
-        do j=1,NELEM
-          ngas = ngas + nat(j)
-        enddo
-        do j=1,NMOLE
-          ngas = ngas + nmol(j)
-        enddo
-        pgas  = ngas*bk*Tg
-        ff    = p-pgas
-        if (it==1) then
-          muold = mu
-          mu = nHges/pgas*(bk*Tg)*muH
-          dmu = mu-muold
-          if (.not.model_pconst) exit
-        else
-          dfdmu = (ff-fold)/(mu-muold)
-          dmu   = -ff/dfdmu
-          !write(98,'(I3,99(1pE14.7))') it,muold,mu,fold,ff,dfdmu,dmu/mu
-          muold = mu
-          if ((dmu>0.0).or.ABS(dmu/mu)<0.7) then
-            mu = muold+dmu
-          else
+      do iseq=1,Nseq         ! possibility to set a sequence of T-points hot->cold
+        Tg = Tseq(iseq)      ! (not used when default Nseq=1)
+        do it=1,999
+          if (model_pconst) nHges = p*mu/(bk*Tg)/muH
+          if (model_eqcond) then
+            call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
+          endif
+          call GGCHEM(nHges,Tg,eps,.false.,verb)
+          ngas = nel
+          do j=1,NELEM
+            ngas = ngas + nat(j)
+          enddo
+          do j=1,NMOLE
+            ngas = ngas + nmol(j)
+          enddo
+          pgas  = ngas*bk*Tg
+          ff    = p-pgas
+          if (it==1) then
+            muold = mu
             mu = nHges/pgas*(bk*Tg)*muH
-          endif  
-        endif
-        fold = ff
-        print '("p-it=",i3,"  mu=",2(1pE20.12))',it,mu/amu,dmu/mu
-        if (ABS(dmu/mu)<1.E-10) exit
-      enddo  
+            dmu = mu-muold
+            if (.not.model_pconst) exit
+          else
+            dfdmu = (ff-fold)/(mu-muold)
+            dmu   = -ff/dfdmu
+            !write(98,'(I3,99(1pE14.7))') it,muold,mu,fold,ff,dfdmu,dmu/mu
+            muold = mu
+            if ((dmu>0.0).or.ABS(dmu/mu)<0.7) then
+              mu = muold+dmu
+            else
+              mu = nHges/pgas*(bk*Tg)*muH
+            endif  
+          endif
+          fold = ff
+          print '("p-it=",i3,"  mu=",2(1pE20.12))',it,mu/amu,dmu/mu
+          if (ABS(dmu/mu)<1.E-10) exit
+        enddo  
+      enddo
 
       print*
       write(*,*) '----- total nuclei dens. and fractions in gas -----'
@@ -160,12 +164,13 @@
       enddo  
       mugas = rhog/ngas             ! mean molecular weight [g]
       d2g   = rhod/rhog             ! dust/gas mass ratio [-]
+      if (Vcon>0.d0) then
       rhoc  = rhod/Vcon             ! condensed matter density [g cm-3]
       mcond = 1.0                   ! mass of condensates [= 1 g]
       Vcond = mcond/rhoc            ! volume of condensates [cm3]
       mgas  = mcond/d2g             ! mass of gas [g]
       Vgas  = mgas/mugas*bk*Tg/pgas ! volume of gas [cm3]
-      
+
       print*
       write(*,*) '----- bulk properties -----'
       print'("for Tg[K]=",0pF8.2," and n<H>[cm-3]=",1pE10.3)',Tg,nHges
@@ -203,7 +208,8 @@
      >                eldust(iraus)*dust_mass(iraus)*nHges/rhod,
      >                eldust(iraus)*dust_Vol(iraus)*nHges/Vcon
       enddo
-  
+      endif
+      
       print*
       write(*,*) '----- atoms and ions [cm3] -----'
       write(*,1000) ' nel=',nel
@@ -238,12 +244,12 @@
             aIIraus = 0
             nmax  = nat(i)
           endif
-          if ((nion(i).gt.nmax).and.(.not.rausII(i))) then
-            iraus = 0
-            aIraus = 0
-            aIIraus = i
-            nmax  = nion(i)
-          endif
+          !if ((nion(i).gt.nmax).and.(.not.rausII(i))) then
+          !  iraus = 0
+          !  aIraus = 0
+          !  aIIraus = i
+          !  nmax  = nion(i)
+          !endif
         enddo
         haeufig = (nmax.gt.ngas*1.Q-9)
         if (.not.haeufig) exit
@@ -253,12 +259,12 @@
      >                  nmol(iraus)/ngas,nmol(iraus)/ngas
         else if (aIraus>0) then 
           rausI(aIraus) = .true.
-          write(*,4010) elnam(aIraus)//"I       ",
-     >                  nat(aIraus),nat(aIraus)/ngas
-        else if (aIIraus>0) then 
-          rausII(aIIraus) = .true.
-          write(*,4010) elnam(aIIraus)//"II     ",
-     >                  nat(aIIraus),nion(aIIraus)/ngas
+          write(*,4010) elnam(aIraus)//"I       ",nat(aIraus),
+     >                  nat(aIraus)/ngas,nat(aIraus)/ngas
+        !else if (aIIraus>0) then 
+        !  rausII(aIIraus) = .true.
+        !  write(*,4010) elnam(aIIraus)//"II     ",nion(aIIraus),
+     >  !                nion(aIIraus)/ngas,nion(aIIraus)/ngas
         endif  
       enddo
       iraus = stindex(cmol,NMOLE,'H2')
@@ -316,7 +322,8 @@
                 nmax = eldust(dk)
               endif  
             endif
-          enddo  
+          enddo
+          if (iraus==0) exit
           haeufig = (nmax.gt.eps0(i)*1.D-2)
           if (.not.haeufig) exit
           write(*,'(1x,A18,1pE10.3)') 
@@ -381,6 +388,11 @@
         N2  = stindex(cmol,NMOLE,'N2')
         O2  = stindex(cmol,NMOLE,'O2')
         NH3 = stindex(cmol,NMOLE,'NH3')
+        CO  = stindex(cmol,NMOLE,'CO')
+        OCS = stindex(cmol,NMOLE,'COS')
+        SO2 = stindex(cmol,NMOLE,'SO2')
+        S2  = stindex(cmol,NMOLE,'S2')
+        H2S = stindex(cmol,NMOLE,'H2S')
         if (HH>2*OO+4*CC) then
           if (3*NN<HH-2*OO-4*CC) then
             print'("type A1")'
@@ -428,6 +440,22 @@
         endif
       endif
 
+      !print'(99(A9))',"SO2[ppm]","H2O[ppm]","OCS[ppm]","CO[ppm]",
+     >!                "H2S[ppb]","S2[ppb]","H2[ppb]","O2[ppb]"
+      !print'(99(0pF9.2))',nmol(SO2)/ngas/1.E-6,
+     >!                    nmol(H2O)/ngas/1.E-6,
+     >!                    nmol(OCS)/ngas/1.E-6,
+     >!                    nmol(CO) /ngas/1.E-6,
+     >!                    nmol(H2S)/ngas/1.E-9,
+     >!                    nmol(S2) /ngas/1.E-9,
+     >!                    nmol(H2) /ngas/1.E-9,
+     >!                    nmol(O2) /ngas/1.E-9      
+      !print'(99(A9))',"H2O[%]","CO2[%]","N2[%]","O2[%]"
+      !print'(99(0pF9.4))',nmol(H2O)/ngas/1.E-2,
+     >!                    nmol(CO2)/ngas/1.E-2,
+     >!                    nmol(N2) /ngas/1.E-2,
+     >!                    nmol(O2) /ngas/1.E-2
+      
 *     -----------------------------------------------------
 *     ***  Calculation of the condenstation timescales  ***
 *     -----------------------------------------------------
@@ -514,6 +542,6 @@
  4000 format(a7,1pE10.4,a5,1pE10.4)     
  4010 format(' n',a8,1pE12.4,0pF13.9,1pE12.4)
  4020 format(' n',a8,1pE12.4,1pE13.3)
- 5000 format(1x,a20,' S=',1pE9.3)
+ 5000 format(1x,a20,' S=',1pE11.3E4)
       RETURN
       end      

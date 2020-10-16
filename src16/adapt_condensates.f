@@ -11,7 +11,7 @@
       use EXCHANGE,ONLY: nel,nat,nion,nmol,mmol,H,C,N,O,Si
       implicit none
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
-      real(kind=qp) :: eps(NELEM),epsgas(NELEM),elgas(NELEM)
+      real(kind=qp) :: eps(NELEM),epsgas(NELEM),nHepsgas(NELEM)
       real(kind=qp) :: Sat(NDUST),eldust(NDUST)
       real(kind=qp) :: nmax,threshold,deps
       real*8,parameter :: pi=3.14159265358979D+0
@@ -29,7 +29,7 @@
       character(len=10) :: sp
       character(len=20) :: limcond,fname
 
-      epsgas = 0.Q0
+      epsgas = 1.Q-99
       open(unit=1,file='abund_gas.in')
       do
         read(1,*,end=100) elread,val
@@ -45,12 +45,42 @@
       nHges  = nHmax
       p      = pmax
       mu     = muH
-      eps    = eps0
-      eldust = 0.Q0
-      verb   = verbose
-      if (model_eqcond) verb=0
+      verb   = 0
+      !--- compute n<H> in gas for given p,T --- 
+      do it=1,999
+        nHges = p*mu/(bk*Tg)/muH
+        call GGCHEM(nHges,Tg,epsgas,.false.,verb)
+        ngas = nel
+        do j=1,NELEM
+          ngas = ngas + nat(j)
+        enddo
+        do j=1,NMOLE
+          ngas = ngas + nmol(j)
+        enddo
+        pgas = ngas*bk*Tg
+        ff = p-pgas
+        if (it==1) then
+          muold = mu
+          mu = nHges/pgas*(bk*Tg)*muH
+          dmu = mu-muold
+        else
+          dfdmu = (ff-fold)/(mu-muold)
+          dmu   = -ff/dfdmu
+          muold = mu
+          if ((dmu>0.0).or.ABS(dmu/mu)<0.7) then
+            mu = muold+dmu
+          else
+            mu = nHges/pgas*(bk*Tg)*muH
+          endif  
+        endif
+        fold = ff
+        print '("p-it=",i3,"  mu=",2(1pE20.12))',it,mu/amu,dmu/mu
+        if (ABS(dmu/mu)<1.E-10) exit
+      enddo
+      nHepsgas(:) = nHges*epsgas(:)
 
-      do mainit=1,99
+      mu = muH
+      do mainit=1,999
         do it=1,999
           if (model_pconst) nHges = p*mu/(bk*Tg)/muH
           call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
@@ -136,45 +166,36 @@
         do e=1,NELM
           if (e==el) cycle
           i = elnum(e) 
-          write(1,'(A2,1x,0pF32.26)') elnam(i),
-     >         12.Q0+log10(eps0(i)/eps0(H))
+          write(1,'(A2,1x,0pF32.26)') elnam(i),12.Q0+log10(eps0(i))   
         enddo  
         close(1)
 
         !----------------------------------------------------------
         ! ***  replace gas over the condensates by desired gas  ***
         !----------------------------------------------------------
-        muHnow = 0.d0
-        muHgas = 0.d0
         do e=1,NELM
           if (e==el) cycle
           i = elnum(e) 
-          muHnow = muHnow + eps(i)*mass(i)
-          muHgas = muHgas + epsgas(i)*mass(i)
-        enddo  
-        const = muHnow/muHgas
-        !--- const makes sure that rho_gas stays constant ---
-        do e=1,NELM
-          if (e==el) cycle
-          i = elnum(e) 
-          print'(A3,2(1pE16.8)," ->",1pE16.8)',elnam(i),eps0(i)*nHges,
-     >                              eps(i)*nHges,epsgas(i)*nHges*const
+          if (epsgas(i)>1.Q-30) then
+            print'(A3,2(1pE16.8)," ->",1pE16.8)',elnam(i),
+     >           eps0(i)*nHges,eps(i)*nHges,nHepsgas(i)
+          endif
         enddo
-        !--- exchange most of the gas by the desired one ---
+        !--- exchange the gas over the condensates by the desired one ---
         change = 0.0
         Nchange = 0
         do e=1,NELM
           if (e==el) cycle
           i = elnum(e)
-          if (epsgas(i).ne.0.d0) then
-            change = change + (const*epsgas(i)/eps(i)-1.d0)**2
+          if (epsgas(i)>1.Q-30) then
+            change = change + (nHges*eps(i)/nHepsgas(i)-1.d0)**2
             Nchange = Nchange+1
-          endif  
-          eps0(i) = eps0(i) + 0.5*(const*epsgas(i) - eps(i))
+            eps0(i) = eps0(i)-eps(i) + nHepsgas(i)/nHges
+          endif
         enddo  
         change = SQRT(change/Nchange)
         print*,"change=",change
-        read(*,'(a1)') char
+        !read(*,'(a1)') char
         if (change<1.E-4.or.char=='e') exit
  
       enddo  

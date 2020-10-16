@@ -6,7 +6,7 @@
      >     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,pick_mfrac,
      >     abund_file,struc_file,remove_condensates,phyllosilicates,
      >     initchem_info,auto_atmos,stop_after_init,Mpl,Rpl,gamma,
-     >     adapt_cond,method_eqcond 
+     >     adapt_cond,method_eqcond,Nseq,Tseq 
       use CHEMISTRY,ONLY: NewBackIt,NewFullIt,NewBackFac,NewPreMethod,
      >                    NewFastLevel,Natmax,dispol_file
       use DUST_DATA,ONLY: DustChem_file,bar,MEarth,REarth
@@ -55,6 +55,7 @@
       NewFastLevel = 1
       NewPreMethod = 3
       Natmax       = 16
+      Nseq         = 1
 
       !-------------------------------------------
       ! ***  change parameters via input file  ***
@@ -142,6 +143,9 @@
           read(line,*) NewPreMethod
         else if (index(line,"! Natmax")>0) then 
           read(line,*) Natmax
+        else if (index(line,"! Nseq")>0) then 
+          read(line,*) Nseq
+          read(1,*) Tseq(1:Nseq)
         else if (index(line,"! useDatabase")>0) then 
           read(line,*) useDatabase
         else if (index(line,"! method_eqcond")>0) then 

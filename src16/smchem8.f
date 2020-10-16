@@ -235,6 +235,7 @@
         lmax = -99
         do e=1,nel
           if (.not.done(e)) cycle
+          if (e==enew) cycle
           xx(e) = LOG(anmono(e)*kT)
         enddo  
         do i=1,nml
@@ -261,16 +262,17 @@
           lmin = MIN(lmin,l)
           lmax = MAX(lmax,l)
           coeff(l) = coeff(l) + l*EXP(lnp)
-          lnc(l) = MAX(lnc(l),LOG(REAL(l))+lnp)
-          if (l>0) then
+          if (l>0.and.(enew/=el)) then
+            lnc(l) = MAX(lnc(l),LOG(REAL(l))+lnp)
             sum = LOG(pges) - lnp - LOG(REAL(l))
+            if (sum>300.0*l) cycle
             ptest = EXP(sum/l)
             if (ptest<pwork) then
               pwork2 = pwork
               pwork = ptest
               imaj2(enew) = imaj(enew)
               imaj(enew) = i
-              !print*,cmol(i),pwork,lnc(l)
+              print*,cmol(i),pwork,lnc(l)
             else if (ptest<pwork2) then  
               pwork2 = ptest
               imaj2(enew) = i
@@ -405,7 +407,8 @@
           s1 = 0
           qmost = 0.Q0
           do j=1,m_kind(0,i)
-            e = m_kind(j,i) 
+            e = m_kind(j,i)
+            if (e==el) cycle
             if (e==enew) then
               i1 = enew
               s1 = m_anz(j,i) 
