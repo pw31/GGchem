@@ -272,7 +272,7 @@
               pwork = ptest
               imaj2(enew) = imaj(enew)
               imaj(enew) = i
-              print*,cmol(i),pwork,lnc(l)
+              !print*,cmol(i),pwork,lnc(l)
             else if (ptest<pwork2) then  
               pwork2 = ptest
               imaj2(enew) = i
