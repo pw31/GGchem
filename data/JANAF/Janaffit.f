@@ -327,7 +327,7 @@
       write(*,*) '308 = NH4Cl_cr'
       write(*,*) '309 = P_cr'
       write(*,*) '310 = P_l'
-      write(*,*) '311 = P2O10_cr'
+      write(*,*) '311 = P4O10_cr'
       write(*,*) '312 = P4S3_cr'
       write(*,*) '313 = P4S3_l'
       write(*,*) '314 = VO'
@@ -2486,11 +2486,11 @@
         Edzahl = 1
         stoich(2) = 1.D0
       elseif (specie.eq.311) then
-        call READ_DATEI('P2O10_cr.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('P4O10_cr.txt',dG,T,Nmax,N,S,1) 
         call READ_DATEI('P.txt'     ,dG,T,Nmax,N,S,2) 
         call READ_DATEI('O.txt'     ,dG,T,Nmax,N,S,3) 
         Edzahl = 2
-        stoich(2) = 2.D0
+        stoich(2) = 4.D0
         stoich(3) = 10.D0
       elseif (specie.eq.312) then
         call READ_DATEI('P4S3_cr.txt',dG,T,Nmax,N,S,1) 
