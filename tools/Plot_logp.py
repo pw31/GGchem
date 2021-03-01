@@ -3,9 +3,17 @@ import numpy as np
 import sys
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter, ScalarFormatter, LogLocator
 from matplotlib.backends.backend_pdf import PdfPages
+plt.rcParams['lines.linewidth'] = 3
 plt.rcParams['axes.linewidth'] = 1.5
 plt.rcParams['xtick.direction'] = 'in'
 plt.rcParams['ytick.direction'] = 'in'
+plt.rcParams['xtick.top'] = True
+plt.rcParams['ytick.right'] = True 
+plt.rcParams['xtick.labelsize'] = plt.rcParams['ytick.labelsize'] = 12
+plt.rcParams['xtick.major.size'] = plt.rcParams['ytick.major.size'] = 7
+plt.rcParams['xtick.minor.size'] = plt.rcParams['ytick.minor.size'] = 4
+plt.rcParams['xtick.major.width'] = plt.rcParams['ytick.major.width'] = 1.6
+plt.rcParams['font.size'] = 16
 pp = PdfPages('ggchem.pdf')
 
 file   = 'Static_Conc.dat'
@@ -62,13 +70,10 @@ widt = [2]*Ncolor*10
 #================== temperature-pressure structure ====================
 fig,ax = plt.subplots()
 plt.plot(lp,Tg,lw=4)
-plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$',fontsize=16)
-plt.ylabel(r'$T\ \mathrm{[K]}$',fontsize=16)
+plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$')
+plt.ylabel(r'$T\ \mathrm{[K]}$')
 plt.xlim(pmin,pmax)
 plt.ylim(Tmin,Tmax)
-plt.tick_params(axis='both', labelsize=13)
-plt.tick_params('both', length=6, width=1.5, which='major')
-plt.tick_params('both', length=3, width=1, which='minor')
 #minorLocator = MultipleLocator(sep)
 #ax.xaxis.set_minor_locator(minorLocator)
 plt.tight_layout()
@@ -78,14 +83,11 @@ plt.clf()
 #================== temperature-density structure ====================
 fig,ax = plt.subplots()
 plt.plot(lp,nHtot,lw=4)
-plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$',fontsize=16)
-plt.ylabel(r'$n_\mathrm{\langle H\rangle}\ \mathrm{[cm^{-3}]}$',fontsize=16)
+plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$')
+plt.ylabel(r'$n_\mathrm{\langle H\rangle}\ \mathrm{[cm^{-3}]}$')
 plt.xlim(pmin,pmax)
 plt.ylim(nHmin,nHmax)
 if (nHmax>nHmin*5): plt.yscale('log')
-plt.tick_params(axis='both', labelsize=13)
-plt.tick_params('both', length=6, width=1.5, which='major')
-plt.tick_params('both', length=3, width=1, which='minor')
 #minorLocator = MultipleLocator(sep)
 #ax.xaxis.set_minor_locator(minorLocator)
 plt.tight_layout()
@@ -99,14 +101,11 @@ log10_dust_gas = dat[:,ind]
 ymax = np.max(log10_dust_gas)
 if (ymax>-10):
   plt.plot(lp,10**log10_dust_gas,lw=4)
-  plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$',fontsize=20)
-  plt.ylabel(r'$\mathrm{dust/gas}$',fontsize=20)
+  plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$')
+  plt.ylabel(r'$\mathrm{dust/gas}$')
   plt.xlim(pmin,pmax)
   plt.ylim(10**(ymax-8),10**ymax*3)
   plt.yscale('log')
-  plt.tick_params(axis='both', labelsize=15)
-  plt.tick_params('both', length=6, width=1.5, which='major')
-  plt.tick_params('both', length=3, width=1, which='minor')
   ax.yaxis.set_minor_locator(LogLocator(subs=[2,3,4,5,6,7,8,9]))
   #minorLocator = MultipleLocator(sep)
   #ax.xaxis.set_minor_locator(minorLocator)
@@ -126,13 +125,10 @@ for i in range(4+NELEM+NMOLE+2*NDUST,4+NELEM+NMOLE+2*NDUST+NELEM,1):
   if (np.max(yy)>-20):
     plt.plot(lp,yy,c=colo[count],ls=styl[count],lw=widt[count],label=element)
     count = count+1
-plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$',fontsize=20)
-plt.ylabel(r'$\log\,\epsilon_{\rm gas}$',fontsize=20)
+plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$')
+plt.ylabel(r'$\log\,\epsilon_{\rm gas}$')
 plt.xlim(pmin,pmax)
 plt.ylim(ymax-12,ymax+0.3)
-plt.tick_params(axis='both', labelsize=15)
-plt.tick_params('both', length=6, width=1.5, which='major')
-plt.tick_params('both', length=3, width=1, which='minor')
 #minorLocator = MultipleLocator(sep)
 #ax.xaxis.set_minor_locator(minorLocator)
 #minorLocator = MultipleLocator(1)
@@ -174,15 +170,12 @@ if (ymax>-99):
     if (np.max(yy[iii])>ymin):
       plt.plot(lp[iii],yy[iii],c=colo[count],ls=styl[count],lw=widt[count],label=solid)
       count = count + 1
-  plt.title('condensates',fontsize=20)
-  plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$',fontsize=20)
-  plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{solid}/n_\mathrm{\langle H\rangle}$',fontsize=20)
+  plt.title('condensates')
+  plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$')
+  plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{solid}/n_\mathrm{\langle H\rangle}$')
   #plt.xscale('log')
   plt.xlim(pmin,pmax)
   plt.ylim(ymin,ymax+0.3)
-  plt.tick_params(axis='both', labelsize=14)
-  plt.tick_params('both', length=6, width=1.5, which='major')
-  plt.tick_params('both', length=3, width=1, which='minor')
   #minorLocator = MultipleLocator(sep)
   #ax.xaxis.set_minor_locator(minorLocator)
   #minorLocator = MultipleLocator(1.0)
@@ -218,14 +211,11 @@ for isolid in reversed(indices):
   if (np.max(S[iii])>0.7):
     plt.plot(lp,S,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
     count = count + 1
-#plt.title('supersaturation ratios',fontsize=20)
-plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$',fontsize=20)
-plt.ylabel(r'$S$',fontsize=20)
+#plt.title('supersaturation ratios')
+plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$')
+plt.ylabel(r'$S$')
 plt.xlim(pmin,pmax)
 plt.ylim(0,1.05)
-plt.tick_params(axis='both', labelsize=14)
-plt.tick_params('both', length=6, width=1.5, which='major')
-plt.tick_params('both', length=3, width=1, which='minor')
 sz = np.min([13,1+195.0/count])
 leg = plt.legend(loc='lower right',fontsize=10,fancybox=True,
            handlelength=3,prop={'size':sz})
@@ -250,14 +240,11 @@ for isolid in reversed(indices):
     print solid
     plt.plot(lp,logS,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
     count = count + 1
-plt.title('supersaturation ratios',fontsize=20)
-plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$',fontsize=20)
-plt.ylabel(r'$\mathrm{log}_{10}\ S$',fontsize=20)
+plt.title('supersaturation ratios')
+plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$')
+plt.ylabel(r'$\mathrm{log}_{10}\ S$')
 plt.xlim(pmin,pmax)
 plt.ylim(-10,10)
-plt.tick_params(axis='both', labelsize=14)
-plt.tick_params('both', length=6, width=1.5, which='major')
-plt.tick_params('both', length=3, width=1, which='minor')
 #minorLocator = MultipleLocator(sep)
 #ax.xaxis.set_minor_locator(minorLocator)
 sz = np.min([13,1+195.0/count])
@@ -292,14 +279,11 @@ for i in range(3,4+NELEM+NMOLE):
   if (np.max(yy[iii])>crit):
     plt.plot(lp,yy,c=colo[count],ls=styl[count],lw=widt[count],label=mol)
     count = count + 1
-plt.title('important molecules',fontsize=20)
-plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$',fontsize=20)
-plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{tot}$',fontsize=20)
+plt.title('important molecules')
+plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$')
+plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{tot}$')
 plt.xlim(pmin,pmax)
 plt.ylim(-8,0.2)
-plt.tick_params(axis='both', labelsize=14)
-plt.tick_params('both', length=6, width=1.5, which='major')
-plt.tick_params('both', length=3, width=1, which='minor')
 if (Tmax/Tmin>10):
   plt.xscale('log')
   #else:  
@@ -368,14 +352,11 @@ for i in range(0,30):
       print molname,abu
       plt.plot(lp,yy,c=colo[count],ls=styl[count],lw=widt[count],label=molname)
       count = count + 1
-  plt.title(titel,fontsize=20)
-  plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$',fontsize=20)
-  plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{\langle H\rangle}$',fontsize=20)
+  plt.title(titel)
+  plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$')
+  plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{\langle H\rangle}$')
   plt.xlim(pmin,pmax)
   plt.ylim(nmin,nmax+1)
-  plt.tick_params(axis='both', labelsize=14)
-  plt.tick_params('both', length=6, width=1.5, which='major')
-  plt.tick_params('both', length=3, width=1, which='minor')
   if (Tmax/Tmin>10):
     plt.xscale('log')
     #else:  

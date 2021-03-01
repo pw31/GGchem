@@ -181,7 +181,7 @@ if (ymax>-99):
   plt.xlabel(r'$x$',fontsize=20)
   plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{solid}/n_\mathrm{\langle H\rangle}$',fontsize=20)
   plt.xlim(xmin,xmax)
-  plt.ylim(ymax-4,ymax+0.3)
+  plt.ylim(ymax-12,ymax+0.3)
   plt.tick_params(axis='both', labelsize=14)
   plt.tick_params('both', length=6, width=1.5, which='major')
   plt.tick_params('both', length=3, width=1, which='minor')
@@ -310,6 +310,43 @@ plt.tick_params('both', length=3, width=1, which='minor')
 #ax.set_xticks(locmaj)
 #ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
 leg = plt.legend(loc='upper center',fontsize=11,ncol=5,fancybox=True)
+leg.get_frame().set_alpha(0.7)
+plt.tight_layout()
+plt.savefig(pp,format='pdf')
+plt.clf()
+
+#================== linear changes ================
+count = 0
+fig,ax = plt.subplots()
+for i in range(3,4+NELEM+NMOLE): 
+  mol = keyword[i]
+  yy = 10.0**(dat[:,i]-lognH)            # nmol/n<H>
+  #yy = 10.0**(dat[:,i]-lntot)            # nmol/ntot
+  change = np.max(yy[iii])-np.min(yy[iii])
+  yy = yy - np.mean(yy[iii])
+  if (change>1.E-8):
+    print mol,yy[np.max(iii)]
+    plt.plot(xx[iii],yy[iii]*1.E+2,c=colo[count],lw=widt[count],label=mol)
+    count = count + 1
+for isolid in indices:
+  solid = solids[isolid]
+  ind = np.where(keyword == 'n'+solid)[0]
+  if (np.size(ind) == 0): continue
+  ind = ind[0]
+  yy = 10.0**dat[:,ind]                 # nsolid/n<H>
+  #yy = 10.0**(dat[:,ind]+lognH-lntot)   # nsolid/ntot
+  change = np.max(yy[iii])-np.min(yy[iii])
+  yy = yy - np.mean(yy[iii])
+  if (change>1.E-8):
+    if (str.find(solid,'[l]')<0):
+      solid = solid+'[s]'
+    print solid,yy[np.max(iii)]
+    plt.plot(xx[iii],yy[iii]*1.E+2,c=colo[count],ls='--',lw=widt[count],label=solid)
+    count = count + 1
+plt.xlabel(r'$x$',fontsize=20)
+plt.ylabel(r'$\frac{n-\langle n\rangle}{n_\mathrm{\langle H\rangle}}\,\mathrm{[\%]}$',fontsize=20)
+plt.xlim(xmin,xmax)
+leg = plt.legend(loc='best',fontsize=9,ncol=2,fancybox=True)
 leg.get_frame().set_alpha(0.7)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')

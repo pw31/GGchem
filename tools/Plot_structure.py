@@ -60,6 +60,10 @@ Tmin  = np.min(Tg[iii])
 Tmax  = np.max(Tg[iii])
 Tmin  = Tmin*0.9
 Tmax  = Tmax*1.1
+ntot  = 0.0*nHtot
+for i in range(3,4+NELEM+NMOLE): # electrons, all atoms, ions and cations
+  ntot = ntot + 10**dat[:,i]
+logntot = np.log10(ntot)
 colo = ['blue','black','silver','red','darkorange','gold','darkorchid','aqua','cadetblue','cornflowerblue','chartreuse','limegreen','darkgreen','chocolate','darkgoldenrod','darkkhaki','pink','moccasin']
 #'darkolivegreen','darkmagenta','aquamarine','coral','burlywood',
 #'beige','darkorange','crimson','darkcyan','bisque'
@@ -167,7 +171,8 @@ for i in range(4+NELEM+NMOLE,4+NELEM+NMOLE+NDUST,1):
   ind = np.where(keyword == 'n'+solid[1:])[0]
   if (np.size(ind) == 0): continue
   ind = ind[0]
-  yy = dat[:,ind]               # log10 nsolid/n<H>
+  yy = dat[:,ind]                # log10 nsolid/n<H>
+  yy = yy + lognH - logntot      # log10 nmol/ntot
   ymax = np.max([ymax,np.max(yy[iii])])
   ymin = -15
 indices = np.argsort(smean)
@@ -188,7 +193,7 @@ if (ymax>-99):
       count = count + 1
   plt.title('condensates',fontsize=16)
   plt.ylabel(r'$z\ \mathrm{[km]}$',fontsize=20)
-  plt.xlabel(r'$\mathrm{log}_{10}\ n_\mathrm{cond}/n_\mathrm{\langle H\rangle}$',fontsize=20)
+  plt.xlabel(r'$\mathrm{log}_{10}\ n_\mathrm{cond}/n_\mathrm{tot}$',fontsize=20)
   plt.ylim(zmin,zmax)
   plt.xlim(ymax-10,ymax+0.3)
   #ax.xaxis.set_minor_locator(locmin)
@@ -303,14 +308,10 @@ if (count>0):
 fig,ax = plt.subplots(figsize=(6.5,5.5))
 mols  = ['H2','N2','H2O','O2','CO','CO2','CH4','NH3','C2H2','el']
 mols  = np.array(mols)
-ntot  = 0.0*nHtot
-for i in range(3,4+NELEM+NMOLE): # electrons, all atoms, ions and cations
-  ntot = ntot + 10**dat[:,i]
-lntot = np.log10(ntot)
 count = 0
 for i in range(3,4+NELEM+NMOLE): 
   mol = keyword[i]
-  yy = dat[:,i]-lntot            # log10 nmol/ntot
+  yy = dat[:,i]-logntot            # log10 nmol/ntot
   crit = -6.0
   ind = np.where(mols == mol)[0]
   if (np.size(ind)>0): crit=-6.0
@@ -326,7 +327,7 @@ plt.xlim(-7.2,0.2)
 #ax.xaxis.set_minor_locator(locmin)
 #ax.set_xticks(locmaj)
 #ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
-leg = plt.legend(loc='best',fontsize=11,ncol=2,fancybox=True)
+leg = plt.legend(loc='best',fontsize=11,ncol=1,fancybox=True)
 leg.get_frame().set_alpha(0.7)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
@@ -337,7 +338,7 @@ ellist = ['H','C','O','N','SI','S','NA','CL','CA','TI','K','AL','MG','FE','LI','
 allist = [' ',' ',' ',' ','Si',' ','Na','Cl','Ca','Ti',' ','Al','Mg','Fe','Li',' ',' ','Ni','Mn','Cr','Zn','Zr','Rb','Cu',' ','Br',' ','Sr',' ','+']
 exlist = [' He ',' Cl CL Ca CA Cr CR Co Cu CU ',' ',' Na NA Ni NI Ne NE ',' ',' Si SI Sr SR ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' Fe FE ',' ',' ',' ',' ',' ',' ',' ',' ',' Br BR ',' ',' ',' ',' ',' ']
 titels = ['hydrogen','carbon','oxygen','nitrogen','silicon','sulphur','sodium','chlorine','calcium','titanium','potassium','aluminum','magnesium','iron','lithium','fluorine','phosphorus','nickel','manganese','chromium','zinc','zirconium','rubidium','copper','boron','bromine','vanadium','strontium','tungston','charge carriers']
-limits = [1,1,5,5,6,5,6,4,7,8,6,6,6,6,7,6,6,6,6,6,6,6,6,6,6,6,6,6,6,1.2]
+limits = [5,5,5,5,6,5,6,4,7,8,6,6,6,6,7,6,6,6,6,6,6,6,6,6,6,6,6,6,6,1.2]
 condensates = indices
 for i in range(0,30):
   fig,ax = plt.subplots()
@@ -347,7 +348,7 @@ for i in range(0,30):
   limit = limits[i]
   titel = titels[i]
   print titel+" ..."
-  nmax = np.float(-100)
+  nmax = np.float(-200)
   nmin = np.float(0)
   mollist = []
   abulist = []
@@ -366,7 +367,7 @@ for i in range(0,30):
       if (len(next1)==1 or str.find(ex,next1)==-1 or molname=='SIS'):
         if (next2!='MN' and next2!='ZN'):
           yy = dat[:,mol]                # log10 nmol [cm-3]
-          yy = yy - lognH                # log10 nmol/n<H>
+          yy = yy - logntot              # log10 nmol/ntot
           nmax = np.max([nmax,np.max(yy[iii])])
           maxy = maxy + 10**yy
           if (molname=='el'): nmin = np.min([nmin,np.min(yy[iii])])
@@ -396,12 +397,13 @@ for i in range(0,30):
       #print 'try again with rest ',ind,len(solid),solid[ind:]
     if (found>0):
       yy = dat[:,isol]               # log10 nsolid/n<H>
+      yy = yy + lognH - logntot      # log10 nmol/ntot
       nmax = np.max([nmax,np.max(yy[iii])])
       maxy = maxy + 10**yy
       #print found,isol,keyword[isol],np.max(yy[iii])
       mollist.append(isol)   
       abulist.append(np.max(yy[iii]))
-  if (nmax==-100): continue
+  if (nmax==-200): continue
   count = 0
   indices = np.argsort(abulist)
   maxy = np.log10(maxy)
@@ -412,8 +414,9 @@ for i in range(0,30):
     molname = keyword[mol]
     yy = dat[:,mol]                # log10 nmol [cm-3]
     if (mol<=4+NELEM+NMOLE):
-      yy = yy - lognH              # log10 nmol/n<H>
+      yy = yy - logntot            # log10 nmol/ntot
     else:
+      yy = yy + lognH - logntot
       molname = molname[1:]
       if (str.find(molname,'[l]')<0):
         molname = molname+'[s]'
@@ -423,7 +426,7 @@ for i in range(0,30):
       count = count + 1
   plt.title(titel,fontsize=20)
   plt.ylabel(r'$z\ \mathrm{[km]}$',fontsize=20)
-  plt.xlabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{\langle H\rangle}$',fontsize=20)
+  plt.xlabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{tot}$',fontsize=20)
   plt.ylim(zmin,zmax)
   plt.xlim(nmin,nmax+1)
   #ax.xaxis.set_minor_locator(locmin)

@@ -2,7 +2,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter, ScalarFormatter, LogLocator
 from matplotlib.backends.backend_pdf import PdfPages
-plt.rcParams['axes.linewidth'] = 1.5
+plt.rcParams['lines.linewidth'] = 3
+plt.rcParams['axes.linewidth'] = 1.3
+plt.rcParams['xtick.direction'] = 'in'
+plt.rcParams['ytick.direction'] = 'in'
+plt.rcParams['xtick.top'] = True
+plt.rcParams['ytick.right'] = True
+plt.rcParams['xtick.major.size'] = plt.rcParams['ytick.major.size'] = 7
+plt.rcParams['xtick.minor.size'] = plt.rcParams['ytick.minor.size'] = 4
+plt.rcParams['xtick.major.width'] = plt.rcParams['ytick.major.width'] = 1.6
+plt.rcParams['xtick.labelsize'] = plt.rcParams['ytick.labelsize'] = 15
 pp = PdfPages('ggchem.pdf')
 import sys
 
@@ -62,6 +71,7 @@ if (Tmax-Tmin>1500): sep=100
 if (Tmax-Tmin>1000): sep=50
 if (Tmax-Tmin<600): sep=20
 if (Tmax-Tmin<400): sep=10
+sep = 10
 #Tmin  = Tmin*0.95
 #Tmax  = Tmax*1.1
 colo = ['blue','black','silver','red','darkorange','gold','darkorchid','aqua','cadetblue','cornflowerblue','chartreuse','limegreen','darkgreen','chocolate','darkgoldenrod','darkkhaki','pink','moccasin']
@@ -313,6 +323,40 @@ if (ymax>-99):
   plt.savefig(pp,format='pdf')
   plt.clf()
 
+#================== selected condensates ===================
+selsolids = ['Al2O3','Al2SiO5','MgF2','FeS2','MgCO3','CaMgC2O6','NaCl','Mg3Si4O12H2']
+fig,ax = plt.subplots()
+count = 0
+for solid in selsolids:
+  ind = np.where(keyword == 'n'+solid)[0]
+  if (np.size(ind) == 0): continue
+  ind = ind[0]
+  yy = dat[:,ind]               # log10 nsolid/n<H>
+  plt.plot(Tg[iii],yy[iii],c=colo[count],ls=styl[count],lw=widt[count],label=solid+'[s]')
+  count = count + 1
+plt.title('selected condensates',fontsize=20)
+plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
+plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{solid}/n_\mathrm{\langle H\rangle}$',fontsize=20)
+plt.plot([735,735],[-10,10],c='black',ls=':',lw=2)    
+#plt.xscale('log')
+plt.xlim(Tmin,Tmax)
+plt.ylim(-5,+7)
+plt.tick_params(axis='both', labelsize=14)
+plt.tick_params('both', length=6, width=1.5, which='major')
+plt.tick_params('both', length=3, width=1, which='minor')
+minorLocator = MultipleLocator(sep)
+ax.xaxis.set_minor_locator(minorLocator)
+minorLocator = MultipleLocator(1.0)
+ax.yaxis.set_minor_locator(minorLocator)
+sz = np.min([11,1+195.0/count])
+leg = plt.legend(loc='center right',fontsize=12,fancybox=True,
+                 handlelength=2.5,prop={'size':sz})
+leg.get_frame().set_alpha(0.7)
+plt.tight_layout()
+#plt.show()
+plt.savefig(pp,format='pdf')
+plt.clf()
+
 #================== some important molecules ====================
 fig,ax = plt.subplots()
 mols  = ['H2','H','N2','H2O','O2','CO','CO2','CH4','NH3','C2H2','el']
@@ -335,11 +379,12 @@ for i in range(3,4+NELEM+NMOLE):
   if (np.max(yy[iii])>crit):
     plt.plot(Tg,yy,c=colo[count],ls=styl[count],lw=widt[count],label=mol)
     count = count + 1
+plt.plot([735,735],[-9,+1],c='black',ls=':',lw=2)    
 plt.title('important molecules',fontsize=20)
 plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
 plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{tot}$',fontsize=20)
 plt.xlim(Tmin,Tmax)
-plt.ylim(-6.2,0.2)
+plt.ylim(-8.6,0.2)
 plt.tick_params(axis='both', labelsize=14)
 plt.tick_params('both', length=6, width=1.5, which='major')
 plt.tick_params('both', length=3, width=1, which='minor')
@@ -350,7 +395,7 @@ else:
   ax.xaxis.set_minor_locator(minorLocator)
 minorLocator = MultipleLocator(0.2)
 ax.yaxis.set_minor_locator(minorLocator)
-leg = plt.legend(loc='lower right',fontsize=11,fancybox=True)
+leg = plt.legend(loc='upper right',fontsize=13,fancybox=True)
 leg.get_frame().set_alpha(0.7)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
@@ -416,7 +461,7 @@ for i in range(0,30):
       if (len(next1)==1 or str.find(ex,next1)==-1 or molname=='SIS'):
         if (next2!='MN' and next2!='ZN'):
           yy = dat[:,mol]                # log10 nmol [cm-3]
-          yy = yy - lognH                # log10 nmol/n<H>
+          yy = yy - lntot                # log10 nmol/ntot
           nmax = np.max([nmax,np.max(yy[iii])])
           maxy = maxy + 10**yy
           if (molname=='el'): nmin = np.min([nmin,np.min(yy[iii])])
@@ -446,6 +491,7 @@ for i in range(0,30):
       #print 'try again with rest ',ind,len(solid),solid[ind:]
     if (found>0):
       yy = dat[:,isol]               # log10 nsolid/n<H>
+      yy = yy + lognH - lntot        # log10 nsolid/ntot
       nmax = np.max([nmax,np.max(yy[iii])])
       maxy = maxy + 10**yy
       #print found,isol,keyword[isol],np.max(yy[iii])
@@ -460,10 +506,12 @@ for i in range(0,30):
     mol = mollist[ind]
     abu = abulist[ind]
     molname = keyword[mol]
-    yy = dat[:,mol]                # log10 nmol [cm-3]
     if (mol<=4+NELEM+NMOLE):
-      yy = yy - lognH              # log10 nmol/n<H>
+      yy = dat[:,mol]              # log10 nmol [cm-3]
+      yy = yy - lntot              # log10 nmol/ntot
     else:
+      yy = dat[:,mol]              # log10 ncond/n<H>
+      yy = yy + lognH - lntot      # log10 ncond/ntot 
       molname = molname[1:]
       if (str.find(molname,'[l]')<0):
         molname = molname+'[s]'
@@ -473,7 +521,7 @@ for i in range(0,30):
       count = count + 1
   plt.title(titel,fontsize=20)
   plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
-  plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{\langle H\rangle}$',fontsize=20)
+  plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{tot}$',fontsize=20)
   plt.xlim(Tmin,Tmax)
   plt.ylim(nmin,nmax+1)
   plt.tick_params(axis='both', labelsize=14)
