@@ -1,0 +1,24 @@
+# selected elements
+H He C N O Na S Cl K F P el
+
+# name of files with molecular kp-data
+dispol_BarklemCollet.dat                ! dispol_file
+dispol_StockKitzmann_withoutTsuji.dat   ! dispol_file2
+dispol_WoitkeRefit.dat                  ! dispol_file3
+
+# abundance options 1=EarthCrust, 2=Ocean, 3=Solar, 4=Meteorites
+3                     ! abund_pick
+
+# equilibrium condensation?
+.true.                ! model_eqcond
+.true.                ! remove_condensates
+
+# model options
+1                     ! model_dim  (0,1,2)
+5                     ! model_struc 
+Jup-T-p.dat
+.true.                ! model_pconst
+7                     ! NewBackIt  
+1.E+5                 ! NewBackFac
+1000.0                ! Tfast
+
