@@ -4,6 +4,7 @@
       integer :: Nind,Ndep,Iindex(NELEM),Dindex(NDUSTmax+NELEM)
       logical :: is_dust(NDUSTmax+NELEM)
       real(kind=qp) :: conv(NDUSTmax+NELEM,NELEM)
+!$omp threadprivate(Nind,Ndep,Iindex,Dindex,is_dust,conv)
       end
 
 !-------------------------------------------------------------------------

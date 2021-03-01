@@ -237,7 +237,7 @@
         ! ***  During the iteration, muH is with respect to total      ***
         ! ***  rho = rho_gas+rho_dust, so muH = rho/n<H>, but mu is    ***
         ! ***  with respect to rho_gas, so mu = rho_gas/p kT           *** 
-        ! ***  => rho_gas = rho*(1+dg) = p*mu/kT*(1+dg) = p/kT * xx    ***
+        ! ***  => rho = rho_gas*(1+dg) = p*mu/kT*(1+dg) = p/kT * xx    ***
         ! ***  The iteration is done in xx                             *** 
         !-----------------------------------------------------------------
         dz  = LOG(pmax/pmin)*Hp/Npoints                 ! step in height

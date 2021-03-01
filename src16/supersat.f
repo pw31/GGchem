@@ -218,7 +218,7 @@
               stop
             endif
             Sat(i) = SQRT(nmol(imol1)*kT/(psat*0.5))
-     >             * SQRT(nmol(imol2)*kT/(psat*0.5))
+     &             * SQRT(nmol(imol2)*kT/(psat*0.5))
 
           else if (dust_nam(i).eq.'H2S[s]') then
             !--- Stull (1947) ---
@@ -244,6 +244,10 @@
             else
               psat = exp(16.1 - 14000.0/T1)*bar
             end if
+            !--- Lyons 2008 ---
+            !write(50,'(F8.1,2(1pE13.4))')
+     &      !         T1,psat,10.0**(7.024 - 6091.0/T1)*bar
+            !psat = 10.0**(7.024 - 6091.0/T1)*bar
             imol = STINDEX(cmol,NMOLE,"S2")
             if (imol<=0) then
               print*,"*** supersat.f molecule not found ",dust_nam(i)
@@ -258,6 +262,8 @@
             else
               psat = exp(9.6 - 7510.0/T1)*bar
             end if
+            !--- Lyons 2008 ---
+            !psat = 10.0**(4.188 - 3269.0/T1)*bar
             imol = STINDEX(cmol,NMOLE,"S8")
             if (imol<=0) then
               print*,"*** supersat.f molecule not found ",dust_nam(i)
