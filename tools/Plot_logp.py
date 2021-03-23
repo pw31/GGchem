@@ -133,7 +133,7 @@ plt.ylim(ymax-12,ymax+0.3)
 #ax.xaxis.set_minor_locator(minorLocator)
 #minorLocator = MultipleLocator(1)
 #ax.yaxis.set_minor_locator(minorLocator)
-sz = np.min([11,1+195.0/count])
+sz = np.min([9,1+120.0/count])
 leg = plt.legend(loc='lower right',fontsize=sz,fancybox=True)
 leg.get_frame().set_alpha(0.7)
 plt.tight_layout()
@@ -180,9 +180,15 @@ if (ymax>-99):
   #ax.xaxis.set_minor_locator(minorLocator)
   #minorLocator = MultipleLocator(1.0)
   #ax.yaxis.set_minor_locator(minorLocator)
-  sz = np.min([10,1+195.0/count])
-  leg = plt.legend(loc='upper left',fontsize=11,fancybox=True,
-             handlelength=2.5,prop={'size':sz})
+  sz = np.min([9,1+120.0/count])
+  col = 1
+  if (count>20): 
+    sz = np.min([9,1+200.0/count])
+    col = 2
+  if (count>40): 
+    sz = np.min([9,1+250.0/count])
+    col = 3
+  leg = plt.legend(loc='best',fontsize=sz,ncol=col,handlelength=3,fancybox=True)
   leg.get_frame().set_alpha(0.7)
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
@@ -216,9 +222,15 @@ plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$')
 plt.ylabel(r'$S$')
 plt.xlim(pmin,pmax)
 plt.ylim(0,1.05)
-sz = np.min([13,1+195.0/count])
-leg = plt.legend(loc='lower right',fontsize=10,fancybox=True,
-           handlelength=3,prop={'size':sz})
+sz = np.min([9,1+120.0/count])
+col = 1
+if (count>20): 
+  sz = np.min([9,1+200.0/count])
+  col = 2
+if (count>40): 
+  sz = np.min([9,1+250.0/count])
+  col = 3
+leg = plt.legend(loc='best',fontsize=sz,ncol=col,handlelength=3,fancybox=True)
 leg.get_frame().set_alpha(0.7)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
@@ -247,13 +259,15 @@ plt.xlim(pmin,pmax)
 plt.ylim(-10,10)
 #minorLocator = MultipleLocator(sep)
 #ax.xaxis.set_minor_locator(minorLocator)
-sz = np.min([13,1+195.0/count])
+sz = np.min([9,1+120.0/count])
 col = 1
-if (count>30): 
-  sz = np.min([13,1+90.0/count*2])
+if (count>20): 
+  sz = np.min([9,1+200.0/count])
   col = 2
-leg = plt.legend(loc='upper right',fontsize=sz,fancybox=True,
-                 handlelength=3,prop={'size':sz},ncol=col)
+if (count>40): 
+  sz = np.min([9,1+250.0/count])
+  col = 3
+leg = plt.legend(loc='best',fontsize=sz,ncol=col,handlelength=3,fancybox=True)
 leg.get_frame().set_alpha(0.7)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
@@ -292,7 +306,7 @@ if (Tmax/Tmin>10):
 
 #minorLocator = MultipleLocator(0.2)
 #ax.yaxis.set_minor_locator(minorLocator)
-leg = plt.legend(loc='lower left',fontsize=11,fancybox=True)
+leg = plt.legend(loc='best',fontsize=10,ncol=col,handlelength=3,fancybox=True)
 leg.get_frame().set_alpha(0.7)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
@@ -368,13 +382,15 @@ for i in range(0,30):
   #if (nmax-nmin>100): minorLocator = MultipleLocator(5.0)
   #if (nmax-nmin>200): minorLocator = MultipleLocator(10.0)
   #ax.yaxis.set_minor_locator(minorLocator)
-  sz = np.min([11,1+195.0/count])
+  sz = np.min([9,1+120.0/count])
   col = 1
-  if (count>30): 
-    sz = np.min([9,1+195.0/count*2])
+  if (count>20): 
+    sz = np.min([9,1+200.0/count])
     col = 2
-  leg = plt.legend(loc='lower right',fontsize=10,fancybox=True,
-             handlelength=3,prop={'size':sz},ncol=col)
+  if (count>40): 
+    sz = np.min([9,1+250.0/count])
+    col = 3
+  leg = plt.legend(loc='best',fontsize=sz,ncol=col,fancybox=True)
   leg.get_frame().set_alpha(0.7)
   plt.tight_layout()
   plt.savefig(pp,format='pdf')

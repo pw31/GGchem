@@ -2,7 +2,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter, ScalarFormatter, LogLocator
 from matplotlib.backends.backend_pdf import PdfPages
+plt.rcParams['lines.linewidth'] = 3
 plt.rcParams['axes.linewidth'] = 1.5
+plt.rcParams['xtick.direction'] = 'in'
+plt.rcParams['ytick.direction'] = 'in'
+plt.rcParams['xtick.top'] = True
+plt.rcParams['ytick.right'] = True 
+plt.rcParams['xtick.labelsize'] = plt.rcParams['ytick.labelsize'] = 12
+plt.rcParams['xtick.major.size'] = plt.rcParams['ytick.major.size'] = 7
+plt.rcParams['xtick.minor.size'] = plt.rcParams['ytick.minor.size'] = 4
+plt.rcParams['xtick.major.width'] = plt.rcParams['ytick.major.width'] = 1.6
+plt.rcParams['font.size'] = 16
 pp = PdfPages('ggchem.pdf')
 import sys
 
@@ -65,18 +75,14 @@ locmaj = locmaj[np.where(locmaj>=Tmin)[0]]
 #================== temperature-pressure structure ====================
 fig,ax = plt.subplots()
 plt.plot(Tg,press/bar,lw=4)
-plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
-plt.ylabel(r'$p\ \mathrm{[bar]}$',fontsize=20)
+plt.xlabel(r'$T\ \mathrm{[K]}$')
+plt.ylabel(r'$p\ \mathrm{[bar]}$')
 plt.xlim(Tmin,Tmax)
 plt.ylim(pmin,pmax)
-plt.xscale('log')
-if (pmax>pmin*5): plt.yscale('log')
-plt.tick_params(axis='both', labelsize=15)
-plt.tick_params('both', length=6, width=1.5, which='major')
-plt.tick_params('both', length=3, width=1, which='minor')
-ax.xaxis.set_minor_locator(locmin)
-ax.set_xticks(locmaj)
+ax.set_xscale('log')
+if (pmax>pmin*5): ax.set_yscale('log')
 ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
+ax.set_xticks(locmaj)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
 plt.clf()
@@ -84,16 +90,12 @@ plt.clf()
 #================== temperature-density structure ====================
 fig,ax = plt.subplots()
 plt.plot(Tg,nHtot,lw=4)
-plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
-plt.ylabel(r'$n_\mathrm{\langle H\rangle}\ \mathrm{[cm^{-3}]}$',fontsize=20)
+plt.xlabel(r'$T\ \mathrm{[K]}$')
+plt.ylabel(r'$n_\mathrm{\langle H\rangle}\ \mathrm{[cm^{-3}]}$')
 plt.xlim(Tmin,Tmax)
 plt.ylim(nHmin,nHmax)
 plt.xscale('log')
 if (nHmax>nHmin*5): plt.yscale('log')
-plt.tick_params(axis='both', labelsize=15)
-plt.tick_params('both', length=6, width=1.5, which='major')
-plt.tick_params('both', length=3, width=1, which='minor')
-ax.xaxis.set_minor_locator(locmin)
 ax.set_xticks(locmaj)
 ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
 plt.tight_layout()
@@ -107,17 +109,12 @@ log10_dust_gas = dat[:,ind]
 ymax = np.max(log10_dust_gas)
 if (ymax>-10):
   plt.plot(Tg,10**log10_dust_gas,lw=4)
-  plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
-  plt.ylabel(r'$\mathrm{dust/gas}$',fontsize=20)
+  plt.xlabel(r'$T\ \mathrm{[K]}$')
+  plt.ylabel(r'$\mathrm{dust/gas}$')
   plt.xlim(Tmin,Tmax)
   plt.ylim(10**(ymax-8),10**ymax*3)
   plt.xscale('log')
   plt.yscale('log')
-  plt.tick_params(axis='both', labelsize=15)
-  plt.tick_params('both', length=6, width=1.5, which='major')
-  plt.tick_params('both', length=3, width=1, which='minor')
-  ax.yaxis.set_minor_locator(LogLocator(subs=[2,3,4,5,6,7,8,9]))
-  ax.xaxis.set_minor_locator(locmin)
   ax.set_xticks(locmaj)
   ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
   plt.tight_layout()
@@ -136,19 +133,15 @@ for i in range(4+NELEM+NMOLE+2*NDUST,4+NELEM+NMOLE+2*NDUST+NELEM,1):
   if (np.max(yy)>-20):
     plt.plot(Tg,yy,c=colo[count],ls=styl[count],lw=widt[count],label=element)
     count = count+1
-plt.title('gas phase element abundances',fontsize=20)
-plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
-plt.ylabel(r'$\log\,\epsilon_{\rm gas}$',fontsize=20)
+plt.title('gas phase element abundances')
+plt.xlabel(r'$T\ \mathrm{[K]}$')
+plt.ylabel(r'$\log\,\epsilon_{\rm gas}$')
 plt.xlim(Tmin,Tmax)
 plt.ylim(ymax-11.5,ymax+0.3)
-plt.tick_params(axis='both', labelsize=15)
-plt.tick_params('both', length=6, width=1.5, which='major')
-plt.tick_params('both', length=3, width=1, which='minor')
 plt.xscale('log')
-ax.xaxis.set_minor_locator(locmin)
 ax.set_xticks(locmaj)
 ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
-sz = np.min([11,1+195.0/count])
+sz = np.min([11,1+140.0/count])
 leg = plt.legend(loc='best',fontsize=sz,fancybox=True)
 leg.get_frame().set_alpha(0.7)
 plt.tight_layout()
@@ -185,21 +178,18 @@ if (ymax>-99):
     if (np.max(yy[iii])>ymin):
       plt.plot(Tg[iii],yy[iii],c=colo[count],ls=styl[count],lw=widt[count],label=solid)
       count = count + 1
-  plt.title('condensates',fontsize=20)
-  plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
-  plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{solid}/n_\mathrm{\langle H\rangle}$',fontsize=20)
+  plt.title('condensates')
+  plt.xlabel(r'$T\ \mathrm{[K]}$')
+  plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{solid}/n_\mathrm{\langle H\rangle}$')
   plt.xscale('log')
   plt.xlim(Tmin,Tmax)
   plt.ylim(ymax-10,ymax+0.3)
-  plt.tick_params(axis='both', labelsize=14)
-  plt.tick_params('both', length=6, width=1.5, which='major')
-  plt.tick_params('both', length=3, width=1, which='minor')
-  ax.xaxis.set_minor_locator(locmin)
   ax.set_xticks(locmaj)
   ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
-  sz = np.min([11,1+195.0/count])
+  col = 3
+  sz = np.min([11,1+70.0/(count/col)])
   leg = plt.legend(loc='best',fontsize=11,fancybox=True,
-             handlelength=2.5,prop={'size':sz})
+                   handlelength=2.5,prop={'size':sz},ncol=3)
   leg.get_frame().set_alpha(0.7)
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
@@ -239,25 +229,23 @@ if (count>0):
     if (np.max(logS[iii])>-6):
       plt.plot(Tg,logS,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
       count = count+1
-  plt.title('supersaturation ratios',fontsize=20)
-  plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
-  plt.ylabel(r'$\mathrm{log}_{10}\ S$',fontsize=20)
+  plt.title('supersaturation ratios')
+  plt.xlabel(r'$T\ \mathrm{[K]}$')
+  plt.ylabel(r'$\mathrm{log}_{10}\ S$')
   plt.xscale('log')
   plt.xlim(Tmin,Tmax)
   plt.ylim(-7,0.5)
-  plt.tick_params(axis='both', labelsize=14)
-  plt.tick_params('both', length=6, width=1.5, which='major')
-  plt.tick_params('both', length=3, width=1, which='minor')
-  ax.xaxis.set_minor_locator(locmin)
   ax.set_xticks(locmaj)
   ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
-  sz = np.min([13,1+195.0/count])
+  sz = np.min([11,1+140.0/count])
   col = 1
-  if (count>30): 
-    sz = np.min([13,1+195.0/count*2])
+  if (count>20): 
+    sz = np.min([11,1+200.0/count])
     col = 2
-  leg = plt.legend(loc='best',fontsize=10,fancybox=True,
-                   handlelength=3,prop={'size':sz},ncol=col)
+  if (count>40): 
+    sz = np.min([11,1+250.0/count])
+    col = 3
+  leg = plt.legend(loc='best',fontsize=sz,fancybox=True,ncol=col)
   leg.get_frame().set_alpha(0.7)
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
@@ -287,25 +275,23 @@ if (count>0):
     if (np.max(S[iii])>0.7):
       plt.plot(Tg,S,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
       count = count + 1
-  plt.title('supersaturation ratios',fontsize=20)
-  plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
-  plt.ylabel(r'$S$',fontsize=20)
+  plt.title('supersaturation ratios')
+  plt.xlabel(r'$T\ \mathrm{[K]}$')
+  plt.ylabel(r'$S$')
   plt.xscale('log')
   plt.xlim(Tmin,Tmax)
   plt.ylim(0,1.05)
-  plt.tick_params(axis='both', labelsize=14)
-  plt.tick_params('both', length=6, width=1.5, which='major')
-  plt.tick_params('both', length=3, width=1, which='minor')
-  ax.xaxis.set_minor_locator(locmin)
   ax.set_xticks(locmaj)
   ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
-  sz = np.min([13,1+195.0/count])
+  sz = np.min([11,1+140.0/count])
   col = 1
-  if (count>30): 
-    sz = np.min([13,1+195.0/count*2])
+  if (count>20): 
+    sz = np.min([11,1+200.0/count])
     col = 2
-    leg = plt.legend(loc='best',fontsize=10,fancybox=True,
-                 handlelength=3,prop={'size':sz},ncol=col)
+  if (count>40): 
+    sz = np.min([11,1+250.0/count])
+    col = 3
+  leg = plt.legend(loc='best',fontsize=sz,fancybox=True,ncol=col)
   leg.get_frame().set_alpha(0.7)
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
@@ -330,16 +316,12 @@ for i in range(3,4+NELEM+NMOLE):
   if (np.max(yy[iii])>crit):
     plt.plot(Tg,yy,c=colo[count],ls=styl[count],lw=widt[count],label=mol)
     count = count + 1
-plt.title('important molecules',fontsize=20)
-plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
-plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{tot}$',fontsize=20)
+plt.title('important molecules')
+plt.xlabel(r'$T\ \mathrm{[K]}$')
+plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{tot}$')
 plt.xlim(Tmin,Tmax)
 plt.ylim(-6.2,0.2)
-plt.tick_params(axis='both', labelsize=14)
-plt.tick_params('both', length=6, width=1.5, which='major')
-plt.tick_params('both', length=3, width=1, which='minor')
 plt.xscale('log')
-ax.xaxis.set_minor_locator(locmin)
 ax.set_xticks(locmaj)
 ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
 leg = plt.legend(loc='best',fontsize=11,ncol=2,fancybox=True)
@@ -437,30 +419,27 @@ for i in range(0,30):
     if (np.max(yy[iii]-maxy[iii])>-limit or molname=='el'):
       plt.plot(Tg,yy,c=colo[count],ls=styl[count],lw=widt[count],label=molname)
       count = count + 1
-  plt.title(titel,fontsize=20)
-  plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
-  plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{\langle H\rangle}$',fontsize=20)
+  plt.title(titel)
+  plt.xlabel(r'$T\ \mathrm{[K]}$')
+  plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{\langle H\rangle}$')
   plt.xlim(Tmin,Tmax)
   plt.ylim(nmin,nmax+1)
-  plt.tick_params(axis='both', labelsize=14)
-  plt.tick_params('both', length=6, width=1.5, which='major')
-  plt.tick_params('both', length=3, width=1, which='minor')
   plt.xscale('log')
-  ax.xaxis.set_minor_locator(locmin)
   ax.set_xticks(locmaj)
   ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
-  sz = np.min([11,1+195.0/count])
+  sz = np.min([9,1+120.0/count])
   col = 1
-  if (count>30): 
-    sz = np.min([9,1+195.0/count*2])
+  if (count>20): 
+    sz = np.min([9,1+200.0/count])
     col = 2
-  leg = plt.legend(loc='best',fontsize=10,fancybox=True,
-             handlelength=3,prop={'size':sz},ncol=col)
+  if (count>40): 
+    sz = np.min([9,1+250.0/count])
+    col = 3
+  leg = plt.legend(loc='best',fontsize=sz,ncol=col,fancybox=True)
   leg.get_frame().set_alpha(0.7)
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
   plt.clf()
-
 
 pp.close()
 print '... written output to ggchem.pdf.'
