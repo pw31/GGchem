@@ -205,6 +205,111 @@ if (ymax>-99):
         outp=outp+' '+keyword[i][1:]
     print Tg[iT],iact,outp  
 
+#================== condensation groups =============================
+  family = ['silicates','feldspar','Ca-Al-Ti','iron','iron-oxides',
+            'sulphide','phyllosilicates','halide','P-compounds','ices','other']
+  Nfam   = len(family)
+  member = []
+  member.append(['MgSiO3','Mg2SiO4','Mn2SiO4','NaAlSiO4','Fe2SiO4','Na2SiO3','CaMgSi2O6',
+                 'KAlSiO4','CaSiO3'])
+  member.append(['KAlSi3O8','CaAl2Si2O8','NaAlSi3O8'])
+  member.append(['Al2O3','Ca3Al2Si3O12','MnTiO3','CaTiSiO5','Ca2Al2SiO7','Ti4O7','FeAl2O4','Ca2MgSi2O7',
+                 'Ca2MgSi2O7','TiO2','CaTiO3','MgAl2O4','Ca3Fe2Si3O12','FeTiO3','Mn3Al2Si3O12'])
+  member.append(['Fe'])
+  member.append(['Fe3O4'])
+  member.append(['FeS','MnS'])
+  member.append(['Mg3Si2O9H4','NaMg3AlSi3O12H2','MnAl2SiO7H2','Mg3Si4O12H2','FeAl2SiO7H2','KFe3AlSi3O12H2',
+                 'CaAl2Si2O10H4','Fe3Si2O9H4','KMg3AlSi3O12H2'])
+  member.append(['NaCl','KCl'])
+  member.append(['Ca5P3O13H','Ca5P3O12F'])
+  member.append(['H2O','NH3'])
+  member.append([' '])
+  file  = 'data/DustChem.dat'
+  data  = open(file)
+  lines = data.readlines()
+  data.close
+  Nline = len(lines)
+  elements = ['H ','He','Li','Be','B ','C ','N ','O ','F ','Ne','Na','Mg','Al','Si','P ','S ','Cl',
+              'Ar','K ','Ca','Sc','Ti','V ','Cr','Mn','Fe','Co','Ni','Cu','Zn','Ga','Ge','As','Se',
+              'Br','Kr','Rb','Sr','Y ','Zr','W ']
+  emass    = [1.008 ,4.0026,6.94  ,9.0122,10.81 ,12.011,14.007,15.999,18.998,20.180,22.990,24.305,
+              26.982,28.085,30.974,32.06 ,35.45 ,39.948,39.098,40.078,44.956,47.867,50.942,51.996,
+              54.938,55.845,58.933,58.693,63.546,65.38 ,69.723,72.63 ,74.922,78.96 ,79.904,83.798,
+              85.468,87.62 ,88.906,91.224,183.84]
+  Nelem = len(elements)
+  dust_gas = 10**log10_dust_gas
+  rho_fam = np.zeros([Nfam,len(dust_gas)],dtype='float')
+  rho_all = np.zeros(len(dust_gas),dtype='float')
+  for isolid in indices:
+    solid = solids[isolid]
+    ind = np.where(keyword == 'n'+solid)[0]
+    if (np.size(ind) == 0): continue
+    ind = ind[0]
+    yy = 10**dat[:,ind]               # nsolid/n<H>
+    if (np.max(yy)<1.E-9): continue
+    found = False
+    ifam = Nfam-1
+    for fam in range(0,Nfam):
+      for mem in member[fam]:
+        if (solid == mem):
+          found = True
+          ifam = fam
+          break
+      if (found): break
+    rhom = 0.0  
+    mass = 0.0
+    for l in range(0,Nline):
+      if (len(lines[l])<6): continue  
+      test = lines[l].split()[0]
+      search = solid
+      if (str.find(search,'[l]')<0): search = search+'[s]'
+      if (search==test.strip()):
+        #print lines[l].strip()
+        #print lines[l+1]
+        name = lines[l].split()[1] 
+        rhod = float(lines[l+1].split()[0])
+        Nel = int(lines[l+2].split()[0])
+        for el in range(0,Nel):
+          stoich = int(lines[l+3+el].split()[0])
+          elem   = lines[l+3+el].split()[1].strip()
+          for i in range(0,Nelem):
+            if (elem==elements[i].strip()):
+              mass = mass + stoich*emass[i]
+              break
+          #print stoich,elem,emass[i]
+        break
+    if (mass==0.0):
+      print "*** condensate not found: ",search      
+      stop
+    print "%16s %20s %5.3f %7.2f -> %16s" %(search,name,rhod,mass,family[ifam])
+    yfam = yy*mass                                          # rho_family/n<H>
+    rho_fam[ifam] = rho_fam[ifam] + yfam
+    rho_all       = rho_all       + yfam
+  
+  fig,ax = plt.subplots()
+  plt.plot(Tg,dust_gas,c='black',lw=4)
+  count = 0
+  for ifam in range(0,Nfam):
+    mass_ratio = rho_fam[ifam]
+    mass_ratio = mass_ratio[iii]/rho_all[iii]
+    plt.plot(Tg[iii],dust_gas[iii]*mass_ratio,lw=2,c=colo[count],label=family[ifam])
+    count = count + 1
+  plt.xlabel(r'$T\ \mathrm{[K]}$')
+  plt.ylabel(r'$\mathrm{dust/gas}$')
+  ymax = np.max(np.log10(dust_gas))
+  plt.xlim(Tmin,Tmax)
+  plt.ylim(10**(ymax-4),10**ymax*12)
+  plt.xscale('log')
+  plt.yscale('log')
+  ax.yaxis.set_minor_locator(LogLocator(subs=[2,3,4,5,6,7,8,9]))
+  #ax.set_xticks(locmaj)
+  #ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
+  leg = plt.legend(loc='upper center',fontsize=9,fancybox=True,ncol=4)
+  leg.get_frame().set_alpha(0.7)
+  plt.tight_layout()
+  plt.savefig(pp,format='pdf')
+  plt.clf()
+    
 #================== log10 supersaturation ratios ===================
 count = 0
 for isolid in reversed(indices):
@@ -221,7 +326,7 @@ if (count>0):
   for isolid in reversed(indices):
     solid = solids[isolid]
     ind = np.where(keyword == 'S'+solid)[0]
-    print solid,ind
+    #print solid,ind
     if (np.size(ind) == 0): continue
     if (count>=50): break
     ind = ind[0]

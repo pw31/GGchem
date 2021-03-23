@@ -18,6 +18,7 @@
       real(kind=qp) :: eps(NELEM),eps00(NELEM)
       real(kind=qp) :: Sat(NDUST),eldust(NDUST),out(NDUST)
       real(kind=qp) :: fac,deps,e_reservoir(NELEM),d_reservoir(NDUST)
+      real(kind=qp) :: x1,x2,y1,y2,xx,yy,NN,SS,epsNS
       integer :: it,i,j,jj,k,l,NOUT,iW,stindex,Ncond
       character(len=5000) :: species,NISTspecies,elnames
       character(len=20) :: frmt,name,short_name(NDUST),test1,test2
@@ -282,11 +283,32 @@
           nHges = EXP(LOG(nHmax)+fac*LOG(nHmin/nHmax))
           same = same.and.(nHmin==nHmax)
         endif  
+        !if (same) then
+        !  deps = -0.5E-4 + 3.5E-4*fac       ! D(CO2)
+        !  eps0(C) = eps00(C) + deps
+        !  eps0(O) = eps00(O) + 2*deps
+        !endif   
         if (same) then
-          deps = -0.5E-4 + 3.5E-4*fac       ! D(CO2)
-          eps0(C) = eps00(C) + deps
-          eps0(O) = eps00(O) + 2*deps
-        endif   
+          x1 = 0.3q0
+          x2 = 0.3q0
+          y1 = 0.7q0
+          y2 = 0.999999q0
+          xx = x1+(x2-x1)*fac
+          yy = y1+(y2-y1)*fac
+          eps0(O) = (1+yy)/(1-yy)
+          eps0(C) = (1+eps0(O))*xx/(1-xx)
+          eps0(H) = 1.q0
+          NN = eps00(N)/(eps00(C)+eps00(H)+eps00(N)+eps00(O)+eps00(S))
+          SS = eps00(S)/(eps00(C)+eps00(H)+eps00(N)+eps00(O)+eps00(S))
+          epsNS   = (NN+SS)*(eps0(C)+eps0(H)+eps0(O))/(1-NN-SS)
+          eps0(N) = NN*(eps0(C)+eps0(H)+eps0(O)+epsNS) 
+          eps0(S) = SS*(eps0(C)+eps0(H)+eps0(O)+epsNS) 
+          !print*,xx,eps0(C)/(eps0(H)+eps0(O)+eps0(C))
+          !print*,yy,(eps0(O)-eps0(H))/(eps0(O)+eps0(H))
+          print*,NN,eps0(N)/(eps0(C)+eps0(H)+eps0(N)+eps0(O)+eps0(S))
+          print*,SS,eps0(S)/(eps0(C)+eps0(H)+eps0(N)+eps0(O)+eps0(S))
+          stop
+        endif
         eldust = 0.Q0
         no_solution = .false.
 
@@ -438,5 +460,5 @@
  1000 format(4(' eps(',a2,') = ',1pD8.2))
  1010 format(A4,0pF8.2,3(a6,1pE9.2),1(a11,1pE9.2))
  2000 format(9999(1x,A19))
- 2010 format(0pF20.6,2(1pE20.6),9999(0pF20.7))
+ 2010 format(0pF20.6,2(1pE20.8),9999(0pF20.10))
       end  

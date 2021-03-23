@@ -18,18 +18,19 @@
       real(kind=qp) :: Sat(NDUST),eldust(NDUST),out(NDUST)
       real(kind=qp) :: fac,e_reservoir(NELEM),d_reservoir(NDUST)
       real :: dat(1000),ddust
-      real :: tau,p,pe,Tg,rho,nHges,nges,kT,pgas,mu,gg,Hp,mugas
-      real :: muold,dmu,ff,fold,dfdmu,km=1.D+5
-      real :: Jstar,Nstar,rhog,dustV,rhod,L3,bmix,emono,zdum
-      integer :: i,j,k,l,e,jj,iz,dk,NOUT,Nfirst,Nlast,Ninc,iW,idum
+      real :: tau,p,pe,rho,nHges,nges,kT,pgas,mu,gg,Hp,mugas
+      real :: muold,dmu,ff,fold,dfdmu,km=1.D+5,AU=1.4959787d+13 
+      real :: Jstar,Nstar,rhog,dustV,rhod,L3,bmix,emono,rdum,zdum
+      real :: Tg,Td,cT,rcut
+      integer :: i,j,k,l,e,jj,dk,NOUT,Nfirst,Nlast,Ninc,iW,idum
       integer :: it,n1,n2,n3,n4,n5,Ndat,dind(1000),ek,eind(1000)
-      integer :: Nfound,e_source(100),e_target(100)
-      integer :: verbose=0
+      integer :: Nx,Nz,ix,iz,Nfound,e_source(100),e_target(100)
+      integer :: cut,verbose=0
       character(len=20000) :: header
       character(len=200) :: line,filename
       character(len=20) :: name,short_name(NDUST),dname,ename
       character(len=1) :: char
-      logical :: hasW,efound
+      logical :: hasW,efound,take
       logical :: outAllHistory=.false.
 
       !-----------------------------
@@ -312,6 +313,74 @@
         Nlast  = MIN(Npoints,i)
         Ninc   = 1             ! bottom to top
 
+      !--------------------------------------------------------
+      else if (model_struc==8) then     ! ProDiMo.dat
+      !--------------------------------------------------------
+        open(3,file=filename,status='old')
+        do i=1,999
+          read(3,'(A200)') line
+          print*,trim(line)
+          if (index(line,"Nx,Nz,Nsp")>0) exit  
+        enddo
+        i = index(line,"=")
+        read(line(i+1:),*) Nx,Nz
+        read(3,'(A200)') line
+        read(3,'(A200)') line
+        print*
+        print'("Would you like a radial (1) or vertical (2) cut? ",$)'
+        read*,cut
+        if (cut==1) then
+          !--------- midplane cut --------
+          Npoints = 0
+          do iz=Nz,1,-1
+            take = .true.
+            do ix=1,Nx
+              read(3,*) i,j,rdum,zdum,dat(1:5),Tg,Td,cT,rho,pgas
+              take = take.and.(Td>Tmin)
+              if (iz==1.and.take) then
+                !print*,i,rdum,Td
+                Npoints = Npoints+1
+                zz(i) = rdum*AU
+                Tgas(i) = Td
+                dens(i) = rho
+                press(i) = pgas
+                nHtot(i) = rho/muH
+                estruc(i,:) = eps0(:)
+              endif
+            enddo
+          enddo
+          Nfirst = 1
+          Nlast  = Npoints
+          Ninc   = 1            ! high-to-low T
+        else
+          !--------- vertical cut --------
+          print'("vertical cut at which radius[AU]? ",$)'
+          read*,rcut
+          do iz=Nz,1,-1
+            do ix=1,Nx
+              read(3,*) i,j,rdum,zdum,dat(1:5),Tg,Td,cT,rho,pgas
+              if (rdum>rcut) cycle
+              !print*,i,j,rdum,Td
+              zz(Nz+1-iz) = zdum*AU
+              Tgas(Nz+1-iz) = Td
+              dens(Nz+1-iz) = rho
+              press(Nz+1-iz) = pgas
+              nHtot(Nz+1-iz) = rho/muH
+              estruc(Nz+1-iz,:) = eps0(:)
+            enddo
+          enddo
+          Nfirst  = Nz
+          Npoints = 0
+          do i=1,Nz
+            if (nHtot(i)<1.E+4) cycle 
+            print*,i,Tgas(i),nHtot(i)
+            Nfirst = MIN(Nfirst,i)
+          enddo
+          Npoints = Nlast-Nfirst+1
+          Nlast  = Nz
+          Ninc   = 1            ! high-to-low T
+        endif
+        
       else
         print*,"*** unknown file format =",model_struc
         stop
