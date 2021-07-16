@@ -6,7 +6,7 @@
      >     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,pick_mfrac,
      >     abund_file,struc_file,remove_condensates,phyllosilicates,
      >     initchem_info,auto_atmos,stop_after_init,Mpl,Rpl,gamma,
-     >     adapt_cond,method_eqcond,Nseq,Tseq 
+     >     adapt_cond,method_eqcond,Nseq,Tseq,Tmin_atmos
       use CHEMISTRY,ONLY: NewBackIt,NewFullIt,NewBackFac,NewPreMethod,
      >                    NewFastLevel,Natmax,dispol_file
       use DUST_DATA,ONLY: DustChem_file,bar,MEarth,REarth
@@ -47,6 +47,7 @@
       Mpl          = MEarth
       Rpl          = REarth
       gamma        = 7.0/5.0
+      Tmin_atmos   = 0.0
       method_eqcond= 2
       UseDataBase  = .true.
       NewFullIt    = .true.
@@ -97,6 +98,8 @@
           if (model_struc>0) read(1,'(A200)') struc_file
         else if (index(line,"! Tmax")>0) then   
           read(line,*) Tmax
+        else if (index(line,"! Tmin_atmos")>0) then 
+          read(line,*) Tmin_atmos
         else if (index(line,"! Tmin")>0) then   
           read(line,*) Tmin
         else if (index(line,"! Tfast")>0) then   

@@ -18,7 +18,7 @@
       real(kind=qp) :: Sat(NDUST),eldust(NDUST),out(NDUST)
       real(kind=qp) :: fac,e_reservoir(NELEM),d_reservoir(NDUST)
       real :: rho,Tg,p,kT,nHges,nges,pgas,ff,fold,mu,xx,xold,dx,dfdx
-      real :: muold,dfdmu,dmu
+      real :: muold,dfdmu,dmu,Temp
       real :: p1,p2,T1,T2,g1,g2,mu1,mu2,rho1,rho2,dg,dgold,limit
       real :: zz,dz,Hp,kappa,rhog,rhod,dustV,dustM,km=1.D+5
       integer :: i,j,k,e,ip,jj,it,NOUT,jbest
@@ -28,9 +28,10 @@
       !-----------------------------------------------------------
       ! ***  compute base point with equilibrium condensation  ***
       !-----------------------------------------------------------
-      !eadd = 0.2*eps0(Si)
-      !eps0(H) = eps0(H)+1.3Q0*eadd
-      !eps0(O) = eps0(O)+eadd
+      !T1=Temp(pmax)      
+      !T2=Temp(pmin)      
+      !print*,pmax/bar,T1
+      !print*,pmin/bar,T2
       Tg = Tmax
       p  = pmax
       mu = muH
@@ -247,8 +248,9 @@
         xx  = (1.0+dg)*mu2
         ff  = p2
         do it=1,99
-          T2    = T1 - kappa/bk*0.5*(mu2*g2+mu1*g1)*dz
-          p2    = p1*(T2/T1)**(1.0/kappa)               ! target pressure
+          !T2    = T1 - kappa/bk*0.5*(mu2*g2+mu1*g1)*dz
+          !p2    = p1*(T2/T1)**(1.0/kappa)               ! target pressure
+          call newTP(p1,T1,g1,g2,mu1,mu2,dz,p2,T2)
           kT    = bk*T2
           rho2  = p2/kT*xx                              ! total mass density
           nHges = rho2/muH                              ! n<H>
@@ -369,3 +371,55 @@
  2011 format(9999(1x,1pE19.10))
  3000 format(A8,0pF13.9)
       end
+
+
+      real function Temp(p)
+      use PARAMETERS,ONLY: Rpl,Mpl,Tmax,pmax,gamma,Tmin_atmos
+      use DUST_DATA,ONLY: bar
+      implicit none
+      real,intent(in) :: p
+      real,save :: kappa,x,pshift
+      logical,save :: firstCall=.true.
+      if (firstCall) then
+        kappa = (gamma-1.0)/gamma     ! polytrope index T ~ p^kappa
+        x = (Tmin_atmos/Tmax)**(1.0/kappa)
+        pshift = x*pmax/(1.0-x)
+        firstCall = .false.
+      endif
+      !print*,Tmin_atmos,kappa,pshift/bar
+      Temp = Tmax*((p+pshift)/(pmax+pshift))**kappa
+      end
+
+      real function dTempdp(p)
+      implicit none
+      real,intent(in) :: p
+      real,external :: Temp
+      real :: dp,T1,T2
+      dp = 1.E-7*p
+      T1 = Temp(p)
+      T2 = Temp(p+dp)
+      dTempdp = (T2-T1)/dp
+      end
+
+      subroutine newTP(p1,T1,g1,g2,mu1,mu2,dz,p2,T2)
+      use DUST_DATA,ONLY: bk,bar
+      implicit none
+      real,intent(in) :: p1,T1,g1,g2,mu1,mu2,dz
+      real,intent(out) :: p2,T2
+      real,external :: Temp,dTempdp
+      real :: dp,dlnp,Told,Terr
+      integer :: it
+      dp = -mu1*p1/(bk*T1)*g1*dz
+      T2 = T1 + dTempdp(p1)*dp                    ! first estimate
+      do it=1,99
+        dlnp = -dz/bk*0.5*(mu1*g1/T1+mu2*g2/T2)   ! hydrostat.equil.
+        p2   = p1*exp(dlnp)
+        Told = T2
+        T2   = Temp(p2)                           ! assumed T(p)
+        Terr = ABS(T2/Told-1.0)
+        !print'(I3,3(1pE20.12))',it,Told,T2,Terr
+        if (Terr<1.E-12) exit
+      enddo
+      if (it.ge.99) stop "*** no convergence in newTP"
+      end
+      

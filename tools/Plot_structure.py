@@ -119,7 +119,7 @@ if (ymax>-10):
   plt.xlabel(r'$\mathrm{dust/gas}$',fontsize=20)
   plt.ylabel(r'$z\ \mathrm{[km]}$',fontsize=20)
   plt.ylim(zmin,zmax)
-  plt.xlim(10**(ymax-12),10**(ymax+1))
+  plt.xlim(10**(ymax-8),10**(ymax+1))
   plt.xscale('log')
   #ax.yaxis.set_minor_locator(LogLocator(subs=[2,3,4,5,6,7,8,9]))
   #ax.xaxis.set_minor_locator(locmin)
@@ -174,7 +174,7 @@ for i in range(4+NELEM+NMOLE,4+NELEM+NMOLE+NDUST,1):
   yy = dat[:,ind]                # log10 nsolid/n<H>
   yy = yy + lognH - logntot      # log10 nmol/ntot
   ymax = np.max([ymax,np.max(yy[iii])])
-  ymin = -15
+  ymin = ymax-10
 indices = np.argsort(smean)
 if (ymax>-99):
   print solids
@@ -188,20 +188,18 @@ if (ymax>-99):
     yy = dat[:,ind]               # log10 nsolid/n<H>
     ymax = np.max([ymax,np.max(yy[iii])])
     if (np.max(yy[iii])>-99): print solid,ind,np.max(yy[iii])
-    if (np.max(yy[iii])>ymin):
+    if (np.max(yy[iii])>ymin+1):
       plt.plot(yy[iii],zz[iii],c=colo[count],ls=styl[count],lw=widt[count],label=solid)
       count = count + 1
   plt.title('condensates',fontsize=16)
-  plt.ylabel(r'$z\ \mathrm{[km]}$',fontsize=20)
-  plt.xlabel(r'$\mathrm{log}_{10}\ n_\mathrm{cond}/n_\mathrm{tot}$',fontsize=20)
+  plt.ylabel(r'$z\ \mathrm{[km]}$',fontsize=18)
+  plt.xlabel(r'$\mathrm{log}_{10}\ n_\mathrm{cond}/n_\mathrm{tot}$',fontsize=18)
   plt.ylim(zmin,zmax)
-  plt.xlim(ymax-10,ymax+0.3)
+  plt.xlim(ymin,ymax+0.3)
   #ax.xaxis.set_minor_locator(locmin)
   #ax.set_xticks(locmaj)
   #ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
-  sz = np.min([11,1+195.0/count])
-  leg = plt.legend(loc='best',fontsize=11,fancybox=True,
-                   handlelength=2.5,prop={'size':sz})
+  leg = plt.legend(loc='best',fontsize=8,fancybox=True,handlelength=2.5)
   leg.get_frame().set_alpha(0.7)
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
@@ -306,13 +304,13 @@ if (count>0):
 
 #================== some important molecules ====================
 fig,ax = plt.subplots(figsize=(6.5,5.5))
-mols  = ['H2','N2','H2O','O2','CO','CO2','CH4','NH3','C2H2','el']
+mols  = ['H2','N2','H2O','O2','CO','CO2','CH4','NH3','SO2','H2S','el']
 mols  = np.array(mols)
 count = 0
 for i in range(3,4+NELEM+NMOLE): 
   mol = keyword[i]
   yy = dat[:,i]-logntot            # log10 nmol/ntot
-  crit = -6.0
+  crit = -2.0
   ind = np.where(mols == mol)[0]
   if (np.size(ind)>0): crit=-6.0
   #print i,mol,ind,np.size(ind)
@@ -323,11 +321,11 @@ plt.title('important molecules',fontsize=15)
 plt.ylabel(r'$z\ \mathrm{[km]}$',fontsize=20)
 plt.xlabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{tot}$',fontsize=20)
 plt.ylim(zmin,zmax)
-plt.xlim(-7.2,0.2)
+plt.xlim(-4.2,0.2)
 #ax.xaxis.set_minor_locator(locmin)
 #ax.set_xticks(locmaj)
 #ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
-leg = plt.legend(loc='best',fontsize=11,ncol=1,fancybox=True)
+leg = plt.legend(loc='best',fontsize=8,ncol=3,fancybox=True)
 leg.get_frame().set_alpha(0.7)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
@@ -407,7 +405,7 @@ for i in range(0,30):
   count = 0
   indices = np.argsort(abulist)
   maxy = np.log10(maxy)
-  nmin = np.min([nmin,np.min(maxy[iii])-limit,nmax-12])
+  nmin = np.min([nmin,np.min(maxy[iii])-limit,nmax-6])
   for ind in reversed(indices):
     mol = mollist[ind]
     abu = abulist[ind]
@@ -424,9 +422,9 @@ for i in range(0,30):
     if (np.max(yy[iii]-maxy[iii])>-limit or molname=='el'):
       plt.plot(yy,zz,c=colo[count],ls=styl[count],lw=widt[count],label=molname)
       count = count + 1
-  plt.title(titel,fontsize=20)
-  plt.ylabel(r'$z\ \mathrm{[km]}$',fontsize=20)
-  plt.xlabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{tot}$',fontsize=20)
+  plt.title(titel,fontsize=18)
+  plt.ylabel(r'$z\ \mathrm{[km]}$',fontsize=18)
+  plt.xlabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{tot}$',fontsize=18)
   plt.ylim(zmin,zmax)
   plt.xlim(nmin,nmax+1)
   #ax.xaxis.set_minor_locator(locmin)
@@ -437,7 +435,7 @@ for i in range(0,30):
   if (count>30): 
     sz = np.min([9,1+195.0/count*2])
     col = 2
-  leg = plt.legend(loc='best',fontsize=10,fancybox=True,
+  leg = plt.legend(loc='best',fontsize=8,fancybox=True,
              handlelength=3,prop={'size':sz},ncol=col)
   leg.get_frame().set_alpha(0.7)
   plt.tight_layout()

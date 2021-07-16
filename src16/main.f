@@ -81,7 +81,8 @@
       real*8  :: yr,Myr,molm,molmass,stoich,HH,OO,CC,NN
       integer :: i,imol,iraus,e,aIraus,aIIraus,j,verb,dk,it,stindex
       integer :: k,keyel,imax,dustst
-      integer :: H2O,CO2,CH4,O2,H2,N2,NH3,CO,OCS,SO2,S2,H2S
+      integer :: H2O,CO2,CH4,O2,H2,N2,NH3,CO,OCS,SO2,S2,H2S,HCl,HF
+      integer :: P4O6,POF3
       logical :: included,haeufig,raus(NMOLE)
       logical :: rausI(NELEM),rausII(NELEM)
       character(len=10) :: sp
@@ -393,6 +394,10 @@
         SO2 = stindex(cmol,NMOLE,'SO2')
         S2  = stindex(cmol,NMOLE,'S2')
         H2S = stindex(cmol,NMOLE,'H2S')
+        HCl = stindex(cmol,NMOLE,'HCL')
+        HF  = stindex(cmol,NMOLE,'HF')
+        !P4O6= stindex(cmol,NMOLE,'P4O6')
+        !POF3= stindex(cmol,NMOLE,'POF3')
         if (HH>2*OO+4*CC) then
           if (3*NN<HH-2*OO-4*CC) then
             print'("type A1")'
@@ -440,21 +445,27 @@
         endif
       endif
 
-      !print'(99(A9))',"SO2[ppm]","H2O[ppm]","OCS[ppm]","CO[ppm]",
-     >!                "H2S[ppb]","S2[ppb]","H2[ppb]","O2[ppb]"
-      !print'(99(0pF9.2))',nmol(SO2)/ngas/1.E-6,
-     >!                    nmol(H2O)/ngas/1.E-6,
-     >!                    nmol(OCS)/ngas/1.E-6,
-     >!                    nmol(CO) /ngas/1.E-6,
-     >!                    nmol(H2S)/ngas/1.E-9,
-     >!                    nmol(S2) /ngas/1.E-9,
-     >!                    nmol(H2) /ngas/1.E-9,
-     >!                    nmol(O2) /ngas/1.E-9      
+      print'(99(A9))',"SO2[ppm]","H2O[ppm]","OCS[ppm]","CO[ppm]",
+     >                "HF[ppb]","HCl[ppb]","S2[ppb]"
+      print'(99(0pF9.2))',nmol(SO2)/ngas/1.E-6,
+     >                    nmol(H2O)/ngas/1.E-6,
+     >                    nmol(OCS)/ngas/1.E-6,
+     >                    nmol(CO) /ngas/1.E-6,
+     >                    nmol(HF) /ngas/1.E-9,
+     >                    nmol(HCl)/ngas/1.E-9,
+     >                    nmol(S2)/ngas/1.E-9
       !print'(99(A9))',"H2O[%]","CO2[%]","N2[%]","O2[%]"
       !print'(99(0pF9.4))',nmol(H2O)/ngas/1.E-2,
      >!                    nmol(CO2)/ngas/1.E-2,
      >!                    nmol(N2) /ngas/1.E-2,
      >!                    nmol(O2) /ngas/1.E-2
+      do i=1,NDUST
+        if (dust_nam(i).eq.'H2O[l]') then
+          print'("  S(H2O[l])=",1pE10.3)',Sat(i) 
+        else if (dust_nam(i).eq.'C[s]') then
+          print'("  S(  C[s])=",1pE10.3)',Sat(i)
+        endif  
+      enddo
       
 *     -----------------------------------------------------
 *     ***  Calculation of the condenstation timescales  ***
@@ -542,6 +553,6 @@
  4000 format(a7,1pE10.4,a5,1pE10.4)     
  4010 format(' n',a8,1pE12.4,0pF13.9,1pE12.4)
  4020 format(' n',a8,1pE12.4,1pE13.3)
- 5000 format(1x,a20,' S=',1pE11.3E4)
+ 5000 format(1x,a20,' S=',1pE12.3E4)
       RETURN
       end      

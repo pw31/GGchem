@@ -8,7 +8,7 @@
       logical :: useDataBase,remove_condensates,phyllosilicates
       logical :: auto_atmos,adapt_cond,stop_after_init
       real*8  :: Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,Tseq(100)
-      real*8  :: Mpl,Rpl,gamma
+      real*8  :: Mpl,Rpl,gamma,Tmin_atmos
       end
 
 ************************************************************************
