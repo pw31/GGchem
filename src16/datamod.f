@@ -1,7 +1,7 @@
 ************************************************************************
       module PARAMETERS
 ************************************************************************
-      character(len=200) :: elements,abund_file,struc_file
+      character(len=200) :: elements,abund_file,struc_file,adapt_file
       integer :: abund_pick,model_dim,Npoints,model_struc,verbose
       integer :: method_eqcond,Nseq
       logical :: model_eqcond,model_pconst,pick_mfrac,initchem_info

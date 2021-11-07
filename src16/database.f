@@ -17,6 +17,17 @@
       end MODULE DATABASE
 
 **********************************************************************
+      SUBROUTINE ERASE_DBASE
+**********************************************************************
+      use DATABASE,ONLY: NDAT,NLAST,NMODI
+      implicit none
+      NDAT=0
+      NLAST=0
+      NMODI=0
+      end
+
+
+**********************************************************************
       SUBROUTINE SAVE_DBASE
 **********************************************************************
       use dust_data,ONLY: NELEM,NDUST,dust_nam

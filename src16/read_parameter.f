@@ -6,7 +6,7 @@
      >     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,pick_mfrac,
      >     abund_file,struc_file,remove_condensates,phyllosilicates,
      >     initchem_info,auto_atmos,stop_after_init,Mpl,Rpl,gamma,
-     >     adapt_cond,method_eqcond,Nseq,Tseq,Tmin_atmos
+     >     adapt_cond,adapt_file,method_eqcond,Nseq,Tseq,Tmin_atmos
       use CHEMISTRY,ONLY: NewBackIt,NewFullIt,NewBackFac,NewPreMethod,
      >                    NewFastLevel,Natmax,dispol_file
       use DUST_DATA,ONLY: DustChem_file,bar,MEarth,REarth
@@ -121,7 +121,9 @@
         else if (index(line,"! auto_atmos")>0) then 
           read(line,*) auto_atmos
         else if (index(line,"! adapt_cond")>0) then 
-          read(line,*) adapt_cond
+          adapt_cond = .true.
+          i = index(line,"!")
+          read(line(1:i-1),*) adapt_file
         else if (index(line,"! stop_after_init")>0) then 
           read(line,*) stop_after_init
         else if (index(line,"! Mplanet")>0) then 
