@@ -117,7 +117,7 @@
           write(2,*) elnam(e),LOG10(eps0(e)/eps0(1))+12.Q0
         enddo
         close(2)
-        read(*,'(A1)') char
+        !read(*,'(A1)') char
 
         !---------------------------------------------
         ! ***  solve the chemical and phase equil. ***
@@ -163,7 +163,7 @@
         enddo
 
         print*
-        print*,"ITEARTION = ",iter
+        print*,"ITERATION = ",iter
         print*,"comparison ..."
         ntot = 0.0
         do ad=1,Nadapt
@@ -198,9 +198,9 @@
             left(ad)  = delta(ad)
           endif
           fac = 1.0
-          if (ad.ne.oworst) fac=0.3    ! stay with oworst for a bit longer
+          if (ad.ne.oworst) fac=0.25    ! stay with oworst for a bit longer
           if (ABS(q)*fac>qual) then
-            qual = ABS(q)
+            qual = ABS(q)*fac
             worst = ad
           endif
         enddo
