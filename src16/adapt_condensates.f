@@ -15,7 +15,7 @@
       real(kind=qp) :: eps(NELEM),eps00(NELEM)
       real(kind=qp) :: Sat(NDUST),eldust(NDUST)
       real*8 :: Tg,nHges,p,mu,muold,pgas,ngas,ntot,nn,ctot
-      real*8 :: ff,dfdmu,dmu,fold,conc,q,qual,deps,fac
+      real*8 :: ff,dfdmu,dmu,fold,conc,q,qual,deps,fac,emax
       real*8,dimension(SPMAX) :: CCadapt,delta,left,right,estep
       integer,dimension(SPMAX) :: SPadapt
       integer :: verb,iseq,it,ad,i,j,e,Nadapt,worst,oworst,iter
@@ -31,8 +31,8 @@
       open(unit=1,file=adapt_file,status='old')
       Nadapt = 0
       ctot = 0.0
-      do while (.not.EOF(1))
-        read(1,*) conc,mol
+      do 
+        read(1,*,end=1000) conc,mol
         ctot = ctot + conc/100.0
         Nadapt = Nadapt + 1
         SPadapt(Nadapt) = 0
@@ -76,16 +76,17 @@
      >       cmol(i),CCadapt(Nadapt),estep(Nadapt)
         endif
       enddo
-      CCadapt = CCadapt/ctot
+ 1000 CCadapt = CCadapt/ctot
       print*
 
       eps00 = eps0
-      delta = 0.0
-      left  = 9.e+99
-      right = 9.e+99
       mu    = muH
       nHges = nHmax
       p     = pmax
+      Tseq(Nseq) = Tmax
+      delta = 0.0
+      left  = 9.e+99
+      right = 9.e+99
       worst = 0
       verb  = 0
 
@@ -218,17 +219,31 @@
         endif  
         if (qual<1.E-3) exit
 
+        !--- avoid too large estep leading to negative eps0 ---
+        if (is_atom(worst)) then
+          emax = eps0(i)
+        else
+          emax = 9.E+99
+          do j=1,m_kind(0,i)
+            if (m_kind(j,i)==el) cycle 
+            e = elnum(m_kind(j,i))
+            emax = MIN(emax,eps0(e)/m_anz(j,i))  
+          enddo
+        endif
+        emax = emax/2
+
+        !--- iterate ---
         if (left(worst)<1.e+99.and.right(worst)<1.e+99) then
           delta(worst) = (right(worst)+left(worst))/2
           estep(worst) = (right(worst)-left(worst))/2
         else if (nn/ntot<CCadapt(worst)) then
-          delta(worst) = delta(worst) + estep(worst)
-          estep(worst) = estep(worst)*2
+          delta(worst) = delta(worst) + MIN(emax,estep(worst))
+          estep(worst) = MIN(emax,estep(worst)*2)
         else
-          delta(worst) = delta(worst) - estep(worst)
-          estep(worst) = estep(worst)*2
+          delta(worst) = delta(worst) - MIN(emax,estep(worst))
+          estep(worst) = MIN(emax,estep(worst)*2)
         endif
-      
+ 
       enddo  
 
       call DEMO_CHEMISTRY
