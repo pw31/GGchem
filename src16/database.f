@@ -138,7 +138,7 @@
         endif  
       endif  
       prod = 0.0
-      do e=1,NELM
+      do i=1,NELM
         if (i==iel) cycle
         el = elnum(i)
         prod = prod + LOG(eps0(el))
