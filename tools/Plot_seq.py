@@ -68,6 +68,76 @@ locmaj = np.array([100,200,500,1000,2000,5000,10000])
 locmaj = locmaj[np.where(locmaj<=xmax)[0]]
 locmaj = locmaj[np.where(locmaj>=xmin)[0]]
 
+#==============================================================
+# planet data
+#==============================================================
+#https://nssdc.gsfc.nasa.gov/planetary/factsheet/venusfact.html
+#Titan: Niemann et al (2005), Nature 438, 779
+#1ppm = 1.E-6 = 1.E-4%
+planet = ['Earth' ,'Venus', 'Mars','Jupiter','Titan']
+N2     = [78.084  ,   3.5 ,   2.7 ,      0 ,   95.0 ]
+O2     = [20.946  ,   0.0 ,  0.13 ,      0 ,      0 ]
+CO2    = [0.0407  ,  96.5 , 95.32 ,      0 ,      0 ]
+CH4    = [0.00018 ,     0 ,     0 , 3000E-4,    4.9 ]
+H2O    = [0.80    , 20.E-4,210.E-4,   4.E-4,      0 ]
+H2     = [0.000055,     0 ,     0 ,   89.8 ,   0.15 ]
+CO     = [      0 , 17.E-4,  0.08 ,      0 ,      0 ]
+NH3    = [      0 ,     0 ,     0 ,  260E-4,      0 ]
+C2H6   = [      0 ,     0 ,     0 ,  5.8E-4,      0 ]
+He     = [      0 ,     0 ,     0 ,   10.2 ,      0 ]
+ipl = 0
+eepsH = []
+eepsC = []
+eepsO = []
+eepsN = []
+eepsHe= []
+xpl = []
+ypl = []
+for pl in planet:
+  Htot = 2*H2[ipl] + 4*CH4[ipl] + 2*H2O[ipl] + 3*NH3[ipl] + 6*C2H6[ipl]
+  Ctot = CO2[ipl] + CH4[ipl] + 2*C2H6[ipl] + CO[ipl]
+  Otot = 2*O2[ipl] + 2*CO2[ipl] + H2O[ipl] + CO[ipl] 
+  Ntot = 2*N2[ipl] + NH3[ipl]
+  eepsH.append(Htot)
+  eepsC.append(Ctot)
+  eepsO.append(Otot)
+  eepsN.append(Ntot)
+  eepsHe.append(He[ipl])
+  #xpl.append((Ctot-Otot)/(Ctot+Otot))
+  #ypl.append(Htot/(Htot+Ctot+Otot))
+  #xpl.append((Ctot-Htot)/(Ctot+Htot))
+  #ypl.append(Otot/(Htot+Ctot+Otot))
+  ypl.append((Otot-Htot)/(Otot+Htot))
+  xpl.append(Ctot/(Htot+Ctot+Otot))
+  print '%8s: epsH=%16.8f , epsO=%16.8f , epsC=%16.8f , epsN=%16.8f' \
+        % (pl,Htot,Otot,Ctot,Ntot)
+  ipl = ipl+1
+ypl = np.array(ypl)
+xpl = np.array(xpl)
+
+def annotate_planets():
+  plt.scatter(xpl,ypl,marker='o',s=60,c='blue',clip_on=False,zorder=5)
+  ax.annotate(r'$\rm{Earth}$',xy=(xpl[0],ypl[0]), xycoords='data',zorder=5,
+              xytext=( 30,-15), textcoords='offset points',size=12,
+              arrowprops=dict(facecolor='blue', shrink=0.15, 
+                              headwidth=7, headlength=6, width=2),
+              horizontalalignment='left', verticalalignment='center')
+  ax.annotate(r'$\rm{Mars, Venus}$',xy=(xpl[1],ypl[1]),xycoords='data',zorder=5,
+              xytext=(-40,-20), textcoords='offset points',size=12,
+              arrowprops=dict(facecolor='blue', shrink=0.15, 
+                              headwidth=7, headlength=6,width=2),
+              horizontalalignment='right', verticalalignment='center')
+  ax.annotate(r'$\rm{Jupiter}$',xy=(xpl[3],ypl[3]), xycoords='data',zorder=5,
+              xytext=( 30, 15), textcoords='offset points',size=12,
+              arrowprops=dict(facecolor='blue', shrink=0.15, 
+                              headwidth=7, headlength=6,width=2),
+              horizontalalignment='left', verticalalignment='center')
+  ax.annotate(r'$\rm{Titan}$',xy=(xpl[4],ypl[4]), xycoords='data',zorder=5,
+              xytext=(-15, 40), textcoords='offset points',size=12,
+              arrowprops=dict(facecolor='blue', shrink=0.15, 
+                              headwidth=7, headlength=6,width=2),
+              horizontalalignment='right', verticalalignment='center')
+
 #================== temperature-pressure structure ====================
 fig,ax = plt.subplots()
 plt.plot(xx,press/bar,lw=4)
@@ -135,6 +205,72 @@ plt.tight_layout()
 plt.savefig(pp,format='pdf')
 plt.clf()
 
+fig,ax = plt.subplots(figsize=(6,5.5))
+ind = np.where(keyword=='epsH')[0][0]
+HH = 10**dat[:,ind]
+ind = np.where(keyword=='epsC')[0][0]
+CC = 10**dat[:,ind]
+ind = np.where(keyword=='epsO')[0][0]
+OO = 10**dat[:,ind]
+ind = np.where(keyword=='epsN')[0][0]
+NN = 10**dat[:,ind]
+xxx = CC/(HH+CC+OO)
+yyy = (OO-HH)/(OO+HH)
+xxmin = 0.0
+xxmax = 0.34
+yymin =-1.0
+yymax = 1.0
+# the cut
+plt.plot(xxx,yyy,c='red')
+plt.text(xxx[0], yyy[0]+0.03, "x=0",color='red',size=12)
+plt.text(xxx[NPOINT-1], yyy[NPOINT-1]-0.08, "x=500",color='red',size=12)
+plt.text(0.12, 0.55,"B",size=20)
+plt.text(0.18,-0.25,"C",size=20)
+plt.text(0.03,-0.70,"A",size=20)
+# lines
+epsC1=np.arange(0.0,0.25+1.E-8,0.25/100)
+epsO1=0.5-2*epsC1
+epsH1=0*epsC1+1.0
+xl1 = epsC1/(epsH1+epsC1+epsO1)
+yl1 = (epsO1-epsH1)/(epsO1+epsH1)
+epsC2=np.arange(0.0,100.0+1.E-8,100.0/1000)
+epsO2=0.5+2*epsC2
+epsH2=0*epsC2+1.0
+xl2 = epsC2/(epsH2+epsC2+epsO2)
+yl2 = (epsO2-epsH2)/(epsO2+epsH2)
+epsC3=np.arange(0.25,100.0+1.E-8,(100.0-0.25)/1000)
+epsO3=2*(epsC3-0.25)
+epsH3=0*epsC3+1.0
+xl3 = epsC3/(epsH3+epsC3+epsO3)
+yl3 = (epsO3-epsH3)/(epsO3+epsH3)
+epsC4=np.arange(0.25,0.5+1.E-8,(0.5-0.25)/100)
+epsO4=6*(epsC4-0.25)
+epsH4=0*epsC4+1.0
+xl4 = epsC4/(epsH4+epsC4+epsO4)
+yl4 = (epsO4-epsH4)/(epsO4+epsH4)
+epsC5=np.arange(0.0,0.5+1.E-8,(0.5)/100)
+epsO5=0.5
+epsH5=0*epsC5+1.0
+xl5 = epsC5/(epsH5+epsC5+epsO5)
+yl5 = (epsO5-epsH5)/(epsO5+epsH5)
+epsC6=np.arange(1.0/6.0,100+1.E-8,(100.0-1.0/6.0)/1000)
+epsO6=2*epsC6-1.0/6.0
+epsH6=0*epsC6+1.0
+xl6 = epsC6/(epsH6+epsC6+epsO6)
+yl6 = (epsO6-epsH6)/(epsO6+epsH6)
+plt.plot(xl1,yl1,c='grey',lw=1.5)
+plt.plot(xl2,yl2,c='grey',lw=1.5)
+plt.plot(xl3,yl3,c='grey',lw=1.5)
+annotate_planets()
+plt.xlabel(r'$\rm C/(H+O+C)$')
+plt.ylabel(r'$\rm (O-H)/(O+H)$')
+plt.xlim(xxmin,xxmax)
+plt.ylim(yymin,yymax)
+plt.tight_layout()
+plt.savefig(pp,format='pdf')
+plt.clf()
+
+
 #================== solid particle densities ===================
 solids = []
 smean = []
@@ -187,33 +323,33 @@ if (ymax>-99):
         outp=outp+' '+keyword[i][1:]
     print xx[iT],iact,outp  
 
-  #================== log10 supersaturation ratios ===================
-  fig,ax = plt.subplots()
-  count = 0
-  for isolid in reversed(indices):
-    solid = solids[isolid]
-    ind = np.where(keyword == 'S'+solid)[0]
-    if (np.size(ind) == 0): continue
-    ind = ind[0]
-    logS = dat[:,ind]              # log10 S
-    if (np.max(logS[iii])>-6):
-      plt.plot(xx,logS,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
-      count = count + 1
-  plt.title('supersaturation ratios')
-  plt.xlabel(r'$x$')
-  plt.ylabel(r'$\mathrm{log}_{10}\ S$')
-  plt.xlim(xmin,xmax)
-  plt.ylim(-7,0.5)
-  sz = np.min([13,1+195.0/count])
-  col = 1
-  if (count>30): 
-    sz = np.min([13,1+195.0/count*2])
-    col = 2
-  leg = plt.legend(loc='best',fontsize=sz,fancybox=True,handlelength=3)
-  leg.get_frame().set_alpha(0.7)
-  plt.tight_layout()
-  plt.savefig(pp,format='pdf')
-  plt.clf()
+#================== log10 supersaturation ratios ===================
+fig,ax = plt.subplots()
+count = 0
+for isolid in reversed(indices):
+  solid = solids[isolid]
+  ind = np.where(keyword == 'S'+solid)[0]
+  if (np.size(ind) == 0): continue
+  ind = ind[0]
+  logS = dat[:,ind]              # log10 S
+  if (np.max(logS[iii])>-6):
+    plt.plot(xx,logS,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
+    count = count + 1
+plt.title('supersaturation ratios')
+plt.xlabel(r'$x$')
+plt.ylabel(r'$\mathrm{log}_{10}\ S$')
+plt.xlim(xmin,xmax)
+plt.ylim(-2,+5)
+sz = np.min([11,1+60.0/count])
+col = 1
+if (count>10): 
+  sz = np.min([11,1+60.0/count*2])
+  col = 2
+leg = plt.legend(loc='best',fontsize=sz,fancybox=True,ncol=col,handlelength=3)
+leg.get_frame().set_alpha(0.7)
+plt.tight_layout()
+plt.savefig(pp,format='pdf')
+plt.clf()
 
 #================== supersaturation ratios ===================
 fig,ax = plt.subplots()
@@ -235,12 +371,12 @@ if (count>0):
   plt.ylabel(r'$S$')
   plt.xlim(xmin,xmax)
   plt.ylim(0,1.05)
-  sz = np.min([13,1+195.0/count])
+  sz = np.min([11,1+60.0/count])
   col = 1
-  if (count>30): 
-    sz = np.min([13,1+140.0/count*2])
-  col = 2
-  leg = plt.legend(loc='best',fontsize=sz,fancybox=True,handlelength=3)
+  if (count>10): 
+    sz = np.min([11,1+60.0/count*2])
+    col = 2
+  leg = plt.legend(loc='best',fontsize=sz,fancybox=True,ncol=col,handlelength=3)
   leg.get_frame().set_alpha(0.7)
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
@@ -269,7 +405,7 @@ plt.title('important molecules')
 plt.xlabel(r'$x$')
 plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{tot}$')
 plt.xlim(xmin,xmax)
-plt.ylim(-6.0,0.2)
+plt.ylim(-6.0,1.5)
 leg = plt.legend(loc='best',fontsize=9,ncol=2,fancybox=True)
 leg.get_frame().set_alpha(0.7)
 plt.tight_layout()

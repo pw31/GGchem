@@ -110,7 +110,7 @@ ymax = np.max(log10_dust_gas)
 if (ymax>-10):
   plt.plot(Tg,10**log10_dust_gas,lw=4)
   plt.xlabel(r'$T\ \mathrm{[K]}$')
-  plt.ylabel(r'$\mathrm{dust/gas}$')
+  plt.ylabel(r'$\mathrm{cond/gas}$')
   plt.xlim(Tmin,Tmax)
   plt.ylim(10**(ymax-8),10**ymax*3)
   plt.xscale('log')
@@ -144,6 +144,43 @@ ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
 sz = np.min([11,1+140.0/count])
 leg = plt.legend(loc='best',fontsize=sz,fancybox=True)
 leg.get_frame().set_alpha(0.7)
+plt.tight_layout()
+plt.savefig(pp,format='pdf')
+plt.clf()
+
+#================ the gas phase element abundances ===================
+fig,ax = plt.subplots()
+count = 0
+ymax = -100.0
+sumeps = 0.0*Tg
+for i in range(4+NELEM+NMOLE+2*NDUST,4+NELEM+NMOLE+2*NDUST+NELEM,1):
+  yy = dat[:,i]               # log10 eps
+  sumeps = sumeps + 10**yy
+for i in range(4+NELEM+NMOLE+2*NDUST,4+NELEM+NMOLE+2*NDUST+NELEM,1):
+  elm = keyword[i]
+  element = elm[3:]
+  yy = dat[:,i]               # log10 eps
+  yy = np.log10(10**yy/sumeps)
+  print elm,np.max(yy)
+  ymax=np.max([ymax,np.max(yy)])            
+  if (np.max(yy)>-20):
+    plt.plot(Tg,yy,c=colo[count],ls=styl[count],lw=widt[count],label=element)
+    count = count+1
+plt.title('relative gas phase element abundances')
+plt.xlabel(r'$T\ \mathrm{[K]}$')
+plt.ylabel(r'$\log\,\epsilon_{\rm gas}/\epsilon_{\rm gas}^{\rm tot}$')
+plt.xlim(Tmin,Tmax)
+plt.ylim(ymax-6.0,ymax+0.3)
+plt.xscale('log')
+ax.set_xticks(locmaj)
+ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
+sz = np.min([11,1+140.0/count])
+leg = plt.legend(loc='best',fontsize=sz,fancybox=True)
+leg.get_frame().set_alpha(0.7)
+count = 0
+for text in leg.get_texts():
+  text.set_color(colo[count])
+  count = count+1
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
 plt.clf()
@@ -183,7 +220,7 @@ if (ymax>-99):
   plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{solid}/n_\mathrm{\langle H\rangle}$')
   plt.xscale('log')
   plt.xlim(Tmin,Tmax)
-  plt.ylim(ymax-10,ymax+0.3)
+  plt.ylim(ymax-8,ymax+0.3)
   ax.set_xticks(locmaj)
   ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
   col = 3
@@ -206,23 +243,31 @@ if (ymax>-99):
     print Tg[iT],iact,outp  
 
 #================== condensation groups =============================
-  family = ['silicates','feldspar','Ca-Al-Ti','iron','iron-oxides',
-            'sulphide','phyllosilicates','halide','P-compounds','ices','other']
+  family = ['silicates','feldspar','Ca-Al-Ti','Fe-Ni-Cr','graphite','iron-oxides','metal-oxides',
+            'sulphide','phyllosilicates','carbonates','halide','P-compounds','ices','other']
   Nfam   = len(family)
   member = []
-  member.append(['MgSiO3','Mg2SiO4','Mn2SiO4','NaAlSiO4','Fe2SiO4','Na2SiO3','CaMgSi2O6',
-                 'KAlSiO4','CaSiO3'])
+  member.append(['SiO','SiO2','SiO2[l]','MgSiO3','MgSiO3[l]','Mg2SiO4','Mg2SiO4[l]',
+                 'Mn2SiO4','NaAlSiO4','Fe2SiO4','Na2SiO3','CaMgSi2O6','KAlSiO4','CaSiO3',
+                 'Ca3Fe2Si3O12','Mn3Al2Si3O12','Na2SiO3[l]','Ca2SiO4','KAlSi2O6',
+                 'NaAlSi2O6','MnSiO3','NaFeSi2O6','NaCrSi2O6'])
   member.append(['KAlSi3O8','CaAl2Si2O8','NaAlSi3O8'])
-  member.append(['Al2O3','Ca3Al2Si3O12','MnTiO3','CaTiSiO5','Ca2Al2SiO7','Ti4O7','FeAl2O4','Ca2MgSi2O7',
-                 'Ca2MgSi2O7','TiO2','CaTiO3','MgAl2O4','Ca3Fe2Si3O12','FeTiO3','Mn3Al2Si3O12'])
-  member.append(['Fe'])
-  member.append(['Fe3O4'])
-  member.append(['FeS','MnS'])
-  member.append(['Mg3Si2O9H4','NaMg3AlSi3O12H2','MnAl2SiO7H2','Mg3Si4O12H2','FeAl2SiO7H2','KFe3AlSi3O12H2',
-                 'CaAl2Si2O10H4','Fe3Si2O9H4','KMg3AlSi3O12H2'])
-  member.append(['NaCl','KCl'])
-  member.append(['Ca5P3O13H','Ca5P3O12F'])
-  member.append(['H2O','NH3'])
+  member.append(['Al2O3','Al2O3[l]','Ca3Al2Si3O12','MnTiO3','CaTiSiO5','Ca2Al2SiO7','Ti4O7',
+                 'FeAl2O4','Ca2MgSi2O7','Ca2MgSi2O7','TiO2','CaTiO3','MgAl2O4','FeTiO3',
+                 'Mg2TiO4[l]','MgAl2O4[l]','MgTi2O5','MgTi2O5[l]','Fe2TiO4','CaO[l]',
+                 'Ti3O5'])
+  member.append(['Fe[l]','Fe','Ni[l]','Ni','Cr'])
+  member.append(['C'])
+  member.append(['Fe2O3','Fe3O4','FeO','FeO[l]'])
+  member.append(['Mn2O3','MgCr2O4','Cr2O3','MgFe2O4','MnO','VO','V2O3'])
+  member.append(['FeS','FeS[l]','FeS2','MnS','CaSO4','Ni3S2'])
+  member.append(['Mg3Si2O9H4','NaMg3AlSi3O12H2','MnAl2SiO7H2','Mg3Si4O12H2','FeAl2SiO7H2',
+                 'KFe3AlSi3O12H2','CaAl2Si2O10H4','Fe3Si2O9H4','KMg3AlSi3O12H2','CaAl2Si4O16H8',
+                 'Al2Si2O9H4','Ca2FeAl2Si3O13H','Ca2MnAl2Si3O13H','NaAl3Si3O12H2'])
+  member.append(['CaMgC2O6','CaCO3'])
+  member.append(['NaCl','KCl','MgF2','CaF2'])
+  member.append(['Ca5P3O13H','Ca5P3O12F','Mg3P2O8'])
+  member.append(['H2O','H2O[l]','NH3'])
   member.append([' '])
   file  = 'data/DustChem.dat'
   data  = open(file)
@@ -246,7 +291,7 @@ if (ymax>-99):
     if (np.size(ind) == 0): continue
     ind = ind[0]
     yy = 10**dat[:,ind]               # nsolid/n<H>
-    if (np.max(yy)<1.E-9): continue
+    if (np.max(yy)<1.E-20): continue
     found = False
     ifam = Nfam-1
     for fam in range(0,Nfam):
@@ -287,25 +332,32 @@ if (ymax>-99):
     rho_all       = rho_all       + yfam
   
   fig,ax = plt.subplots()
-  plt.plot(Tg,dust_gas,c='black',lw=4)
+  #plt.plot(Tg,dust_gas,c='black',lw=4)
   count = 0
   for ifam in range(0,Nfam):
     mass_ratio = rho_fam[ifam]
     mass_ratio = mass_ratio[iii]/rho_all[iii]
-    plt.plot(Tg[iii],dust_gas[iii]*mass_ratio,lw=2,c=colo[count],label=family[ifam])
-    count = count + 1
+    if (np.max(mass_ratio)>1.E-5):
+      plt.plot(Tg[iii],dust_gas[iii]*mass_ratio,lw=2,c=colo[count],label=family[ifam])
+      count = count + 1
   plt.xlabel(r'$T\ \mathrm{[K]}$')
-  plt.ylabel(r'$\mathrm{dust/gas}$')
+  plt.ylabel(r'$\mathrm{cond/gas}$')
   ymax = np.max(np.log10(dust_gas))
   plt.xlim(Tmin,Tmax)
-  plt.ylim(10**(ymax-4),10**ymax*12)
+  plt.ylim(10**(ymax-9),10**ymax*4)
   plt.xscale('log')
   plt.yscale('log')
-  ax.yaxis.set_minor_locator(LogLocator(subs=[2,3,4,5,6,7,8,9]))
+  #ax.yaxis.set_minor_locator(LogLocator(subs=[2,3,4,5,6,7,8,9]))
+  ax.set_xticks(locmaj)
+  ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
   #ax.set_xticks(locmaj)
   #ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
   leg = plt.legend(loc='upper center',fontsize=9,fancybox=True,ncol=4)
   leg.get_frame().set_alpha(0.7)
+  count = 0
+  for text in leg.get_texts():
+    text.set_color(colo[count])
+    count = count+1
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
   plt.clf()
@@ -440,7 +492,7 @@ ellist = ['H','C','O','N','SI','S','NA','CL','CA','TI','K','AL','MG','FE','LI','
 allist = [' ',' ',' ',' ','Si',' ','Na','Cl','Ca','Ti',' ','Al','Mg','Fe','Li',' ',' ','Ni','Mn','Cr','Zn','Zr','Rb','Cu',' ','Br',' ','Sr',' ','+']
 exlist = [' He ',' Cl CL Ca CA Cr CR Co Cu CU ',' ',' Na NA Ni NI Ne NE ',' ',' Si SI Sr SR ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' Fe FE ',' ',' ',' ',' ',' ',' ',' ',' ',' Br BR ',' ',' ',' ',' ',' ']
 titels = ['hydrogen','carbon','oxygen','nitrogen','silicon','sulphur','sodium','chlorine','calcium','titanium','potassium','aluminum','magnesium','iron','lithium','fluorine','phosphorus','nickel','manganese','chromium','zinc','zirconium','rubidium','copper','boron','bromine','vanadium','strontium','tungston','charge carriers']
-limits = [1,1,5,5,6,5,6,4,7,8,6,6,6,6,7,6,6,6,6,6,6,6,6,6,6,6,6,6,6,1.2]
+limits = [2,2,2,2,6,5,6,4,7,8,6,6,6,6,7,6,6,6,6,6,6,6,6,6,6,6,6,6,6,1.2]
 condensates = indices
 for i in range(0,30):
   fig,ax = plt.subplots()
