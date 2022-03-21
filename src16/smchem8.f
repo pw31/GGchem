@@ -272,10 +272,11 @@
               pwork = ptest
               imaj2(enew) = imaj(enew)
               imaj(enew) = i
-              !print*,cmol(i),pwork,lnc(l)
+              !print*,"first",cmol(i),pwork,lnc(l)
             else if (ptest<pwork2) then  
               pwork2 = ptest
               imaj2(enew) = i
+              !print*,"second",cmol(i),pwork,lnc(l)
             endif
           endif
         enddo
@@ -405,7 +406,7 @@
           pmol = EXP(pmol)
           i1 = 0
           s1 = 0
-          qmost = 0.Q0
+          qmost = 0.d0
           do j=1,m_kind(0,i)
             e = m_kind(j,i)
             if (e==el) cycle
@@ -415,7 +416,6 @@
               cycle
             endif
             qq = pmol*m_anz(j,i)/(eps(e)*anHges*kT)
-            !print*,catm(e),cmol(i),REAL(qq)
             if (qq>qmost) then
               qmost = qq
               i2 = e
@@ -427,15 +427,15 @@
             imaj2(i2) = imaj(i2)
             imaj(i2) = i
             pmol = eps(i2)*anHges*kT/s2
-            if (eps(i1)*anHges*kT-s1*pmol<0.d0) then
+            if (eps(i1)*anHges*kT-s1*pmol<0.d0.and.imaj2(i2)>0) then
               tmp= i1
               i1 = i2
               i2 = tmp
               tmp= s1
               s1 = s2
               s2 = tmp
+              pmol = eps(i2)*anHges*kT/s2
             endif
-            pmol = eps(i2)*anHges*kT/s2
             if (eps(i1)*anHges*kT-s1*pmol<0.d0) possible=.false.
             if (i2==el) possible=.false.
           endif  
@@ -444,7 +444,7 @@
      >      !       REAL(eps(i1)*anHges*kT-s1*pmol)
             !print*,catm(i2),cmol(i),cmol(imaj2(i2)),
      >      !       REAL(eps(i2)*anHges*kT-s2*pmol)
-            i3 = imaj2(i1)   ! second most important carrier of i1
+            i3 = imaj2(i1)      ! second most important carrier of i1
             s3 = 0
             s4 = 0
             lnp3 = g(i3)

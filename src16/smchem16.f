@@ -263,16 +263,18 @@
           if (l>0.and.(enew/=el)) then
             lnc(l) = MAX(lnc(l),LOG(REAL(l,kind=qp))+lnp)
             sum = LOG(pges) - lnp - LOG(REAL(l,kind=qp))
+            if (sum>300.q0*l) cycle
             ptest = EXP(sum/l)
             if (ptest<pwork) then
               pwork2 = pwork
               pwork = ptest
               imaj2(enew) = imaj(enew)
               imaj(enew) = i
-              !print*,cmol(i),pwork,lnc(l)
+              !print*,"first",cmol(i),pwork,lnc(l)
             else if (ptest<pwork2) then  
               pwork2 = ptest
               imaj2(enew) = i
+              !print*,"second",cmol(i),pwork,lnc(l)
             endif
           endif
         enddo
@@ -431,7 +433,7 @@
             imaj2(i2) = imaj(i2)
             imaj(i2) = i
             pmol = eps(i2)*anHges*kT/s2
-            if (eps(i1)*anHges*kT-s1*pmol<0.Q0) then
+            if (eps(i1)*anHges*kT-s1*pmol<0.Q0.and.imaj2(i2)>0) then
               tmp= i1
               i1 = i2
               i2 = tmp
