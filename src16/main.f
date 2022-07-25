@@ -165,7 +165,10 @@
       enddo  
       mugas = rhog/ngas             ! mean molecular weight [g]
       d2g   = rhod/rhog             ! dust/gas mass ratio [-]
-      if (Vcon>0.d0) then
+      if (Vcon==0.d0) then
+        print'("Tg[K]=",0pF8.2," n<H>[cm-3]=",1pE10.3,
+     >         " p[bar]=",1pE10.3)',Tg,nHges,pgas/bar
+      else
       rhoc  = rhod/Vcon             ! condensed matter density [g cm-3]
       mcond = 1.0                   ! mass of condensates [= 1 g]
       Vcond = mcond/rhoc            ! volume of condensates [cm3]

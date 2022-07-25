@@ -25,7 +25,7 @@
       integer :: i,j,k,l,e,jj,dk,NOUT,Nfirst,Nlast,Ninc,iW,idum
       integer :: it,n1,n2,n3,n4,n5,Ndat,dind(1000),ek,eind(1000)
       integer :: Nx,Nz,ix,iz,Nfound,e_source(100),e_target(100)
-      integer :: cut,verbose=0
+      integer :: stindex,cut,verbose=0
       character(len=20000) :: header
       character(len=200) :: line,filename
       character(len=20) :: name,short_name(NDUST),dname,ename
@@ -395,6 +395,8 @@
         short_name(i) = name
         if (j>0) short_name(i)=name(1:j-1)
       enddo
+      iW = stindex(dust_nam,NDUST,'W[s]')
+      hasW = (iW>0)
       eps  = eps0
       NOUT = NELM
       if (charge) NOUT=NOUT-1
