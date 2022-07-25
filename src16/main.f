@@ -448,27 +448,27 @@
         endif
       endif
 
-      print'(99(A9))',"SO2[ppm]","H2O[ppm]","OCS[ppm]","CO[ppm]",
-     >                "HF[ppb]","HCl[ppb]","S2[ppb]"
-      print'(99(0pF9.2))',nmol(SO2)/ngas/1.E-6,
-     >                    nmol(H2O)/ngas/1.E-6,
-     >                    nmol(OCS)/ngas/1.E-6,
-     >                    nmol(CO) /ngas/1.E-6,
-     >                    nmol(HF) /ngas/1.E-9,
-     >                    nmol(HCl)/ngas/1.E-9,
-     >                    nmol(S2)/ngas/1.E-9
+      !print'(99(A9))',"SO2[ppm]","H2O[ppm]","OCS[ppm]","CO[ppm]",
+     >!                "HF[ppb]","HCl[ppb]","S2[ppb]"
+      !print'(99(0pF9.2))',nmol(SO2)/ngas/1.E-6,
+     >!                    nmol(H2O)/ngas/1.E-6,
+     >!                    nmol(OCS)/ngas/1.E-6,
+     >!                    nmol(CO) /ngas/1.E-6,
+     >!                    nmol(HF) /ngas/1.E-9,
+     >!                    nmol(HCl)/ngas/1.E-9,
+     >!                    nmol(S2)/ngas/1.E-9
       !print'(99(A9))',"H2O[%]","CO2[%]","N2[%]","O2[%]"
       !print'(99(0pF9.4))',nmol(H2O)/ngas/1.E-2,
      >!                    nmol(CO2)/ngas/1.E-2,
      >!                    nmol(N2) /ngas/1.E-2,
      >!                    nmol(O2) /ngas/1.E-2
-      do i=1,NDUST
-        if (dust_nam(i).eq.'H2O[l]') then
-          print'("  S(H2O[l])=",1pE10.3)',Sat(i) 
-        else if (dust_nam(i).eq.'C[s]') then
-          print'("  S(  C[s])=",1pE10.3)',Sat(i)
-        endif  
-      enddo
+      !do i=1,NDUST
+      !  if (dust_nam(i).eq.'H2O[l]') then
+      !    print'("  S(H2O[l])=",1pE10.3)',Sat(i) 
+      !  else if (dust_nam(i).eq.'C[s]') then
+      !    print'("  S(  C[s])=",1pE10.3)',Sat(i)
+      !  endif  
+      !enddo
       
 *     -----------------------------------------------------
 *     ***  Calculation of the condenstation timescales  ***

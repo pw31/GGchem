@@ -68,11 +68,9 @@ if (nHmax>nHmin*5):
   nHmin = nHmin/2.0
   nHmax = nHmax*2.0
 sep = 20
-if (Tmax-Tmin>1500): sep=100
-if (Tmax-Tmin>1000): sep=50
-if (Tmax-Tmin<600): sep=20
 if (Tmax-Tmin<400): sep=10
-sep = 10
+if (Tmax-Tmin>1000): sep=50
+if (Tmax-Tmin>2000): sep=100
 #Tmin  = Tmin*0.95
 #Tmax  = Tmax*1.1
 colo = ['blue','black','silver','red','darkorange','gold','darkorchid','aqua','cadetblue','cornflowerblue','chartreuse','limegreen','darkgreen','chocolate','darkgoldenrod','darkkhaki','pink','moccasin']
@@ -213,7 +211,7 @@ if (ymax>-99):
   plt.xlabel(r'$T\ \mathrm{[K]}$')
   plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{solid}/n_\mathrm{\langle H\rangle}$')
   plt.xlim(Tmin,Tmax)
-  plt.ylim(ymax-10,ymax+0.3)
+  plt.ylim(ymax-8,ymax+0.3)
   minorLocator = MultipleLocator(sep)
   ax.xaxis.set_minor_locator(minorLocator)
   minorLocator = MultipleLocator(1.0)
@@ -244,23 +242,31 @@ if (ymax>-99):
     print Tg[iT],iact,outp  
 
 #================== condensation groups =============================
-  family = ['silicates','feldspar','Ca-Al-Ti','iron','iron-oxides',
-            'sulphide','phyllosilicates','halide','P-compounds','ices','other']
+  family = ['silicates','feldspar','Ca-Al-Ti','Fe-Ni-Cr','graphite','iron-oxides','metal-oxides',
+            'sulphide','phyllosilicates','carbonates','halide','P-compounds','ices','other']
   Nfam   = len(family)
   member = []
-  member.append(['MgSiO3','Mg2SiO4','Mn2SiO4','NaAlSiO4','Fe2SiO4','Na2SiO3','CaMgSi2O6',
-                 'KAlSiO4','CaSiO3'])
+  member.append(['SiO','SiO2','SiO2[l]','MgSiO3','MgSiO3[l]','Mg2SiO4','Mg2SiO4[l]',
+                 'Mn2SiO4','NaAlSiO4','Fe2SiO4','Na2SiO3','CaMgSi2O6','KAlSiO4','CaSiO3',
+                 'Ca3Fe2Si3O12','Mn3Al2Si3O12','Na2SiO3[l]','Ca2SiO4','KAlSi2O6',
+                 'NaAlSi2O6','MnSiO3','NaFeSi2O6','NaCrSi2O6'])
   member.append(['KAlSi3O8','CaAl2Si2O8','NaAlSi3O8'])
-  member.append(['Al2O3','Ca3Al2Si3O12','MnTiO3','CaTiSiO5','Ca2Al2SiO7','Ti4O7','FeAl2O4','Ca2MgSi2O7',
-                 'Ca2MgSi2O7','TiO2','CaTiO3','MgAl2O4','Ca3Fe2Si3O12','FeTiO3','Mn3Al2Si3O12'])
-  member.append(['Fe'])
-  member.append(['Fe3O4'])
-  member.append(['FeS','MnS'])
-  member.append(['Mg3Si2O9H4','NaMg3AlSi3O12H2','MnAl2SiO7H2','Mg3Si4O12H2','FeAl2SiO7H2','KFe3AlSi3O12H2',
-                 'CaAl2Si2O10H4','Fe3Si2O9H4','KMg3AlSi3O12H2'])
-  member.append(['NaCl','KCl'])
-  member.append(['Ca5P3O13H','Ca5P3O12F'])
-  member.append(['H2O','NH3'])
+  member.append(['Al2O3','Al2O3[l]','Ca3Al2Si3O12','MnTiO3','CaTiSiO5','Ca2Al2SiO7','Ti4O7',
+                 'FeAl2O4','Ca2MgSi2O7','Ca2MgSi2O7','TiO2','CaTiO3','MgAl2O4','FeTiO3',
+                 'Mg2TiO4[l]','MgAl2O4[l]','MgTi2O5','MgTi2O5[l]','Fe2TiO4','CaO[l]',
+                 'Ti3O5'])
+  member.append(['Fe[l]','Fe','Ni[l]','Ni','Cr'])
+  member.append(['C'])
+  member.append(['Fe2O3','Fe3O4','FeO','FeO[l]'])
+  member.append(['Mn2O3','MgCr2O4','Cr2O3','MgFe2O4','MnO','VO','V2O3'])
+  member.append(['FeS','FeS[l]','FeS2','MnS','CaSO4','Ni3S2'])
+  member.append(['Mg3Si2O9H4','NaMg3AlSi3O12H2','MnAl2SiO7H2','Mg3Si4O12H2','FeAl2SiO7H2',
+                 'KFe3AlSi3O12H2','CaAl2Si2O10H4','Fe3Si2O9H4','KMg3AlSi3O12H2','CaAl2Si4O16H8',
+                 'Al2Si2O9H4','Ca2FeAl2Si3O13H','Ca2MnAl2Si3O13H','NaAl3Si3O12H2'])
+  member.append(['CaMgC2O6','CaCO3'])
+  member.append(['NaCl','KCl','MgF2','CaF2'])
+  member.append(['Ca5P3O13H','Ca5P3O12F','Mg3P2O8'])
+  member.append(['H2O','H2O[l]','NH3'])
   member.append([' '])
   file  = 'data/DustChem.dat'
   data  = open(file)
@@ -284,7 +290,7 @@ if (ymax>-99):
     if (np.size(ind) == 0): continue
     ind = ind[0]
     yy = 10**dat[:,ind]               # nsolid/n<H>
-    if (np.max(yy)<1.E-9): continue
+    if (np.max(yy)<1.E-20): continue
     found = False
     ifam = Nfam-1
     for fam in range(0,Nfam):
@@ -325,7 +331,7 @@ if (ymax>-99):
     rho_all       = rho_all       + yfam
   
   fig,ax = plt.subplots()
-  plt.plot(Tg,dust_gas,c='black',lw=4)
+  #plt.plot(Tg,dust_gas,c='black',lw=4)
   count = 0
   for ifam in range(0,Nfam):
     mass_ratio = rho_fam[ifam]
@@ -336,7 +342,7 @@ if (ymax>-99):
   plt.ylabel(r'$\mathrm{dust/gas}$')
   ymax = np.max(np.log10(dust_gas))
   plt.xlim(Tmin,Tmax)
-  plt.ylim(10**(ymax-4),10**ymax*12)
+  plt.ylim(10**(ymax-8),10**ymax*12)
   plt.yscale('log')
   ax.yaxis.set_minor_locator(LogLocator(subs=[2,3,4,5,6,7,8,9]))
   minorLocator = MultipleLocator(sep)
@@ -416,7 +422,7 @@ if (ymax>-99):
   plt.clf()
 
 #================== selected condensates ===================
-selsolids = ['Al2O3','Al2SiO5','MgF2','FeS2','MgCO3','CaMgC2O6','NaCl','Mg3Si4O12H2']
+selsolids = ['Mg3Si4O12H2','H2O[l]','H2O','AlF6Na3','CaMgC2O6','MgF2','CaF2']
 fig,ax = plt.subplots()
 count = 0
 for solid in selsolids:
@@ -428,11 +434,11 @@ for solid in selsolids:
   count = count + 1
 plt.title('selected condensates')
 plt.xlabel(r'$T\ \mathrm{[K]}$')
-plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{solid}/n_\mathrm{\langle H\rangle}$',fontsize=20)
-plt.plot([735,735],[-10,10],c='black',ls=':',lw=2)    
+plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{solid}/n_\mathrm{\langle H\rangle}$')
+#plt.plot([735,735],[-10,10],c='black',ls=':',lw=2)    
 #plt.xscale('log')
 plt.xlim(Tmin,Tmax)
-plt.ylim(-5,+7)
+plt.ylim(-10,0)
 minorLocator = MultipleLocator(sep)
 ax.xaxis.set_minor_locator(minorLocator)
 minorLocator = MultipleLocator(1.0)
@@ -461,33 +467,33 @@ ntot  = 0.0*nHtot
 for i in range(3,4+NELEM+NMOLE): # electrons, all atoms, ions and cations
   ntot = ntot + 10**dat[:,i]
 lntot = np.log10(ntot)
+#print lntot
 count = 0
 for i in range(3,4+NELEM+NMOLE): 
   mol = keyword[i]
   yy = dat[:,i]-lntot            # log10 nmol/ntot
-  crit = -2.5
-  crit = -5
+  crit = -4.0
   ind = np.where(mols == mol)[0]
-  if (np.size(ind)>0): crit=-5
-  if (np.size(ind)>0): crit=-7
-  #print i,mol,ind,np.size(ind)
+  #if (np.size(ind)>0): crit=-5
+  #if (np.size(ind)>0): crit=-7
   if (np.max(yy[iii])>crit):
     plt.plot(Tg,yy,c=colo[count],ls=styl[count],lw=widt[count],label=mol)
     count = count + 1
 #plt.plot([735,735],[-9,+1],c='black',ls=':',lw=2)    
 plt.title('important molecules')
 plt.xlabel(r'$T\ \mathrm{[K]}$')
-plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{tot}$',fontsize=20)
+plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{tot}$')
 plt.xlim(Tmin,Tmax)
-plt.ylim(-8.6,0.2)
-if (Tmax/Tmin>10):
-  plt.xscale('log')
-else:  
-  minorLocator = MultipleLocator(sep)
-  ax.xaxis.set_minor_locator(minorLocator)
-minorLocator = MultipleLocator(0.2)
-ax.yaxis.set_minor_locator(minorLocator)
-leg = plt.legend(loc='upper right',fontsize=11,fancybox=True)
+plt.ylim(-5.0,0.2)
+minorLocator = MultipleLocator(sep)
+ax.xaxis.set_minor_locator(minorLocator)
+ax.annotate(r'$\rm{current\ Earth}$',xy=(288.15,-3.45), xycoords='data',
+              xytext=(5,-35), textcoords='offset points',
+              arrowprops=dict(facecolor='black', shrink=0.1, 
+                              headwidth=7, headlength=6,width=2),
+              horizontalalignment='left', verticalalignment='center')
+
+leg = plt.legend(loc='best',fontsize=9,ncol=3,fancybox=True)
 leg.get_frame().set_alpha(0.7)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
@@ -611,11 +617,8 @@ for i in range(0,30):
   plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{tot}$')
   plt.xlim(Tmin,Tmax)
   plt.ylim(nmin,nmax+1)
-  if (Tmax/Tmin>10):
-    plt.xscale('log')
-  else:  
-    minorLocator = MultipleLocator(sep)
-    ax.xaxis.set_minor_locator(minorLocator)
+  minorLocator = MultipleLocator(sep)
+  ax.xaxis.set_minor_locator(minorLocator)
   minorLocator = MultipleLocator(1.0)
   if (nmax-nmin>50): minorLocator = MultipleLocator(2.0)
   if (nmax-nmin>100): minorLocator = MultipleLocator(5.0)

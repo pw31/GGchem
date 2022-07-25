@@ -17,6 +17,17 @@
       end MODULE DATABASE
 
 **********************************************************************
+      SUBROUTINE ERASE_DBASE
+**********************************************************************
+      use DATABASE,ONLY: NDAT,NLAST,NMODI
+      implicit none
+      NDAT=0
+      NLAST=0
+      NMODI=0
+      end
+
+
+**********************************************************************
       SUBROUTINE SAVE_DBASE
 **********************************************************************
       use dust_data,ONLY: NELEM,NDUST,dust_nam
@@ -96,6 +107,7 @@
       use PARAMETERS,ONLY: verbose
       use dust_data,ONLY: NELEM,NDUST,NEPS,dust_nam,eps0,elnr
       use DATABASE,ONLY: qp,NDAT,NLAST,NMODI,DMAX,dbase
+      use CHEMISTRY,ONLY: NELM,elnum,iel=>el
       implicit none
       real*8,intent(in) :: nH,T,qbest
       integer,intent(in) :: ibest
@@ -126,8 +138,9 @@
         endif  
       endif  
       prod = 0.0
-      do e=1,NEPS
-        el = elnr(e) 
+      do i=1,NELM
+        if (i==iel) cycle
+        el = elnum(i)
         prod = prod + LOG(eps0(el))
       enddo  
       dbase(i)%ln    = LOG(nH)
@@ -181,8 +194,9 @@
       endif  
 
       prod = 0.0
-      do e=1,NEPS
-        el = elnr(e) 
+      do i=1,NELM
+        if (i==iel) cycle
+        el = elnum(i)
         prod = prod + LOG(eps0(el))
       enddo
       if (verbose>=0) then
