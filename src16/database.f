@@ -118,7 +118,8 @@
       
       !if (qbest<1.d-8) then
       !  return 
-      !else 
+      !else
+      print*,"==> qbest=",qbest
       if (qbest<1.d-3) then
         i = ibest
         if (verbose>=0) then
@@ -138,9 +139,9 @@
         endif  
       endif  
       prod = 0.0
-      do i=1,NELM
-        if (i==iel) cycle
-        el = elnum(i)
+      do j=1,NELM
+        if (j==iel) cycle
+        el = elnum(j)
         prod = prod + LOG(eps0(el))
       enddo  
       dbase(i)%ln    = LOG(nH)
@@ -175,7 +176,7 @@
       real(kind=qp),intent(inout) :: eps(NELEM),ddust(NDUST)
       logical,intent(out) :: active(0:NDUST)
       real*8 :: prod,lp,ln,lT,lpread,lnread,lTread
-      real*8 :: qual,qmodi,pot,pote,potn,rsort(NEPS)
+      real*8 :: qual,pot,pote,potn,rsort(NEPS)
       real(kind=qp) :: check(NELEM),error,errmax,sjk,sik
       real(kind=qp) :: stoich(NEPS,NEPS),xx(NEPS),rest(NEPS),tmp,val
       real(kind=qp) :: ecopy(NELEM),dcopy(NDUST),deps0(NELEM),echange
@@ -211,6 +212,8 @@
       pote   = 10.0
       potn   = 0.05
       !--- try last entry modified first ---
+      !if (verbose>=0) write(*,*) "check last one ...",
+     >!     NDAT,NMODI,NPICK1,NPICK2
       if (NMODI>0) then
         i=NMODI
         lnread = dbase(i)%ln 
@@ -218,12 +221,14 @@
         lpread = dbase(i)%eprod
         qual = potn*ABS(lnread-ln)+ABS((lTread-lT)+pot*(lnread-ln))
      >       + pote*ABS(lpread-lp)
-        qbest = qual
-        qmodi = qual
-        ibest = i
-        if (qbest<1.d-3) goto 100
+        if (qual<qbest) then
+          qbest = qual
+          ibest = i
+          if (qbest<1.d-3) goto 100
+        endif
       endif  
       !--- try around entry picked last time ---  
+      !if (verbose>=0) write(*,*) "check around last one ..."
       do i=MAX(1,NPICK1-1),MIN(NDAT,NPICK1+1)
         lnread = dbase(i)%ln 
         lTread = dbase(i)%lT
