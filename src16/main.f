@@ -72,17 +72,16 @@
       use EXCHANGE,ONLY: nel,nat,nion,nmol,mmol,H,C,N,O,Si
       implicit none
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
-      real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST)
-      real(kind=qp) :: nmax,threshold,deps
+      real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST),epsd(NELEM)
+      real(kind=qp) :: nmax,threshold
       real*8,parameter :: pi=3.14159265358979D+0
       real*8  :: Tg,nHges,p,mu,muold,pgas,fold,ff,dfdmu,dmu,mugas,Vol
       real*8  :: rhog,rhoc,rhod,d2g,mcond,mgas,Vcon,Vcond,Vgas,ngas
       real*8  :: nkey,nkeyt,tchem,tchemtot,AoverV,mic,atyp,alpha,vth
-      real*8  :: yr,Myr,molm,molmass,stoich,HH,OO,CC,NN
+      real*8  :: yr,Myr,molm,molmass,stoich,HH,OO,CC,NN,epstot1,epstot2
       integer :: i,imol,iraus,e,aIraus,aIIraus,j,verb,dk,it,stindex
-      integer :: k,keyel,imax,dustst
+      integer :: k,keyel,dustst
       integer :: H2O,CO2,CH4,O2,H2,N2,NH3,CO,OCS,SO2,S2,H2S,HCl,HF
-      integer :: P4O6,POF3
       logical :: included,haeufig,raus(NMOLE)
       logical :: rausI(NELEM),rausII(NELEM)
       character(len=10) :: sp
@@ -208,6 +207,25 @@
      >                eldust(iraus)*nHges,
      >                eldust(iraus)*dust_mass(iraus)*nHges/rhod,
      >                eldust(iraus)*dust_Vol(iraus)*nHges/Vcon
+      enddo
+      write(*,*) '----- element fractions in condensates -----'
+      epsd(:) = 0.0
+      do i=1,NDUST
+        do k=1,dust_nel(i)
+          e = dust_el(i,k)
+          epsd(e) = epsd(e) + eldust(i)*dust_nu(i,k)
+        enddo
+      enddo  
+      epstot1 = SUM(epsd)
+      epstot2 = SUM(eps)
+      write(*,'(4x,A12,A12,A24)') 'efrac(dust)',
+     >     'efrac(gas)','efrac(dust)/efrac(gas)'
+      do i=1,NELM
+        if (i==el) cycle
+        e = elnum(i) 
+        write(*,'(A2,2x,99(1pE12.4))') trim(elnam(e)),
+     >       epsd(e)/epstot1,eps(e)/epstot2,
+     >       (epsd(e)/epstot1)/(eps(e)/epstot2)
       enddo
       endif
       
