@@ -476,6 +476,7 @@
      >                   //catm(i2)
      >                   //" with molecules "//trim(cmol(i))//" "
      >                   //trim(cmol(i3))//" ..."
+            !print*,s1,s2,s3,s4
             !--- solve eps(i1)*anHges*kT = s1*pmol + s3*p_second ---
             !--- with  eps(i2)*anHges*kT = s2*pmol               ---
             FF(1) = LOG((eps(i1)*anHges*kT-s1*pmol)/s3)-lnp3
@@ -488,8 +489,10 @@
             possible = (dp(1)<1000.0).and.(dp(2)<1000.0)
           endif
           if (possible) then
+            !print*,anmono(i1)*kT,anmono(i2)*kT
+            !print*,EXP(dp(1:2))
             anmono(i1) = EXP(dp(1))*kT1
-            anmono(i2) = EXP(dp(2))*kT1
+            anmono(i2) = MIN(anmono(i2),EXP(dp(2))*kT1)
             !print'(A2,9(1pE16.8))',catm(i1),eps(i1)*anHges*kT,
      >      !                       s1*EXP(lnp+s1*dp(1)+s2*dp(2))
      >      !                      +s3*EXP(lnp3+s3*dp(1)+s4*dp(2))
@@ -502,7 +505,7 @@
               anmono(i2) = anmono(i2)*pcorr(enew,i2)
             endif  
             DUALco = DUALco+1
-          endif  
+          endif
           !--- special case CH4+CO2+H2O ---
           HCOproblem = (Nact>2).and.(enew==H.or.enew==C.or.enew==O)
      >                 .and.(CH4>0).and.(H2O>0).and.(CO2>0)

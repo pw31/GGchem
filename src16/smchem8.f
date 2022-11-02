@@ -483,7 +483,7 @@
           endif
           if (possible) then
             anmono(i1) = EXP(dp(1))*kT1
-            anmono(i2) = EXP(dp(2))*kT1
+            anmono(i2) = MIN(anmono(i2),EXP(dp(2))*kT1)
             !print'(A2,9(1pE16.8))',catm(i1),eps(i1)*anHges*kT,
      >      !                       s1*EXP(lnp+s1*dp(1)+s2*dp(2))
      >      !                      +s3*EXP(lnp3+s3*dp(1)+s4*dp(2))
