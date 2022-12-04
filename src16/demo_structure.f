@@ -381,6 +381,29 @@
           Ninc   = 1            ! high-to-low T
         endif
         
+      !--------------------------------------------------------
+      else if (model_struc==9) then   ! ARCiS output
+      !--------------------------------------------------------
+        open(3,file=filename,status='old')
+        do i=1,1
+          read(3,'(A200)') line
+        enddo  
+        do i=1,99999
+          read(3,*,end=556) rdum,zdum,rho,dat(1),Tg,pgas
+          zz(i) = zdum
+          Tgas(i)  = Tg
+          press(i) = pgas*bar
+          dens(i) = rho
+          nHtot(i) = rho/muH
+          estruc(i,:) = eps0(:)
+        enddo
+ 556    continue
+        close(3)
+        Npoints = i-1
+        Nfirst = 1
+        Nlast  = Npoints
+        Ninc   = 1             ! bottom to top
+
       else
         print*,"*** unknown file format =",model_struc
         stop
@@ -438,7 +461,7 @@
      &                   (elnam(elnum(j)),j=el+1,NELM)
         print'(99(1pE12.3))',(eps0(elnum(j)),j=1,el-1),
      &                       (eps0(elnum(j)),j=el+1,NELM)
-
+        
         !--- run chemistry (+phase equilibrium)    ---
         !--- iterate to achieve requested pressure ---
         do it=1,99
@@ -502,7 +525,7 @@
      &                      (eps(k)+e_reservoir(k))/eps00(k)
           enddo
           eps0(:) = eps(:) + (1.Q0-fac)*e_reservoir(:)
-          estruc(i+Ninc,:) =  eps0(:)  ! for next layer
+          estruc(i+Ninc,:) =  eps0(:)                  ! for next layer
           if (outAllHistory) then                      ! output will contain:
             eldust(:) = d_reservoir(:)                 ! all condensates ever
           else 
