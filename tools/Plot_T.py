@@ -192,10 +192,10 @@ for i in range(4+NELEM+NMOLE,4+NELEM+NMOLE+NDUST,1):
   yy = dat[:,ind]               # log10 nsolid/n<H>
   ymax = np.max([ymax,np.max(yy[iii])])
   ymin = -99
+indices = np.argsort(smean)
 if (ymax>-99):
   print solids
   fig,ax = plt.subplots()
-  indices = np.argsort(smean)
   count = 0
   for isolid in reversed(indices):
     solid = solids[isolid]

@@ -389,9 +389,9 @@ count = 0
 for i in range(3,4+NELEM+NMOLE): 
   mol = keyword[i]
   yy = dat[:,i]-lntot            # log10 nmol/ntot
-  crit = -5
+  crit = -2
   ind = np.where(mols == mol)[0]
-  if (np.size(ind)>0): crit=-7
+  if (np.size(ind)>0): crit=-2
   #print i,mol,ind,np.size(ind)
   if (np.max(yy[iii])>crit):
     plt.plot(lp,yy,c=colo[count],ls=styl[count],lw=widt[count],label=mol)
@@ -401,7 +401,7 @@ plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$')
 plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{tot}$')
 plt.xlim(pmin,pmax)
 plt.ylim(-8,0.2)
-leg = plt.legend(loc='best',fontsize=10,ncol=col,handlelength=3,fancybox=True)
+leg = plt.legend(loc='best',fontsize=8,ncol=col,handlelength=3,fancybox=True)
 leg.get_frame().set_alpha(0.7)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')

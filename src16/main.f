@@ -84,9 +84,9 @@
       integer :: H2O,CO2,CH4,O2,H2,N2,NH3,CO,OCS,SO2,S2,H2S,HCl,HF
       logical :: included,haeufig,raus(NMOLE)
       logical :: rausI(NELEM),rausII(NELEM)
-      character(len=10) :: sp
+      character(len=10) :: sp,also(30)
       character(len=20) :: limcond
-      integer :: iseq
+      integer :: iseq,Nalso
       
       nHges = nHmax
       Tseq(Nseq) = Tmax
@@ -286,26 +286,27 @@
      >  !                nion(aIIraus)/ngas,nion(aIIraus)/ngas
         endif  
       enddo
-      iraus = stindex(cmol,NMOLE,'H2')
-      if (.not.raus(iraus))
-     >   write(*,4010) cmol(iraus),nmol(iraus),
-     >                 nmol(iraus)/ngas,nmol(iraus)/ngas
-      iraus = stindex(cmol,NMOLE,'O2')
-      if (.not.raus(iraus))
-     >   write(*,4010) cmol(iraus),nmol(iraus),
-     >                 nmol(iraus)/ngas,nmol(iraus)/ngas
-      iraus = stindex(cmol,NMOLE,'CH4')
-      if (.not.raus(iraus))
-     >   write(*,4010) cmol(iraus),nmol(iraus),
-     >                 nmol(iraus)/ngas,nmol(iraus)/ngas
-      iraus = stindex(cmol,NMOLE,'CO2')
-      if (.not.raus(iraus))
-     >   write(*,4010) cmol(iraus),nmol(iraus),
-     >                 nmol(iraus)/ngas,nmol(iraus)/ngas
-      iraus = stindex(cmol,NMOLE,'NH3')
-      if (.not.raus(iraus))
-     >   write(*,4010) cmol(iraus),nmol(iraus),
-     >                 nmol(iraus)/ngas,nmol(iraus)/ngas
+      Nalso = 14
+      also(1)  = 'H2'
+      also(2)  = 'OH'
+      also(3)  = 'O2'
+      also(4)  = 'CH'
+      also(5)  = 'CH4'
+      also(6)  = 'C2H2'
+      also(7)  = 'CO2'
+      also(8)  = 'NH'
+      also(9)  = 'NH2'
+      also(10) = 'NH3'
+      also(11) = 'HCN'
+      also(12) = 'CN'
+      also(13) = 'CS'
+      also(14) = 'COS'
+      do i=1,Nalso
+        iraus = stindex(cmol,NMOLE,also(i))
+        if (.not.raus(iraus))
+     >    write(*,4010) cmol(iraus),nmol(iraus),
+     >                  nmol(iraus)/ngas,nmol(iraus)/ngas
+      enddo
           
       print*
       write(*,*) '-----  where are the elements?  -----'
