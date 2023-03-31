@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.ticker import MultipleLocator, FormatStrFormatter, ScalarFormatter, LogLocator
+from matplotlib.ticker import MultipleLocator, FormatStrFormatter, ScalarFormatter, LogLocator, NullFormatter
 from matplotlib.backends.backend_pdf import PdfPages
 plt.rcParams['lines.linewidth'] = 3
 plt.rcParams['axes.linewidth'] = 1.5
@@ -68,7 +68,7 @@ colo = colo*10
 styl = ['-']*Ncolor + ['--']*Ncolor + [':']*Ncolor + ['-.']*Ncolor*7 
 widt = [2]*Ncolor*10
 locmin = LogLocator(base=10.0,subs=(0.1,0.15,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9))
-locmaj = np.array([100,200,500,1000,2000,5000,10000])
+locmaj = np.array([50,100,200,500,1000,2000,5000,10000])
 locmaj = locmaj[np.where(locmaj<=Tmax)[0]]
 locmaj = locmaj[np.where(locmaj>=Tmin)[0]]
 
@@ -82,6 +82,7 @@ plt.ylim(pmin,pmax)
 ax.set_xscale('log')
 if (pmax>pmin*5): ax.set_yscale('log')
 ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
+ax.xaxis.set_minor_formatter(NullFormatter())
 ax.set_xticks(locmaj)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
@@ -98,6 +99,7 @@ plt.xscale('log')
 if (nHmax>nHmin*5): plt.yscale('log')
 ax.set_xticks(locmaj)
 ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
+ax.xaxis.set_minor_formatter(NullFormatter())
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
 plt.clf()
@@ -117,6 +119,7 @@ if (ymax>-10):
   plt.yscale('log')
   ax.set_xticks(locmaj)
   ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
+  ax.xaxis.set_minor_formatter(NullFormatter())
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
   plt.clf()
@@ -141,6 +144,7 @@ plt.ylim(ymax-11.5,ymax+0.3)
 plt.xscale('log')
 ax.set_xticks(locmaj)
 ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
+ax.xaxis.set_minor_formatter(NullFormatter())
 sz = np.min([11,1+140.0/count])
 leg = plt.legend(loc='best',fontsize=sz,fancybox=True)
 leg.get_frame().set_alpha(0.7)
@@ -174,6 +178,7 @@ plt.ylim(ymax-6.0,ymax+0.3)
 plt.xscale('log')
 ax.set_xticks(locmaj)
 ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
+ax.xaxis.set_minor_formatter(NullFormatter())
 sz = np.min([11,1+140.0/count])
 leg = plt.legend(loc='best',fontsize=sz,fancybox=True)
 leg.get_frame().set_alpha(0.7)
@@ -223,6 +228,7 @@ if (ymax>-99):
   plt.ylim(ymax-8,ymax+0.3)
   ax.set_xticks(locmaj)
   ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
+  ax.xaxis.set_minor_formatter(NullFormatter())
   col = 3
   sz = np.min([11,1+70.0/(count/col)])
   leg = plt.legend(loc='best',fontsize=11,fancybox=True,
@@ -344,12 +350,13 @@ if (ymax>-99):
   plt.ylabel(r'$\mathrm{cond/gas}$')
   ymax = np.max(np.log10(dust_gas))
   plt.xlim(Tmin,Tmax)
-  plt.ylim(10**(ymax-9),10**ymax*4)
+  plt.ylim(10**(ymax-7),10**ymax*4)
   plt.xscale('log')
   plt.yscale('log')
   #ax.yaxis.set_minor_locator(LogLocator(subs=[2,3,4,5,6,7,8,9]))
   ax.set_xticks(locmaj)
   ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
+  ax.xaxis.set_minor_formatter(NullFormatter())
   #ax.set_xticks(locmaj)
   #ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
   leg = plt.legend(loc='upper center',fontsize=9,fancybox=True,ncol=4)
@@ -394,6 +401,7 @@ if (count>0):
   plt.ylim(-7,0.5)
   ax.set_xticks(locmaj)
   ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
+  ax.xaxis.set_minor_formatter(NullFormatter())
   sz = np.min([11,1+140.0/count])
   col = 1
   if (count>20): 
@@ -440,6 +448,7 @@ if (count>0):
   plt.ylim(0,1.05)
   ax.set_xticks(locmaj)
   ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
+  ax.xaxis.set_minor_formatter(NullFormatter())
   sz = np.min([11,1+140.0/count])
   col = 1
   if (count>20): 
@@ -481,6 +490,7 @@ plt.ylim(-6.2,0.2)
 plt.xscale('log')
 ax.set_xticks(locmaj)
 ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
+ax.xaxis.set_minor_formatter(NullFormatter())
 leg = plt.legend(loc='best',fontsize=11,ncol=2,fancybox=True)
 leg.get_frame().set_alpha(0.7)
 plt.tight_layout()
@@ -584,6 +594,7 @@ for i in range(0,30):
   plt.xscale('log')
   ax.set_xticks(locmaj)
   ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
+  ax.xaxis.set_minor_formatter(NullFormatter())
   sz = np.min([9,1+120.0/count])
   col = 1
   if (count>20): 

@@ -318,7 +318,8 @@
           threshold = 1.Q-3*nel
         else   
           write(*,'("    Element ",A2,1pE15.3)') elnam(i),eps0(i)*nHges 
-          threshold = eps(i)*nHges*1.D-5
+          !threshold = eps(i)*nHges*1.D-5
+          threshold = eps(i)*nHges*1.D-15
           if (nat(i).gt.threshold) then
             write(*,'(1x,A18,1pE10.3)') "n"//trim(elnam(i)), nat(i) 
           endif  

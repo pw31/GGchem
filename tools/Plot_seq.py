@@ -222,8 +222,8 @@ yymin =-1.0
 yymax = 1.0
 # the cut
 plt.plot(xxx,yyy,c='red')
-plt.text(xxx[0], yyy[0]+0.03, "x=0",color='red',size=12)
-plt.text(xxx[NPOINT-1], yyy[NPOINT-1]-0.08, "x=500",color='red',size=12)
+plt.text(xxx[0], yyy[0], "x=0",color='red',size=12)
+plt.text(xxx[NPOINT-1], yyy[NPOINT-1], "x="+str(NPOINT),color='red',size=12)
 plt.text(0.12, 0.55,"B",size=20)
 plt.text(0.18,-0.25,"C",size=20)
 plt.text(0.03,-0.70,"A",size=20)
@@ -394,9 +394,9 @@ count = 0
 for i in range(3,4+NELEM+NMOLE): 
   mol = keyword[i]
   yy = dat[:,i]-lntot            # log10 nmol/ntot
-  crit = -5
+  crit = -3
   ind = np.where(mols == mol)[0]
-  if (np.size(ind)>0): crit=-6
+  if (np.size(ind)>0): crit=-3
   #print i,mol,ind,np.size(ind)
   if (np.max(yy[iii])>crit):
     plt.plot(xx,yy,c=colo[count],ls=styl[count],lw=widt[count],label=mol)
@@ -415,13 +415,21 @@ plt.clf()
 #================== linear changes ================
 count = 0
 fig,ax = plt.subplots()
+maxchange = 0.0
+thresh = 1.E-2
+yshow  = 1.E-2
+for i in range(3,4+NELEM+NMOLE): 
+  mol = keyword[i]
+  yy = 10.0**(dat[:,i]-lognH)            # nmol/n<H>
+  #yy = 10.0**(dat[:,i]-lntot)           # nmol/ntot
+  maxchange = np.max([maxchange,np.max(yy[iii])-np.min(yy[iii])])
 for i in range(3,4+NELEM+NMOLE): 
   mol = keyword[i]
   yy = 10.0**(dat[:,i]-lognH)            # nmol/n<H>
   #yy = 10.0**(dat[:,i]-lntot)           # nmol/ntot
   change = np.max(yy[iii])-np.min(yy[iii])
   yy = yy - np.mean(yy[iii])
-  if (change>1.E-8):
+  if (change>maxchange*thresh):
     print mol,yy[np.max(iii)]
     plt.plot(xx[iii],yy[iii]*1.E+2,c=colo[count],lw=widt[count],label=mol)
     count = count + 1
@@ -434,7 +442,7 @@ for isolid in indices:
   #yy = 10.0**(dat[:,ind]+lognH-lntot)   # nsolid/ntot
   change = np.max(yy[iii])-np.min(yy[iii])
   yy = yy - np.mean(yy[iii])
-  if (change>1.E-8):
+  if (change>maxchange*thresh):
     if (str.find(solid,'[l]')<0):
       solid = solid+'[s]'
     print solid,yy[np.max(iii)]
@@ -443,6 +451,7 @@ for isolid in indices:
 plt.xlabel(r'$x$')
 plt.ylabel(r'$\frac{n-\langle n\rangle}{n_\mathrm{\langle H\rangle}}\,\mathrm{[\%]}$')
 plt.xlim(xmin,xmax)
+plt.ylim(-yshow,yshow)
 leg = plt.legend(loc='best',fontsize=9,ncol=2,fancybox=True)
 leg.get_frame().set_alpha(0.7)
 plt.tight_layout()
@@ -464,8 +473,8 @@ for i in range(0,30):
   limit = limits[i]
   titel = titels[i]
   print titel+" ..."
-  nmax = np.float(-100)
-  nmin = np.float(0)
+  nmax = 0.0
+  nmin = 1.E+99
   mollist = []
   abulist = []
   maxy = 0.0*dat[:,0]
@@ -521,7 +530,7 @@ for i in range(0,30):
       #print found,isol,keyword[isol],np.max(yy[iii])
       mollist.append(isol)   
       abulist.append(np.max(yy[iii]))
-  if (nmax==-100): continue
+  if (nmax==0.0): continue
   count = 0
   indices = np.argsort(abulist)
   maxy = np.log10(maxy)
