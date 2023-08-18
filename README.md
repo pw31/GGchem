@@ -1,21 +1,13 @@
 # GGchem
 
-(c) Peter Woitke & Christiane Helling 2017
+(c) Peter Woitke & Christiane Helling 2017-2023
 
-Fast thermo-chemical equilibrium code with or without equilibrium
-condensation down to 100K.
+Fast thermo-chemical equilibrium code with or without equilibrium condensation down to 100K.
 
-Please cite our A&A paper "Equilibrium chemistry down to 100 K. 
-Impact of silicates and phyllosilicates on carbon/oxygen ratio"; 
-P. Woitke, Ch. Helling, G. H. Hunter, J. D. Millard, 
-G. E. Turner, M. Worters, J. Blecic, J. W. Stock; 
-2018; Astronomy & Astrophysics 614, 1; 
-see GGchemPaper.pdf in this folder. 
+Please cite our A&A paper "Equilibrium chemistry down to 100 K. Impact of silicates and phyllosilicates on carbon/oxygen ratio"; P. Woitke, Ch. Helling, G. H. Hunter, J. D. Millard, G. E. Turner, M. Worters, J. Blecic, J. W. Stock; 2018; Astronomy & Astrophysics 614, 1  - see GGchemPaper.pdf in this folder.
 
-We would be interested to hear from you about what kind of applications
-you would like to use ggchem for, please let us know via email
-Peter Woitke (pw31@st-and.ac.uk) 
-as well as if you have any questions or problems. 
+We would be interested to hear from you about what kind of applications you would like to use ggchem for, please let us know via email Peter Woitke (peter.woitke@oeaw.ac.at)
+as well as if you have any questions or problems.
 
 If your research results in any publications, please cite the above
 article and consider to give us co-author-ship.
@@ -25,7 +17,7 @@ article and consider to give us co-author-ship.
 > git clone https://github.com/pw31/GGchem  
 > cd GGchem/src16  
 > cp makefile.prodimo makefile  
-> make  
+> make
 
 The makefile.prodimo is for ifort compiler, adjust your own makefile if
 you want to compile e.g. with gfortran.
@@ -48,8 +40,8 @@ ratios:
   * S{cond}: supersaturation ratios log10(S) [-] of condensates  
   * n{cond}: concentration of condensed units per H nuclues log10(ncond/nHtot) [-]  
   * eps{el}: remainig element abundances in the gas phase [-]  
-  * dust/gas: dust to gas mass ratio log10(rho_dust/rho_gas) [-]  
-  * dustVol/H: dust volume per H nucleus log10(dust_volume) [cm3]  
+  * dust/gas: dust to gas mass ratio log10(rho_dust/rho_gas) [-] 
+  * dustVol/H: dust volume per H nucleus log10(dust_volume) [cm3] 
 
 S{cond} and n{cond} are used in the header to distinguish between 
 supersaturation ratio and concentration of condensed units, whereas
@@ -57,14 +49,14 @@ supersaturation ratio and concentration of condensed units, whereas
 
 ### To visualise the results, use e.g.
 
-> python tools/Plot_T.py  
-> evince ggchem.pdf &  
+> python2 tools/Plot_T.py 
+> evince ggchem.pdf & 
 
 ### Customise your own model
 
-To create your own model, make a copy of default.in and customize it to 
-tell GGchem what it should do. You can also look at some of the other *.in 
-files to lean from examples. Select or deselect elements by modifying 
+To create your own model, make a copy of default.in and customize it to
+tell GGchem what it should do. You can also look at some of the other *.in
+files to lean from examples. Select or deselect elements by modifying
 the first line, default choice is
 
  H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li F P V Cr Mn Ni Zr W el
