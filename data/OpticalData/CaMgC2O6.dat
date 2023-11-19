@@ -1,7 +1,6 @@
 #Refractive index of CaMgC2O6[s] ordinary; "M. R. Querry. Optical constants of minerals and other materials from the millimeter to the ultraviolet, <a href=\"https://apps.dtic.mil/sti/citations/ADA192210\"><i>Contractor Report</i> CRDEC-CR-88009 (1987)</a>"
 #Data points: 376
 #Wavelength (micron) n  k
-        3.1546 1.558 0.013
         2.5000 1.578 0.000
         2.5063 1.579 0.000
         2.5126 1.576 0.000
@@ -85,6 +84,7 @@
         3.1250 1.558 0.011
         3.1348 1.556 0.014
         3.1447 1.556 0.015
+        3.1546 1.558 0.013
         3.1646 1.553 0.012
         3.1746 1.554 0.013
         3.1847 1.555 0.017

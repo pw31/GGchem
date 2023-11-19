@@ -4,4 +4,16 @@ Mg2SiO4[s]              F am-Mg2SiO4.dat
 MgSiO3[s]               F am-MgSiO3.dat
 Fe[s]                   T Fe.dat
 FeS[s]                  T FeS.dat
-Fe2O3[s]                T Fe2O3.dat 
+Fe2O3[s]                T Fe2O3.dat
+Al2O3[s]                F am-Al2O3.dat
+Ca2Al2SiO7[s]           F Ca2Al2SiO7.dat
+CaMgC2O6[s]             F CaMgC2O6.dat
+CaTiO3[s]               F CaTiO3.dat
+CaSiO3[s]               F CaSiO3.dat
+MgAl2O4[s]              F MgAl2O4.dat
+W[s]                    T W.dat
+ZrO2[s]                 F ZrO2.dat
+Na2S[s]                 F Na2S.dat
+NaCl[s]                 F NaCl.dat
+KCl[s]                  F KCl.dat
+CaAl2Si2O8[s]           F NaAlSi3O8.dat

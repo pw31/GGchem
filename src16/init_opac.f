@@ -2,10 +2,11 @@
       module OPACITY
 ************************************************************************
       use DUST_DATA,ONLY: NDUST
-      integer :: NLAM
+      integer :: NLAM,NSIZE
+      real,dimension(1000) :: aa,ff                 ! size dist.func.
       real,allocatable,dimension(:) :: lam          ! wavelength[mic]
       real,allocatable,dimension(:,:) :: nn,kk      ! optical constants
-      integer :: NLIST,opind(500)
+      integer :: NLIST,opind(500),duind(500)
       character(len=100) :: opfile(500)
       logical :: conducting(500)
       end 
@@ -14,7 +15,8 @@
       subroutine INIT_OPAC
 ************************************************************************
       use DUST_DATA,ONLY: NDUST,dust_nam
-      use OPACITY,ONLY: NLAM,lam,nn,kk,NLIST,opind,opfile,conducting
+      use OPACITY,ONLY: NLAM,lam,nn,kk,NLIST,opind,duind,
+     >                  opfile,conducting
       implicit none
       real,parameter :: mic=1.E-4
       character(len=200) :: filename,line
@@ -32,11 +34,13 @@
       lmax = 300.0
       do i=1,NLAM
         lam(i) = EXP(LOG(lmin)+(i-1.0)/(NLAM-1.0)*LOG(lmax/lmin))
-        print*,i,lam(i)/mic
+        !print*,i,lam(i)/mic
       enddo
       !----- default: set to vaccum -----
       nn(1:NLAM,:) = 1.0
       kk(1:NLAM,:) = 0.0
+      opind(:) = 0
+      duind(:) = 0
 
       !----- identify opacity species and read optical constants -----
       filename = "data/OpticalData/master.list"
@@ -59,8 +63,6 @@
           print'(I3,I4,A40,A25," conducting=",L1)',i,j,
      >         " opacity species found: "//trim(opname),
      >         trim(opfile(i)),conducting(i)
-          opind(i) = j
-          NLIST = i
           filename = "data/OpticalData/"//trim(opfile(i))
           inquire(file=filename,exist=ex)
           if (.not.ex) then
@@ -68,12 +70,14 @@
             stop
           endif
           call FETCH_OPTICALDATA(filename,conducting(i),nread,kread)
-          nn(1:NLAM,j) = nread(1:NLAM) 
-          kk(1:NLAM,j) = kread(1:NLAM) 
+          nn(1:NLAM,i) = nread(1:NLAM) 
+          kk(1:NLAM,i) = kread(1:NLAM) 
+          opind(i) = j
+          duind(j) = i
+          NLIST = i
         endif
       enddo
  100  close(12)
-      stop
       end
 
 ************************************************************************
