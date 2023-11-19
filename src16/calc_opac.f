@@ -10,37 +10,32 @@
       integer,parameter :: qp=selected_real_kind(33,4931)
       real,intent(in) :: nHges,T
       real(kind=qp),intent(in) :: eldust(NDUST)
-      real :: rhod1,rhod2,Vcon1,Vcon2,mass1,mass2,rhogr1,rhogr2,rho
+      real :: rhod1,rhod2,Vcon1,Vcon2,rhogr1,rhogr2,rho
       real :: neff,keff,Vs(NDUST)
       integer :: i,j,ilam
       
       rhod1 = 0.d0               ! dust mass density   [g/cm3]  
       Vcon1 = 0.d0               ! dust volume density [cm3/cm3]
-      mass1 = 0.d0               ! dust mass density   [g/cm3]
       rhod2 = 0.d0               
       Vcon2 = 0.d0               ! same, but only opacity species
-      mass2 = 0.d0
       do i=1,NDUST
-        j = duind(i)
         if (eldust(i)<=0.Q0) cycle
-        mass1 = mass1 + nHges*eldust(i)*dust_mass(i)
+        j = duind(i)
         rhod1 = rhod1 + nHges*eldust(i)*dust_mass(i)
         Vcon1 = Vcon1 + nHges*eldust(i)*dust_Vol(i)
         if (j==0) cycle
-        mass2 = mass2 + nHges*eldust(i)*dust_mass(i)
         rhod2 = rhod2 + nHges*eldust(i)*dust_mass(i)
         Vcon2 = Vcon2 + nHges*eldust(i)*dust_Vol(i)
       enddo
-      rhogr1 = mass1/Vcon1       
-      rhogr2 = mass2/Vcon2
+      rhogr1 = rhod1/Vcon1       
+      rhogr2 = rhod2/Vcon2
+      Vs(1:NLIST) = 0.0
       do i=1,NDUST
+        if (eldust(i)<=0.Q0) cycle
         j = duind(i)
         if (j==0) then
-          if (nHges*eldust(i)*dust_Vol(i)>0.05*Vcon1) then
-            print'("*** important dust species without opacity ",
-     >             "data:",A20,0pF5.2)',trim(dust_nam(i)),
+          print'(" ***",A16,1pE11.3)',trim(dust_nam(i)),
      >           nHges*eldust(i)*dust_Vol(i)/Vcon1
-          endif
         else
           Vs(j) = nHges*eldust(i)*dust_Vol(i)/Vcon2
           if (eldust(i)<=0.Q0) cycle

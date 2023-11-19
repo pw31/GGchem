@@ -16,4 +16,8 @@ ZrO2[s]                 F ZrO2.dat
 Na2S[s]                 F Na2S.dat
 NaCl[s]                 F NaCl.dat
 KCl[s]                  F KCl.dat
+Ni[s]                   T Ni.dat
+TiO2[s]                 T TiO2_rutile.dat
+Ti4O7[s]                T TiO2_rutile.dat
 CaAl2Si2O8[s]           F NaAlSi3O8.dat
+ZrSiO4[s]               F ZrO2.dat
