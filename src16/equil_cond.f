@@ -250,6 +250,7 @@
       Nact = 0
       Nact_read = 0
       act_read = .false.
+      qread = 1.E+99
       if (useDatabase) then
         call GET_DATA(nHtot,T,epsread,ddustread,qread,iread,
      >                act_read,method)
