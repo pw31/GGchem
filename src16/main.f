@@ -565,6 +565,11 @@
       write(*,'("Limiting condensate ",A22,"  timescale/yr = ",
      >          1pE11.3)') limcond, tchemtot/yr
       endif
+
+      !------------------------------
+      call INIT_OPAC
+      call CALC_OPAC(nHges,eldust,Tg)
+      !------------------------------
       
  1000 format(a6,1pE9.3)
  1010 format(a6,1pE9.3,a8,1pE9.3)
