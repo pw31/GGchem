@@ -77,7 +77,7 @@ locmaj = locmaj[np.where(locmaj<=Tmax)[0]]
 locmaj = locmaj[np.where(locmaj>=Tmin)[0]]
 
 #================== pressure structure ====================
-fig,ax = plt.subplots(figsize=(6.5,5.5))
+fig,ax = plt.subplots(figsize=(5.5,7.5))
 plt.plot(press/bar,zz,lw=4)
 plt.ylabel(r'$z\ \mathrm{[km]}$',fontsize=20)
 plt.xlabel(r'$p\ \mathrm{[bar]}$',fontsize=20)
@@ -89,7 +89,7 @@ plt.savefig(pp,format='pdf')
 plt.clf()
 
 #================== temperature structure ====================
-fig,ax = plt.subplots(figsize=(6.5,5.5))
+fig,ax = plt.subplots(figsize=(5.5,7.5))
 plt.plot(Tg,zz,lw=4)
 plt.ylabel(r'$z\ \mathrm{[km]}$',fontsize=20)
 plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
@@ -174,11 +174,11 @@ for i in range(4+NELEM+NMOLE,4+NELEM+NMOLE+NDUST,1):
   yy = dat[:,ind]                # log10 nsolid/n<H>
   yy = yy + lognH - logntot      # log10 nmol/ntot
   ymax = np.max([ymax,np.max(yy[iii])])
-  ymin = ymax-10
+  ymin = ymax-4
 indices = np.argsort(smean)
 if (ymax>-99):
   print solids
-  fig,ax = plt.subplots(figsize=(6.5,5.5))
+  fig,ax = plt.subplots(figsize=(5.5,7.5))
   count = 0
   for isolid in reversed(indices):
     solid = solids[isolid]
@@ -199,7 +199,7 @@ if (ymax>-99):
   #ax.xaxis.set_minor_locator(locmin)
   #ax.set_xticks(locmaj)
   #ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
-  leg = plt.legend(loc='best',fontsize=8,fancybox=True,handlelength=2.5)
+  leg = plt.legend(loc='best',fontsize=10,fancybox=True,handlelength=2.5)
   leg.get_frame().set_alpha(0.7)
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
