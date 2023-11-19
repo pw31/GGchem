@@ -1,0 +1,7 @@
+SiO[s]                  F SiO.dat
+SiO2[s]                 F SiO2_amorph.dat
+Mg2SiO4[s]              F am-Mg2SiO4.dat
+MgSiO3[s]               F am-MgSiO3.dat
+Fe[s]                   T Fe.dat
+FeS[s]                  T FeS.dat
+Fe2O3[s]                T Fe2O3.dat 
