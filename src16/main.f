@@ -13,6 +13,10 @@
       call INIT
       call INIT_CHEMISTRY
       call INIT_DUSTCHEM
+
+      call INIT_DISK
+      call COMPUTE_DISK
+      stop
       
       if (model_dim==0) then
         if (adapt_cond) then
@@ -70,6 +74,7 @@
      >                    dust_nam,dust_mass,dust_Vol,
      >                    dust_nel,dust_el,dust_nu
       use EXCHANGE,ONLY: nel,nat,nion,nmol,mmol,H,C,N,O,Si
+      use OPACITY,ONLY: NLAMmax,NLAM,lam
       implicit none
       integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST),epsd(NELEM)
@@ -79,6 +84,8 @@
       real*8  :: rhog,rhoc,rhod,d2g,mcond,mgas,Vcon,Vcond,Vgas,ngas
       real*8  :: nkey,nkeyt,tchem,tchemtot,AoverV,mic,atyp,alpha,vth
       real*8  :: yr,Myr,molm,molmass,stoich,HH,OO,CC,NN,epstot1,epstot2
+      real*8,dimension(NLAMmax) :: kabs,ksca,kext
+      real    :: kapROSS,kRoss
       integer :: i,imol,iraus,e,aIraus,aIIraus,j,verb,dk,it,stindex
       integer :: k,keyel,dustst
       integer :: H2O,CO2,CH4,O2,H2,N2,NH3,CO,OCS,SO2,S2,H2S,HCl,HF
@@ -566,10 +573,16 @@
      >          1pE11.3)') limcond, tchemtot/yr
       endif
 
-      !------------------------------
+      !------------------------------------------
       call INIT_OPAC
-      call CALC_OPAC(nHges,eldust,Tg)
-      !------------------------------
+      call CALC_OPAC(nHges,eldust,kabs,ksca,kext)
+      !------------------------------------------
+      do j=1,NLAM
+        print'(0pF8.2,3(1pE12.4))',lam(j),
+     >       kabs(j)/rhod,ksca(j)/rhod,kext(j)/rhod
+      enddo
+      kRoss = kapROSS(Tg,kext)
+      print*,"kapRoss=",kRoss
       
  1000 format(a6,1pE9.3)
  1010 format(a6,1pE9.3,a8,1pE9.3)

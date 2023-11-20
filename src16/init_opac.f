@@ -2,14 +2,14 @@
       module OPACITY
 ************************************************************************
       use DUST_DATA,ONLY: NDUST
-      integer :: NLAM,NSIZE
-      real,dimension(1000) :: kabs,ksca,kext        ! opacity [1/cm]
-      real,dimension(1000) :: aa,ff,aweight         ! size dist.func.
-      real,allocatable,dimension(:) :: lam          ! wavelength[mic]
+      integer,parameter :: NLAMmax=1000,NSIZEmax=500,NOPmax=200
+      integer :: NLAM,NSIZE,NLIST
+      real,dimension(NLAMmax) :: lam                ! wavelength[mic]
+      real,dimension(NSIZEmax) :: aa,ff,aweight     ! size dist.func.
       real,allocatable,dimension(:,:) :: nn,kk      ! optical constants
-      integer :: NLIST,opind(500),duind(500)
-      character(len=100) :: opfile(500)
-      logical :: conducting(500)
+      integer :: opind(NOPmax),duind(NOPmax)
+      character(len=100) :: opfile(NOPmax)
+      logical :: conducting(NOPmax)
       end 
 
 ************************************************************************
@@ -29,8 +29,7 @@
 
       !----- wavelength grid -----
       NLAM = 300
-      allocate(lam(NLAM),nn(NLAM,NDUST),kk(NLAM,NDUST),
-     >         nread(NLAM),kread(NLAM))
+      allocate(nn(NLAM,NDUST),kk(NLAM,NDUST),nread(NLAM),kread(NLAM))
       lmin = 0.4
       lmax = 300.0
       do i=1,NLAM
@@ -73,8 +72,8 @@
           call FETCH_OPTICALDATA(filename,conducting(i),nread,kread)
           nn(1:NLAM,i) = nread(1:NLAM) 
           kk(1:NLAM,i) = kread(1:NLAM) 
-          opind(i) = j
-          duind(j) = i
+          opind(j) = i
+          duind(i) = j
           NLIST = i
         endif
       enddo
