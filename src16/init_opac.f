@@ -3,7 +3,8 @@
 ************************************************************************
       use DUST_DATA,ONLY: NDUST
       integer :: NLAM,NSIZE
-      real,dimension(1000) :: aa,ff                 ! size dist.func.
+      real,dimension(1000) :: kabs,ksca,kext        ! opacity [1/cm]
+      real,dimension(1000) :: aa,ff,aweight         ! size dist.func.
       real,allocatable,dimension(:) :: lam          ! wavelength[mic]
       real,allocatable,dimension(:,:) :: nn,kk      ! optical constants
       integer :: NLIST,opind(500),duind(500)
@@ -78,6 +79,12 @@
         endif
       enddo
  100  close(12)
+      !--------- add vaccum for porosity -----------
+      filename = "data/OpticalData/vacuum.dat"
+      call FETCH_OPTICALDATA(filename,.false.,nread,kread)
+      NLIST = NLIST+1
+      nn(1:NLAM,NLIST) = nread(1:NLAM)
+      kk(1:NLAM,NLIST) = kread(1:NLAM) 
       end
 
 ************************************************************************

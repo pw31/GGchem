@@ -7,7 +7,7 @@ F90LINKER    = ifort
 #===================
 DEFS      = -D IFORT -diag-disable 8290,8291 
 #FFLAGS   = -r8 -g -traceback -check all,noarg_temp_created -fpe0 -warn all,notruncated_source
-FFLAGS    = -r8 -g -traceback -O3 -xHOST -prec-div -fp-model source
+FFLAGS    = -r8 -g -traceback -O3 -msse4.2 -xHOST -prec-div -fp-model source
 INCLUDES  = 
 LFLAGS    = $(FFLAGS)
 
@@ -48,6 +48,10 @@ OBJECTS  = datamod.o \
            upper.o \
            nucleation.o \
 	   auto_structure.o \
+	   MIEX.o \
+	   init_opac.o \
+	   calc_opac.o \
+	   effMedium.o \
            main.o
 
 .SUFFIXES : .o .f .F .f90
