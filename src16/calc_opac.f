@@ -16,7 +16,8 @@
 ***********************************************************************
       use DUST_DATA,ONLY: NDUST,dust_nam,dust_mass,dust_Vol,muH
       use OPACITY,ONLY: NLAMmax,NLAM,lam,NLIST,opind,nn,kk,
-     >                  NSIZE,aa,ff,aweight
+     >                  NSIZE,aa,ff,aweight,
+     >                  nmin,nmax,kmin,kmax,xmin,xmax
       use DATATYPE,ONLY: r2            ! from MIEX
       use MIE_ROUTINES,ONLY: SHEXQNN2  ! from MIEX
       implicit none
@@ -31,6 +32,7 @@
       real :: rhod1,rhod2,Vcon1,Vcon2,rhogr1,rhogr2,rho
       real :: neff,keff,Vs(NDUST),porosity
       integer :: i,j
+      logical,parameter :: use_fastmie=.true.
       !------------ variables for data exchange with MIEX ---------
       complex(kind=r2) :: ri
       real(kind=r2)    :: xx,Qext,Qsca,Qabs,Qbk,Qpr,albedo,g,mm1
@@ -55,8 +57,8 @@
       enddo
       if (rhod1==0.d0) return    ! nothing to do
       porosity = 0.25            ! add 25% porosity
-      Vcon1 = Vcon1*(1.0+porosity)
-      Vcon2 = Vcon2*(1.0+porosity)
+      Vcon1 = Vcon1/(1.0-porosity)
+      Vcon2 = Vcon2/(1.0-porosity)
       rhogr1 = rhod1/Vcon1       
       rhogr2 = rhod2/Vcon2
       Vs(1:NLIST) = 0.0
@@ -72,12 +74,10 @@
         else
           Vs(j) = nHges*eldust(i)*dust_Vol(i)/Vcon2
           if (eldust(i)<=0.Q0) cycle
-          if (verb>=-1) print'(A20,1pE11.3)',trim(dust_nam(i)),
-     >                  (1.0-porosity)*Vs(j)
+          if (verb>=-1) print'(A20,1pE11.3)',trim(dust_nam(i)),Vs(j)
         endif
       enddo
-      Vs(1:NLIST-1) = (1.0-porosity)*Vs(1:NLIST-1)
-      Vs(NLIST)     = porosity
+      Vs(NLIST) = porosity
       rho = nHges*muH
       dustgas = rhod1/rho
       if (verb>=-1) then
@@ -108,18 +108,27 @@
       do j=1,NLAM
         call effMedium(j,Vs,neff,keff)
         !print*,lam(j),neff,keff
+        nmax = MAX(nmax,neff)
+        nmin = MIN(nmin,neff)
+        kmax = MAX(kmax,keff)
+        kmin = MIN(kmin,keff)
         nang = 3
         ri = DCMPLX(neff,keff)
         do i=1,NSIZE
           xx = 2.0*pi*aa(i)/(lam(j)*mic)    ! Mie size parameter
-          call SHEXQNN2(ri,xx,Qext,Qsca,Qabs,Qbk,Qpr,
-     >                  albedo,g,ier,SA1,SA2,.false.,nang)
+          xmin = MIN(xmin,xx)
+          xmax = MAX(xmax,xx)
+          if (use_fastmie) then
+            call FASTMIE(xx,neff,keff,Qsca,Qabs)
+          else
+            call SHEXQNN2(ri,xx,Qext,Qsca,Qabs,Qbk,Qpr,
+     >           albedo,g,ier,SA1,SA2,.false.,nang)
+          endif
           kabs(j) = kabs(j) + ff(i)*pi*aa(i)**2 * Qabs * aweight(i)
           ksca(j) = ksca(j) + ff(i)*pi*aa(i)**2 * Qsca * aweight(i)
         enddo  
       enddo
       kext(1:NLAM) = kabs(1:NLAM)+ksca(1:NLAM)
-
       end
 
 ***********************************************************************
