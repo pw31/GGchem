@@ -105,6 +105,7 @@ contains
     complex(kind=r2),dimension(:),allocatable,save :: ru
     integer                                        :: istat
     logical,external :: is_nan
+!$omp threadprivate(mu,fpi,fpi0,fpi1,ftau,ru)
     !-------------------------------------------------------------------------------------------------
     ! Maximum number of terms to be considered
     nterms = 20000000

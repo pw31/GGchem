@@ -1,14 +1,18 @@
+      module FASTMIEDIM
+      integer,parameter :: Nx=200,Nn=100,Nk=200
+      real,parameter :: nmin=0.8,nmax=10.0
+      real,parameter :: kmin=5.E-3,kmax=10.0
+      real,parameter :: xmin=2.E-5,xmax=20000.0
+      end
+      
 ************************************************************************
       subroutine FASTMIETAB
 ************************************************************************
+      use FASTMIEDIM,ONLY: Nx,Nn,Nk,nmin,nmax,kmin,kmax,xmin,xmax
       use DATATYPE,ONLY: r2            ! from MIEX
       use MIE_ROUTINES,ONLY: SHEXQNN2  ! from MIEX
       implicit none
-      integer,parameter :: Nx=100,Nn=50,Nk=100
       integer :: i,j,k
-      real :: nmin=0.8,nmax=10.0
-      real :: kmin=5.E-3,kmax=10.0
-      real :: xmin=2.E-5,xmax=20000.0
       real :: nnn,kkk
       !------------ variables for data exchange with MIEX ---------
       complex(kind=r2) :: ri
@@ -24,6 +28,12 @@
       nang = 3
       do i=0,Nx
         xxx = EXP(LOG(xmin)+i/REAL(Nx)*LOG(xmax/xmin))
+!$omp parallel
+!$omp& default(none)
+!$omp& shared(nang,i,xxx)
+!$omp& private(j,k,nnn,kkk,ri,Qext,Qsca,Qabs,Qbk,Qpr)       
+!$omp& private(albedo,g,ier,SA1,SA2)       
+!$omp do schedule(dynamic,1)
         do j=0,Nn
           nnn = EXP(LOG(nmin)+j/REAL(Nn)*LOG(nmax/nmin))
           do k=0,Nk
@@ -31,10 +41,14 @@
             ri = DCMPLX(nnn,kkk)
             call SHEXQNN2(ri,xxx,Qext,Qsca,Qabs,Qbk,Qpr,
      >                    albedo,g,ier,SA1,SA2,.false.,nang)
+!$omp critical(create)
             print*,i,j,k,ier,Qext
             write(12,'(3(i4),2(1pE17.9))') i,j,k,LOG(Qsca),LOG(Qabs)
+!$omp end critical(create)
           enddo  
-        enddo  
+        enddo
+!$omp end do      
+!$omp end parallel        
       enddo
       close(12)
       end
@@ -42,38 +56,45 @@
 ************************************************************************
       subroutine FASTMIE(xval,nval,kval,Qsca,Qabs)
 ************************************************************************
+      use FASTMIEDIM,ONLY: Nx,Nn,Nk,nmin,nmax,kmin,kmax,xmin,xmax
       implicit none
       real,intent(in) :: xval,nval,kval
       real,intent(out) :: Qabs,Qsca
-      integer :: i,j,k,idum(3)
+      integer :: i,j,k,idum(3),Nx_read,Nn_read,Nk_read
       real :: a1,a2,b1,b2,c1,c2
       real :: xxx,kkk,nnn
-      logical :: ex
-      integer,save :: Nx,Nn,Nk
-      real,save :: nmin,nmax,kmin,kmax,xmin,xmax
+      logical :: ex,match
+      real :: n1_read,n2_read,k1_read,k2_read,x1_read,x2_read
       real,allocatable,dimension(:,:,:),save :: lQsc,lQab,xtab,ntab,ktab
       logical,save :: firstCall=.true.
 
       if (firstCall) then
         inquire(file='fastmie.dat',exist=ex)
-        if (.not.ex) call FASTMIETAB
+ 100    if (.not.ex) call FASTMIETAB
         open(unit=12,file='fastmie.dat',status='old')
-        read(12,*) Nx,Nn,Nk
-        read(12,*) xmin,xmax
-        read(12,*) nmin,nmax
-        read(12,*) kmin,kmax
+        read(12,*) Nx_read,Nn_read,Nk_read
+        read(12,*) x1_read,x2_read
+        read(12,*) n1_read,n2_read
+        read(12,*) k1_read,k2_read
+        match = (Nx_read==Nx).and.(Nn_read==Nn).and.(Nk_read==Nk).and.
+     >          (x1_read==xmin).and.(x2_read==xmax).and. 
+     >          (n1_read==nmin).and.(n2_read==nmax).and. 
+     >          (k1_read==kmin).and.(k2_read==kmax)
+        if (.not.match) then
+          close(12)
+          ex = .false.
+          goto 100
+        endif
+        print*,"reading fastmie.dat ..."
         allocate(lQsc(0:Nx,0:Nn,0:Nk),lQab(0:Nx,0:Nn,0:Nk))
-        do i=0,Nx
-          do j=0,Nn
-            do k=0,Nk
-              read(12,'(3(i4),2(1pE17.9))') idum,Qsca,Qabs
-              lQsc(i,j,k) = Qsca
-              lQab(i,j,k) = Qabs
-            enddo
-          enddo
+        do 
+          read(12,'(3(i4),2(1pE17.9))',end=200) i,j,k,Qsca,Qabs
+          lQsc(i,j,k) = Qsca
+          lQab(i,j,k) = Qabs
         enddo
-        close(12)
+ 200    close(12)
         firstCall = .false.
+        print*,"... done reading."
       endif
       
       xxx = LOG(xval/xmin)/LOG(xmax/xmin)*Nx
