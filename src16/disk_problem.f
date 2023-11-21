@@ -3,17 +3,17 @@
 ************************************************************************
       use OPACITY,ONLY: NLAMmax
       integer,parameter :: NZmax=1000
-      real :: Mstar,Rstar,Mdot
+      real :: Mstar,Rstar,Mdot,rr
       real,dimension(NZmax) :: zz,Td,nH,JJ,DD,kRoss,tauRoss,Hvis,dustgas
       real,dimension(NLAMmax,NZmax) :: kex
-      integer :: Nx,Nz,izStart
+      integer :: Nx,Nz,iz0,izStart
       end
       
 ************************************************************************
       SUBROUTINE INIT_DISK
 ************************************************************************
-      use DISK,ONLY: Nx,Nz,izStart,Mstar,Rstar,Mdot,
-     >               zz,nH,Td,kRoss,tauRoss,Hvis,dustgas
+      use DISK,ONLY: Nx,Nz,iz0,izStart,Mstar,Rstar,Mdot,
+     >               rr,zz,nH,Td,kRoss,tauRoss,Hvis,dustgas
       implicit none
       real,parameter :: pi=ACOS(-1.0)
       real,parameter :: grav=6.67259850000E-08
@@ -23,7 +23,7 @@
       real,parameter :: yr=3.155760000E+7 
       integer :: i,ix,iz,ixSearch,Nsp,Nheat,Ncool,Nlam
       character(len=99999) :: line
-      real :: rr,arr(1000),z1,z2,z3,f1,f2,f3,dz,Hcol,Hint,const,cc
+      real :: arr(1000),z1,z2,z3,f1,f2,f3,dz,Hcol,Hint,const,cc
 
       !----------------------------------------------
       ! ***  read a vertical column from ProDiMo  ***
@@ -31,6 +31,8 @@
       print*
       print*,"reading ProDiMo.out ..."
       ixSearch = 35
+      iz0 = 0
+      izStart = 0
       open(unit=12,file="ProDiMo.out",status='old')
       do i=1,21
         read(12,'(A99999)') line
@@ -58,9 +60,8 @@
             kRoss(iz) = arr(22+Nheat+Ncool+Nsp+1+Nlam+2)
             tauRoss(iz) = arr(22+Nheat+Ncool+Nsp+1+Nlam+3)
             dustgas(iz) = arr(22+Nheat+Ncool+Nsp+1+Nlam+5)
-            if (tauRoss(iz)>10.0) then
-              izStart=MAX(iz,izStart)
-            endif
+            if (nH(iz)>1.E+6) iz0=MAX(iz,iz0)
+            if (tauRoss(iz)>10.0) izStart=MAX(iz,izStart)
             print'(I4,I4,2(0pF11.6),0pF9.2,99(1pE11.4))',ix,iz,
      >           rr/AU,zz(iz)/AU,Td(iz),nH(iz),kRoss(iz),tauRoss(iz),
      >           dustgas(iz)     
@@ -96,9 +97,10 @@
       SUBROUTINE COMPUTE_DISK
 ************************************************************************
       use PARAMETERS,ONLY: verbose
-      use DISK,ONLY: Nz,izStart,zz,nH,Td,kRoss,tauRoss,Hvis,dustgas
-      use DUST_DATA,ONLY: NELEM,NDUST,eps0
-      use OPACITY,ONLY: NLAMmax
+      use DISK,ONLY: Nz,iz0,izStart,
+     >               rr,zz,nH,Td,kRoss,tauRoss,Hvis,dustgas
+      use DUST_DATA,ONLY: NELEM,NDUST,eps0,dust_nam,muH,dust_mass
+      use OPACITY,ONLY: NLAMmax,NLAM,lam,xmin,xmax,kmin,kmax,nmin,nmax
       implicit none
       real,parameter :: pi=ACOS(-1.0)
       real,parameter :: hplanck=6.62607554E-27
@@ -111,10 +113,11 @@
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST)
       real,dimension(NLAMmax) :: kabs,ksca,kext
       real,dimension(Nz) :: Diff
-      real :: nHtot,T,Told,dg,qual1,qual2,kapROSS
+      real :: nHtot,rho,rhod,T,Told,dg,qual1,qual2,kapROSS
       real :: z1,z2,J0,J1,J2,D1,D2,dz1,dz2,term1,term2,f0,f1
-      integer :: iz,verb,it
+      integer :: i,iz,it
       character(len=1) :: char1
+      character(len=200) :: frmt
 
       !-------------------------------------------------------
       ! ***  check validity of 1d diffusion approximation  ***
@@ -140,18 +143,31 @@
       print*
       call INIT_OPAC
       print*
-      verbose = -2
-      verb    = -2
-      do iz=izStart,izStart-2,-1
+      open(unit=9,file='disk.out',status='replace')
+      write(frmt,'("(A4,A8,A10,4(A15),",I3.3,"(1pE15.6),999(A15))")')
+     >     NLAM
+      write(9,frmt) 'iz','z/r','T[K]','n<H>[cm-3]','rho[g/cm3]',
+     >     'rhod[g/cm3]','kapR[cm2/g]',(lam(i),i=1,NLAM),
+     >     (trim(dust_nam(i)),i=1,NDUST)
+      verbose = -2              ! avoid output from GGchem
+      do iz=iz0,izStart-1,-1
         nHtot = nH(iz)
+        rho = nHtot*muH
         T = Td(iz)
         eps = eps0
         call EQUIL_COND(nHtot,T,eps,Sat,eldust,verbose)
         call CALC_OPAC(nHtot,eldust,kabs,ksca,kext,dg,-1)
+        do i=1,NDUST
+          if (eldust(i)<=0.Q0) cycle
+          rhod = rhod + nHtot*eldust(i)*dust_mass(i)
+        enddo
         print'(I4,0pF9.1,9(1pE12.4))',iz,T,dustgas(iz),dg,
      >                         kRoss(iz),KapROSS(T,kext)
         kRoss(iz) = KapROSS(T,kext)
         Diff(iz) = 4.0*pi/3.0/kRoss(iz)
+        write(9,'(I4,0pF8.5,0pF10.3,9999(1pE15.7))') iz,zz(iz)/rr,
+     >       T,nHtot,rho,rhod,kRoss(iz)/rho,kext(1:NLAM)/rhod,
+     >       eldust(1:NDUST)
       enddo
 
       do iz=izStart-1,2,-1
@@ -164,6 +180,7 @@
         dz2 = zz(iz+1)-zz(iz)
         f0  = Hvis(iz)*(z2-z1) - D2*(J0-J2)/dz2
         nHtot = nH(iz-1)
+        rho = nHtot*muH
         T = Td(iz)                      ! initial guess
         print*
         print'(I10,0pF11.4,2(1pE14.6))',iz-1,
@@ -188,7 +205,19 @@
         enddo
         Td(iz-1) = T
         call CALC_OPAC(nHtot,eldust,kabs,ksca,kext,dg,-1)
+        do i=1,NDUST
+          if (eldust(i)<=0.Q0) cycle
+          rhod = rhod + nHtot*eldust(i)*dust_mass(i)
+        enddo
+        write(9,'(I4,0pF8.5,0pF10.3,9999(1pE15.7))') iz-1,zz(iz-1)/rr,
+     >       T,nHtot,rho,rhod,kRoss(iz-1)/rho,kext(1:NLAM)/rhod,
+     >       eldust(1:NDUST)
       enddo
+      close(9)
+      print*,"nmin,nmax=",nmin,nmax
+      print*,"kmin,kmax=",kmin,kmax
+      print*,"xmin,xmax=",xmin,xmax
+      
       end
       
 !-----------------------------------------------------------------------

@@ -10,6 +10,7 @@
       integer :: opind(NOPmax),duind(NOPmax)
       character(len=100) :: opfile(NOPmax)
       logical :: conducting(NOPmax)
+      real :: xmin=1.0,xmax=0.0,kmin=1.0,kmax=0.0,nmin=1.0,nmax=0.0
       end 
 
 ************************************************************************
@@ -22,9 +23,9 @@
       real,parameter :: mic=1.E-4
       character(len=200) :: filename,line
       character(len=20) :: opname
-      real :: lmin,lmax
+      real :: lmin,lmax,kmin,kmax,nmin,nmax
       real,allocatable :: nread(:),kread(:)
-      integer :: i,j
+      integer :: i,j,k
       logical :: ex
 
       !----- wavelength grid -----
@@ -46,6 +47,10 @@
       filename = "data/OpticalData/master.list"
       open(unit=12,file=filename,status='old')
       NLIST = 0
+      nmin = 1.0
+      nmax = 1.0
+      kmin = 1.0
+      kmax = 1.0
       do i=1,9999
         read(12,'(A200)',end=100) line
         !print*,trim(line)
@@ -71,7 +76,13 @@
           endif
           call FETCH_OPTICALDATA(filename,conducting(i),nread,kread)
           nn(1:NLAM,i) = nread(1:NLAM) 
-          kk(1:NLAM,i) = kread(1:NLAM) 
+          kk(1:NLAM,i) = kread(1:NLAM)
+          do k=1,NLAM
+            nmax = MAX(nmax,nread(k))
+            nmin = MIN(nmin,nread(k))
+            kmax = MAX(kmax,kread(k))
+            kmin = MIN(kmin,kread(k))
+          enddo
           opind(j) = i
           duind(i) = j
           NLIST = i
@@ -83,7 +94,9 @@
       call FETCH_OPTICALDATA(filename,.false.,nread,kread)
       NLIST = NLIST+1
       nn(1:NLAM,NLIST) = nread(1:NLAM)
-      kk(1:NLAM,NLIST) = kread(1:NLAM) 
+      kk(1:NLAM,NLIST) = kread(1:NLAM)
+      print*,"nmin,nmax=",nmin,nmax
+      print*,"kmin,kmax=",kmin,kmax
       end
 
 ************************************************************************
