@@ -552,7 +552,7 @@
                 dk = dlin(i)
                 if (dk==ioff) cycle
                 call TRANSFORM(ioff,dk,amount,-slin(dk)/slin(ioff)*Nt,
-     >                         ddust,eps,dscale,ok)
+     >                         ddust,eps,dscale,ok,verbose)
               enddo  
               ddust(ioff) = 0.Q0
               eps = eps_save
@@ -1092,7 +1092,9 @@
               call QGEFA ( DF, NELEM, Nunsolved, ipvt, info )
               call QGEDI ( DF, NELEM, Nunsolved, ipvt, det, work, 1 )
               if (info.ne.0) then
-                print*,"*** singular matrix in QGEFA: info=",info
+                if (verbose>=0) then
+                  print*,"*** singular matrix in QGEFA: info=",info
+                endif
                 dtry = dtry+1
                 dtry_break = .true.
                 if (dtry<Nind) exit
@@ -1392,7 +1394,9 @@
         dx = FF
         if (verbose>1) print*,"QGESL info=",info
         if (info.ne.0) then
-          print*,"*** singular matrix in QGEFA NR-step: info=",info
+          if (verbose>=0) then
+            print*,"*** singular matrix in QGEFA NR-step: info=",info
+          endif
           if (method_failed==0) then
             method_failed = method_failed+1
             method = 2
@@ -1799,7 +1803,9 @@
         dx = FF
         if (verbose>1) print*,"QGESL info=",info
         if (info.ne.0) then
-          print*,"*** singular matrix in QGEFA NR-step: info=",info
+          if (verbose>=0) then
+            print*,"*** singular matrix in QGEFA NR-step: info=",info
+          endif
           if (method_failed==0) then
             method_failed = method_failed+1
             method = 1
@@ -1808,7 +1814,7 @@
               if (active(i)) Nact=Nact+1
             enddo
             changed = .true.
-            print*,"trying eqcond_method 1 ..."
+            if (verbose>=0) print*,"trying eqcond_method 1 ..."
             goto 50
           endif  
           stop
@@ -1972,8 +1978,10 @@
         !call SUPER(nHtot,T,xstep,eps,Sat0,NewFastLevel<1)
         !qual = SQUAL(Sat0,active)
         Smax = maxval(Sat0)
-        print'("it =",I4,"  qual =",1pE11.4,"  Smax-1 =",1pE11.2E4)',
-     >          it,qual,Smax-1.Q0
+        if (verbose>=-1) then
+          print'("it =",I4,"  qual =",1pE11.4,"  Smax-1 =",1pE11.2E4)',
+     >         it,qual,Smax-1.Q0
+        endif
         if ((Smax<1.Q0+Sfinish).and.(qual<Qfinish)) exit
         if (verbose>0) read(*,'(a1)') char1
         if (verbose>0.and.char1=='1') method=1;changed=.true.
@@ -2145,7 +2153,7 @@
       end
 
 !-------------------------------------------------------------------------
-      subroutine TRANSFORM(i1,i2,del,fac,ddust,eps,dscale,ok)
+      subroutine TRANSFORM(i1,i2,del,fac,ddust,eps,dscale,ok,verbose)
 !-------------------------------------------------------------------------
       use DUST_DATA,ONLY: NELEM,NDUST,dust_nel,dust_nu,dust_el,dust_nam,
      >                    eps0
@@ -2156,10 +2164,13 @@
       real(kind=qp),intent(inout) :: ddust(NDUST),eps(NELEM)
       real(kind=qp),intent(in) :: del,fac,dscale(NDUST)
       logical,intent(inout) :: ok
+      integer,intent(in) :: verbose
       integer :: j,el
-      
-      print*," ==>  transform "//trim(dust_nam(i1))//" -> "
+
+      if (verbose>=-1) then
+        print*," ==>  transform "//trim(dust_nam(i1))//" -> "
      &       //trim(dust_nam(i2)),REAL(fac*del/dscale(i1))
+      endif
       ddust(i1) = ddust(i1)-del
       ddust(i2) = ddust(i2)+fac*del
       do j=1,dust_nel(i1)
