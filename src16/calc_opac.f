@@ -1,18 +1,18 @@
 ***********************************************************************
-      SUBROUTINE CALC_OPAC(nHges,eldust,kabs,ksca,kext)
+      SUBROUTINE CALC_OPAC(nHges,eldust,kabs,ksca,kext,dustgas,verb)
 ***********************************************************************
-***                                                                 ***      
+***                                                                 ***
 ***   calculates the dust opacities kabs,ksca,kext [1/cm] using     ***
-***                                                                 ***      
+***                                                                 ***
 ***   (1) optical constants for various solid materials (nn,kk)     ***
-***       see README in data/OpticalData/README                     ***     
-***       note that many materials have no opacity data             ***      
+***       see README in data/OpticalData/README                     ***
+***       note that many materials have no opacity data             ***
 ***   (2) effective mixing theory (neff,keff)                       ***
 ***   (3) a model for the size distibution function f(a)            ***
 ***   (4) Mie theory (routine MIEX.f90)                             ***
-***                                                                 ***      
+***                                                                 ***
 ***   input is n<H> [cm-3] and solid unit concentrations eldust(:)  ***
-***                                                                 ***      
+***                                                                 ***
 ***********************************************************************
       use DUST_DATA,ONLY: NDUST,dust_nam,dust_mass,dust_Vol,muH
       use OPACITY,ONLY: NLAMmax,NLAM,lam,NLIST,opind,nn,kk,
@@ -26,6 +26,8 @@
       real,intent(in) :: nHges
       real(kind=qp),intent(in) :: eldust(NDUST)
       real,intent(out),dimension(NLAMmax) :: kabs,ksca,kext
+      real,intent(out) :: dustgas
+      integer,intent(in) :: verb
       real :: rhod1,rhod2,Vcon1,Vcon2,rhogr1,rhogr2,rho
       real :: neff,keff,Vs(NDUST),porosity
       integer :: i,j
@@ -62,26 +64,41 @@
         if (eldust(i)<=0.Q0) cycle
         j = opind(i)
         if (j==0) then
-          print'(" ***",A16,1pE11.3,"  not an opacity species ***")',
-     >         trim(dust_nam(i)),nHges*eldust(i)*dust_Vol(i)/Vcon1
+          if (nHges*eldust(i)*dust_Vol(i)/Vcon1>1.E-3) then
+          if (verb>=-1) print'(" ***",A16,1pE11.3,"  not an ",
+     >                  "opacity species ***")',trim(dust_nam(i)),
+     >                  nHges*eldust(i)*dust_Vol(i)/Vcon1
+          endif
         else
           Vs(j) = nHges*eldust(i)*dust_Vol(i)/Vcon2
           if (eldust(i)<=0.Q0) cycle
-          print'(A20,1pE11.3)',trim(dust_nam(i)),(1.0-porosity)*Vs(j)
+          if (verb>=-1) print'(A20,1pE11.3)',trim(dust_nam(i)),
+     >                  (1.0-porosity)*Vs(j)
         endif
       enddo
       Vs(1:NLIST-1) = (1.0-porosity)*Vs(1:NLIST-1)
       Vs(NLIST)     = porosity
-      print'(A20,1pE11.3)',"vacuum",porosity
       rho = nHges*muH
-      print*,"dust material density [g/cm3]",rhogr1,rhogr2
-      print*,"dust/gas mass ratio   [g/cm3]",rhod1/rho,rhod2/rho
-      print*,"dust volume density [cm3/cm3]",Vcon1,Vcon2
+      dustgas = rhod1/rho
+      if (verb>=-1) then
+        print'(A20,1pE11.3)',"vacuum",porosity
+      endif  
+      if (verb>=0) then
+        print*,"dust material density [g/cm3]",rhogr1,rhogr2
+        print*,"dust/gas mass ratio   [g/cm3]",rhod1/rho,rhod2/rho
+        print*,"dust volume density [cm3/cm3]",Vcon1,Vcon2
+      endif
+      if (Vcon1==0.0) then
+        kabs(1:NLAM) = 0.0
+        ksca(1:NLAM) = 0.0
+        kext(1:NLAM) = 0.0
+        return
+      endif
       
       !--------------------------------------
       ! ***  dust size distibution model  ***
       !--------------------------------------
-      call SIZE_DIST(nHges,rhogr1,Vcon1)
+      call SIZE_DIST(nHges,rhogr1,Vcon1,verb)
 
       !---------------------------------------------
       ! ***  effective medium and Mie opacities  ***
@@ -106,7 +123,7 @@
       end
 
 ***********************************************************************
-      SUBROUTINE SIZE_DIST(nHges,rhogr,Vcon)
+      SUBROUTINE SIZE_DIST(nHges,rhogr,Vcon,verb)
 ***********************************************************************
       use DUST_DATA,ONLY: muH
       use OPACITY,ONLY: NSIZEmax,NSIZE,aa,ff,aweight
@@ -116,6 +133,7 @@
       real,intent(in) :: nHges  ! H-nuclei particle density [cm-3]
       real,intent(in) :: rhogr  ! dust material density [g/cm3]
       real,intent(in) :: Vcon   ! dust volume/H-nucleus [cm3]
+      integer,intent(in) :: verb
       real :: VV,mm,dg,scale,ndtest,Vtest,mtest,da,pp
       integer :: i
       logical,save :: firstCall=.true.
@@ -128,7 +146,7 @@
       if (firstCall) then
         NSIZE  = 100
         rhoref = 2.0              ! g/cm3
-        a1ref  = 0.05             ! mic
+        a1ref  = 0.01             ! mic
         a2ref  = 1000.0           ! mic
         dgref  = 0.004            ! fully condensed solor dust/gas ratio
         pp     = -3.5
@@ -183,11 +201,13 @@
         mtest  = mtest  + ff(i)*mm*aweight(i)
       enddo
       dg = mtest/(nHges*muH)
-      print*,"scale=",scale
-      print*,"   nd=",ndref*nHges/nHref,ndtest
-      print*,"  d/g=",dgref,dg
-      print*,"Vdust=",Vref*nHges/nHref,Vtest,Vcon
-
+      if (verb>=0) then
+        print*,"scale=",scale
+        print*,"   nd=",ndref*nHges/nHref,ndtest
+        print*,"  d/g=",dgref,dg
+        print*,"Vdust=",Vref*nHges/nHref,Vtest,Vcon
+      endif
+      
       end
       
       
