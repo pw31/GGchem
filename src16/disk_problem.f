@@ -2,18 +2,18 @@
       module DISK
 ************************************************************************
       use OPACITY,ONLY: NLAMmax
-      integer,parameter :: NZmax=1000
-      real :: Mstar,Rstar,Mdot,rr
-      real,dimension(NZmax) :: zz,Td,nH,JJ,DD,kRoss,tauRoss,Hvis,dustgas
-      real,dimension(NLAMmax,NZmax) :: kex
-      integer :: Nx,Nz,iz0,izStart
+      integer,parameter :: NXmax=500, NZmax=500
+      real :: Mstar,Rstar,Mdot
+      real,dimension(NXmax,NZmax) :: rr,zz,Td,nH,JJ,DD,kRoss,tauRossV,
+     >                               tauRossR,Hvis,dustgas
+      integer :: Nx,Nz
       end
       
 ************************************************************************
       SUBROUTINE INIT_DISK
 ************************************************************************
-      use DISK,ONLY: Nx,Nz,iz0,izStart,Mstar,Rstar,Mdot,
-     >               rr,zz,nH,Td,kRoss,tauRoss,Hvis,dustgas
+      use DISK,ONLY: NXmax,Nx,Nz,Mstar,Rstar,Mdot,rr,zz,
+     >               nH,Td,kRoss,tauRossV,tauRossR,Hvis,dustgas
       implicit none
       real,parameter :: pi=ACOS(-1.0)
       real,parameter :: grav=6.67259850000E-08
@@ -21,18 +21,15 @@
       real,parameter :: Msun=1.988922500E+33
       real,parameter :: Rsun=6.959900000E+10
       real,parameter :: yr=3.155760000E+7 
-      integer :: i,ix,iz,ixSearch,Nsp,Nheat,Ncool,Nlam
+      integer :: i,ix,iz,Nsp,Nheat,Ncool,Nlam
       character(len=99999) :: line
-      real :: arr(1000),z1,z2,z3,f1,f2,f3,dz,Hcol,Hint,const,cc
+      real :: r1,r2,z1,z2,z3,f1,f2,f3,dz,Hcol,Hint,const,cc
+      real :: arr(1000),tauR(NXmax)
 
-      !----------------------------------------------
-      ! ***  read a vertical column from ProDiMo  ***
-      !----------------------------------------------
-      print*
+      !-----------------------
+      ! ***  read ProDiMo  ***
+      !-----------------------
       print*,"reading ProDiMo.out ..."
-      ixSearch = 35
-      iz0 = 0
-      izStart = 0
       open(unit=12,file="ProDiMo.out",status='old')
       do i=1,21
         read(12,'(A99999)') line
@@ -46,50 +43,57 @@
       !print*,Nx,Nz,Nsp,Nheat,Ncool
       read(12,*)
       read(12,*)
-      print'(A4,A4,2A11,A9,99A11)','ix','iz','r[AU]','z[AU]',
-     >     'Td[K]','n<H>[cm-3]','kRoss','tauRoss','d/g'
+      !print'(A4,A4,2A11,A9,99A11)','ix','iz','r[AU]','z[AU]',
+     >!     'Td[K]','n<H>[cm-3]','kRoss','tauRoss','d/g'
       do iz=Nz,1,-1
+        tauR(:) = 0.0
         do ix=1,Nx
           read(12,'(A99999)') line
           read(line,*,end=100) arr
- 100      if (ix==ixSearch) then
-            rr     = arr(3)*AU
-            zz(iz) = arr(4)*AU
-            Td(iz) = arr(11)
-            nH(iz) = arr(22+Nheat+Ncool)
-            kRoss(iz) = arr(22+Nheat+Ncool+Nsp+1+Nlam+2)
-            tauRoss(iz) = arr(22+Nheat+Ncool+Nsp+1+Nlam+3)
-            dustgas(iz) = arr(22+Nheat+Ncool+Nsp+1+Nlam+5)
-            if (nH(iz)>1.E+6) iz0=MAX(iz,iz0)
-            if (tauRoss(iz)>10.0) izStart=MAX(iz,izStart)
-            print'(I4,I4,2(0pF11.6),0pF9.2,99(1pE11.4))',ix,iz,
-     >           rr/AU,zz(iz)/AU,Td(iz),nH(iz),kRoss(iz),tauRoss(iz),
-     >           dustgas(iz)     
-          endif
+ 100      rr(ix,iz) = arr(3)*AU
+          zz(ix,iz) = arr(4)*AU
+          Td(ix,iz) = arr(11)
+          nH(ix,iz) = arr(22+Nheat+Ncool)
+          kRoss(ix,iz) = arr(22+Nheat+Ncool+Nsp+1+Nlam+2)
+          tauRossV(ix,iz) = arr(22+Nheat+Ncool+Nsp+1+Nlam+3)
+          dustgas(ix,iz) = arr(22+Nheat+Ncool+Nsp+1+Nlam+5)
+          if (ix>1) then
+            r1 = SQRT(rr(ix-1,iz)**2+zz(ix-1,iz)**2)
+            r2 = SQRT(rr(ix,iz)**2+zz(ix,iz)**2)
+            tauRossR(ix,iz) = tauRossR(ix-1,iz)
+     >           + 0.5*(kRoss(ix,iz)+kRoss(ix-1,iz))*(r2-r1)
+          endif  
+          !print'(I4,I4,2(0pF11.6),0pF9.2,99(1pE11.4))',ix,iz,
+     >    !     rr(ix,iz)/AU,zz(ix,iz)/AU,Td(ix,iz),nH(ix,iz),
+     >    !     kRoss(ix,iz),tauRossV(ix,iz),dustgas(ix,iz)     
         enddo
       enddo
-
+      close(12)
+      print*,"... done reading ProDiMo.out"
+      
       !---------------------------------------------
       ! ***  compute viscous heating per volume  ***
       !---------------------------------------------
       Mdot = 1.E-8*Msun/yr
-      Hcol = grav*Mstar*Mdot/rr**3 * 3.0/(8.0*pi)   ! [erg/cm2/s]
-     >     * (1.0-SQRT(Rstar/rr))
-      Hint = 0.0
-      do iz=1,Nz-1
-        z1 = zz(iz)                                 ! [cm]
-        z3 = zz(iz+1)
-        z2 = 0.5*(z1+z3)
-        f1 = nH(iz)*dustgas(iz)                     ! [cm-3]
-        f3 = nH(iz+1)*dustgas(iz+1)
-        !------ fit rho(z) = rho(z1)*exp(-(z-z1)^2/H^2) --------
-        cc = LOG(f3/f1)/(z3-z1)**2                  ! -1/H^2
-        f2 = f1*EXP(cc*(z2-z1)**2)   
-        Hint = Hint + (f1+4*f2+f3)*(z3-z1)/6.0      ! [cm-2]
-      enddo  
-      const = Hcol/Hint                             ! [erg/s]
-      do iz=1,Nz
-        Hvis(iz) = const*nH(iz)*dustgas(iz)         ! [erg/cm3/s]
+      do ix=1,Nx
+        Hcol = grav*Mstar*Mdot/rr(ix,1)**3 * 3.0/(8.0*pi) ! [erg/cm2/s]
+     >       * (1.0-SQRT(Rstar/rr(ix,1)))
+        Hint = 0.0
+        do iz=1,Nz-1
+          z1 = zz(ix,iz)                                  ! [cm]
+          z3 = zz(ix,iz+1)
+          z2 = 0.5*(z1+z3)
+          f1 = nH(ix,iz)*dustgas(ix,iz)                   ! [cm-3]
+          f3 = nH(ix,iz+1)*dustgas(ix,iz+1)
+          !------ fit rho(z) = rho(z1)*exp(-(z-z1)^2/H^2) --------
+          cc = LOG(f3/f1)/(z3-z1)**2                      ! -1/H^2
+          f2 = f1*EXP(cc*(z2-z1)**2)   
+          Hint = Hint + (f1+4*f2+f3)*(z3-z1)/6.0          ! [cm-2]
+        enddo  
+        const = Hcol/Hint                                 ! [erg/s]
+        do iz=1,Nz
+          Hvis(ix,iz) = const*nH(ix,iz)*dustgas(ix,iz)    ! [erg/cm3/s]
+        enddo
       enddo
       end
 
@@ -97,8 +101,8 @@
       SUBROUTINE COMPUTE_DISK
 ************************************************************************
       use PARAMETERS,ONLY: verbose
-      use DISK,ONLY: Nz,iz0,izStart,
-     >               rr,zz,nH,Td,kRoss,tauRoss,Hvis,dustgas
+      use DISK,ONLY: NXmax,Nx,Nz,rr,zz,nH,Td,kRoss,tauRossV,tauRossR,
+     >               Hvis,dustgas
       use DUST_DATA,ONLY: NELEM,NDUST,eps0,dust_nam,muH,dust_mass
       use OPACITY,ONLY: NLAMmax,NLAM,lam,xmin,xmax,kmin,kmax,nmin,nmax
       implicit none
@@ -113,107 +117,151 @@
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST)
       real,dimension(NLAMmax) :: kabs,ksca,kext
       real,dimension(Nz) :: Diff
-      real :: nHtot,rho,rhod,T,Told,dg,qual1,qual2,kapROSS
-      real :: z1,z2,J0,J1,J2,D1,D2,dz1,dz2,term1,term2,f0,f1
-      integer :: i,iz,it
+      real :: nHtot,rho,rhod,T,Told,dg,qual1,qual2,kRoss_GGchem,kapROSS
+      real :: z1,z2,J0,J1,J2,D1,D2,dz1,dz2,term1,term2,f0,f1,qual
+      real :: Tmin,Tcrit
+      integer :: iz0(NXmax),iz1(NXmax),i,ix,iz,it
       character(len=1) :: char1
       character(len=200) :: frmt
 
-      !-------------------------------------------------------
-      ! ***  check validity of 1d diffusion approximation  ***
-      !-------------------------------------------------------
-      do iz=1,Nz
-        Diff(iz) = 4.0*pi/3.0/kRoss(iz)
+      iz0 = 0
+      iz1 = 0
+      do ix=1,Nx
+        do iz=Nz,1,-1
+          if (nH(ix,iz)>1.E+7) iz0(ix)=MAX(iz0(ix),iz)
+          if (tauRossV(ix,iz)>10.0.and.tauRossR(ix,iz)>10.0)
+     >                         iz1(ix)=MAX(iz1(ix),iz)
+        enddo
+        !-------------------------------------------------------
+        ! ***  check validity of 1d diffusion approximation  ***
+        !-------------------------------------------------------
+        do iz=1,Nz
+          Diff(iz) = 4.0*pi/3.0/kRoss(ix,iz)
+        enddo
+        qual = 0.0
+        do iz=iz1(ix)-1,2,-1
+          z1  = 0.5*(zz(ix,iz-1)+zz(ix,iz))     ! zz(iz-1/2)
+          z2  = 0.5*(zz(ix,iz+1)+zz(ix,iz))     ! zz(iz+1/2)
+          J0  = sig_SB/pi*Td(ix,iz)**4
+          J1  = sig_SB/pi*Td(ix,iz-1)**4
+          J2  = sig_SB/pi*Td(ix,iz+1)**4
+          D1  = SQRT(Diff(iz)*Diff(iz-1))
+          D2  = SQRT(Diff(iz)*Diff(iz+1))
+          dz1 = zz(ix,iz)-zz(ix,iz-1)
+          dz2 = zz(ix,iz+1)-zz(ix,iz)
+          term1 = D1*(J0-J1)/dz1 + D2*(J0-J2)/dz2
+          term2 = Hvis(ix,iz)*(z2-z1)
+          qual = qual+ABS(term2/term1-1.0)**0.2
+          !print'(2(I4),0pF8.1,9(1pE12.4))',ix,iz,Td(ix,iz),
+     >    !     kRoss(ix,iz),term1,term2
+        enddo
+        Tmin = MINVAL(Td(ix,1:Nz))
+        if (iz1(ix)>2) then
+          qual  = (qual/(iz1(ix)-2))**(1.0/0.2)
+          Tcrit = Td(ix,1)/Td(ix,iz1(ix))
+        else
+          qual  = 1.E+99
+          Tcrit = 1.E+99
+        endif
+        if (Tmin<55.0) then
+          !--- too cold for GGchem ---
+          iz0(ix) = 0
+          iz1(ix) = 0
+        else if (Tcrit<1.1.or.qual>0.3) then
+          !--- vertical diffusion not valid ---
+          iz1(ix) = 0
+          print'(3I4," qual=",1pE9.2," Tcrit=",1pE9.2," Tmin=",0pF7.1,
+     >         " *")',ix,iz0(ix),iz1(ix),qual,Tcrit,Tmin
+        else
+          print'(3I4," qual=",1pE9.2," Tcrit=",1pE9.2," Tmin=",0pF7.1,
+     >         " Tmax=",0pF7.1)',ix,iz0(ix),iz1(ix),qual,Tcrit,
+     >         Tmin,MAXVAL(Td(ix,1:iz1(ix)))
+        endif
       enddo
-      do iz=izStart-1,2,-1
-        z1  = 0.5*(zz(iz-1)+zz(iz))     ! zz(iz-1/2)
-        z2  = 0.5*(zz(iz+1)+zz(iz))     ! zz(iz+1/2)
-        J0  = sig_SB/pi*Td(iz)**4
-        J1  = sig_SB/pi*Td(iz-1)**4
-        J2  = sig_SB/pi*Td(iz+1)**4
-        D1  = SQRT(Diff(iz)*Diff(iz-1))
-        D2  = SQRT(Diff(iz)*Diff(iz+1))
-        dz1 = zz(iz)-zz(iz-1)
-        dz2 = zz(iz+1)-zz(iz)
-        term1 = D1*(J0-J1)/dz1 + D2*(J0-J2)/dz2
-        term2 = Hvis(iz)*(z2-z1)
-        print'(I4,0pF8.1,9(1pE12.4))',iz,Td(iz),kRoss(iz),term1,term2
-      enddo
-
-      print*
+      print*,SUM(iz0(1:Nx))," phase.eq. & opacity calc."
+      print*,SUM(iz1(1:Nx))," temp.iter., phase.eq. & opacity calc."      
+      
       call INIT_OPAC
       print*
+      
       open(unit=9,file='disk.out',status='replace')
-      write(frmt,'("(A4,A8,A10,4(A15),",I3.3,"(1pE15.6),999(A15))")')
-     >     NLAM
-      write(9,frmt) 'iz','z/r','T[K]','n<H>[cm-3]','rho[g/cm3]',
-     >     'rhod[g/cm3]','kapR[cm2/g]',(lam(i),i=1,NLAM),
+      write(9,*) Nx,Nz,NLAM,NDUST
+      write(9,'(9999(1pE12.3))') lam(1:NLAM)
+      write(9,'(2(A4),A8,A10,9999(A16))')
+     >     'ix','iz','z/r','T[K]','n<H>[cm-3]','rho[g/cm3]',
+     >     'rhod[g/cm3]','kapR[cm2/g]',('kext[cm2/g]',i=1,NLAM),
      >     (trim(dust_nam(i)),i=1,NDUST)
-      verbose = -2              ! avoid output from GGchem
-      do iz=iz0,izStart-1,-1
-        nHtot = nH(iz)
-        rho = nHtot*muH
-        T = Td(iz)
-        eps = eps0
-        call EQUIL_COND(nHtot,T,eps,Sat,eldust,verbose)
-        call CALC_OPAC(nHtot,eldust,kabs,ksca,kext,dg,-1)
-        do i=1,NDUST
-          if (eldust(i)<=0.Q0) cycle
-          rhod = rhod + nHtot*eldust(i)*dust_mass(i)
-        enddo
-        print'(I4,0pF9.1,9(1pE12.4))',iz,T,dustgas(iz),dg,
-     >                         kRoss(iz),KapROSS(T,kext)
-        kRoss(iz) = KapROSS(T,kext)
-        Diff(iz) = 4.0*pi/3.0/kRoss(iz)
-        write(9,'(I4,0pF8.5,0pF10.3,9999(1pE15.7))') iz,zz(iz)/rr,
-     >       T,nHtot,rho,rhod,kRoss(iz)/rho,kext(1:NLAM)/rhod,
-     >       eldust(1:NDUST)
-      enddo
-
-      do iz=izStart-1,2,-1
-        z1  = 0.5*(zz(iz-1)+zz(iz))     ! zz(iz-1/2)
-        z2  = 0.5*(zz(iz+1)+zz(iz))     ! zz(iz+1/2)
-        J0  = sig_SB/pi*Td(iz)**4
-        J2  = sig_SB/pi*Td(iz+1)**4
-        D2  = SQRT(Diff(iz)*Diff(iz+1))
-        dz1 = zz(iz)-zz(iz-1)
-        dz2 = zz(iz+1)-zz(iz)
-        f0  = Hvis(iz)*(z2-z1) - D2*(J0-J2)/dz2
-        nHtot = nH(iz-1)
-        rho = nHtot*muH
-        T = Td(iz)                      ! initial guess
-        print*
-        print'(I10,0pF11.4,2(1pE14.6))',iz-1,
-     >       Td(iz-1),kRoss(iz-1),dustgas(iz-1)
-        do it=1,10
+      verbose = -2                         ! avoid output from GGchem      
+      do ix=1,Nx
+        do iz=iz0(ix),MAX(1,iz1(ix)-1),-1
+          nHtot = nH(ix,iz)
+          rho = nHtot*muH
+          T = Td(ix,iz)
           eps = eps0
           call EQUIL_COND(nHtot,T,eps,Sat,eldust,verbose)
-          call CALC_OPAC(nHtot,eldust,kabs,ksca,kext,dg,-2)
-          kRoss(iz-1) = KapROSS(T,kext)
-          Diff(iz-1) = 4.0*pi/3.0/kRoss(iz-1)
-          D1 = SQRT(Diff(iz)*Diff(iz-1))
-          J1 = sig_SB/pi*T**4
-          f1 = D1*(J0-J1)/dz1
-          J1 = J0 - f0*dz1/D1 
-          Told  = T
-          T     = (J1*pi/sig_SB)**0.25
-          qual1 = T/Told-1.0
-          qual2 = (f0-f1)/(Hvis(iz)*(z2-z1))
-          print'(I3,0pF11.4,2(1pE14.6),3(1pE9.1))',it,Told,
-     >         kRoss(iz-1),dg,f0-f1,qual1,qual2
-          if (ABS(qual2)<1.E-5) exit
+          call CALC_OPAC(nHtot,eldust,kabs,ksca,kext,dg,-1)
+          rhod = 0.0
+          do i=1,NDUST
+            if (eldust(i)<=0.Q0) cycle
+            rhod = rhod + nHtot*eldust(i)*dust_mass(i)
+          enddo
+          kRoss_GGchem = KapROSS(T,kext)
+          print'(2I4,0pF9.1,9(1pE12.4))',ix,iz,T,dustgas(ix,iz),dg,
+     >                           kRoss(ix,iz)/rho,kRoss_GGchem/rho
+          kRoss(ix,iz) = kRoss_GGchem
+          Diff(iz) = 4.0*pi/3.0/kRoss_GGchem
+          write(9,'(2(I4),0pF8.5,0pF10.3,9999(1pE16.6E3))') ix,iz,
+     >       zz(ix,iz)/rr(ix,iz),T,nHtot,rho,rhod,
+     >       kRoss(ix,iz)/rho,kext(1:NLAM)/rho,eldust(1:NDUST)
         enddo
-        Td(iz-1) = T
-        call CALC_OPAC(nHtot,eldust,kabs,ksca,kext,dg,-1)
-        do i=1,NDUST
-          if (eldust(i)<=0.Q0) cycle
-          rhod = rhod + nHtot*eldust(i)*dust_mass(i)
+        do iz=iz1(ix)-1,2,-1
+          z1  = 0.5*(zz(ix,iz-1)+zz(ix,iz))     ! zz(iz-1/2)
+          z2  = 0.5*(zz(ix,iz+1)+zz(ix,iz))     ! zz(iz+1/2)
+          J0  = sig_SB/pi*Td(ix,iz)**4
+          J2  = sig_SB/pi*Td(ix,iz+1)**4
+          D2  = SQRT(Diff(iz)*Diff(iz+1))
+          dz1 = zz(ix,iz)-zz(ix,iz-1)
+          dz2 = zz(ix,iz+1)-zz(ix,iz)
+          f0  = Hvis(ix,iz)*(z2-z1) - D2*(J0-J2)/dz2
+          nHtot = nH(ix,iz-1)
+          rho = nHtot*muH
+          T = Td(ix,iz)                        ! initial guess
+          print*
+          print'(I10,I4,0pF11.4,2(1pE14.6))',ix,iz-1,
+     >         Td(ix,iz-1),kRoss(ix,iz-1)/rho,dustgas(ix,iz-1)
+          do it=1,10
+            eps = eps0
+            call EQUIL_COND(nHtot,T,eps,Sat,eldust,verbose)
+            call CALC_OPAC(nHtot,eldust,kabs,ksca,kext,dg,-2)
+            kRoss(ix,iz-1) = KapROSS(T,kext)
+            Diff(iz-1) = 4.0*pi/3.0/kRoss(ix,iz-1)
+            D1 = SQRT(Diff(iz)*Diff(iz-1))
+            J1 = sig_SB/pi*T**4
+            f1 = D1*(J0-J1)/dz1
+            J1 = J0 - f0*dz1/D1 
+            Told  = T
+            T     = (J1*pi/sig_SB)**0.25
+            qual1 = T/Told-1.0
+            qual2 = (f0-f1)/(Hvis(ix,iz)*(z2-z1))
+            print'(I3,0pF11.4,2(1pE14.6),3(1pE9.1))',it,Told,
+     >         kRoss(ix,iz-1)/rho,dg,f0-f1,qual1,qual2
+            if (ABS(qual2)<1.E-5) exit
+          enddo
+          Td(ix,iz-1) = T
+          call CALC_OPAC(nHtot,eldust,kabs,ksca,kext,dg,-1)
+          rhod = 0.0
+          do i=1,NDUST
+            if (eldust(i)<=0.Q0) cycle
+            rhod = rhod + nHtot*eldust(i)*dust_mass(i)
+          enddo
+          write(9,'(2(I4),0pF8.5,0pF10.3,9999(1pE16.6E3))') ix,iz-1,
+     >         zz(ix,iz-1)/rr(ix,iz-1),T,nHtot,rho,rhod,
+     >         kRoss(ix,iz-1)/rho,kext(1:NLAM)/rho,eldust(1:NDUST)
         enddo
-        write(9,'(I4,0pF8.5,0pF10.3,9999(1pE15.7))') iz-1,zz(iz-1)/rr,
-     >       T,nHtot,rho,rhod,kRoss(iz-1)/rho,kext(1:NLAM)/rhod,
-     >       eldust(1:NDUST)
       enddo
       close(9)
+      print*
+      print*,"--------------  D O N E  ---------------"
       print*,"nmin,nmax=",nmin,nmax
       print*,"kmin,kmax=",kmin,kmax
       print*,"xmin,xmax=",xmin,xmax

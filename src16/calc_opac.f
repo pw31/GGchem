@@ -66,7 +66,7 @@
         if (eldust(i)<=0.Q0) cycle
         j = opind(i)
         if (j==0) then
-          if (nHges*eldust(i)*dust_Vol(i)/Vcon1>1.E-3) then
+          if (nHges*eldust(i)*dust_Vol(i)/Vcon1>3.E-3) then
           if (verb>=-1) print'(" ***",A16,1pE11.3,"  not an ",
      >                  "opacity species ***")',trim(dust_nam(i)),
      >                  nHges*eldust(i)*dust_Vol(i)/Vcon1

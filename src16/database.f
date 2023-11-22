@@ -95,7 +95,7 @@
         !print*,i,EXP(dbase(i)%ln),EXP(dbase(i)%lT)
       enddo 
  100  close(11)
-      print*,"... having read ",NDAT," datasets." 
+      if (verbose>=0) print*,"... having read ",NDAT," datasets." 
       NLAST = NDAT
       return
  200  close(11)
@@ -159,7 +159,7 @@
       NMODI = i
       if (NDAT>NLAST+10) then
         call SAVE_DBASE
-        print*,"... saved ",NDAT," datasets."
+        if (verbose>=0) print*,"... saved ",NDAT," datasets."
       endif  
       end
 

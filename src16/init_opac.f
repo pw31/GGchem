@@ -28,10 +28,12 @@
       integer :: i,j,k
       logical :: ex
 
+      print*
+      print*,"INIT_OPAC ..."
       !----- wavelength grid -----
       NLAM = 300
       allocate(nn(NLAM,NDUST),kk(NLAM,NDUST),nread(NLAM),kread(NLAM))
-      lmin = 0.4
+      lmin = 0.3
       lmax = 300.0
       do i=1,NLAM
         lam(i) = EXP(LOG(lmin)+(i-1.0)/(NLAM-1.0)*LOG(lmax/lmin))
@@ -53,7 +55,6 @@
       kmax = 1.0
       do i=1,9999
         read(12,'(A200)',end=100) line
-        !print*,trim(line)
         opname = trim(line(1:24))
         read(line(25:26),*) conducting(i)
         opfile(i) = trim(line(27:))
@@ -65,7 +66,7 @@
           print*,"*** opacity species not found:",opname
           stop
         else
-          print'(I3,I4,A40,A25," conducting=",L1)',i,j,
+          print'(I3,I4,A40,A30," conducting=",L1)',i,j,
      >         " opacity species found: "//trim(opname),
      >         trim(opfile(i)),conducting(i)
           filename = "data/OpticalData/"//trim(opfile(i))
@@ -90,11 +91,9 @@
       enddo
  100  close(12)
       !--------- add vaccum for porosity -----------
-      filename = "data/OpticalData/vacuum.dat"
-      call FETCH_OPTICALDATA(filename,.false.,nread,kread)
       NLIST = NLIST+1
-      nn(1:NLAM,NLIST) = nread(1:NLAM)
-      kk(1:NLAM,NLIST) = kread(1:NLAM)
+      nn(1:NLAM,NLIST) = 1.0
+      kk(1:NLAM,NLIST) = 0.0
       print*,"nmin,nmax=",nmin,nmax
       print*,"kmin,kmax=",kmin,kmax
       end
@@ -110,27 +109,30 @@
       real,dimension(NLAM),intent(OUT) :: n_mono,k_mono
       real :: fac
       integer :: i,j,j0,j1,Ndat
-
+      character(len=9999) :: line
+      
       !-------------------------------
       !***  read the opacity file  ***
       !-------------------------------
       open(13,file=fileName,status='old')
       Ndat=1
  100  continue
-      read(13,*,err=100) lread(1),nread(1),kread(1)
+      read(13,'(A9999)') line
+      read(line,*,err=100,end=100) lread(1),nread(1),kread(1)
+      !print*,lread(1),nread(1),kread(1)
       do
         read(13,*,end=200) lread(Ndat+1),nread(Ndat+1),kread(Ndat+1)
         if (lread(Ndat+1).le.lread(Ndat)) then
           write(*,*) "*** lambda not monoton increasing."
-          write(*,*) Ndat,lread(Ndat+1)
+          write(*,*) Ndat,lread(Ndat),lread(Ndat+1)
           stop
         endif
         Ndat = Ndat+1
       enddo
  200  close(13)
       write(*,'(i5," datapoints between",0pF10.5," and ",
-     >          0pF10.3," mic.")') Ndat,lread(1),lread(Ndat)
-
+     >          0pF11.2," mic.")') Ndat,lread(1),lread(Ndat)
+      
       !-----------------------------------------
       !***  interpolation and extrapolation  ***
       !-----------------------------------------
