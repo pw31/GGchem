@@ -2,7 +2,8 @@
       PROGRAM EQ_CHEMISTRY
 ***********************************************************************
       use PARAMETERS,ONLY: model_dim,model_struc,model_eqcond,
-     >                     useDatabase,auto_atmos,adapt_cond
+     >                     useDatabase,auto_atmos,adapt_cond,
+     >                     disk_model
       use EXCHANGE,ONLY: chemcall,chemiter,ieqcond,ieqconditer,
      >                   itransform,preEst,preUse,preIter,
      >                   DUALcorr,HCOcorr
@@ -14,10 +15,6 @@
       call INIT_CHEMISTRY
       call INIT_DUSTCHEM
 
-      call INIT_DISK
-      call COMPUTE_DISK
-      stop
-      
       if (model_dim==0) then
         if (adapt_cond) then
           call ADAPT_CONDENSATES
@@ -33,7 +30,12 @@
           call DEMO_STRUCTURE
         endif 
       else if (model_dim==2) then  
-        call DEMO_PHASEDIAGRAM
+        if (disk_model) then
+          call INIT_DISK
+          call COMPUTE_DISK
+        else
+          call DEMO_PHASEDIAGRAM
+        endif
       else
         print*,'*** model_dim=',model_dim,' ???'
         stop

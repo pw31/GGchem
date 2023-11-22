@@ -6,7 +6,8 @@
      >     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,pick_mfrac,use_SiO,
      >     abund_file,struc_file,remove_condensates,phyllosilicates,
      >     initchem_info,auto_atmos,stop_after_init,Mpl,Rpl,gamma,
-     >     adapt_cond,adapt_file,method_eqcond,Nseq,Tseq,Tmin_atmos
+     >     adapt_cond,adapt_file,method_eqcond,Nseq,Tseq,Tmin_atmos,
+     >     disk_model 
       use CHEMISTRY,ONLY: NewBackIt,NewFullIt,NewBackFac,NewPreMethod,
      >                    NewFastLevel,Natmax,dispol_file
       use DUST_DATA,ONLY: DustChem_file,bar,MEarth,REarth
@@ -33,6 +34,7 @@
       stop_after_init    = .false.
       model_pconst       = .true.
       initchem_info      = .true.
+      disk_model         = .true.
       abund_pick   = 3
       model_dim    = 1
       model_struc  = 0
@@ -92,6 +94,8 @@
           read(line,*) phyllosilicates
         else if (index(line,"! use_SiO")>0) then   
           read(line,*) use_SiO
+        else if (index(line,"! disk_model")>0) then   
+          read(line,*) disk_model
         else if (index(line,"! model_dim")>0) then   
           read(line,*) model_dim
         else if (index(line,"! model_pconst")>0) then   

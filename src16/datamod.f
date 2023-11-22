@@ -7,6 +7,7 @@
       logical :: model_eqcond,model_pconst,pick_mfrac,initchem_info
       logical :: useDataBase,remove_condensates,phyllosilicates
       logical :: auto_atmos,adapt_cond,stop_after_init,use_SiO
+      logical :: disk_model
       real*8  :: Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,Tseq(100)
       real*8  :: Mpl,Rpl,gamma,Tmin_atmos
       end
