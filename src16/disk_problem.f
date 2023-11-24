@@ -22,13 +22,33 @@
       real,parameter :: Rsun=6.959900000E+10
       real,parameter :: yr=3.155760000E+7 
       integer :: i,ix,iz,Nsp,Nheat,Ncool,Nlam
-      character(len=99999) :: line
       real :: r1,r2,z1,z2,z3,f1,f2,f3,dz,Hcol,Hint,const,cc
       real :: arr(1000),tauR(NXmax)
+      character(len=99999) :: line
+      logical :: ex
+      
+      !----------------------------
+      ! ***  read Parameter.in  ***
+      !----------------------------
+      inquire(file="Parameter.in",exist=ex)
+      if (.not.ex) stop "*** need Parameter.in"
+      print*,"reading Parameter.in ..."
+      open(unit=12,file="Parameter.in",status='old')
+      Mdot = 0.0
+      do i=1,21
+        read(12,'(A99999)',end=200) line
+        if (index(line,'! Mdot')) read(line,*) Mdot
+      enddo
+ 200  continue
+      print*,"found Mdot=",Mdot
+      Mdot = Mdot*Msun/yr
 
-      !-----------------------
-      ! ***  read ProDiMo  ***
-      !-----------------------
+      !---------------------------
+      ! ***  read ProDiMo.out  ***
+      !---------------------------
+      inquire(file="ProDiMo.out",exist=ex)
+      if (.not.ex) stop "*** need ProDiMo.out"
+      print*
       print*,"reading ProDiMo.out ..."
       open(unit=12,file="ProDiMo.out",status='old')
       do i=1,21
@@ -74,7 +94,6 @@
       !---------------------------------------------
       ! ***  compute viscous heating per volume  ***
       !---------------------------------------------
-      Mdot = 1.E-8*Msun/yr
       do ix=1,Nx
         Hcol = grav*Mstar*Mdot/rr(ix,1)**3 * 3.0/(8.0*pi) ! [erg/cm2/s]
      >       * (1.0-SQRT(Rstar/rr(ix,1)))
@@ -102,26 +121,29 @@
 ************************************************************************
       use PARAMETERS,ONLY: verbose
       use DISK,ONLY: NXmax,Nx,Nz,rr,zz,nH,Td,kRoss,tauRossV,tauRossR,
-     >               Hvis,dustgas
+     >               Hvis,dustgas,Mstar,Rstar,Mdot
       use DUST_DATA,ONLY: NELEM,NDUST,eps0,dust_nam,muH,
      >                    dust_mass,dust_Vol
       use OPACITY,ONLY: NLAMmax,NLAM,lam,xmin,xmax,kmin,kmax,nmin,nmax
       implicit none
       real,parameter :: pi=ACOS(-1.0)
+      real,parameter :: grav=6.67259850000E-08
+      real,parameter :: yr=3.155760000E+7 
       real,parameter :: hplanck=6.62607554E-27
       real,parameter :: bk=1.3806581200000E-16
       real,parameter :: cl=2.9979245800000E+10 
       real,parameter :: cPl1=2.0*hplanck*cl**2
       real,parameter :: cPl2=hplanck*cl/bk 
       real,parameter :: sig_SB=cPl1/cPl2**4*pi**5/15.0
+      real,parameter :: AU=1.495978700E+13
       integer,parameter :: qp=selected_real_kind(33,4931)
       real,parameter :: Tminval=55.0
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST)
       real,dimension(NLAMmax) :: kabs,ksca,kext
-      real,dimension(Nz) :: Diff
+      real,dimension(Nz) :: Diff,Fup
       real :: nHtot,rho,rhod,Vd,T,Told,dg,qual1,qual2,kRoss_GGchem
       real :: z1,z2,J0,J1,J2,D1,D2,dz1,dz2,term1,term2,f0,f1,qual
-      real :: Tmin,Tcrit,Twork,kapROSS
+      real :: Hcol,Tmin,Tcrit,Twork,kapROSS
       integer :: iz0(NXmax),iz1(NXmax),i,ix,iz,it
       character(len=1) :: char1
       character(len=200) :: frmt
@@ -153,27 +175,28 @@
           dz2 = zz(ix,iz+1)-zz(ix,iz)
           term1 = D1*(J0-J1)/dz1 + D2*(J0-J2)/dz2
           term2 = Hvis(ix,iz)*(z2-z1)
-          qual = qual+ABS(term2/term1-1.0)**0.2
+          qual = qual+ABS(term2/term1-1.0)**0.3
           !print'(2(I4),0pF8.1,9(1pE12.4))',ix,iz,Td(ix,iz),
      >    !     kRoss(ix,iz),term1,term2
         enddo
-        Tmin = Td(ix,1)
+        Tmin = MINVAL(Td(ix,1:Nz))
         if (iz1(ix)>2) then
-          qual  = (qual/(iz1(ix)-2))**(1.0/0.2)
-          Tcrit = Td(ix,1)/Td(ix,iz1(ix))
+          qual  = (qual/(iz1(ix)-2))**(1.0/0.3)
+          Tcrit = Td(ix,1)/Tmin
         else
           qual  = 1.E+99
-          Tcrit = 1.E+99
+          Tcrit = 0.0
         endif
-        if (Tmin<55.0) then
+        if (Td(ix,1)<55.0) then
           !--- too cold for GGchem ---
           iz0(ix) = 0
           iz1(ix) = 0
-        else if (Tcrit<1.1.or.qual>0.3) then
+        else if (Tcrit<1.1) then                !(Tcrit<1.1.or.qual>0.2)
           !--- vertical diffusion not valid ---
           iz1(ix) = 0
           print'(3I4," qual=",1pE9.2," Tcrit=",1pE9.2," Tmin=",0pF7.1,
-     >         " *")',ix,iz0(ix),iz1(ix),qual,Tcrit,Tmin
+     >         " Tmid=",0pF7.1," *")',ix,iz0(ix),iz1(ix),qual,Tcrit,
+     >         Tmin,Td(ix,1)
         else
           print'(3I4," qual=",1pE9.2," Tcrit=",1pE9.2," Tmin=",0pF7.1,
      >         " Tmax=",0pF7.1)',ix,iz0(ix),iz1(ix),qual,Tcrit,
@@ -198,6 +221,15 @@
      >     (trim(dust_nam(i)),i=1,NDUST)
       verbose = -2                         ! avoid output from GGchem      
       do ix=1,Nx
+        print*,"==> new radius",ix,rr(ix,1)/AU
+        !Hcol = grav*Mstar*Mdot/rr(ix,1)**3 * 3.0/(8.0*pi) ! [erg/cm2/s]
+     >  !     * (1.0-SQRT(Rstar/rr(ix,1)))
+        Fup(1) = 0.0       ! flux [erg/cm2/s] at iz
+        do iz=2,iz1(ix)
+          dz1 = zz(ix,iz)-zz(ix,iz-1)
+          Fup(iz) = Fup(iz-1) + 0.5*(Hvis(ix,iz)+Hvis(ix,iz-1))*dz1
+          !print*,iz,Fup(iz)/Hcol
+        enddo
         do iz=iz0(ix),MAX(1,iz1(ix)-1),-1
           nHtot = nH(ix,iz)
           rho = nHtot*muH
@@ -232,11 +264,12 @@
           f0  = Hvis(ix,iz)*(z2-z1) - D2*(J0-J2)/dz2
           nHtot = nH(ix,iz-1)
           rho = nHtot*muH
-          T = Td(ix,iz)                        ! initial guess
+          T = Td(ix,iz)                         ! initial guess
           print*
-          print'(I10,I4,0pF11.4,2(1pE14.6))',ix,iz-1,
-     >         Td(ix,iz-1),kRoss(ix,iz-1)/rho,dustgas(ix,iz-1)
-          do it=1,10
+          print'(I10,I4," T=",0pF11.4," kRos=",1pE9.3," d/g=",1pE9.3,
+     >         " Hvis=",1pE9.3)',ix,iz-1,Td(ix,iz-1),
+     >         kRoss(ix,iz-1)/rho,dustgas(ix,iz-1),Hvis(ix,iz)     
+          do it=1,99
             eps = eps0
             Twork = MAX(T,Tminval)
             call EQUIL_COND(nHtot,Twork,eps,Sat,eldust,verbose)
@@ -244,17 +277,25 @@
             kRoss(ix,iz-1) = KapROSS(T,kext)
             Diff(iz-1) = 4.0*pi/3.0/kRoss(ix,iz-1)
             D1 = SQRT(Diff(iz)*Diff(iz-1))
-            J1 = sig_SB/pi*T**4
-            f1 = D1*(J0-J1)/dz1
-            J1 = J0 - f0*dz1/D1 
+            !J1 = sig_SB/pi*T**4
+            !f1 = D1*(J0-J1)/dz1
+            !qual2 = (f0-f1)/(Hvis(ix,iz)*(z2-z1))
+            !J1 = J0 - f0*dz1/D1
+            !if (J1<J0) then
+            !  print*,"*** T decreases?"
+            !  J1 = J0
+            !endif
+            J1    = J0 + 0.5*(Fup(iz-1)+Fup(iz))*dz1/D1       ! Fup = -D1*(J0-J1)/dz
             Told  = T
             T     = (J1*pi/sig_SB)**0.25
             qual1 = T/Told-1.0
-            qual2 = (f0-f1)/(Hvis(ix,iz)*(z2-z1))
             print'(I3,0pF11.4,2(1pE14.6),3(1pE9.1))',it,Told,
-     >         kRoss(ix,iz-1)/rho,dg,f0-f1,qual1,qual2
-            if (ABS(qual2)<1.E-5) exit
+     >         kRoss(ix,iz-1)/rho,dg,f0-f1,qual1
+            if (ABS(qual1)<1.E-6) exit
           enddo
+          if (it>99) print*,"*** WARNING T-iteration not converged"
+          !print'("Fin=",1pE12.5," H=",1pE12.5," Fout=",1pE12.5)',
+     >    !        -D1*(J0-J1)/dz1,Hvis(ix,iz)*(z2-z1),-D2*(J2-J0)/dz2
           Td(ix,iz-1) = T
           call CALC_OPAC(nHtot,eldust,kabs,ksca,kext,dg,-1)
           rhod = 0.0
@@ -266,6 +307,7 @@
           write(9,'(2(I4),0pF8.5,0pF10.3,9999(1pE16.6E3))') ix,iz-1,
      >         zz(ix,iz-1)/rr(ix,iz-1),T,nHtot,rho,rhod,Vd,
      >         kRoss(ix,iz-1)/rho,kabs(1:NLAM)/rho,nHtot*eldust(1:NDUST)
+          !read(*,'(A1)') char1
         enddo
       enddo
       close(9)
