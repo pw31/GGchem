@@ -35,7 +35,7 @@
       print*,"reading Parameter.in ..."
       open(unit=12,file="Parameter.in",status='old')
       Mdot = 0.0
-      do i=1,21
+      do i=1,99999
         read(12,'(A99999)',end=200) line
         if (index(line,'! Mdot')) read(line,*) Mdot
       enddo
@@ -187,11 +187,11 @@
           qual  = 1.E+99
           Tcrit = 0.0
         endif
-        if (Td(ix,1)<55.0) then
-          !--- too cold for GGchem ---
-          iz0(ix) = 0
-          iz1(ix) = 0
-        else if (Tcrit<1.1) then                !(Tcrit<1.1.or.qual>0.2)
+        !if (Td(ix,1)<55.0) then
+        !  !--- too cold for GGchem ---
+        !  iz0(ix) = 0
+        !  iz1(ix) = 0
+        if (Tcrit<1.1) then                !(Tcrit<1.1.or.qual>0.2)
           !--- vertical diffusion not valid ---
           iz1(ix) = 0
           print'(3I4," qual=",1pE9.2," Tcrit=",1pE9.2," Tmin=",0pF7.1,
@@ -221,6 +221,7 @@
      >     (trim(dust_nam(i)),i=1,NDUST)
       verbose = -2                         ! avoid output from GGchem      
       do ix=1,Nx
+        print*
         print*,"==> new radius",ix,rr(ix,1)/AU
         !Hcol = grav*Mstar*Mdot/rr(ix,1)**3 * 3.0/(8.0*pi) ! [erg/cm2/s]
      >  !     * (1.0-SQRT(Rstar/rr(ix,1)))

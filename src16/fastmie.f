@@ -1,8 +1,8 @@
       module FASTMIEDIM
       integer,parameter :: Nx=400,Nn=200,Nk=400
-      real,parameter :: nmin=0.8,nmax=10.0
-      real,parameter :: kmin=1.E-3,kmax=10.0
-      real,parameter :: xmin=2.E-5,xmax=20000.0
+      real,parameter :: nmin=0.8,nmax=100.0
+      real,parameter :: kmin=1.E-3,kmax=100.0
+      real,parameter :: xmin=1.E-6,xmax=50000.0
       real*4,dimension(0:Nx,0:Nn,0:Nk) :: lQsc,lQab
       end
       
