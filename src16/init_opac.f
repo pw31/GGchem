@@ -31,10 +31,10 @@
       print*
       print*,"INIT_OPAC ..."
       !----- wavelength grid -----
-      NLAM = 300
+      NLAM = 600
       allocate(nn(NLAM,NDUST),kk(NLAM,NDUST),nread(NLAM),kread(NLAM))
-      lmin = 0.3
-      lmax = 300.0
+      lmin = 0.2
+      lmax = 1000.0
       do i=1,NLAM
         lam(i) = EXP(LOG(lmin)+(i-1.0)/(NLAM-1.0)*LOG(lmax/lmin))
         !print*,i,lam(i)/mic
