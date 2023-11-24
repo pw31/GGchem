@@ -103,7 +103,8 @@
       use PARAMETERS,ONLY: verbose
       use DISK,ONLY: NXmax,Nx,Nz,rr,zz,nH,Td,kRoss,tauRossV,tauRossR,
      >               Hvis,dustgas
-      use DUST_DATA,ONLY: NELEM,NDUST,eps0,dust_nam,muH,dust_mass
+      use DUST_DATA,ONLY: NELEM,NDUST,eps0,dust_nam,muH,
+     >                    dust_mass,dust_Vol
       use OPACITY,ONLY: NLAMmax,NLAM,lam,xmin,xmax,kmin,kmax,nmin,nmax
       implicit none
       real,parameter :: pi=ACOS(-1.0)
@@ -114,12 +115,13 @@
       real,parameter :: cPl2=hplanck*cl/bk 
       real,parameter :: sig_SB=cPl1/cPl2**4*pi**5/15.0
       integer,parameter :: qp=selected_real_kind(33,4931)
+      real,parameter :: Tminval=55.0
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST)
       real,dimension(NLAMmax) :: kabs,ksca,kext
       real,dimension(Nz) :: Diff
-      real :: nHtot,rho,rhod,T,Told,dg,qual1,qual2,kRoss_GGchem,kapROSS
+      real :: nHtot,rho,rhod,Vd,T,Told,dg,qual1,qual2,kRoss_GGchem
       real :: z1,z2,J0,J1,J2,D1,D2,dz1,dz2,term1,term2,f0,f1,qual
-      real :: Tmin,Tcrit
+      real :: Tmin,Tcrit,Twork,kapROSS
       integer :: iz0(NXmax),iz1(NXmax),i,ix,iz,it
       character(len=1) :: char1
       character(len=200) :: frmt
@@ -155,7 +157,7 @@
           !print'(2(I4),0pF8.1,9(1pE12.4))',ix,iz,Td(ix,iz),
      >    !     kRoss(ix,iz),term1,term2
         enddo
-        Tmin = MINVAL(Td(ix,1:Nz))
+        Tmin = Td(ix,1)
         if (iz1(ix)>2) then
           qual  = (qual/(iz1(ix)-2))**(1.0/0.2)
           Tcrit = Td(ix,1)/Td(ix,iz1(ix))
@@ -187,23 +189,28 @@
       open(unit=9,file='disk.out',status='replace')
       write(9,*) Nx,Nz,NLAM,NDUST
       write(9,'(9999(1pE12.3))') lam(1:NLAM)
+      write(9,'(9999(1pE12.3))') dust_mass(1:NDUST)
+      write(9,'(9999(1pE12.3))') dust_Vol(1:NDUST)
       write(9,'(2(A4),A8,A10,9999(A16))')
      >     'ix','iz','z/r','T[K]','n<H>[cm-3]','rho[g/cm3]',
-     >     'rhod[g/cm3]','kapR[cm2/g]',('kext[cm2/g]',i=1,NLAM),
+     >     'rhod[g/cm3]','Vdust[cm3/cm3]','kapR[cm2/g]',
+     >     ('kabs[cm2/g]',i=1,NLAM),
      >     (trim(dust_nam(i)),i=1,NDUST)
       verbose = -2                         ! avoid output from GGchem      
       do ix=1,Nx
         do iz=iz0(ix),MAX(1,iz1(ix)-1),-1
           nHtot = nH(ix,iz)
           rho = nHtot*muH
-          T = Td(ix,iz)
           eps = eps0
-          call EQUIL_COND(nHtot,T,eps,Sat,eldust,verbose)
+          T = Td(ix,iz)
+          Twork = MAX(T,Tminval)
+          call EQUIL_COND(nHtot,Twork,eps,Sat,eldust,verbose)
           call CALC_OPAC(nHtot,eldust,kabs,ksca,kext,dg,-1)
           rhod = 0.0
+          Vd   = 0.0
           do i=1,NDUST
-            if (eldust(i)<=0.Q0) cycle
             rhod = rhod + nHtot*eldust(i)*dust_mass(i)
+            Vd   = Vd   + nHtot*eldust(i)*dust_Vol(i)
           enddo
           kRoss_GGchem = KapROSS(T,kext)
           print'(2I4,0pF9.1,9(1pE12.4))',ix,iz,T,dustgas(ix,iz),dg,
@@ -211,8 +218,8 @@
           kRoss(ix,iz) = kRoss_GGchem
           Diff(iz) = 4.0*pi/3.0/kRoss_GGchem
           write(9,'(2(I4),0pF8.5,0pF10.3,9999(1pE16.6E3))') ix,iz,
-     >       zz(ix,iz)/rr(ix,iz),T,nHtot,rho,rhod,
-     >       kRoss(ix,iz)/rho,kext(1:NLAM)/rho,eldust(1:NDUST)
+     >       zz(ix,iz)/rr(ix,iz),T,nHtot,rho,rhod,Vd,
+     >       kRoss(ix,iz)/rho,kabs(1:NLAM)/rho,nHtot*eldust(1:NDUST)
         enddo
         do iz=iz1(ix)-1,2,-1
           z1  = 0.5*(zz(ix,iz-1)+zz(ix,iz))     ! zz(iz-1/2)
@@ -231,7 +238,8 @@
      >         Td(ix,iz-1),kRoss(ix,iz-1)/rho,dustgas(ix,iz-1)
           do it=1,10
             eps = eps0
-            call EQUIL_COND(nHtot,T,eps,Sat,eldust,verbose)
+            Twork = MAX(T,Tminval)
+            call EQUIL_COND(nHtot,Twork,eps,Sat,eldust,verbose)
             call CALC_OPAC(nHtot,eldust,kabs,ksca,kext,dg,-2)
             kRoss(ix,iz-1) = KapROSS(T,kext)
             Diff(iz-1) = 4.0*pi/3.0/kRoss(ix,iz-1)
@@ -250,13 +258,14 @@
           Td(ix,iz-1) = T
           call CALC_OPAC(nHtot,eldust,kabs,ksca,kext,dg,-1)
           rhod = 0.0
+          Vd   = 0.0
           do i=1,NDUST
-            if (eldust(i)<=0.Q0) cycle
             rhod = rhod + nHtot*eldust(i)*dust_mass(i)
+            Vd   = Vd   + nHtot*eldust(i)*dust_Vol(i)
           enddo
           write(9,'(2(I4),0pF8.5,0pF10.3,9999(1pE16.6E3))') ix,iz-1,
-     >         zz(ix,iz-1)/rr(ix,iz-1),T,nHtot,rho,rhod,
-     >         kRoss(ix,iz-1)/rho,kext(1:NLAM)/rho,eldust(1:NDUST)
+     >         zz(ix,iz-1)/rr(ix,iz-1),T,nHtot,rho,rhod,Vd,
+     >         kRoss(ix,iz-1)/rho,kabs(1:NLAM)/rho,nHtot*eldust(1:NDUST)
         enddo
       enddo
       close(9)
