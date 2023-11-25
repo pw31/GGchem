@@ -36,7 +36,7 @@
       !------------ variables for data exchange with MIEX ---------
       complex(kind=r2) :: ri
       real(kind=r2)    :: xx,Qext,Qsca,Qabs,Qbk,Qpr,albedo,g,mm1
-      integer          :: ier,nang
+      integer          :: ier
       complex(kind=r2),dimension(2) :: SA1,SA2
       
       kabs(1:NLAM) = 0.0         ! [1/cm]
@@ -112,17 +112,16 @@
         nmin = MIN(nmin,neff)
         kmax = MAX(kmax,keff)
         kmin = MIN(kmin,keff)
-        nang = 3
         ri = DCMPLX(neff,keff)
         do i=1,NSIZE
           xx = 2.0*pi*aa(i)/(lam(j)*mic)    ! Mie size parameter
           xmin = MIN(xmin,xx)
           xmax = MAX(xmax,xx)
           if (use_fastmie) then
-            call FASTMIE(xx,neff,keff,Qsca,Qabs)
+            call FASTMIE(xx,neff,keff,Qsca,Qabs,.false.)
           else
             call SHEXQNN2(ri,xx,Qext,Qsca,Qabs,Qbk,Qpr,
-     >           albedo,g,ier,SA1,SA2,.false.,nang)
+     >           albedo,g,ier,SA1,SA2,.false.,2)
           endif
           kabs(j) = kabs(j) + ff(i)*pi*aa(i)**2 * Qabs * aweight(i)
           ksca(j) = ksca(j) + ff(i)*pi*aa(i)**2 * Qsca * aweight(i)
@@ -199,23 +198,23 @@
       ff      = fref*nHges/nHref/scale
       aweight = scale*awref
       !--- done, this is just a check ---
-      ndtest  = 0.0
-      Vtest   = 0.0
-      mtest   = 0.0
-      do i=1,NSIZE
-        VV = 4.0*pi/3.0*aa(i)**3
-        mm = VV*rhogr
-        ndtest = ndtest + ff(i)*aweight(i)
-        Vtest  = Vtest  + ff(i)*VV*aweight(i)
-        mtest  = mtest  + ff(i)*mm*aweight(i)
-      enddo
-      dg = mtest/(nHges*muH)
-      if (verb>=0) then
-        print*,"scale=",scale
-        print*,"   nd=",ndref*nHges/nHref,ndtest
-        print*,"  d/g=",dgref,dg
-        print*,"Vdust=",Vref*nHges/nHref,Vtest,Vcon
-      endif
+      !ndtest  = 0.0
+      !Vtest   = 0.0
+      !mtest   = 0.0
+      !do i=1,NSIZE
+      !  VV = 4.0*pi/3.0*aa(i)**3
+      !  mm = VV*rhogr
+      !  ndtest = ndtest + ff(i)*aweight(i)
+      !  Vtest  = Vtest  + ff(i)*VV*aweight(i)
+      !  mtest  = mtest  + ff(i)*mm*aweight(i)
+      !enddo
+      !dg = mtest/(nHges*muH)
+      !if (verb>=0) then
+      !  print*,"scale=",scale
+      !  print*,"   nd=",ndref*nHges/nHref,ndtest
+      !  print*,"  d/g=",dgref,dg
+      !  print*,"Vdust=",Vref*nHges/nHref,Vtest,Vcon
+      !endif
       
       end
       
