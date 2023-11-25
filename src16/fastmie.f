@@ -1,9 +1,10 @@
       module FASTMIEDIM
+      use DATATYPE,ONLY: r2     ! from MIEX
       integer,parameter :: Nx=400,Nn=200,Nk=400
       real,parameter :: nmin=0.8,nmax=100.0
       real,parameter :: kmin=1.E-3,kmax=100.0
-      real,parameter :: xmin=1.E-6,xmax=50000.0
-      real*4,dimension(0:Nx,0:Nn,0:Nk) :: lQsc,lQab
+      real,parameter :: xmin=1.E-7,xmax=50000.0
+      real(kind=r2),dimension(0:Nx,0:Nn,0:Nk) :: lQsc,lQab
       end
       
 ************************************************************************
@@ -15,12 +16,13 @@
       use MIE_ROUTINES,ONLY: SHEXQNN2  ! from MIEX
       implicit none
       integer :: i,j,k
-      real :: nnn,kkk
+      real :: nnn,kkk,lam,aa
       !------------ variables for data exchange with MIEX ---------
+      integer,parameter :: nang=2
       complex(kind=r2) :: ri
-      real(kind=r2)    :: xxx,Qext,Qsca,Qabs,Qbk,Qpr,albedo,g,mm1
-      integer          :: ier,nang
-      complex(kind=r2),dimension(2) :: SA1,SA2
+      real(kind=r2)    :: xxx,Qext,Qsca,Qabs,Qbk,Qpr,albedo,g
+      integer          :: ier
+      complex(kind=r2),dimension(nang) :: SA1,SA2
 
       open(unit=12,file='fastmie.dat',form="unformatted",
      >     status='replace')
@@ -28,14 +30,13 @@
       write(12) xmin,xmax
       write(12) nmin,nmax
       write(12) kmin,kmax
-      nang = 3
       do i=0,Nx
         xxx = EXP(LOG(xmin)+i/REAL(Nx)*LOG(xmax/xmin))
 !$omp parallel
 !$omp& default(none)
-!$omp& shared(nang,i,xxx,lQsc,lQab)
+!$omp& shared(i,xxx,lQsc,lQab)
 !$omp& private(j,k,nnn,kkk,ri,Qext,Qsca,Qabs,Qbk,Qpr)       
-!$omp& private(albedo,g,ier,SA1,SA2)       
+!$omp& private(albedo,g,ier,SA1,SA2,lam,aa)       
 !$omp do schedule(dynamic,1)
         do j=0,Nn
           nnn = EXP(LOG(nmin)+j/REAL(Nn)*LOG(nmax/nmin))
@@ -44,7 +45,13 @@
             ri = DCMPLX(nnn,kkk)
             call SHEXQNN2(ri,xxx,Qext,Qsca,Qabs,Qbk,Qpr,
      >                    albedo,g,ier,SA1,SA2,.false.,nang)
-            print*,i,j,k,ier,Qabs
+            print'(4I4,1pE10.2)',i,j,k,ier,Qabs
+            if (ier.ne.0) then
+              print*,"*** error in MIEX, call Q_MIE ..."
+              lam = 1.0
+              aa = xxx/6.2831853
+              call Q_MIE(nnn,kkk,lam,aa,Qext,Qsca,Qabs,g)
+            endif
             lQsc(i,j,k) = LOG(Qsca)
             lQab(i,j,k) = LOG(Qabs)
           enddo  
@@ -57,13 +64,14 @@
       end
 
 ************************************************************************
-      subroutine FASTMIE(xval,nval,kval,Qsca,Qabs)
+      subroutine FASTMIE(xval,nval,kval,Qsca,Qabs,debug)
 ************************************************************************
       use FASTMIEDIM,ONLY: Nx,Nn,Nk,nmin,nmax,kmin,kmax,xmin,xmax,
      >                     lQsc,lQab
       implicit none
       real,intent(in) :: xval,nval,kval
       real,intent(out) :: Qabs,Qsca
+      logical,intent(in) :: debug
       integer :: i,j,k,idum(3),Nx_read,Nn_read,Nk_read
       real :: a1,a2,b1,b2,c1,c2
       real :: xxx,kkk,nnn
@@ -110,15 +118,18 @@
       b2 = 1.0-b1
       c1 = kkk-k
       c2 = 1.0-c1
-      !print*,xxx,i,Nx,a1
-      !print'(3(1pE12.4))',LOG(xmin)+i/REAL(Nx)*LOG(xmax/xmin),
-     >!      LOG(xval),LOG(xmin)+(i+1)/REAL(Nx)*LOG(xmax/xmin)
-      !print*,nnn,j,Nn,b1
-      !print'(3(1pE12.4))',LOG(nmin)+j/REAL(Nn)*LOG(nmax/nmin),
-     >!      LOG(nval),LOG(nmin)+(j+1)/REAL(Nn)*LOG(nmax/nmin)
-      !print*,kkk,k,Nk,c1
-      !print'(3(1pE12.4))',LOG(kmin)+k/REAL(Nk)*LOG(kmax/kmin),
-     >!      LOG(kval),LOG(kmin)+(k+1)/REAL(Nk)*LOG(kmax/kmin)
+      if (debug) then
+        print'(1pE16.8,2I4,1pE16.8)',xxx,i,Nx,a1
+        print'(3(1pE12.4))',EXP(LOG(xmin)+i/REAL(Nx)*LOG(xmax/xmin)),
+     >      xval,EXP(LOG(xmin)+(i+1)/REAL(Nx)*LOG(xmax/xmin))
+        print'(1pE16.8,2I4,1pE16.8)',nnn,j,Nn,b1
+        print'(3(1pE12.4))',EXP(LOG(nmin)+j/REAL(Nn)*LOG(nmax/nmin)),
+     >      nval,EXP(LOG(nmin)+(j+1)/REAL(Nn)*LOG(nmax/nmin))
+        print'(1pE16.8,2I4,1pE16.8)',kkk,k,Nk,c1
+        print'(3(1pE12.4))',EXP(LOG(kmin)+k/REAL(Nk)*LOG(kmax/kmin)),
+     >      kval,EXP(LOG(kmin)+(k+1)/REAL(Nk)*LOG(kmax/kmin))
+        print*,EXP(lQab(i,j,k)),EXP(lQsc(i,j,k))
+      endif
       Qsca = EXP( lQsc(i  ,j,  k  )*a2*b2*c2
      >           +lQsc(i  ,j,  k+1)*a2*b2*c1
      >           +lQsc(i  ,j+1,k  )*a2*b1*c2

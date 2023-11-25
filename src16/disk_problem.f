@@ -147,6 +147,7 @@
       integer :: iz0(NXmax),iz1(NXmax),i,ix,iz,it
       character(len=1) :: char1
       character(len=200) :: frmt
+      logical :: first
 
       iz0 = 0
       iz1 = 0
@@ -187,24 +188,28 @@
           qual  = 1.E+99
           Tcrit = 0.0
         endif
-        !if (Td(ix,1)<55.0) then
-        !  !--- too cold for GGchem ---
-        !  iz0(ix) = 0
-        !  iz1(ix) = 0
-        if (Tcrit<1.1) then                !(Tcrit<1.1.or.qual>0.2)
+        first = (SUM(iz1(1:ix-1))==0)
+        if (Td(ix,1)<30.0) then
+          !--- too cold for GGchem ---
+          iz0(ix) = 0
+          iz1(ix) = 0
+        else if (Tcrit<1.1.or.(first.and.qual>0.2)) then
           !--- vertical diffusion not valid ---
           iz1(ix) = 0
-          print'(3I4," qual=",1pE9.2," Tcrit=",1pE9.2," Tmin=",0pF7.1,
-     >         " Tmid=",0pF7.1," *")',ix,iz0(ix),iz1(ix),qual,Tcrit,
-     >         Tmin,Td(ix,1)
+          print'(I4,0pF8.3,2I4," qual=",1pE9.2," Tcrit=",1pE9.2,
+     >         " Tmin=",0pF7.1," Tmid=",0pF7.1," *")',
+     >         ix,rr(ix,1)/AU,iz0(ix),iz1(ix),
+     >         qual,Tcrit,Tmin,Td(ix,1)
         else
-          print'(3I4," qual=",1pE9.2," Tcrit=",1pE9.2," Tmin=",0pF7.1,
-     >         " Tmax=",0pF7.1)',ix,iz0(ix),iz1(ix),qual,Tcrit,
-     >         Tmin,MAXVAL(Td(ix,1:iz1(ix)))
+          print'(I4,0pF8.3,2I4," qual=",1pE9.2," Tcrit=",1pE9.2,
+     >         " Tmin=",0pF7.1," Tmax=",0pF7.1)',
+     >         ix,rr(ix,1)/AU,iz0(ix),iz1(ix),
+     >         qual,Tcrit,Tmin,MAXVAL(Td(ix,1:iz1(ix)))
         endif
       enddo
       print*,SUM(iz0(1:Nx))," phase.eq. & opacity calc."
       print*,SUM(iz1(1:Nx))," temp.iter., phase.eq. & opacity calc."      
+      stop
       
       call INIT_OPAC
       print*
