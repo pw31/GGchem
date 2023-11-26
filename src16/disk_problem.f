@@ -1,12 +1,11 @@
 ************************************************************************
       module DISK
 ************************************************************************
-      use OPACITY,ONLY: NLAMmax
       integer,parameter :: NXmax=500, NZmax=500
+      integer :: Nx,Nz
       real :: Mstar,Rstar,Mdot
       real,dimension(NXmax,NZmax) :: rr,zz,Td,nH,JJ,DD,kRoss,tauRossV,
      >                               tauRossR,Hvis,dustgas
-      integer :: Nx,Nz
       end
       
 ************************************************************************
