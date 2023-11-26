@@ -208,7 +208,6 @@
       enddo
       print*,SUM(iz0(1:Nx))," phase.eq. & opacity calc."
       print*,SUM(iz1(1:Nx))," temp.iter., phase.eq. & opacity calc."      
-      stop
       
       call INIT_OPAC
       print*
