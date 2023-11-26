@@ -48,3 +48,4 @@ H2O[s]                  F waterice.dat
 NH3[s]                  F nh3-m-Martonchik1983.lnk
 MgO2H2[s]               F MgO.dat
 FeO2H[s]                F FeO.dat
+C[s]                    T c-z-Zubko1996.lnk
