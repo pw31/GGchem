@@ -103,6 +103,7 @@
       !---------------------------------------------
       ! ***  effective medium and Mie opacities  ***
       !---------------------------------------------
+      kext(1:NLAM) = 0.0                    ! [1/cm]
       kabs(1:NLAM) = 0.0                    ! [1/cm]
       ksca(1:NLAM) = 0.0                    ! [1/cm]
       do j=1,NLAM
@@ -118,16 +119,16 @@
           xmin = MIN(xmin,xx)
           xmax = MAX(xmax,xx)
           if (use_fastmie) then
-            call FASTMIE(xx,neff,keff,Qsca,Qabs,.false.)
+            call FASTMIE(xx,neff,keff,Qext,Qsca,Qabs,.false.)
           else
             call SHEXQNN2(ri,xx,Qext,Qsca,Qabs,Qbk,Qpr,
      >           albedo,g,ier,SA1,SA2,.false.,2)
           endif
+          kext(j) = kext(j) + ff(i)*pi*aa(i)**2 * Qext * aweight(i)
           kabs(j) = kabs(j) + ff(i)*pi*aa(i)**2 * Qabs * aweight(i)
           ksca(j) = ksca(j) + ff(i)*pi*aa(i)**2 * Qsca * aweight(i)
         enddo  
       enddo
-      kext(1:NLAM) = kabs(1:NLAM)+ksca(1:NLAM)
       end
 
 ***********************************************************************
