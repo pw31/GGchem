@@ -2,7 +2,7 @@
       module OPACITY
 ************************************************************************
       use DUST_DATA,ONLY: NDUST
-      integer,parameter :: NLAMmax=1000,NSIZEmax=500,NOPmax=200
+      integer,parameter :: NLAMmax=1000,NSIZEmax=500,NOPmax=500
       integer :: NLAM,NSIZE,NLIST
       real,dimension(NLAMmax) :: lam                ! wavelength[mic]
       real,dimension(NSIZEmax) :: aa,ff,aweight     ! size dist.func.
