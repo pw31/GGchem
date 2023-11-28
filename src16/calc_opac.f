@@ -71,9 +71,8 @@
      >                  "opacity species ***")',trim(dust_nam(i)),
      >                  nHges*eldust(i)*dust_Vol(i)/Vcon1
           endif
-        else
+        else 
           Vs(j) = nHges*eldust(i)*dust_Vol(i)/Vcon2
-          if (eldust(i)<=0.Q0) cycle
           if (verb>=-1) print'(A20,1pE11.3)',trim(dust_nam(i)),Vs(j)
         endif
       enddo

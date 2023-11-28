@@ -21,7 +21,7 @@
       real,parameter :: Rsun=6.959900000E+10
       real,parameter :: yr=3.155760000E+7 
       integer :: i,ix,iz,Nsp,Nheat,Ncool,Nlam
-      real :: r1,r2,z1,z2,z3,f1,f2,f3,dz,Hcol,Hint,const,cc
+      real :: r1,r2,z1,z2,z3,f1,f2,f3,Hcol,Hint,const,cc
       real :: arr(1000),tauR(NXmax)
       character(len=99999) :: line
       logical :: ex
@@ -141,11 +141,10 @@
       real,dimension(NLAMmax) :: kabs,ksca,kext
       real,dimension(Nz) :: Diff,Fup
       real :: nHtot,rho,rhod,Vd,T,Told,dg,qual1,qual2,kRoss_GGchem
-      real :: z1,z2,J0,J1,J2,D1,D2,dz1,dz2,term1,term2,f0,f1,qual
-      real :: Hcol,Tmin,Tcrit,Twork,kapROSS
-      integer :: iz0(NXmax),iz1(NXmax),i,ix,iz,it
+      real :: z1,z2,J0,J1,J2,D1,D2,dz1,dz2,term1,term2,f0,f1,qual,qold
+      real :: Tmin,Tmax,fac,Tcrit,Twork,kapROSS
+      integer :: iz0(NXmax),iz1(NXmax),i,ix,iz,it,iz_lastdust
       character(len=1) :: char1
-      character(len=200) :: frmt
       logical :: first
 
       iz0 = 0
@@ -156,6 +155,14 @@
           if (tauRossV(ix,iz)>10.0.and.tauRossR(ix,iz)>10.0)
      >                         iz1(ix)=MAX(iz1(ix),iz)
         enddo
+        if (iz1(ix)>0) then
+          do iz=iz1(ix),iz1(ix)+3
+            !print*,iz,Td(ix,iz)/Td(ix,iz+1)
+            if (Td(ix,iz)<1.25*Td(ix,iz+1)) exit
+          enddo
+          !print*,iz1(ix),iz
+          iz1(ix)=iz
+        endif
         !-------------------------------------------------------
         ! ***  check validity of 1d diffusion approximation  ***
         !-------------------------------------------------------
@@ -192,7 +199,7 @@
           !--- too cold for GGchem ---
           iz0(ix) = 0
           iz1(ix) = 0
-        else if (Tcrit<1.1.or.(first.and.qual>0.2)) then
+        else if (Tcrit<1.1.or.(first.and.qual>0.2*Tcrit)) then
           !--- vertical diffusion not valid ---
           iz1(ix) = 0
           print'(I4,0pF8.3,2I4," qual=",1pE9.2," Tcrit=",1pE9.2,
@@ -201,9 +208,9 @@
      >         qual,Tcrit,Tmin,Td(ix,1)
         else
           print'(I4,0pF8.3,2I4," qual=",1pE9.2," Tcrit=",1pE9.2,
-     >         " Tmin=",0pF7.1," Tmax=",0pF7.1)',
-     >         ix,rr(ix,1)/AU,iz0(ix),iz1(ix),
-     >         qual,Tcrit,Tmin,MAXVAL(Td(ix,1:iz1(ix)))
+     >         " Tmin=",0pF7.1," Tstart=",0pF7.1," Tmax=",0pF7.1)',
+     >         ix,rr(ix,1)/AU,iz0(ix),iz1(ix),qual,Tcrit,Tmin,
+     >         Td(ix,iz1(ix)),MAXVAL(Td(ix,1:iz1(ix)))
         endif
       enddo
       print*,SUM(iz0(1:Nx))," phase.eq. & opacity calc."
@@ -225,16 +232,11 @@
       verbose = -2                         ! avoid output from GGchem      
       do ix=1,Nx
         print*
-        print*,"==> new radius",ix,rr(ix,1)/AU
+        print*,"==> new radius",ix,rr(ix,1)/AU,iz0(ix),iz1(ix)
         !Hcol = grav*Mstar*Mdot/rr(ix,1)**3 * 3.0/(8.0*pi) ! [erg/cm2/s]
      >  !     * (1.0-SQRT(Rstar/rr(ix,1)))
-        Fup(1) = 0.0       ! flux [erg/cm2/s] at iz
-        do iz=2,iz1(ix)
-          dz1 = zz(ix,iz)-zz(ix,iz-1)
-          Fup(iz) = Fup(iz-1) + 0.5*(Hvis(ix,iz)+Hvis(ix,iz-1))*dz1
-          !print*,iz,Fup(iz)/Hcol
-        enddo
-        do iz=iz0(ix),MAX(1,iz1(ix)-1),-1
+        iz_lastdust = 0
+        do iz=iz0(ix),1,-1
           nHtot = nH(ix,iz)
           rho = nHtot*muH
           eps = eps0
@@ -256,6 +258,23 @@
           write(9,'(2(I4),0pF8.5,0pF10.3,9999(1pE16.6E3))') ix,iz,
      >       zz(ix,iz)/rr(ix,iz),T,nHtot,rho,rhod,Vd,
      >       kRoss(ix,iz)/rho,kabs(1:NLAM)/rho,nHtot*eldust(1:NDUST)
+          if (kRoss_GGchem>0.0) iz_lastdust=iz
+          if (iz<=iz1(ix)-1.and.iz_lastdust>0) exit
+        enddo
+        if (kRoss_GGchem==0.0.and.iz1(ix)>0) then
+          print*," !! no dust at start of integration"
+          if (iz_lastdust==0) then
+            print*," !!! no dust at all in this column!"
+            iz1(ix) = 0
+          else
+            iz1(ix)=iz_lastdust+2
+          endif
+        endif
+        Fup(1) = 0.0                            ! flux [erg/cm2/s] at iz
+        do iz=2,iz1(ix)
+          dz1 = zz(ix,iz)-zz(ix,iz-1)
+          Fup(iz) = Fup(iz-1) + 0.5*(Hvis(ix,iz)+Hvis(ix,iz-1))*dz1
+          !print*,iz,Fup(iz)/Hcol
         enddo
         do iz=iz1(ix)-1,2,-1
           z1  = 0.5*(zz(ix,iz-1)+zz(ix,iz))     ! zz(iz-1/2)
@@ -272,7 +291,9 @@
           print*
           print'(I10,I4," T=",0pF11.4," kRos=",1pE9.3," d/g=",1pE9.3,
      >         " Hvis=",1pE9.3)',ix,iz-1,Td(ix,iz-1),
-     >         kRoss(ix,iz-1)/rho,dustgas(ix,iz-1),Hvis(ix,iz)     
+     >         kRoss(ix,iz-1)/rho,dustgas(ix,iz-1),Hvis(ix,iz)
+          Tmin = 0.0
+          Tmax = 9.e+99
           do it=1,99
             eps = eps0
             Twork = MAX(T,Tminval)
@@ -281,23 +302,31 @@
             kRoss(ix,iz-1) = KapROSS(T,kext)
             Diff(iz-1) = 4.0*pi/3.0/kRoss(ix,iz-1)
             D1 = SQRT(Diff(iz)*Diff(iz-1))
-            !J1 = sig_SB/pi*T**4
-            !f1 = D1*(J0-J1)/dz1
-            !qual2 = (f0-f1)/(Hvis(ix,iz)*(z2-z1))
-            !J1 = J0 - f0*dz1/D1
-            !if (J1<J0) then
-            !  print*,"*** T decreases?"
-            !  J1 = J0
-            !endif
-            J1    = J0 + 0.5*(Fup(iz-1)+Fup(iz))*dz1/D1       ! Fup = -D1*(J0-J1)/dz
-            Told  = T
-            T     = (J1*pi/sig_SB)**0.25
-            qual1 = T/Told-1.0
+            J1 = J0 + 0.5*(Fup(iz-1)+Fup(iz))*dz1/D1   ! Fup = -D1*(J0-J1)/dz
+            Told = T
+            T    = (J1*pi/sig_SB)**0.25
+            qold = qual
+            qual = LOG(T/Told)
+            if (T>Told) Tmin=MAX(Tmin,Told)            ! Tsolution>Told
+            if (T<Told) Tmax=MIN(Tmax,Told)            ! Tsolution<Told
+            if (it>4.and.qold*qual<0.0) then
+              !print'(" qold,qual,Told,T=",2(1pE10.2),2(0pF13.6))',
+     >        !       qold,qual,Told,T
+              T = Told + (T-Told)*qold/(qold-qual)
+            endif
+            if (it>4.and.Tmin>0.0.and.Tmax<1.E+99) then
+              fac = (T-Tmin)/(Tmax-Tmin)
+              if (fac<0.2) T=0.7*Tmin+0.3*Tmax
+              if (fac>0.8) T=0.3*Tmin+0.7*Tmax
+              !print'(" Tmin,Tmax,fac=",2(0pF13.6),1pE10.2,
+     >        !       " ==>",0pF13.6)',Tmin,Tmax,fac,T
+            endif
             print'(I3,0pF11.4,2(1pE14.6),3(1pE9.1))',it,Told,
-     >         kRoss(ix,iz-1)/rho,dg,f0-f1,qual1
-            if (ABS(qual1)<1.E-6) exit
+     >         kRoss(ix,iz-1)/rho,dg,qual
+            if (ABS(qual)<1.E-8) exit
           enddo
           if (it>99) print*,"*** WARNING T-iteration not converged"
+          if (it>99) stop
           !print'("Fin=",1pE12.5," H=",1pE12.5," Fout=",1pE12.5)',
      >    !        -D1*(J0-J1)/dz1,Hvis(ix,iz)*(z2-z1),-D2*(J2-J0)/dz2
           Td(ix,iz-1) = T
