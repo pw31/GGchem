@@ -22,8 +22,8 @@
       real,parameter :: yr=3.155760000E+7 
       integer :: i,ix,iz,Nsp,Nheat,Ncool,Nlam
       real :: r1,r2,z1,z2,z3,f1,f2,f3,Hcol,Hint,const,cc
-      real :: arr(1000),tauR(NXmax)
-      character(len=99999) :: line
+      real :: arr(1000),tauR(NXmax),Hread(NXmax)
+      character(len=99999) :: line,infile
       logical :: ex
       
       !----------------------------
@@ -34,13 +34,24 @@
       print*,"reading Parameter.in ..."
       open(unit=12,file="Parameter.in",status='old')
       Mdot = 0.0
+      infile = ''
       do i=1,99999
         read(12,'(A99999)',end=200) line
-        if (index(line,'! Mdot')) read(line,*) Mdot
+        if (index(line,'! Mdot')>0) read(line,*) Mdot
+        if (index(line,'! fixed_surface_density')>0) then
+          read(line,*) ex
+          if (ex) then
+            read(12,*) infile
+          endif
+        endif
       enddo
  200  continue
-      print*,"found Mdot=",Mdot
-      Mdot = Mdot*Msun/yr
+      if (infile=='') then
+        print*,"found Mdot=",Mdot
+        Mdot = Mdot*Msun/yr
+      else
+        print*,"viscous heating rates from "//trim(infile)
+      endif
 
       !---------------------------
       ! ***  read ProDiMo.out  ***
@@ -93,9 +104,34 @@
       !---------------------------------------------
       ! ***  compute viscous heating per volume  ***
       !---------------------------------------------
+      Hread = 0.0
+      if (infile.ne.'') then
+        open(unit=12,file=infile,status='old')
+        do
+ 400      read(12,'(A99999)',end=500) line
+          read(line,*,err=400,end=400) arr(1:5)
+          do ix=1,Nx
+            if (ABS(arr(1)*AU/rr(ix,1)-1.0)<1.E-6) then
+              Hread(ix) = arr(3)
+              print*,ix,nH(ix,1),Hread(ix)
+            endif
+          enddo
+        enddo
+ 500    close(12)
+        do ix=Nx,1,-1
+          if (Hread(ix)==0.0) then
+            Hread(ix) = Hread(ix+1)*nH(ix,1)/nH(ix+1,1)
+            print*,ix,nH(ix,1),Hread(ix)
+          endif
+        enddo
+      endif
+        
       do ix=1,Nx
-        Hcol = grav*Mstar*Mdot/rr(ix,1)**3 * 3.0/(8.0*pi) ! [erg/cm2/s]
-     >       * (1.0-SQRT(Rstar/rr(ix,1)))
+        Hcol = Hread(ix)/2.0
+        if (Hcol==0.0) then
+          Hcol = grav*Mstar*Mdot/rr(ix,1)**3 * 3.0/(8.0*pi) ! [erg/cm2/s]
+     >         * (1.0-SQRT(Rstar/rr(ix,1)))
+        endif
         Hint = 0.0
         do iz=1,Nz-1
           z1 = zz(ix,iz)                                  ! [cm]
@@ -113,6 +149,7 @@
           Hvis(ix,iz) = const*nH(ix,iz)*dustgas(ix,iz)    ! [erg/cm3/s]
         enddo
       enddo
+        
       end
 
 ************************************************************************
@@ -216,7 +253,6 @@
       enddo
       print*,SUM(iz0(1:Nx))," phase.eq. & opacity calc."
       print*,SUM(iz1(1:Nx))," temp.iter., phase.eq. & opacity calc."      
-      
       call INIT_OPAC      
       print*
       
