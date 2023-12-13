@@ -173,15 +173,15 @@
       real,parameter :: sig_SB=cPl1/cPl2**4*pi**5/15.0
       real,parameter :: AU=1.495978700E+13
       integer,parameter :: qp=selected_real_kind(33,4931)
-      real,parameter :: Tminval=55.0
+      real,parameter :: Tminval=55.0,Tmaxval=5000.0
       real(kind=qp) :: eps(NELEM),Sat(NDUST),eldust(NDUST)
       real,dimension(NLAMmax) :: kabs,ksca,kext
       real,dimension(Nz) :: Diff,Fup
       real :: nHtot,rho,rhod,Vd,T,Told,dg,qual1,qual2,kRoss_GGchem
       real :: z1,z2,J0,J1,J2,D1,D2,dz1,dz2,term1,term2,f0,f1,qual,qold
       real :: Tmin,Tmax,fac,Tcrit,Twork,kapROSS
-      integer :: iz0(NXmax),iz1(NXmax),i,ix,iz,it,iz_lastdust
-      character(len=1) :: char1
+      integer :: iz0(NXmax),iz1(NXmax),i,ix,iz,it,iz_lastdust,totit
+      character(len=1) :: char1,bem
       logical :: first
 
       iz0 = 0
@@ -266,8 +266,9 @@
      >     'rhod[g/cm3]','Vdust[cm3/cm3]','kapR[cm2/g]',
      >     ('kabs[cm2/g]',i=1,NLAM),
      >     (trim(dust_nam(i)),i=1,NDUST)
-      verbose = -2                         ! avoid output from GGchem      
-      do ix=1,Nx
+      verbose = -2              ! avoid output from GGchem
+      totit = 0
+      do ix=1,Nx  !Nx
         print*
         print*,"==> new radius",ix,rr(ix,1)/AU,iz0(ix),iz1(ix)
         !Hcol = grav*Mstar*Mdot/rr(ix,1)**3 * 3.0/(8.0*pi) ! [erg/cm2/s]
@@ -278,7 +279,7 @@
           rho = nHtot*muH
           eps = eps0
           T = Td(ix,iz)
-          Twork = MAX(T,Tminval)
+          Twork = MAX(MIN(T,Tmaxval),Tminval)
           call EQUIL_COND(nHtot,Twork,eps,Sat,eldust,verbose)
           call CALC_OPAC(nHtot,eldust,kabs,ksca,kext,dg,-1)
           rhod = 0.0
@@ -331,9 +332,10 @@
      >         kRoss(ix,iz-1)/rho,dustgas(ix,iz-1),Hvis(ix,iz)
           Tmin = 0.0
           Tmax = 9.e+99
+          qual = 9.e+99
           do it=1,99
             eps = eps0
-            Twork = MAX(T,Tminval)
+            Twork = MAX(MIN(T,Tmaxval),Tminval)
             call EQUIL_COND(nHtot,Twork,eps,Sat,eldust,verbose)
             call CALC_OPAC(nHtot,eldust,kabs,ksca,kext,dg,-2)
             kRoss(ix,iz-1) = KapROSS(T,kext)
@@ -344,28 +346,31 @@
             T    = (J1*pi/sig_SB)**0.25
             qold = qual
             qual = LOG(T/Told)
+            print'(I3," T=",0pF10.4," kapR=",1pE12.6," d/g=",1pE12.6,
+     >             " q=",1pE9.2)',it,Told,kRoss(ix,iz-1)/rho,dg,qual
             if (T>Told) Tmin=MAX(Tmin,Told)            ! Tsolution>Told
             if (T<Told) Tmax=MIN(Tmax,Told)            ! Tsolution<Told
-            if (it>4.and.qold*qual<0.0) then
+            if (it>1.and.qold*qual<0.0) then
+              T = Told + (T-Told)*qold/(qold-qual)
               !print'(" qold,qual,Told,T=",2(1pE10.2),2(0pF13.6))',
      >        !       qold,qual,Told,T
-              T = Told + (T-Told)*qold/(qold-qual)
             endif
-            if (it>4.and.Tmin>0.0.and.Tmax<1.E+99) then
+            if (Tmin>0.0.and.Tmax<1.E+99) then
               fac = (T-Tmin)/(Tmax-Tmin)
-              if (fac<0.2) T=0.7*Tmin+0.3*Tmax
-              if (fac>0.8) T=0.3*Tmin+0.7*Tmax
+              bem = " "
+              if (it>3) then
+                if (fac<0.3) T=0.7*Tmin+0.3*Tmax
+                if (fac>0.7) T=0.3*Tmin+0.7*Tmax
+                if (fac<0.3.or.fac>0.7) bem="*"
+              endif  
               !print'(" Tmin,Tmax,fac=",2(0pF13.6),1pE10.2,
-     >        !       " ==>",0pF13.6)',Tmin,Tmax,fac,T
+     >        !       " ==>",0pF13.6,A2)',Tmin,Tmax,fac,T,bem
             endif
-            print'(I3,0pF11.4,2(1pE14.6),3(1pE9.1))',it,Told,
-     >         kRoss(ix,iz-1)/rho,dg,qual
             if (ABS(qual)<1.E-8) exit
           enddo
           if (it>99) print*,"*** WARNING T-iteration not converged"
           if (it>99) stop
-          !print'("Fin=",1pE12.5," H=",1pE12.5," Fout=",1pE12.5)',
-     >    !        -D1*(J0-J1)/dz1,Hvis(ix,iz)*(z2-z1),-D2*(J2-J0)/dz2
+          totit = totit + it
           Td(ix,iz-1) = T
           call CALC_OPAC(nHtot,eldust,kabs,ksca,kext,dg,-1)
           rhod = 0.0
@@ -386,6 +391,7 @@
       print*,"nmin,nmax=",nmin,nmax
       print*,"kmin,kmax=",kmin,kmax
       print*,"xmin,xmax=",xmin,xmax
+      print*,totit
       
       end
       
