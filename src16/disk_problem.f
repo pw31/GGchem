@@ -142,7 +142,8 @@
       real,dimension(Nz) :: Diff,Fup
       real :: nHtot,rho,rhod,Vd,T,Told,dg,qual1,qual2,kRoss_GGchem
       real :: z1,z2,J0,J1,J2,D1,D2,dz1,dz2,term1,term2,f0,f1,qual,qold
-      real :: Tmin,Tmax,fac,Tcrit,Twork,kapROSS
+      real :: Tmin,Tmax,fac,Tcrit,Twork,kRdust,kRgas
+      real,external :: kapROSS,GAS_OPACITY
       integer :: iz0(NXmax),iz1(NXmax),i,ix,iz,it,iz_lastdust,totit
       character(len=1) :: char1,bem
       logical :: first
@@ -216,7 +217,7 @@
       print*,SUM(iz0(1:Nx))," phase.eq. & opacity calc."
       print*,SUM(iz1(1:Nx))," temp.iter., phase.eq. & opacity calc."      
       
-      call INIT_OPAC
+      call INIT_OPAC      
       print*
       
       open(unit=9,file='disk.out',status='replace')
@@ -251,9 +252,11 @@
             rhod = rhod + nHtot*eldust(i)*dust_mass(i)
             Vd   = Vd   + nHtot*eldust(i)*dust_Vol(i)
           enddo
-          kRoss_GGchem = KapROSS(T,kext)
+          kRdust = KapROSS(T,kext)
+          kRgas  = GAS_OPACITY(T,nHtot)*rho
+          kRoss_GGchem = kRdust+kRgas
           print'(2I4,0pF9.1,9(1pE12.4))',ix,iz,T,dustgas(ix,iz),dg,
-     >                           kRoss(ix,iz)/rho,kRoss_GGchem/rho
+     >                                kRoss(ix,iz)/rho,kRdust,kRgas
           kRoss(ix,iz) = kRoss_GGchem
           Diff(iz) = 4.0*pi/3.0/kRoss_GGchem
           write(9,'(2(I4),0pF8.5,0pF10.3,9999(1pE16.6E3))') ix,iz,
@@ -301,7 +304,9 @@
             Twork = MAX(MIN(T,Tmaxval),Tminval)
             call EQUIL_COND(nHtot,Twork,eps,Sat,eldust,verbose)
             call CALC_OPAC(nHtot,eldust,kabs,ksca,kext,dg,-2)
-            kRoss(ix,iz-1) = KapROSS(T,kext)
+            kRdust = KapROSS(T,kext)
+            kRgas  = GAS_OPACITY(T,nHtot)*rho
+            kRoss(ix,iz-1) = kRdust + kRgas
             Diff(iz-1) = 4.0*pi/3.0/kRoss(ix,iz-1)
             D1 = SQRT(Diff(iz)*Diff(iz-1))
             J1 = J0 + 0.5*(Fup(iz-1)+Fup(iz))*dz1/D1   ! Fup = -D1*(J0-J1)/dz
@@ -309,7 +314,7 @@
             T    = (J1*pi/sig_SB)**0.25
             qold = qual
             qual = LOG(T/Told)
-            print'(I3," T=",0pF10.4," kapR=",1pE12.6," d/g=",1pE12.6,
+            print'(I3," T=",0pF10.4," kapR=",2(1pE12.6)," d/g=",1pE12.6,
      >             " q=",1pE9.2)',it,Told,kRoss(ix,iz-1)/rho,dg,qual
             if (T>Told) Tmin=MAX(Tmin,Told)            ! Tsolution>Told
             if (T<Told) Tmax=MIN(Tmax,Told)            ! Tsolution<Told
@@ -345,7 +350,7 @@
           write(9,'(2(I4),0pF8.5,0pF10.3,9999(1pE16.6E3))') ix,iz-1,
      >         zz(ix,iz-1)/rr(ix,iz-1),T,nHtot,rho,rhod,Vd,
      >         kRoss(ix,iz-1)/rho,kabs(1:NLAM)/rho,nHtot*eldust(1:NDUST)
-          !read(*,'(A1)') char1
+          read(*,'(A1)') char1
         enddo
       enddo
       close(9)
