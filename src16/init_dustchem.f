@@ -43,8 +43,9 @@
           j2 = index(zeile,trim(trivial(NDUST)))
      &       + len(trim(trivial(NDUST)))
           read(zeile(j2+1:),*) Tmelt(NDUST)
-          trivial(NDUST)=' '
+          read(zeile(j1+1:j2),*) trivial(NDUST)
         endif
+        print*,trim(dust_nam(NDUST)),trim(trivial(NDUST))
         read(12,*) dust_rho(NDUST)
         read(12,*) dust_nel(NDUST)
         dmass = 0.d0
@@ -124,7 +125,7 @@
         if ((.not.use_SiO).and.
      &       trim(dust_nam(NDUST))=='SiO[s]') allfound=.false.
         if ((.not.metal_sulphates).and.
-     &       index(dust_nam(NDUST),'SULFATE')>0) allfound=.false.   
+     &       index(trivial(NDUST),'SULFATE')>0) allfound=.false.   
         if (allfound) then
           dust_mass(NDUST) = dmass
           dust_vol(NDUST) = dmass/dust_rho(NDUST)
@@ -310,4 +311,5 @@
           endif  
         enddo   
       enddo
+      stop
       end
