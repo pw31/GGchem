@@ -23,7 +23,6 @@ EXECS     = ggchem16
 
 OBJECTS  = datamod.o \
            database.o \
-	   init_opac.o \
            read_parameter.o \
            demo_sweep.o \
            demo_structure.o \
@@ -49,13 +48,6 @@ OBJECTS  = datamod.o \
            upper.o \
            nucleation.o \
 	   auto_structure.o \
-	   MIEX.o \
-	   q_mie.o \
-	   calc_opac.o \
-	   effMedium.o \
-	   fastmie.o \
-	   disk_problem.o \
-	   kappaRoss.o \
            main.o
 
 .SUFFIXES : .o .f .F .f90
