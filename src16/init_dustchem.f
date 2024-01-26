@@ -45,7 +45,7 @@
           read(zeile(j2+1:),*) Tmelt(NDUST)
           read(zeile(j1+1:j2),*) trivial(NDUST)
         endif
-        print*,trim(dust_nam(NDUST)),trim(trivial(NDUST))
+        !print*,trim(dust_nam(NDUST)),trim(trivial(NDUST))
         read(12,*) dust_rho(NDUST)
         read(12,*) dust_nel(NDUST)
         dmass = 0.d0
