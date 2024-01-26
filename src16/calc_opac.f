@@ -30,8 +30,9 @@
       real,intent(out) :: dustgas
       integer,intent(in) :: verb
       real :: rhod1,rhod2,Vcon1,Vcon2,rhogr1,rhogr2,rho
-      real :: neff,keff,Vs(NDUST),porosity
-      integer :: i,j
+      real :: neff,keff,porosity
+      real,dimension(NDUST) :: qsave,qsort,Vs
+      integer :: i,j,k
       logical,parameter :: use_fastmie=.true.
       !------------ variables for data exchange with MIEX ---------
       complex(kind=r2) :: ri
@@ -46,6 +47,7 @@
       Vcon1 = 0.d0               ! dust volume density [cm3/cm3]
       rhod2 = 0.d0               
       Vcon2 = 0.d0               ! same, but only opacity species
+      dustgas = 0.d0
       do i=1,NDUST
         if (eldust(i)<=0.Q0) cycle
         j = opind(i)
@@ -61,20 +63,29 @@
       Vcon2 = Vcon2/(1.0-porosity)
       rhogr1 = rhod1/Vcon1       
       rhogr2 = rhod2/Vcon2
-      Vs(1:NLIST) = 0.0
       do i=1,NDUST
-        if (eldust(i)<=0.Q0) cycle
-        j = opind(i)
-        if (j==0) then
-          if (nHges*eldust(i)*dust_Vol(i)/Vcon1>3.E-3) then
-          if (verb>=-1) print'(" ***",A16,1pE11.3,"  not an ",
-     >                  "opacity species ***")',trim(dust_nam(i)),
-     >                  nHges*eldust(i)*dust_Vol(i)/Vcon1
+        qsort(i) = nHges*eldust(i)*dust_Vol(i)/Vcon2
+      enddo
+      qsave = qsort
+      call sort(NDUST,qsort)
+      Vs(1:NLIST) = 0.0
+      do k=NDUST,1,-1
+        if (qsort(k)<=0.0) cycle
+        do i=1,NDUST
+          if (qsort(k)==qsave(i)) then
+            j = opind(i)
+            if (j==0) then
+              if (nHges*eldust(i)*dust_Vol(i)/Vcon1>3.E-3) then
+                if (verb>=-1) print'(" ***",A16,1pE11.3,
+     >              "  not an opacity species ***")',trim(dust_nam(i)),
+     >              nHges*eldust(i)*dust_Vol(i)/Vcon1
+              endif
+            else 
+              Vs(j) = qsave(i)
+              if (verb>=-1) print'(A20,1pE11.3)',trim(dust_nam(i)),Vs(j)
+            endif
           endif
-        else 
-          Vs(j) = nHges*eldust(i)*dust_Vol(i)/Vcon2
-          if (verb>=-1) print'(A20,1pE11.3)',trim(dust_nam(i)),Vs(j)
-        endif
+        enddo
       enddo
       Vs(NLIST) = porosity
       rho = nHges*muH
@@ -154,8 +165,8 @@
       if (firstCall) then
         NSIZE  = 100
         rhoref = 2.0              ! g/cm3
-        a1ref  = 0.01             ! mic
-        a2ref  = 1000.0           ! mic
+        a1ref  = 0.05             ! mic
+        a2ref  = 3000.0           ! mic
         dgref  = 0.004            ! fully condensed solor dust/gas ratio
         pp     = -3.5
         do i=1,NSIZE
@@ -184,7 +195,9 @@
         scale = dgref/dg             ! ... which should be 0.004
         fref  = scale*fref           ! [cm-4]
         ndref = scale*ndref          ! [cm-3]
-        Vref  = scale*Vref           ! [cm3/H-nucleus]
+        Vref  = scale*Vref      ! [cm3/H-nucleus]
+        !print*,Vref
+        !stop
         firstCall = .false.
       endif
         
@@ -219,3 +232,78 @@
       end
       
       
+!---------------------------------------------
+      SUBROUTINE sort(n,arr)
+!---------------------------------------------
+      INTEGER n,M,NSTACK
+      REAL arr(n)
+      PARAMETER (M=7,NSTACK=50)
+      INTEGER i,ir,j,jstack,k,l,istack(NSTACK)
+      REAL a,temp
+      jstack=0
+      l=1
+      ir=n
+1     if(ir-l.lt.M)then
+        do 12 j=l+1,ir
+          a=arr(j)
+          do 11 i=j-1,l,-1
+            if(arr(i).le.a)goto 2
+            arr(i+1)=arr(i)
+11        continue
+          i=l-1
+2         arr(i+1)=a
+12      continue
+        if(jstack.eq.0)return
+        ir=istack(jstack)
+        l=istack(jstack-1)
+        jstack=jstack-2
+      else
+        k=(l+ir)/2
+        temp=arr(k)
+        arr(k)=arr(l+1)
+        arr(l+1)=temp
+        if(arr(l).gt.arr(ir))then
+          temp=arr(l)
+          arr(l)=arr(ir)
+          arr(ir)=temp
+        endif
+        if(arr(l+1).gt.arr(ir))then
+          temp=arr(l+1)
+          arr(l+1)=arr(ir)
+          arr(ir)=temp
+        endif
+        if(arr(l).gt.arr(l+1))then
+          temp=arr(l)
+          arr(l)=arr(l+1)
+          arr(l+1)=temp
+        endif
+        i=l+1
+        j=ir
+        a=arr(l+1)
+3       continue
+          i=i+1
+        if(arr(i).lt.a)goto 3
+4       continue
+          j=j-1
+        if(arr(j).gt.a)goto 4
+        if(j.lt.i)goto 5
+        temp=arr(i)
+        arr(i)=arr(j)
+        arr(j)=temp
+        goto 3
+5       arr(l+1)=arr(j)
+        arr(j)=a
+        jstack=jstack+2
+        if(jstack.gt.NSTACK) stop 'NSTACK too small in sort'
+        if(ir-i+1.ge.j-l)then
+          istack(jstack)=ir
+          istack(jstack-1)=i
+          ir=j-1
+        else
+          istack(jstack)=j-1
+          istack(jstack-1)=l
+          l=i
+        endif
+      endif
+      goto 1
+      END

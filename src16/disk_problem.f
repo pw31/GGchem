@@ -21,7 +21,7 @@
       real,parameter :: Rsun=6.959900000E+10
       real,parameter :: yr=3.155760000E+7 
       integer :: i,ix,iz,Nsp,Nheat,Ncool,Nlam
-      real :: r1,r2,z1,z2,z3,f1,f2,f3,Hcol,Hint,const,cc
+      real :: r1,r2,z1,z2,z3,f1,f2,f3,Hcol,Hint,const,cc,fac
       real :: arr(1000),tauR(NXmax),Hread(NXmax)
       character(len=99999) :: line,infile
       logical :: ex
@@ -113,7 +113,7 @@
           do ix=1,Nx
             if (ABS(arr(1)*AU/rr(ix,1)-1.0)<1.E-6) then
               Hread(ix) = arr(3)
-              print*,ix,nH(ix,1),Hread(ix)
+              print*,ix,arr(1),nH(ix,1),Hread(ix)
             endif
           enddo
         enddo
@@ -125,6 +125,13 @@
           endif
         enddo
       endif
+
+      print*
+      write(*,'("input a correction factor to the ",
+     >          "viscous heating = ")',advance='no') 
+      read*,fac
+      print*
+      Hread = Hread*fac
         
       do ix=1,Nx
         Hcol = Hread(ix)/2.0
@@ -178,10 +185,12 @@
       real,dimension(NLAMmax) :: kabs,ksca,kext
       real,dimension(Nz) :: Diff,Fup
       real :: nHtot,rho,rhod,Vd,T,Told,dg,qual1,qual2,kRoss_GGchem
-      real :: z1,z2,J0,J1,J2,D1,D2,dz1,dz2,term1,term2,f0,f1,qual,qold
+      real :: z1,z2,J0,J1,J2,D1,D2,dz1,dz2,term1,term2,f0,f1
       real :: Tmin,Tmax,fac,Tcrit,Twork,kRdust,kRgas
+      real :: qual,qold,qbest
       real,external :: kapROSS,GAS_OPACITY
-      integer :: iz0(NXmax),iz1(NXmax),i,ix,iz,it,iz_lastdust,totit
+      integer :: iz0(NXmax),iz1(NXmax)
+      integer :: i,ix,ix0,iz,it,iz_lastdust,totit
       character(len=1) :: char1,bem
       logical :: first
 
@@ -233,11 +242,12 @@
           Tcrit = 0.0
         endif
         first = (SUM(iz1(1:ix-1))==0)
-        if (Td(ix,1)<30.0) then
-          !--- too cold for GGchem ---
-          iz0(ix) = 0
-          iz1(ix) = 0
-        else if (Tcrit<1.1.or.(first.and.qual>0.2*Tcrit)) then
+        !if (Td(ix,1)<30.0) then
+        !  !--- too cold for GGchem ---
+        !  iz0(ix) = 0
+        !  iz1(ix) = 0
+        !else if (Tcrit<1.1.or.(first.and.qual>0.2*Tcrit)) then
+        if (Tcrit<1.0) then
           !--- vertical diffusion not valid ---
           iz1(ix) = 0
           print'(I4,0pF8.3,2I4," qual=",1pE9.2," Tcrit=",1pE9.2,
@@ -255,6 +265,16 @@
       print*,SUM(iz1(1:Nx))," temp.iter., phase.eq. & opacity calc."      
       call INIT_OPAC      
       print*
+
+      qbest = 9.E+99
+      do ix=1,Nx
+        qual = ABS(rr(ix,1)-0.2*AU)
+        if (qual<qbest) then
+          qbest = qual
+          ix0 = ix
+        endif
+      enddo
+      print*,"selected column ix0,r[AU] =",ix0,rr(ix,1)/AU
       
       open(unit=9,file='disk.out',status='replace')
       write(9,*) Nx,Nz,NLAM,NDUST
@@ -268,7 +288,8 @@
      >     (trim(dust_nam(i)),i=1,NDUST)
       verbose = -2              ! avoid output from GGchem
       totit = 0
-      do ix=1,Nx  !Nx
+      do ix=ix0,ix0
+      !do ix=1,Nx 
         print*
         print*,"==> new radius",ix,rr(ix,1)/AU,iz0(ix),iz1(ix)
         !Hcol = grav*Mstar*Mdot/rr(ix,1)**3 * 3.0/(8.0*pi) ! [erg/cm2/s]
@@ -282,19 +303,19 @@
           Twork = MAX(MIN(T,Tmaxval),Tminval)
           call EQUIL_COND(nHtot,Twork,eps,Sat,eldust,verbose)
           call CALC_OPAC(nHtot,eldust,kabs,ksca,kext,dg,-1)
+          kRdust = KapROSS(T,kext)
+          kRgas  = GAS_OPACITY(T,nHtot)*rho
+          kRoss_GGchem = kRdust+kRgas
+          print'(2I4,0pF9.1,9(1pE12.4))',ix,iz,T,dustgas(ix,iz),dg,
+     >                        kRoss(ix,iz)/rho,kRdust/rho,kRgas/rho
+          kRoss(ix,iz) = kRoss_GGchem
+          Diff(iz) = 4.0*pi/3.0/kRoss_GGchem
           rhod = 0.0
           Vd   = 0.0
           do i=1,NDUST
             rhod = rhod + nHtot*eldust(i)*dust_mass(i)
             Vd   = Vd   + nHtot*eldust(i)*dust_Vol(i)
           enddo
-          kRdust = KapROSS(T,kext)
-          kRgas  = GAS_OPACITY(T,nHtot)*rho
-          kRoss_GGchem = kRdust+kRgas
-          print'(2I4,0pF9.1,9(1pE12.4))',ix,iz,T,dustgas(ix,iz),dg,
-     >                                kRoss(ix,iz)/rho,kRdust,kRgas
-          kRoss(ix,iz) = kRoss_GGchem
-          Diff(iz) = 4.0*pi/3.0/kRoss_GGchem
           write(9,'(2(I4),0pF8.5,0pF10.3,9999(1pE16.6E3))') ix,iz,
      >       zz(ix,iz)/rr(ix,iz),T,nHtot,rho,rhod,Vd,
      >       kRoss(ix,iz)/rho,kabs(1:NLAM)/rho,nHtot*eldust(1:NDUST)
@@ -350,9 +371,10 @@
             T    = (J1*pi/sig_SB)**0.25
             qold = qual
             qual = LOG(T/Told)
-            print'(I3," T=",0pF10.4," kapR=",2(1pE12.6)," d/g=",1pE12.6,
-     >             " q=",1pE9.2)',it,Told,kRoss(ix,iz-1)/rho,dg,qual
-            if (T>Told) Tmin=MAX(Tmin,Told)            ! Tsolution>Told
+            print'(I3," T=",0pF10.4," kapR=",1pE12.6,1pE13.6," d/g=",
+     >             1pE12.6," q=",1pE9.2)',it,Told,kRdust/rho,kRgas/rho,
+     >             dg,qual
+            if (T>Told) Tmin=MAX(Tmin,Told) ! Tsolution>Told
             if (T<Told) Tmax=MIN(Tmax,Told)            ! Tsolution<Told
             if (it>1.and.qold*qual<0.0) then
               T = Told + (T-Told)*qold/(qold-qual)
@@ -373,10 +395,9 @@
             if (ABS(qual)<1.E-8) exit
           enddo
           if (it>99) print*,"*** WARNING T-iteration not converged"
-          if (it>99) stop
           totit = totit + it
           Td(ix,iz-1) = T
-          call CALC_OPAC(nHtot,eldust,kabs,ksca,kext,dg,-1)
+          call CALC_OPAC(nHtot,eldust,kabs,ksca,kext,dg,-1)  ! call with output
           rhod = 0.0
           Vd   = 0.0
           do i=1,NDUST
@@ -386,7 +407,7 @@
           write(9,'(2(I4),0pF8.5,0pF10.3,9999(1pE16.6E3))') ix,iz-1,
      >         zz(ix,iz-1)/rr(ix,iz-1),T,nHtot,rho,rhod,Vd,
      >         kRoss(ix,iz-1)/rho,kabs(1:NLAM)/rho,nHtot*eldust(1:NDUST)
-          read(*,'(A1)') char1
+          !read(*,'(A1)') char1
         enddo
       enddo
       close(9)

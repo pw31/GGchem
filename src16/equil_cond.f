@@ -1407,7 +1407,19 @@
             changed = .true.
             print*,"trying eqcond_method 2 ..."
             goto 50
-          endif  
+          endif
+          print*,"*** QGESL failed in equil_cond.f"
+          print*,"method=",method," info=",info
+          print*,"dx=",dx(1:Nsolve)
+          FF = Fsav
+          DF = DFsav
+          print*,"FF=",FF(1:Nsolve)
+          print*,"DF="
+          do i=1,Nsolve
+            print'(99(1pE16.7))',DF(i,1:Nsolve)
+          enddo
+          call GAUSS16( NELEM, Nsolve, DF, dx, FF)
+          print*,"dx=",dx(1:Nsolve)
           stop
         endif
   
