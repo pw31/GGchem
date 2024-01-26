@@ -195,9 +195,7 @@
         scale = dgref/dg             ! ... which should be 0.004
         fref  = scale*fref           ! [cm-4]
         ndref = scale*ndref          ! [cm-3]
-        Vref  = scale*Vref      ! [cm3/H-nucleus]
-        !print*,Vref
-        !stop
+        Vref  = scale*Vref           ! [cm3/H-nucleus]
         firstCall = .false.
       endif
         

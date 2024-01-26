@@ -374,7 +374,7 @@
             print'(I3," T=",0pF10.4," kapR=",1pE12.6,1pE13.6," d/g=",
      >             1pE12.6," q=",1pE9.2)',it,Told,kRdust/rho,kRgas/rho,
      >             dg,qual
-            if (T>Told) Tmin=MAX(Tmin,Told) ! Tsolution>Told
+            if (T>Told) Tmin=MAX(Tmin,Told)            ! Tsolution>Told
             if (T<Told) Tmax=MIN(Tmax,Told)            ! Tsolution<Told
             if (it>1.and.qold*qual<0.0) then
               T = Told + (T-Told)*qold/(qold-qual)
