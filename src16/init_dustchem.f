@@ -1,7 +1,8 @@
 **********************************************************************
       SUBROUTINE INIT_DUSTCHEM
 **********************************************************************
-      use PARAMETERS,ONLY: model_eqcond,phyllosilicates,use_SiO
+      use PARAMETERS,ONLY: model_eqcond,phyllosilicates,use_SiO,
+     &                     metal_sulphates
       use CHEMISTRY,ONLY: NMOLE,NELM,catm
       use DUST_DATA,ONLY: NDUSTmax,NEPS,NELEM,NDUST,eps0,amu,
      &                    dust_nam,dust_rho,dust_vol,dust_mass,
@@ -122,6 +123,8 @@
      &       .and.(hasSi.or.hasAl.or.hasCa)) allfound=.false.
         if ((.not.use_SiO).and.
      &       trim(dust_nam(NDUST))=='SiO[s]') allfound=.false.
+        if ((.not.metal_sulphates).and.
+     &       index(dust_nam(NDUST),'SULFATE')>0) allfound=.false.   
         if (allfound) then
           dust_mass(NDUST) = dmass
           dust_vol(NDUST) = dmass/dust_rho(NDUST)

@@ -1,6 +1,6 @@
 dust species
 ============
-251
+257
 
 Al2O3[s]       CORUNDUM(alpha)
 3.97
@@ -2039,7 +2039,9 @@ ZnSO4[s]       ZINC-SULFATE
  4 O
 # dG-Stock-fit NIST-Janaf (100-2000)K, +/-1.2 kJ/mol
   5  2.84836E+05 -8.62576E+00 -5.12505E+01  1.02815E-02 -1.02650E-06
-
+# dG-Stock-fit NIST-Janaf 100-3000K, Kitzmann+2024 (Eq. A5/A6)
+# 5  2.841321e+05 -1.432225e+01 -1.911778e+01 2.033870e-02 -3.227622e-06
+  
 ZnS[s]         SPHALERITE/WURTZITE
 4.09
 2
@@ -2394,7 +2396,62 @@ FeCl3[l]      IRON-TRICHLORIDE(liquid)  577.0
  3 Cl
 # pvap NIST-Janaf cr (600-1500)K, +/- 0.022:  
   3 -1.19535E+04  2.96064E+01 -3.03724E-03  0.00000E+00  0.00000E+00
-  
+
+CoSO4[s]        COBALT-SULFATE
+3.71
+3
+ 1 Co
+ 1 S
+ 4 O
+# dG-Stock-fit NIST-Janaf 100-3000K, Kitzmann+2024 (Eq. A5/A6)
+  5  3.090612e+05 -1.116262e+01 -3.771972e+01 1.342978e-02 -1.891004e-06
+
+CuSO4[s]        COPPER-SULFATE
+3.60
+3
+ 1 Cu
+ 1 S
+ 4 O
+# dG-Stock-fit NIST-Janaf 100-3000K, Kitzmann+2024 (Eq. A5/A6)
+  5  2.840470e+05 -1.142242e+01 -3.544105e+01 1.361580e-02 -1.928828e-06
+
+Fe2S3O12[s]     IRON-III-SULFATE
+3.10
+3
+ 2 Fe
+ 3 S
+12 O
+# dG-Stock-fit NIST-Janaf 100-3000K, Kitzmann+2024 (Eq. A5/A6)
+  5  8.653884e+05 -2.297044e+01 -1.590785e+02 2.277154e-02 -2.696870e-06
+
+FeSO4[s]        IRON-II-SULFATE
+2.84
+3
+ 1 Fe
+ 1 S
+ 4 O
+# dG-Stock-fit NIST-Janaf 100-3000K, Kitzmann+2024 (Eq. A5/A6)
+  5  3.124384e+05 -1.174652e+01 -3.362834e+01 1.366547e-02 -1.903293e-06
+
+MgSO4[s]        MG-SULFATE
+2.66
+3
+ 1 Mg
+ 1 S
+ 4 O
+# dG-Stock-fit NIST-Janaf 100-3000K, Kitzmann+2024 (Eq. A5/A6)
+  5  3.200432e+05 -1.284829e+01 -2.706610e+01 1.567552e-02 -2.606110e-06 
+
+MgSO4[l]        MG-SULFATE(liquid)         1495
+2.4
+3
+ 1 Mg
+ 1 S
+ 4 O
+# dG-Stock-fit NIST-Janaf 100-3000K, Kitzmann+2024 (Eq. A5/A6)
+  5  3.242348e+05  3.274547e+00 -1.304625e+02 3.745212e-04 -2.944070e-08
+
+
 ----- deactivated, because leading to artifacts at high T ------
 AlO3H3[s]                GIBBSITE
  2.44

@@ -5,6 +5,7 @@
      >     model_struc,model_eqcond,Npoints,useDatabase,verbose,
      >     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,pick_mfrac,use_SiO,
      >     abund_file,struc_file,remove_condensates,phyllosilicates,
+     >     metal_sulphates, 
      >     initchem_info,auto_atmos,stop_after_init,Mpl,Rpl,gamma,
      >     adapt_cond,adapt_file,method_eqcond,Nseq,Tseq,Tmin_atmos
       use CHEMISTRY,ONLY: NewBackIt,NewFullIt,NewBackFac,NewPreMethod,
@@ -27,6 +28,7 @@
       model_eqcond       = .false.
       remove_condensates = .false.
       phyllosilicates    = .true.
+      metal_sulphates    = .true.
       use_SiO            = .true.
       auto_atmos         = .false.
       adapt_cond         = .false.
@@ -90,6 +92,8 @@
           read(line,*) remove_condensates
         else if (index(line,"! phyllosilicates")>0) then   
           read(line,*) phyllosilicates
+        else if (index(line,"! metal_sulphates")>0) then   
+          read(line,*) metal_sulphates
         else if (index(line,"! use_SiO")>0) then   
           read(line,*) use_SiO
         else if (index(line,"! model_dim")>0) then   

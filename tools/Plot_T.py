@@ -82,7 +82,7 @@ styl = ['-']*Ncolor + ['--']*Ncolor + [':']*Ncolor + ['-.']*Ncolor*7
 widt = [2]*Ncolor*10
 
 #================== temperature-pressure structure ====================
-fig,ax = plt.subplots()
+fig,ax = plt.subplots(figsize=(6.5,5.5))
 plt.plot(Tg,press/bar,lw=4)
 plt.xlabel(r'$T\ \mathrm{[K]}$')
 plt.ylabel(r'$p\ \mathrm{[bar]}$')
@@ -354,76 +354,83 @@ if (ymax>-99):
   plt.clf()
 
 #================== supersaturation ratios ===================
-  fig,ax = plt.subplots()
-  count = 0
-  for isolid in reversed(indices):
-    solid = solids[isolid]
-    ind = np.where(keyword == 'S'+solid)[0]
-    if (np.size(ind) == 0): continue
-    ind = ind[0]
-    #print solid,ind
-    logS = dat[:,ind]              # log10 S
-    if (np.max(logS[iii])>-6):
-      plt.plot(Tg,logS,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
-      count = count + 1
-  plt.title('supersaturation ratios')
-  plt.xlabel(r'$T\ \mathrm{[K]}$')
-  plt.ylabel(r'$\mathrm{log}_{10}\ S$')
-  plt.xlim(Tmin,Tmax)
-  plt.ylim(-7,0.5)
-  minorLocator = MultipleLocator(sep)
-  ax.xaxis.set_minor_locator(minorLocator)
-  sz = np.min([9,1+120.0/count])
-  col = 1
-  if (count>20): 
-    sz = np.min([9,1+200.0/count])
-    col = 2
-  if (count>40): 
-    sz = np.min([9,1+250.0/count])
-    col = 3
-  leg = plt.legend(loc='best',fontsize=sz,ncol=col,fancybox=True)
-  leg.get_frame().set_alpha(0.7)
-  plt.tight_layout()
-  plt.savefig(pp,format='pdf')
-  plt.clf()
-
-  fig,ax = plt.subplots()
-  count = 0
-  for isolid in reversed(indices):
-    solid = solids[isolid]
-    ind = np.where(keyword == 'S'+solid)[0]
-    if (np.size(ind) == 0): continue
-    ind = ind[0]
-    #print solid,ind
-    S = 10**dat[:,ind]              # S
-    if (np.max(S[iii])>0.7):
-      plt.plot(Tg,S,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
-      count = count + 1
-  plt.title('supersaturation ratios')
-  plt.xlabel(r'$T\ \mathrm{[K]}$')
-  plt.ylabel(r'$S$')
-  plt.xlim(Tmin,Tmax)
-  plt.ylim(0,1.05)
-  sz = np.min([9,1+120.0/count])
-  col = 1
-  if (count>20): 
-    sz = np.min([9,1+200.0/count])
-    col = 2
-  if (count>40): 
-    sz = np.min([9,1+250.0/count])
-    col = 3
-  leg = plt.legend(loc='best',fontsize=sz,ncol=col,fancybox=True)
-  leg.get_frame().set_alpha(0.7)
-  minorLocator = MultipleLocator(sep)
-  ax.xaxis.set_minor_locator(minorLocator)
-  plt.tight_layout()
-  #plt.show()
-  plt.savefig(pp,format='pdf')
-  plt.clf()
+fig,ax = plt.subplots(figsize=(7.5,4.0))
+count = 0
+for isolid in reversed(indices):
+  solid = solids[isolid]
+  ind = np.where(keyword == 'S'+solid)[0]
+  if (np.size(ind) == 0): continue
+  ind = ind[0]
+  #print solid,ind
+  logS = dat[:,ind]              # log10 S
+  if (np.max(logS[iii])>np.log10(0.7)):
+    plt.plot(Tg,logS,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
+    count = count + 1
+plt.title('supersaturation ratios')
+plt.xlabel(r'$T\ \mathrm{[K]}$')
+plt.ylabel(r'$\mathrm{log}_{10}\ S$')
+plt.xlim(Tmin,Tmax)
+plt.ylim(-2.0,1.0)
+minorLocator = MultipleLocator(sep)
+ax.xaxis.set_minor_locator(minorLocator)
+sz = np.min([9,1+120.0/count])
+col = 1
+if (count>20): 
+  sz = np.min([9,1+200.0/count])
+  col = 2
+if (count>40): 
+  sz = np.min([9,1+250.0/count])
+  col = 3
+leg = plt.legend(loc='best',fontsize=sz,ncol=col,fancybox=True)
+leg.get_frame().set_alpha(0.7)
+count = 0
+for text in leg.get_texts():
+  text.set_color(colo[count])
+  count += 1
+plt.tight_layout()
+plt.savefig(pp,format='pdf')
+plt.clf()
+fig,ax = plt.subplots(figsize=(7.5,4.0))
+count = 0
+for isolid in reversed(indices):
+  solid = solids[isolid]
+  ind = np.where(keyword == 'S'+solid)[0]
+  if (np.size(ind) == 0): continue
+  ind = ind[0]
+  #print solid,ind
+  S = 10**dat[:,ind]              # S
+  if (np.max(S[iii])>0.7):
+    plt.plot(Tg,S,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
+    count = count + 1
+#plt.title('supersaturation ratios')
+plt.xlabel(r'$T\ \mathrm{[K]}$')
+plt.ylabel(r'$S$')
+plt.xlim(Tmin,Tmax)
+plt.ylim(0,1.15)
+sz = np.min([9,1+120.0/count])
+col = 1
+if (count>20): 
+  sz = np.min([9,1+200.0/count])
+  col = 2
+if (count>40): 
+  sz = np.min([9,1+250.0/count])
+  col = 3
+leg = plt.legend(loc='best',fontsize=sz,ncol=col,fancybox=True)
+leg.get_frame().set_alpha(0.7)
+count = 0
+for text in leg.get_texts():
+  text.set_color(colo[count])
+  count += 1
+#minorLocator = MultipleLocator(sep)
+#ax.xaxis.set_minor_locator(minorLocator)
+plt.tight_layout()
+#plt.show()
+plt.savefig(pp,format='pdf')
+plt.clf()
 
 #================== selected condensates ===================
 selsolids = ['Mg3Si4O12H2','H2O[l]','H2O','AlF6Na3','CaMgC2O6','MgF2','CaF2']
-fig,ax = plt.subplots()
+fig,ax = plt.subplots(figsize=(6.5,5.5))
 count = 0
 for solid in selsolids:
   ind = np.where(keyword == 'n'+solid)[0]

@@ -11,6 +11,8 @@ dispol_WoitkeRefit.dat                  ! dispol_file3
 
 # equilibrium condensation?
 .true.                ! model_eqcond
+.true.                ! phyllosilicates
+.true.                ! metal_sulphates
 
 # model options
 1                     ! model_dim  (0,1,2)

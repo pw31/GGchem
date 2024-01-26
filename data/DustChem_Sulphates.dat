@@ -1,0 +1,68 @@
+# Sulfate fitting coefficients obtained by Kitzmann+2024 (Eq. A5/A6) from the NIST-JANAF for sulfate minerals using the parametrization presented in Stock+2008/Stock+2018.
+# Parametrization also present in GGCHEM. (Woitke+2018, Eq. 17/Fit 5)
+
+Species		a0           a1            b0            b1           b2
+CoSO4(s)	3.090612e+05 -1.116262e+01 -3.771972e+01 1.342978e-02 -1.891004e-06
+CuSO4(s)	2.840470e+05 -1.142242e+01 -3.544105e+01 1.361580e-02 -1.928828e-06
+Fe2(SO4)3(s)	8.653884e+05 -2.297044e+01 -1.590785e+02 2.277154e-02 -2.696870e-06
+FeSO4(s)	3.124384e+05 -1.174652e+01 -3.362834e+01 1.366547e-02 -1.903293e-06
+MgSO4(s,l)	3.200432e+05 -1.284829e+01 -2.706610e+01 1.567552e-02 -2.606110e-06 
+		3.242348e+05  3.274547e+00 -1.304625e+02 3.745212e-04 -2.944070e-08
+ZnSO4(s)	2.841321e+05 -1.432225e+01 -1.911778e+01 2.033870e-02 -3.227622e-06
+
+---------------------------------------------------------------------------------------------------------
+
+CoSO4[s]        COBALT-SULFATE
+3.71
+3
+ 1 Co
+ 1 S
+ 4 O
+# dG-Stock-fit NIST-Janaf 100-3000K, Kitzmann+2024 (Eq. A5/A6)
+  5  3.090612e+05 -1.116262e+01 -3.771972e+01 1.342978e-02 -1.891004e-06
+
+CuSO4[s]        COPPER-SULFATE
+3.60
+3
+ 1 Cu
+ 1 S
+ 4 O
+# dG-Stock-fit NIST-Janaf 100-3000K, Kitzmann+2024 (Eq. A5/A6)
+  5  2.840470e+05 -1.142242e+01 -3.544105e+01 1.361580e-02 -1.928828e-06
+
+Fe2S3O12[s]     IRON-III-SULFATE
+3.10
+3
+ 2 Fe
+ 3 S
+12 O
+# dG-Stock-fit NIST-Janaf 100-3000K, Kitzmann+2024 (Eq. A5/A6)
+  5  8.653884e+05 -2.297044e+01 -1.590785e+02 2.277154e-02 -2.696870e-06
+
+FeSO4[s]        IRON-II-SULFATE
+2.84
+3
+ 1 Fe
+ 1 S
+ 4 O
+# dG-Stock-fit NIST-Janaf 100-3000K, Kitzmann+2024 (Eq. A5/A6)
+  5  3.124384e+05 -1.174652e+01 -3.362834e+01 1.366547e-02 -1.903293e-06
+
+MgSO4[s]        MG-SULFATE
+2.66
+3
+ 1 Mg
+ 1 S
+ 4 O
+# dG-Stock-fit NIST-Janaf 100-3000K, Kitzmann+2024 (Eq. A5/A6)
+  5  3.200432e+05 -1.284829e+01 -2.706610e+01 1.567552e-02 -2.606110e-06 
+
+MgSO4[l]        MG-SULFATE(liquid)         1495
+2.4
+3
+ 1 Mg
+ 1 S
+ 4 O
+# dG-Stock-fit NIST-Janaf 100-3000K, Kitzmann+2024 (Eq. A5/A6)
+  5  3.242348e+05  3.274547e+00 -1.304625e+02 3.745212e-04 -2.944070e-08
+
