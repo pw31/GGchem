@@ -374,6 +374,8 @@
       write(*,*) '355 = FeCl2_cr pvap'
       write(*,*) '356 = FeCl3_cr pvap'
       write(*,*) '357 = P4O10_cr pvap'
+      write(*,*) '358 = AlN'
+      write(*,*) '359 = AlN_cr'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -2801,6 +2803,20 @@
         call READ_DATEI('P4O10.txt'   ,dG,T,Nmax,N,S,2)
         Edzahl = 1
         stoich(2) = 1.D0
+      elseif (specie.eq.358) then
+        call READ_DATEI('AlN.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('Al.txt' ,dG,T,Nmax,N,S,2)
+        call READ_DATEI('N.txt'  ,dG,T,Nmax,N,S,3)
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 1.D0
+      elseif (specie.eq.359) then
+        call READ_DATEI('AlN_cr.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('Al.txt'    ,dG,T,Nmax,N,S,2)
+        call READ_DATEI('N.txt'     ,dG,T,Nmax,N,S,3)
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 1.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop

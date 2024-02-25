@@ -1,6 +1,6 @@
 dust species
 ============
-257
+258
 
 Al2O3[s]       CORUNDUM(alpha)
 3.97
@@ -2450,6 +2450,16 @@ MgSO4[l]        MG-SULFATE(liquid)         1495
  4 O
 # dG-Stock-fit NIST-Janaf 100-3000K, Kitzmann+2024 (Eq. A5/A6)
   5  3.242348e+05  3.274547e+00 -1.304625e+02 3.745212e-04 -2.944070e-08
+
+AlN[s]          AL-NITRIDE
+3.26
+2
+ 1 Al
+ 1 N
+# dG-fit NIST-Janaf 100-3000K,  +/- 0.036 kJ/mol
+# 2  5.27373E+05 -1.12465E+06  3.07533E+02 -4.89938E-03  3.88524E-07
+# dG-Stock-fit NIST-Janaf 100-3000K,  +/-0.20 kJ/mol
+  5  1.34007E+05 -2.99038E+00 -1.71221E+01  2.81870E-03 -2.92650E-07
 
 
 ----- deactivated, because leading to artifacts at high T ------
