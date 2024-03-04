@@ -12,6 +12,7 @@ bar = 1.E+6             # 1 bar in dyn/cm2
 atm = 1.013E+6          # 1 atm in dyn/cm2
 R   = 8.3144598         # gas constant in J/K/mol
 cal = 4.184             # 1 cal in J   
+bk  = 1.38065812E-16    # Boltzman constant erg/K
 
 # set fit and plot ranges
 Tref  = 298.15     # reference temperature
@@ -81,8 +82,10 @@ f = open('../../data/DustChem.dat','r')
 lines = f.readlines()[:]
 f.close
 i = 0
-lnam = []
-lfit = []
+lnam1 = []
+lfit1 = []
+lnam2 = []
+lfit2 = []
 for iline in range(0,999):
   if (i>=len(lines)): break
   line = lines[i]
@@ -93,25 +96,110 @@ for iline in range(0,999):
     line = lines[i+1]
     Nel  = int(line.split()[0])
     i = i+Nel+2
-    found = 0
-    cfit = [0.0,0.0,0.0,0.0,0.0]
     print form,name
     for j in range(0,99):
+      found1 = 0
+      found2 = 0
       info = lines[i].split()
       i = i+1
       #print info
       if (len(info)<1): break
       if (info[0]=='2'): tmp=info[1:6]
       if (info[1]=='2'): tmp=info[2:7]
-      if (info[0]=='2' or info[1]=='2'): found=1
-    if (found==1):  
+      if (info[0]=='2' or info[1]=='2'): found1=1
+      if (info[0]=='5'): tmp=info[1:6]
+      if (info[1]=='5'): tmp=info[2:7]
+      if (info[0]=='5' or info[1]=='5'):
+        if (lines[i-2].find('NIST')>0): found2=1
+      if (found1==1):  
+        cfit = [0.0,0.0,0.0,0.0,0.0]
+        for j in range(0,5):
+          cfit[j] = float(tmp[j])
+        print cfit
+        lnam1.append(form)
+        lfit1.append(cfit)
+      if (found2==1):  
+        cfit = [0.0,0.0,0.0,0.0,0.0]
+        for j in range(0,5):
+          cfit[j] = float(tmp[j])
+        print cfit
+        lnam2.append(form)
+        lfit2.append(cfit)
+GGnam1   = np.array(lnam1,dtype='str')
+GGcoeff1 = np.array(lfit1)
+GGnam2   = np.array(lnam2,dtype='str')
+GGcoeff2 = np.array(lfit2)
+
+#==========================================================================
+# read Kitzmann data
+#==========================================================================
+f = open('../../data/Kitzmann2023/logK_condensates.dat','r')
+lines = f.readlines()[:]
+f.close
+i = 0
+lfor = []
+lnam = []
+lfit = []
+lNat = []
+for iline in range(0,9999):
+  if (i>=len(lines)): break
+  line = lines[i]
+  i = i+1
+  if (line.find('(s)')>0 or line.find('(s,l)')>0):
+    line = line.split()
+    form = line[0]
+    name = line[1]
+    for j in range(2,9999):
+      if (line[j]==":"): break
+      name = name+line[j]
+    if (form.find('.')>0): continue  
+    Nat = 0
+    for k in range(1,9999):
+      j = j+1
+      if (line[j]=="#"): break
+      j = j+1
+      Nat = Nat + int(line[j])
+    print form,name,Nat
+    line = lines[i].strip()
+    if (line=='s'):
+      i=i+2
+      tmp = lines[i].split()
+      form = form[:-3]+"[s]"
+      cfit = [0.0,0.0,0.0,0.0,0.0]
       for j in range(0,5):
         cfit[j] = float(tmp[j])
-      print cfit
-      lnam.append(form)
+      lfor.append(form)
+      lnam.append(name)
       lfit.append(cfit)
-GGnam   = np.array(lnam,dtype='str')
-GGcoeff = np.array(lfit)
+      lNat.append(Nat)
+    elif (line=='sl'):
+      i=i+2
+      tmp = lines[i].split()
+      form = form[:-5]+"[s]"
+      cfit = [0.0,0.0,0.0,0.0,0.0]
+      for j in range(0,5):
+        cfit[j] = float(tmp[j])
+      lfor.append(form)
+      lnam.append(name)
+      lfit.append(cfit)
+      lNat.append(Nat)
+      i=i+1
+      tmp = lines[i].split()
+      form = form[:-3]+"[l]"
+      cfit = [0.0,0.0,0.0,0.0,0.0]
+      for j in range(0,5):
+        cfit[j] = float(tmp[j])
+      lfor.append(form)
+      lnam.append("liquid "+name)
+      lfit.append(cfit)
+      lNat.append(Nat)
+    else:
+      print "unknown list of condensates"
+      print line
+      stop
+KZnam   = np.array(lfor,dtype='str')
+KZname  = np.array(lnam,dtype='str')
+KZcoeff = np.array(lfit)
 
 #==========================================================================
 # read BURCAT data
@@ -488,13 +576,23 @@ file2.close
 
 SUnam = np.array(SUnam,dtype='str')
 allcond = []
-GGnamU = []
+GGnamU1 = []
+GGnamU2 = []
+KZnamU = []
 BUnamU = []
 SUnamU = []
 SHnamU = []
-for cond in GGnam:
+for cond in GGnam1:
   cc = np.str.upper(cond)
-  GGnamU.append(cc)
+  GGnamU1.append(cc)
+  if (cc not in allcond): allcond.append(cc)
+for cond in GGnam2:
+  cc = np.str.upper(cond)
+  GGnamU2.append(cc)
+  if (cc not in allcond): allcond.append(cc)
+for cond in KZnam:
+  cc = np.str.upper(cond)
+  KZnamU.append(cc)
   if (cc not in allcond): allcond.append(cc)
 for cond in BUnam: 
   cc = np.str.upper(cond)
@@ -510,11 +608,15 @@ for cond in SHnam:
   if (cc not in allcond): allcond.append(cc)
 Ncond = len(allcond)
 allcond = np.array(sorted(allcond),dtype='str')
-GGnamU  = np.array(GGnamU,dtype='str')
+GGnamU1 = np.array(GGnamU1,dtype='str')
+GGnamU2 = np.array(GGnamU2,dtype='str')
+KZnamU  = np.array(KZnamU,dtype='str')
 BUnamU  = np.array(BUnamU,dtype='str')
 SUnamU  = np.array(SUnamU,dtype='str')
 SHnamU  = np.array(SHnamU,dtype='str')
-print "GGnam=",GGnam
+print "GGnam1=",GGnam1
+print "GGnam2=",GGnam2
+print "KZnam=",KZnam
 print "BUnam=",BUnam
 print "SUnam=",SUnam
 print "SHnam=",SHnam
@@ -522,10 +624,9 @@ print "allcond=",allcond
 
 for icond in range(0,Ncond): 
 
-  plt.figure(figsize=(7,8))
-  plt.subplot(211)
   name = ''
   form = allcond[icond]
+  #if (form <> "AL2O3[S]"): continue
   pform = form
   dGmean = 0.0*T2
   ymin =  1.E+99
@@ -548,29 +649,39 @@ for icond in range(0,Ncond):
     dG_sh = (a0/T2 + a1 + a2*T2 + a3*T2**2 + a4*T2**3) * cal    # J/mol @ 1atm
     dG_sh = dG_sh + Natom*np.log(atm/bar)*R*T2                  # J/mol @ 1bar
     dGmean = dGmean + dG_sh
-    plt.plot(T2,dG_sh/1000,c='orange',lw=4.5,label='Sharp & Huebner 1990')
     ymin = np.min([ymin,np.min(dG_sh/1000)])
     ymax = np.max([ymax,np.max(dG_sh/1000)])
     
   # search for GGchem data
-  has_GG=0
-  ind = np.where(GGnamU==form)[0]
+  has_GG1=0
+  ind = np.where(GGnamU1==form)[0]
   if (len(ind)>0):
-    has_GG = 1
-    iGG = ind[0]
-    pform = GGnam[iGG]
-    a0 = GGcoeff[iGG,0]
-    a1 = GGcoeff[iGG,1]
-    a2 = GGcoeff[iGG,2]
-    a3 = GGcoeff[iGG,3]
-    a4 = GGcoeff[iGG,4]
-    print pform,"has GGchem data"
-    dG_gg = (a0/T2 + a1 + a2*T2 + a3*T2**2 + a4*T2**3)          # J/mol @ 1bar
-    dGmean = dGmean + dG_gg
-    plt.plot(T2,dG_gg/1000,c='green',lw=1.5,label='old GGchem')
-    ymin = np.min([ymin,np.min(dG_gg/1000)])
-    ymax = np.max([ymax,np.max(dG_gg/1000)])
-    
+    has_GG1 = 1
+    iGG1 = ind[0]
+    pform = GGnam1[iGG1]
+    a0 = GGcoeff1[iGG1,0]
+    a1 = GGcoeff1[iGG1,1]
+    a2 = GGcoeff1[iGG1,2]
+    a3 = GGcoeff1[iGG1,3]
+    a4 = GGcoeff1[iGG1,4]
+    print pform,"has GGchem1 data"
+    dG_gg1 = (a0/T2 + a1 + a2*T2 + a3*T2**2 + a4*T2**3)          # J/mol @ 1bar
+    dGmean = dGmean + dG_gg1
+    ymin = np.min([ymin,np.min(dG_gg1/1000)])
+    ymax = np.max([ymax,np.max(dG_gg1/1000)])
+  has_GG2=0
+  ind = np.where(GGnamU2==form)[0]
+  if (len(ind)>0):
+    has_GG2 = 1
+    iGG2 = ind[0]
+    pform = GGnam2[iGG2]
+    coeff = GGcoeff2[iGG2,:]
+    print pform,"has GGchem2 data"
+    dG_gg2 = Stock(T2,coeff)                                     # J/mol @ 1bar
+    dGmean = dGmean + dG_gg2
+    ymin = np.min([ymin,np.min(dG_gg2/1000)])
+    ymax = np.max([ymax,np.max(dG_gg2/1000)])
+
   # search for SUPCRTBL data
   has_SU=0
   ind = np.where(SUnamU==form)[0]
@@ -584,11 +695,26 @@ for icond in range(0,Ncond):
     dG_su = SUdG[iSU]
     dG_su_fit = Stock(T2,coeff)
     dGmean = dGmean + dG_su_fit
-    plt.plot(T2,dG_su_fit/1000  ,c='blue',lw=2.0,label='SUPCRTBL fit')
-    plt.plot(T1,dG_su/1000 ,c='black',ls='--',lw=3.5,label='SUPCRTBL data')
     ymin = np.min([ymin,np.min(dG_su_fit/1000)])
     ymax = np.max([ymax,np.max(dG_su_fit/1000)])
 
+  # search for Kitzmann data
+  has_KZ=0
+  ind = np.where(KZnamU==form)[0]
+  if (len(ind)>0):
+    has_KZ = 1
+    iKZ = ind[0]
+    pform = KZnam[iKZ]
+    if (name==''): name=KZname[iKZ]
+    print pform,"has Kitzmann data"
+    coeff = KZcoeff[iKZ,:]
+    dG_KZ = Stock(T2,coeff)
+    #logKs = a0/T2 + a1*np.log(T2) + a2 + a3*T2 + a4*T2**2
+    #dG_KZ = -logKs*R*T2                                        # J/mol @ 1bar
+    dGmean = dGmean + dG_KZ
+    ymin = np.min([ymin,np.min(dG_KZ/1000)])
+    ymax = np.max([ymax,np.max(dG_KZ/1000)])
+    
   # search for BURCAT data
   has_BU=0
   ind = np.where(BUnamU==form)[0]
@@ -630,25 +756,34 @@ for icond in range(0,Ncond):
       i += 1
     #dGmean = dGmean + dG_bu
     BUind = np.where((T2>0.9*Tfit[0]) & (T2<1.1*Tfit[Nfit]))
-    plt.plot(T2,dG_bu/1000,c='red',ls=':',lw=1.5)
-    plt.plot(T2[BUind],dG_bu[BUind]/1000,c='red',lw=2,label='BURCAT')
     ymin = np.min([ymin,np.min(dG_bu[BUind]/1000)])
     ymax = np.max([ymax,np.max(dG_bu[BUind]/1000)])
 
-  dely = 0.05*(ymax-ymin)  
-  ymin = ymin-dely
-  ymax = ymax+dely
-  plt.xlim(0.0,1.05*Tmax2)
-  plt.ylim(ymin,ymax)
-  plt.xlabel(r'$T\,\mathrm{[K]}$',fontsize=16)
-  plt.ylabel(r'$\Delta_\mathrm{f} G^{\mathrm{1bar}}\mathrm{[kJ/mol]}$',fontsize=16)
-  plt.title(pform+"  -  "+name)
-  plt.subplots_adjust(left=0.13, right=0.98, top=0.94, bottom=0.13)
-  plt.legend(loc='best')
+  if (has_SU+has_GG1+has_GG2+has_SH+has_KZ>0):
+    dely = 0.05*(ymax-ymin)  
+    ymin = ymin-dely
+    ymax = ymax+dely
+    plt.figure(figsize=(7,8))
+    plt.subplot(211)
+    if (has_SH): plt.plot(T2,dG_sh/1000,c='orange',lw=4.5,label='Sharp & Huebner 1990')
+    if (has_GG1): plt.plot(T2,dG_gg1/1000,c='green',lw=1.5,label='old GGchem')
+    if (has_GG2): plt.plot(T2,dG_gg2/1000,c='darkgreen',ls=':',lw=3,label='new GGchem')
+    if (has_KZ): plt.plot(T2,dG_KZ/1000,c='magenta',lw=1.5,label='Kitzmann')
+    if (has_SU): plt.plot(T2,dG_su_fit/1000,c='blue',lw=2.0,label='SUPCRTBL fit')
+    if (has_SU): plt.plot(T1,dG_su/1000,c='black',ls='--',lw=3.5,label='SUPCRTBL data')
+    if (has_BU): plt.plot(T2,dG_bu/1000,c='red',ls=':',lw=1.5)
+    if (has_BU): plt.plot(T2[BUind],dG_bu[BUind]/1000,c='red',lw=2,label='BURCAT')
+    plt.xlim(0.0,1.05*Tmax2)
+    plt.ylim(ymin,ymax)
+    plt.xlabel(r'$T\,\mathrm{[K]}$',fontsize=16)
+    plt.ylabel(r'$\Delta_\mathrm{f} G^{\mathrm{1bar}}\mathrm{[kJ/mol]}$',fontsize=16)
+    plt.title(pform+"  -  "+name)
+    plt.subplots_adjust(left=0.13, right=0.98, top=0.94, bottom=0.13)
+    plt.legend(loc='best')
 
-  if (has_SU+has_GG+has_SH+has_BU>1):
+  if (has_SU+has_GG1+has_GG2+has_SH+has_BU+has_KZ>1):
     plt.subplot(212)
-    dGmean = dGmean/(has_SU+has_GG+has_SH)  #+has_BU)
+    dGmean = dGmean/(has_SU+has_GG1+has_GG2+has_KZ+has_SH)    #+has_BU)
     ymin =  1.E+99
     ymax = -1.E+99
     if (has_SU):
@@ -659,26 +794,35 @@ for icond in range(0,Ncond):
       plt.plot(T2,(dG_sh-dGmean)/1000,c='orange',lw=4.5,label='SH90 - MEAN')
       ymin = np.min([ymin,np.min((dG_sh-dGmean)/1000)])
       ymax = np.max([ymax,np.max((dG_sh-dGmean)/1000)])
-    if (has_GG):
-      plt.plot(T2,(dG_gg-dGmean)/1000,c='green',lw=1.5,label='GGCHEM - MEAN')
-      ymin = np.min([ymin,np.min((dG_gg-dGmean)/1000)])
-      ymax = np.max([ymax,np.max((dG_gg-dGmean)/1000)])
+    if (has_GG1):
+      plt.plot(T2,(dG_gg1-dGmean)/1000,c='green',lw=1.5,label='old GGCHEM - MEAN')
+      ymin = np.min([ymin,np.min((dG_gg1-dGmean)/1000)])
+      ymax = np.max([ymax,np.max((dG_gg1-dGmean)/1000)])
+    if (has_GG2):
+      plt.plot(T2,(dG_gg2-dGmean)/1000,c='darkgreen',ls=':',lw=3,label='new GGCHEM - MEAN')
+      ymin = np.min([ymin,np.min((dG_gg2-dGmean)/1000)])
+      ymax = np.max([ymax,np.max((dG_gg2-dGmean)/1000)])
+    if (has_KZ):
+      plt.plot(T2,(dG_KZ-dGmean)/1000,c='magenta',lw=1.5,label='Kitzmann - MEAN')
+      ymin = np.min([ymin,np.min((dG_KZ-dGmean)/1000)])
+      ymax = np.max([ymax,np.max((dG_KZ-dGmean)/1000)])
     if (has_BU):
       plt.plot(T2,(dG_bu-dGmean)/1000,c='red',lw=1.5,ls=':')
       plt.plot(T2[BUind],(dG_bu[BUind]-dGmean[BUind])/1000,c='red',lw=2,label='BURCAT - MEAN')
-      ymin = np.min([ymin,np.min((dG_bu[BUind]-dGmean[BUind])/1000)])
-      ymax = np.max([ymax,np.max((dG_bu[BUind]-dGmean[BUind])/1000)])
-    ymin = np.min([ymin,-ymax])  
-    ymax = np.max([ymax,-ymin])  
+      #ymin = np.min([ymin,np.min((dG_bu[BUind]-dGmean[BUind])/1000)])
+      #ymax = np.max([ymax,np.max((dG_bu[BUind]-dGmean[BUind])/1000)])
+    ymin = np.min([ymin,-ymax,-1])  
+    ymax = np.max([ymax,-ymin,+1])  
     plt.xlim(0.0,1.05*Tmax2)
     plt.ylim(2*ymin,2*ymax)
     plt.xlabel(r'$T\,\mathrm{[K]}$',fontsize=16)
     plt.ylabel(r'$\Delta_\mathrm{f} G^{\mathrm{1bar}}\mathrm{[kJ/mol]}$',fontsize=16)
     plt.legend(loc='best')
 
-  plt.subplots_adjust(left=0.16,right=0.99,bottom=0.1,top=0.96,hspace=0.15)
-  plt.savefig(pp,format='pdf')
-  plt.clf()
+  if (has_SU+has_GG1+has_GG2+has_SH+has_KZ>0):
+    plt.subplots_adjust(left=0.16,right=0.99,bottom=0.1,top=0.96,hspace=0.15)
+    plt.savefig(pp,format='pdf')
+    plt.clf()
 
   #if (icond==6):
   #  pp.close()
