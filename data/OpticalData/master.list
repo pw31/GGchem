@@ -2,7 +2,7 @@ SiO[s]                  F SiO.dat
 SiO2[s]                 F SiO2_amorph.dat
 MgO[s]                  F MgO.dat
 MgSiO3[s]               F am-MgSiO3.dat
-NaAlSi2O6[s]            F pyr-mg50-Dorschner1995.lnk
+NaAlSi2O6[s]            F NaAlSi2O6.dat
 Mg2SiO4[s]              F am-Mg2SiO4.dat
 Ca2SiO4[s]              F am-Mg2SiO4.dat
 MgCr2O4[s]              F ol-mg50-Dorschner1995.lnk
@@ -49,3 +49,15 @@ NH3[s]                  F nh3-m-Martonchik1983.lnk
 MgO2H2[s]               F MgO.dat
 FeO2H[s]                F FeO.dat
 C[s]                    T c-z-Zubko1996.lnk
+Mg3Si2O9H4[s]           F pyr-mg70-Dorschner1995.lnk
+NaMg3AlSi3O12H2[s]      F pyr-mg70-Dorschner1995.lnk
+Fe3Si2O9H4[s]           F pyr-mg70-Dorschner1995.lnk
+Ca3Fe2Si3O12[s]         F pyr-mg70-Dorschner1995.lnk
+KMg3AlSi3O12H2[s]       F pyr-mg70-Dorschner1995.lnk
+AlO2H[s]                F am-Al2O3.dat
+CaAl2Si2O10H4[s]        F pyr-mg70-Dorschner1995.lnk
+KFe3AlSi3O12H2[s]       F pyr-mg70-Dorschner1995.lnk
+Mg3Si4O12H2[s]          F pyr-mg70-Dorschner1995.lnk
+MnAl2SiO7H2[s]          F pyr-mg70-Dorschner1995.lnk
+FeAl2O4[s]              F MgAl2O4.dat
+NaCrSi2O6[s]            F MgCaSi2O6.dat

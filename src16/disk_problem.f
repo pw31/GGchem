@@ -126,12 +126,12 @@
         enddo
       endif
 
-      print*
-      write(*,'("input a correction factor to the ",
-     >          "viscous heating = ")',advance='no') 
-      read*,fac
-      print*
-      Hread = Hread*fac
+      !print*
+      !write(*,'("input a correction factor to the ",
+     >!          "viscous heating = ")',advance='no') 
+      !read*,fac
+      !print*
+      !Hread = Hread*fac
         
       do ix=1,Nx
         Hcol = Hread(ix)/2.0
@@ -266,15 +266,15 @@
       call INIT_OPAC      
       print*
 
-      qbest = 9.E+99
-      do ix=1,Nx
-        qual = ABS(rr(ix,1)-0.2*AU)
-        if (qual<qbest) then
-          qbest = qual
-          ix0 = ix
-        endif
-      enddo
-      print*,"selected column ix0,r[AU] =",ix0,rr(ix,1)/AU
+      !qbest = 9.E+99
+      !do ix=1,Nx
+      !  qual = ABS(rr(ix,1)-0.2*AU)
+      !  if (qual<qbest) then
+      !    qbest = qual
+      !    ix0 = ix
+      !  endif
+      !enddo
+      !print*,"selected column ix0,r[AU] =",ix0,rr(ix,1)/AU
       
       open(unit=9,file='disk.out',status='replace')
       write(9,*) Nx,Nz,NLAM,NDUST
@@ -288,8 +288,8 @@
      >     (trim(dust_nam(i)),i=1,NDUST)
       verbose = -2              ! avoid output from GGchem
       totit = 0
-      do ix=ix0,ix0
-      !do ix=1,Nx 
+      !do ix=ix0,ix0
+      do ix=1,Nx 
         print*
         print*,"==> new radius",ix,rr(ix,1)/AU,iz0(ix),iz1(ix)
         !Hcol = grav*Mstar*Mdot/rr(ix,1)**3 * 3.0/(8.0*pi) ! [erg/cm2/s]
