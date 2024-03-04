@@ -21,6 +21,9 @@
       !----------------------------
       ! ***  open output files  ***
       !----------------------------
+      iC = 0
+      iH2O = 0
+      iH2Ol = 0
       do i=1,NDUST
         name = dust_nam(i) 
         j=index(name,"[s]")
@@ -29,8 +32,8 @@
         if (name=='C[s]') iC=i
         if (name=='H2O[s]') iH2O=i
         if (name=='H2O[l]') iH2Ol=i
-        has_basecond = (iC>0.and.iH2O>0.and.iH2Ol>0)
       enddo
+      has_basecond = (iC>0.and.iH2O>0.and.iH2Ol>0)
       iW = stindex(dust_nam,NDUST,'W[s]')
       hasW = (iW>0)
       eps = eps0

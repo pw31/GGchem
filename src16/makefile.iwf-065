@@ -7,7 +7,7 @@ F90LINKER    = ifx
 #===================
 DEFS     = -D IFORT -diag-disable 8290,8291 
 #FFLAGS   = -r8 -i4 -g -traceback -fp-stack-check -check all,noarg_temp_created -gen-interfaces -warn interfaces -fpe0 -mcmodel medium -shared-intel -qopenmp
-FFLAGS  = -r8 -i4 -O3 -msse4.2 -xHOST -prec-div -fp-model source -mcmodel medium -shared-intel -qopenmp
+FFLAGS  = -r8 -i4 -g -traceback -O3 -xHOST -prec-div -fp-model source -mcmodel medium -shared-intel -qopenmp
 INCLUDES = 
 LFLAGS   = $(FFLAGS)
 
