@@ -86,6 +86,7 @@ lnam1 = []
 lfit1 = []
 lnam2 = []
 lfit2 = []
+GGall = []
 for iline in range(0,999):
   if (i>=len(lines)): break
   line = lines[i]
@@ -93,6 +94,7 @@ for iline in range(0,999):
   if (line.find('[s]')>0 or line.find('[l]')>0):
     form = line.split()[0]
     name = line.split()[1]
+    GGall.append(form)
     line = lines[i+1]
     Nel  = int(line.split()[0])
     i = i+Nel+2
@@ -141,6 +143,8 @@ lfor = []
 lnam = []
 lfit = []
 lNat = []
+lstoich = []
+lTmelt = []
 for iline in range(0,9999):
   if (i>=len(lines)): break
   line = lines[i]
@@ -154,11 +158,14 @@ for iline in range(0,9999):
       name = name+line[j]
     if (form.find('.')>0): continue  
     Nat = 0
+    stoich = []
     for k in range(1,9999):
       j = j+1
       if (line[j]=="#"): break
       j = j+1
-      Nat = Nat + int(line[j])
+      #Nat = Nat + int(line[j])
+      Nat = Nat + 1
+      stoich.append([line[j],line[j-1]])
     print form,name,Nat
     line = lines[i].strip()
     if (line=='s'):
@@ -172,8 +179,12 @@ for iline in range(0,9999):
       lnam.append(name)
       lfit.append(cfit)
       lNat.append(Nat)
+      lstoich.append(stoich)
+      lTmelt.append(float(0.0))
     elif (line=='sl'):
-      i=i+2
+      i=i+1
+      Tmelt = float(lines[i].split()[0])
+      i=i+1
       tmp = lines[i].split()
       form = form[:-5]+"[s]"
       cfit = [0.0,0.0,0.0,0.0,0.0]
@@ -183,6 +194,8 @@ for iline in range(0,9999):
       lnam.append(name)
       lfit.append(cfit)
       lNat.append(Nat)
+      lstoich.append(stoich)
+      lTmelt.append(Tmelt)
       i=i+1
       tmp = lines[i].split()
       form = form[:-3]+"[l]"
@@ -190,16 +203,21 @@ for iline in range(0,9999):
       for j in range(0,5):
         cfit[j] = float(tmp[j])
       lfor.append(form)
-      lnam.append("liquid "+name)
+      lnam.append(name+"(liquid)")
       lfit.append(cfit)
       lNat.append(Nat)
+      lstoich.append(stoich)
+      lTmelt.append(Tmelt)
     else:
       print "unknown list of condensates"
       print line
       stop
 KZnam   = np.array(lfor,dtype='str')
 KZname  = np.array(lnam,dtype='str')
+KZstoich= lstoich
+KZnel   = np.array(lNat)
 KZcoeff = np.array(lfit)
+KZtmelt = np.array(lTmelt)
 
 #==========================================================================
 # read BURCAT data
@@ -512,7 +530,9 @@ print
 print Ncond2," condensates"
 #sys.exit()
 
-#lform = np.array(lform,dtype='str')
+#--------------------------------------
+###   write DustChem_SUPCRTBL.dat   ###
+#--------------------------------------
 lname = np.array(lname,dtype='str')
 lNel  = np.array(lNel,dtype='int')
 lq1   = np.array(lq1,dtype='float')
@@ -574,6 +594,38 @@ for icond in range(0,Ncond):
 file.close
 file2.close
 
+#--------------------------------------
+###   write DustChem_Kitzmann.dat   ###
+#--------------------------------------
+NKZ = len(KZnam)
+file  = open('../Kitzmann2023/DustChem_Kitzmann.dat','w')
+file.write("dust species\n")
+file.write("============\n")
+file.write("%i\n" % NKZ)
+for i in range(0,NKZ):
+  file.write("\n")
+  if (KZname[i].find('liquid')>0):
+    file.write("%s   %s   %7.1f\n" %(KZnam[i],KZname[i],KZtmelt[i]))
+  else:
+    file.write("%s   %s\n" %(KZnam[i],KZname[i]))
+  file.write(" 3.00     (estimated)\n")  
+  file.write("%i\n" %(KZnel[i]))
+  stoich = KZstoich[i]
+  for j in range(0,KZnel[i]):
+    st = stoich[j]
+    file.write("%2i %s\n" %(int(st[0]),st[1]))
+  bem = '  !!! NOT IN GGCHEM'
+  search = np.str.upper(KZnam[i])
+  for GGcond in GGall:
+    cc = np.str.upper(GGcond)
+    if (cc==search): bem=' '
+  file.write("# dG-Stock-fit Kitzmann+2024  %s\n" %(bem))
+  coeff = KZcoeff[i]
+  file.write(" 5 %15.8e %15.8e %15.8e %15.8e %15.8e\n"
+             %(coeff[0],coeff[1],coeff[2],coeff[3],coeff[4]))
+file.close()
+stop           
+           
 SUnam = np.array(SUnam,dtype='str')
 allcond = []
 GGnamU1 = []
