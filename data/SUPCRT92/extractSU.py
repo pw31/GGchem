@@ -53,6 +53,8 @@ def Stock1(T,a,b,c,d,e):
 #==========================================================================
 # read Sharp & Huebner data
 #==========================================================================
+print
+print "reading SharpHuebner.dat ..."
 SHnam   = np.loadtxt('SharpHuebner.dat',skiprows=0,usecols=[0],dtype='str')
 SHcoeff = np.loadtxt('SharpHuebner.dat',skiprows=0,usecols=[1,2,3,4,5])
 SHatom = []
@@ -78,7 +80,9 @@ SHnam = np.array(SHnam,dtype='str')
 #==========================================================================
 # read GGchem data
 #==========================================================================
-f = open('../../data/DustChem.dat','r')
+print
+print "reading ../DustChem.dat ..."
+f = open('../DustChem.dat','r')
 lines = f.readlines()[:]
 f.close
 i = 0
@@ -98,7 +102,7 @@ for iline in range(0,999):
     line = lines[i+1]
     Nel  = int(line.split()[0])
     i = i+Nel+2
-    print form,name
+    #print form,name
     for j in range(0,99):
       found1 = 0
       found2 = 0
@@ -117,14 +121,14 @@ for iline in range(0,999):
         cfit = [0.0,0.0,0.0,0.0,0.0]
         for j in range(0,5):
           cfit[j] = float(tmp[j])
-        print cfit
+        #print cfit
         lnam1.append(form)
         lfit1.append(cfit)
       if (found2==1):  
         cfit = [0.0,0.0,0.0,0.0,0.0]
         for j in range(0,5):
           cfit[j] = float(tmp[j])
-        print cfit
+        #print cfit
         lnam2.append(form)
         lfit2.append(cfit)
 GGnam1   = np.array(lnam1,dtype='str')
@@ -135,7 +139,9 @@ GGcoeff2 = np.array(lfit2)
 #==========================================================================
 # read Kitzmann data
 #==========================================================================
-f = open('../../data/Kitzmann2023/logK_condensates.dat','r')
+print
+print "reading ../Kitzmann2023/logK_condensates.dat ..."
+f = open('../Kitzmann2023/logK_condensates.dat','r')
 lines = f.readlines()[:]
 f.close
 i = 0
@@ -156,7 +162,11 @@ for iline in range(0,9999):
     for j in range(2,9999):
       if (line[j]==":"): break
       name = name+line[j]
-    if (form.find('.')>0): continue  
+    if (form.find('.')>0): continue
+    ind = name.find(',') 
+    if (ind>0): 
+      name=name[:ind]+"_"+name[ind+1:]
+      #print name
     Nat = 0
     stoich = []
     for k in range(1,9999):
@@ -166,7 +176,7 @@ for iline in range(0,9999):
       #Nat = Nat + int(line[j])
       Nat = Nat + 1
       stoich.append([line[j],line[j-1]])
-    print form,name,Nat
+    #print form,name,Nat
     line = lines[i].strip()
     if (line=='s'):
       i=i+2
@@ -222,7 +232,9 @@ KZtmelt = np.array(lTmelt)
 #==========================================================================
 # read BURCAT data
 #==========================================================================
-f = open('../../data/DustChem_BURCAT.dat','r')
+print
+print "reading ../DustChem_BURCAT.dat ..."
+f = open('../DustChem_BURCAT.dat','r')
 lines = f.readlines()[:]
 f.close
 i = 0
@@ -256,7 +268,7 @@ for iline in range(0,9999):
         found=1
         break
     if (found==1):  
-      print ifit
+      #print ifit
       cfit = np.zeros([ifit,14])
       for k in range(0,ifit):
         tmp = lines[i].split()
@@ -282,8 +294,10 @@ BUcoeff = lcfit
 #==========================================================================
 # read SLOP16 database
 #==========================================================================
-elnam  = np.loadtxt('../../data/Abundances.dat',skiprows=5,usecols=[2],dtype='str')
-elmass = np.loadtxt('../../data/Abundances.dat',skiprows=5,usecols=[3])
+print
+print "reading ../Abundances.dat ..."
+elnam  = np.loadtxt('../Abundances.dat',skiprows=5,usecols=[2],dtype='str')
+elmass = np.loadtxt('../Abundances.dat',skiprows=5,usecols=[3])
 elnam  = np.array(elnam,dtype='str')
 elmass = np.array(elmass,dtype='float')
 amu = 1.66055E-24              # atomar mass unit [g]
@@ -324,7 +338,7 @@ for iline in range(0,Nline):
       mass = mass + float(numb)*elmass[ind]
   if (warn==0):
     rho = mass*amu*NA/float(vol)  
-    print name,stoich,"rho=",rho 
+    #print name,stoich,"rho=",rho 
     SLOPname.append(name)
     SLOPstoich.append(stoich)
     SLOPrho.append(rho)
@@ -336,6 +350,8 @@ SLOPrho    = np.array(SLOPrho,dtype='float')
 #==========================================================================
 # read SPRONSBL database
 #==========================================================================
+print
+print "reading spronsbl.dat ..."
 f = open('spronsbl.dat','r')
 lines = f.readlines()[:]
 f.close()
@@ -533,6 +549,8 @@ print Ncond2," condensates"
 #--------------------------------------
 ###   write DustChem_SUPCRTBL.dat   ###
 #--------------------------------------
+print
+print "writing DustChem_SUPCRTBL.dat ..."
 lname = np.array(lname,dtype='str')
 lNel  = np.array(lNel,dtype='int')
 lq1   = np.array(lq1,dtype='float')
@@ -597,6 +615,8 @@ file2.close
 #--------------------------------------
 ###   write DustChem_Kitzmann.dat   ###
 #--------------------------------------
+print
+print "writing ../Kitzmann2023/DustChem_Kitzmann.dat ..."
 NKZ = len(KZnam)
 file  = open('../Kitzmann2023/DustChem_Kitzmann.dat','w')
 file.write("dust species\n")
@@ -623,8 +643,8 @@ for i in range(0,NKZ):
   coeff = KZcoeff[i]
   file.write(" 5 %15.8e %15.8e %15.8e %15.8e %15.8e\n"
              %(coeff[0],coeff[1],coeff[2],coeff[3],coeff[4]))
+file.write("\n")
 file.close()
-stop           
            
 SUnam = np.array(SUnam,dtype='str')
 allcond = []

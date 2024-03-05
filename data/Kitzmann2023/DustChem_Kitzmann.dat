@@ -139,7 +139,7 @@ K3Al2Cl9[s]   PotassiumAluminumChloride
 # dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
  5  5.87365422e+05  3.23645522e-02 -2.24335842e+02  7.12439679e-03 -7.85420067e-08
 
-MgAl2O4[s]   MagnesiumAluminumOxide,Spinel
+MgAl2O4[s]   MagnesiumAluminumOxide_Spinel
  3.00     (estimated)
 3
  2 Al
@@ -148,7 +148,7 @@ MgAl2O4[s]   MagnesiumAluminumOxide,Spinel
 # dG-Stock-fit Kitzmann+2024   
  5  4.90569767e+05 -1.27718504e+01 -4.60565209e+01  1.41504858e-02 -1.69353542e-06
 
-MgAl2O4[l]   MagnesiumAluminumOxide,Spinel(liquid)    2408.0
+MgAl2O4[l]   MagnesiumAluminumOxide_Spinel(liquid)    2408.0
  3.00     (estimated)
 3
  2 Al
@@ -157,7 +157,7 @@ MgAl2O4[l]   MagnesiumAluminumOxide,Spinel(liquid)    2408.0
 # dG-Stock-fit Kitzmann+2024   
  5  4.74738825e+05  3.24715238e+00 -1.43668647e+02  1.81001685e-03 -9.78361288e-08
 
-Al2O3[s]   AluminumOxide,Corundum
+Al2O3[s]   AluminumOxide_Corundum
  3.00     (estimated)
 2
  2 Al
@@ -165,7 +165,7 @@ Al2O3[s]   AluminumOxide,Corundum
 # dG-Stock-fit Kitzmann+2024   
  5  3.68482216e+05 -1.04194203e+01 -2.79243495e+01  1.17904151e-02 -1.58786868e-06
 
-Al2O3[l]   AluminumOxide,Corundum(liquid)    2327.0
+Al2O3[l]   AluminumOxide_Corundum(liquid)    2327.0
  3.00     (estimated)
 2
  2 Al
@@ -173,7 +173,7 @@ Al2O3[l]   AluminumOxide,Corundum(liquid)    2327.0
 # dG-Stock-fit Kitzmann+2024   
  5  3.71349126e+05  5.27368518e+00 -1.35345265e+02  1.68173925e-03 -8.80259584e-08
 
-Al2SiO5[s]   AluminumSilicate,Kyanite
+Al2SiO5[s]   AluminumSilicate_Kyanite
  3.00     (estimated)
 3
  2 Al
@@ -208,7 +208,7 @@ Na5Al3F14[l]   Chiolite(liquid)    1010.0
 # dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
  5  1.25466081e+06  5.65914029e+01 -7.78124316e+02  2.63195584e-03 -2.12791940e-07
 
-Al6Si2O13[s]   AluminumSilicate,Mullite
+Al6Si2O13[s]   AluminumSilicate_Mullite
  3.00     (estimated)
 3
  6 Al
@@ -314,7 +314,7 @@ NaCO3[l]   SodiumCarbonate(liquid)    1123.2
 # dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
  5  3.37162573e+05  3.27674756e+00 -1.21266784e+02  2.50079163e-03 -2.28052096e-07
 
-SiC[s]   SiliconCarbide,Beta
+SiC[s]   SiliconCarbide_Beta
  3.00     (estimated)
 2
  1 C
@@ -441,7 +441,7 @@ Ca(OH)2[s]   CalciumHydroxide
 # dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
  5  2.50485899e+05 -1.07486558e+01 -1.22509238e+01  1.75908310e-02 -4.41186722e-06
 
-CaO[s]   CalciumOxide,Lime
+CaO[s]   CalciumOxide_Lime
  3.00     (estimated)
 2
  1 Ca
@@ -449,7 +449,7 @@ CaO[s]   CalciumOxide,Lime
 # dG-Stock-fit Kitzmann+2024   
  5  1.27422280e+05 -1.48707652e+00 -2.45256109e+01  2.26343999e-03 -2.33694842e-07
 
-CaO[l]   CalciumOxide,Lime(liquid)    3200.0
+CaO[l]   CalciumOxide_Lime(liquid)    3200.0
  3.00     (estimated)
 2
  1 Ca
@@ -500,7 +500,7 @@ NH4ClO4[s]   AmmoniumPerchlorate
 # dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
  5  3.26884682e+05 -2.46117673e+01 -7.58535160e-01  2.96582816e-02 -4.37895339e-06
 
-KCl[s]   PotassiumChloride,Sylvite
+KCl[s]   PotassiumChloride_Sylvite
  3.00     (estimated)
 2
  1 Cl
@@ -508,7 +508,7 @@ KCl[s]   PotassiumChloride,Sylvite
 # dG-Stock-fit Kitzmann+2024   
  5  7.79963366e+04  2.16470229e-01 -3.14620047e+01  1.37288070e-03 -1.22682737e-07
 
-KCl[l]   PotassiumChloride,Sylvite(liquid)    1044.0
+KCl[l]   PotassiumChloride_Sylvite(liquid)    1044.0
  3.00     (estimated)
 2
  1 Cl
@@ -525,7 +525,7 @@ KClO4[s]   PotassiumPerchlorate
 # dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
  5  1.94110380e+05 -1.96598701e+01  1.22105368e+01  3.80087193e-02 -7.78811983e-06
 
-NaCl[s]   SodiumChloride,Halite
+NaCl[s]   SodiumChloride_Halite
  3.00     (estimated)
 2
  1 Cl
@@ -533,7 +533,7 @@ NaCl[s]   SodiumChloride,Halite
 # dG-Stock-fit Kitzmann+2024   
  5  7.70530649e+04 -1.49426093e-01 -2.97409829e+01  1.90768004e-03 -2.83111668e-07
 
-NaCl[l]   SodiumChloride,Halite(liquid)    1073.8
+NaCl[l]   SodiumChloride_Halite(liquid)    1073.8
  3.00     (estimated)
 2
  1 Cl
@@ -747,7 +747,7 @@ Cr[l]   Chromium(liquid)    2130.0
 # dG-Stock-fit Kitzmann+2024   
  5  4.81204589e+04  4.36448276e+00 -4.90363908e+01 -8.05209471e-04  2.74927830e-08
 
-CrN[s]   ChromiumNitride,Carlsbergite
+CrN[s]   ChromiumNitride_Carlsbergite
  3.00     (estimated)
 2
  1 Cr
@@ -1022,7 +1022,7 @@ FeSO4[s]   IronSulfate
 # dG-Stock-fit Kitzmann+2024   
  5  3.12438384e+05 -1.17465199e+01 -3.36283369e+01  1.36654695e-02 -1.90329295e-06
 
-FeS[s]   IronSulfide,Troilite
+FeS[s]   IronSulfide_Troilite
  3.00     (estimated)
 2
  1 Fe
@@ -1030,7 +1030,7 @@ FeS[s]   IronSulfide,Troilite
 # dG-Stock-fit Kitzmann+2024   
  5  9.50960372e+04 -4.08212170e+00 -1.32170968e+01  1.16370856e-02 -2.94408148e-06
 
-FeS[l]   IronSulfide,Troilite(liquid)    1463.0
+FeS[l]   IronSulfide_Troilite(liquid)    1463.0
  3.00     (estimated)
 2
  1 Fe
@@ -1038,7 +1038,7 @@ FeS[l]   IronSulfide,Troilite(liquid)    1463.0
 # dG-Stock-fit Kitzmann+2024   
  5  9.21367312e+04  2.25108459e+00 -4.66679005e+01  9.90511255e-05 -2.07187085e-08
 
-FeS2[s]   IronSulfide,Pyrite
+FeS2[s]   IronSulfide_Pyrite
  3.00     (estimated)
 2
  1 Fe
@@ -1046,7 +1046,7 @@ FeS2[s]   IronSulfide,Pyrite
 # dG-Stock-fit Kitzmann+2024   
  5  1.36242352e+05 -5.21692864e+00 -2.47241646e+01  7.24620916e-03 -1.22480913e-06
 
-Fe2O3[s]   IronOxide,Hematite
+Fe2O3[s]   IronOxide_Hematite
  3.00     (estimated)
 2
  2 Fe
@@ -1063,7 +1063,7 @@ Fe2(SO4)3[s]   IronSulfate
 # dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
  5  8.65388393e+05 -2.29704394e+01 -1.59078492e+02  2.27715401e-02 -2.69687042e-06
 
-Fe3O4[s]   IronOxide,Magnetite
+Fe3O4[s]   IronOxide_Magnetite
  3.00     (estimated)
 2
  3 Fe
@@ -1288,7 +1288,7 @@ Mg[l]   Magnesium(liquid)     923.0
 # dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
  5  1.69554349e+04  2.98843608e-01 -1.56039554e+01  8.90664183e-04 -9.74766555e-08
 
-MgO[s]   MagnesiumOxide,Periclase
+MgO[s]   MagnesiumOxide_Periclase
  3.00     (estimated)
 2
  1 Mg
@@ -1296,7 +1296,7 @@ MgO[s]   MagnesiumOxide,Periclase
 # dG-Stock-fit Kitzmann+2024   
  5  1.19424851e+05 -2.37273820e+00 -1.94396576e+01  2.74600884e-03 -2.91345311e-07
 
-MgO[l]   MagnesiumOxide,Periclase(liquid)    3105.0
+MgO[l]   MagnesiumOxide_Periclase(liquid)    3105.0
  3.00     (estimated)
 2
  1 Mg
@@ -1304,7 +1304,7 @@ MgO[l]   MagnesiumOxide,Periclase(liquid)    3105.0
 # dG-Stock-fit Kitzmann+2024   
  5  1.09218550e+05 -2.36684670e+00 -1.43136446e+01  1.45214943e-03 -6.71153491e-08
 
-MgSiO3[s]   MagnesiumSilicate,Enstatite
+MgSiO3[s]   MagnesiumSilicate_Enstatite
  3.00     (estimated)
 3
  1 Mg
@@ -1313,7 +1313,7 @@ MgSiO3[s]   MagnesiumSilicate,Enstatite
 # dG-Stock-fit Kitzmann+2024   
  5  3.45892578e+05 -1.02131031e+01 -2.61733840e+01  1.21879261e-02 -1.89479372e-06
 
-MgSiO3[l]   MagnesiumSilicate,Enstatite(liquid)    1850.0
+MgSiO3[l]   MagnesiumSilicate_Enstatite(liquid)    1850.0
  3.00     (estimated)
 3
  1 Mg
@@ -1322,7 +1322,7 @@ MgSiO3[l]   MagnesiumSilicate,Enstatite(liquid)    1850.0
 # dG-Stock-fit Kitzmann+2024   
  5  3.30832115e+05 -1.39157380e+01  1.32822679e+01  7.82458565e-03 -5.38354532e-07
 
-MgTiO3[s]   MagnesiumTitaniumOxide,Geikielite
+MgTiO3[s]   MagnesiumTitaniumOxide_Geikielite
  3.00     (estimated)
 3
  1 Mg
@@ -1331,7 +1331,7 @@ MgTiO3[s]   MagnesiumTitaniumOxide,Geikielite
 # dG-Stock-fit Kitzmann+2024   
  5  3.51801515e+05 -9.49590846e+00 -3.17708116e+01  1.25307820e-02 -1.92439481e-06
 
-MgTiO3[l]   MagnesiumTitaniumOxide,Geikielite(liquid)    1953.0
+MgTiO3[l]   MagnesiumTitaniumOxide_Geikielite(liquid)    1953.0
  3.00     (estimated)
 3
  1 Mg
@@ -1384,7 +1384,7 @@ MgS[s]   MagnesiumSulfide
 # dG-Stock-fit Kitzmann+2024   
  5  9.24398307e+04 -8.15769056e-01 -2.73001022e+01  1.49607754e-03 -1.49749006e-07
 
-Mg2SiO4[s]   MagnesiumSilicate,Forsterite
+Mg2SiO4[s]   MagnesiumSilicate_Forsterite
  3.00     (estimated)
 3
  2 Mg
@@ -1393,7 +1393,7 @@ Mg2SiO4[s]   MagnesiumSilicate,Forsterite
 # dG-Stock-fit Kitzmann+2024   
  5  4.68524452e+05 -1.26076540e+01 -4.53390865e+01  1.47415627e-02 -2.01984709e-06
 
-Mg2SiO4[l]   MagnesiumSilicate,Forsterite(liquid)    2171.0
+Mg2SiO4[l]   MagnesiumSilicate_Forsterite(liquid)    2171.0
  3.00     (estimated)
 3
  2 Mg
@@ -1516,7 +1516,7 @@ N2O4[l]   NitrogenOxide(liquid)     261.9
 # dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
  5  2.15328843e+05 -1.73213887e+02  8.44257327e+02  4.72901049e-01 -2.07612460e-04
 
-Si3N4[s]   SiliconNitride,Alpha
+Si3N4[s]   SiliconNitride_Alpha
  3.00     (estimated)
 2
  4 N
@@ -1678,7 +1678,7 @@ Ni[l]   Nickel(liquid)    1728.0
 # dG-Stock-fit Kitzmann+2024   
  5  5.08304187e+04  1.20995192e+00 -2.64739652e+01  2.32814994e-04 -1.13265259e-08
 
-NiS[s]   NickelSulfide,Millerite
+NiS[s]   NickelSulfide_Millerite
  3.00     (estimated)
 2
  1 Ni
@@ -1686,7 +1686,7 @@ NiS[s]   NickelSulfide,Millerite
 # dG-Stock-fit Kitzmann+2024   
  5  9.50501794e+04 -4.41355009e+00 -1.12354592e+01  8.98644472e-03 -1.74236869e-06
 
-NiS[l]   NickelSulfide,Millerite(liquid)    1249.0
+NiS[l]   NickelSulfide_Millerite(liquid)    1249.0
  3.00     (estimated)
 2
  1 Ni
@@ -1694,7 +1694,7 @@ NiS[l]   NickelSulfide,Millerite(liquid)    1249.0
 # dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
  5  9.36962624e+04  2.42064321e+00 -5.11095580e+01  6.27907694e-04 -4.35615857e-08
 
-NiS2[s]   NickelSulfide,Vaesite
+NiS2[s]   NickelSulfide_Vaesite
  3.00     (estimated)
 2
  1 Ni
@@ -1702,7 +1702,7 @@ NiS2[s]   NickelSulfide,Vaesite
 # dG-Stock-fit Kitzmann+2024   
  5  1.33969820e+05 -1.18536617e+00 -4.68155592e+01  1.96038936e-03 -1.16435072e-07
 
-NiS2[l]   NickelSulfide,Vaesite(liquid)    1280.0
+NiS2[l]   NickelSulfide_Vaesite(liquid)    1280.0
  3.00     (estimated)
 2
  1 Ni
@@ -1710,7 +1710,7 @@ NiS2[l]   NickelSulfide,Vaesite(liquid)    1280.0
 # dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
  5  1.02853596e+05 -4.66569484e+01  2.70030354e+02  3.17501788e-02 -3.37301816e-06
 
-Ni3S2[s]   NickelSulfide,Heazlewoodite
+Ni3S2[s]   NickelSulfide_Heazlewoodite
  3.00     (estimated)
 2
  3 Ni
@@ -1718,7 +1718,7 @@ Ni3S2[s]   NickelSulfide,Heazlewoodite
 # dG-Stock-fit Kitzmann+2024   
  5  2.48192608e+05  8.64936287e+00 -1.31448944e+02 -3.56261370e-02  1.91075714e-05
 
-Ni3S2[l]   NickelSulfide,Heazlewoodite(liquid)    1062.0
+Ni3S2[l]   NickelSulfide_Heazlewoodite(liquid)    1062.0
  3.00     (estimated)
 2
  3 Ni
@@ -1782,7 +1782,7 @@ SiO2[l]   SiliconDioxide(liquid)    1996.0
 # dG-Stock-fit Kitzmann+2024   
  5  2.18572729e+05 -6.96763899e+00 -5.42060828e+00  3.98662737e-03 -2.74709770e-07
 
-TiO2[s]   TitaniumOxide,Rutile
+TiO2[s]   TitaniumOxide_Rutile
  3.00     (estimated)
 2
  2 O
@@ -1790,7 +1790,7 @@ TiO2[s]   TitaniumOxide,Rutile
 # dG-Stock-fit Kitzmann+2024   
  5  2.29367932e+05 -5.57936555e+00 -2.06154750e+01  6.88839217e-03 -1.02324765e-06
 
-TiO2[l]   TitaniumOxide,Rutile(liquid)    2130.0
+TiO2[l]   TitaniumOxide_Rutile(liquid)    2130.0
  3.00     (estimated)
 2
  2 O
@@ -1814,7 +1814,7 @@ Ti2O3[l]   TitaniumOxide(liquid)    2115.0
 # dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
  5  3.75053810e+05  2.50230291e+00 -1.04785305e+02  1.35778329e-03 -1.22501710e-07
 
-V2O3[s]   VanadiumOxide,Karelianite
+V2O3[s]   VanadiumOxide_Karelianite
  3.00     (estimated)
 2
  3 O
@@ -1822,7 +1822,7 @@ V2O3[s]   VanadiumOxide,Karelianite
 # dG-Stock-fit Kitzmann+2024   
  5  3.59405896e+05 -4.52527215e+00 -6.24819531e+01  5.54725605e-03 -5.11655446e-07
 
-V2O3[l]   VanadiumOxide,Karelianite(liquid)    2340.0
+V2O3[l]   VanadiumOxide_Karelianite(liquid)    2340.0
  3.00     (estimated)
 2
  3 O
@@ -1871,7 +1871,7 @@ Ti3O5[l]   TitaniumOxide(liquid)    2050.0
 # dG-Stock-fit Kitzmann+2024   
  5  6.04972057e+05  8.77424218e+00 -2.04041512e+02  1.09542825e-03 -1.22786630e-07
 
-V2O5[s]   VanadiumOxide,Shcherbinaite
+V2O5[s]   VanadiumOxide_Shcherbinaite
  3.00     (estimated)
 2
  5 O
@@ -1879,7 +1879,7 @@ V2O5[s]   VanadiumOxide,Shcherbinaite
 # dG-Stock-fit Kitzmann+2024   
  5  4.58052414e+05 -1.24015737e+01 -5.19405688e+01  1.86338829e-02 -3.81582733e-06
 
-V2O5[l]   VanadiumOxide,Shcherbinaite(liquid)     943.0
+V2O5[l]   VanadiumOxide_Shcherbinaite(liquid)     943.0
  3.00     (estimated)
 2
  5 O
@@ -2215,3 +2215,4 @@ SiO[s]   SiliconOxide
  1 O
 # dG-Stock-fit Kitzmann+2024   
  5  1.45132013e+05 -1.91013973e+00 -2.02986671e+01  6.18510487e-04 -4.21634947e-08
+
