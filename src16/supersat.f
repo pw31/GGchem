@@ -284,9 +284,15 @@
         if (Tcorr(i)>0.0) then
           if (is_liquid(i).and.T1<Tcorr(i)) then
             Sat(i) = Sat(i)/EXP(0.1*(Tcorr(i)-T1))
+            Sat(i) = MIN(Sat(i),0.99*Sat(i-1))
           endif
-          if ((.not.is_liquid(i)).and.T1>Tcorr(i)) then
-            Sat(i) = Sat(i)/EXP(0.1*(T1-Tcorr(i)))
+        endif
+        if (i>1) then
+          if (Tcorr(i-1)>0.0) then
+            if ((.not.is_liquid(i-1)).and.T1>Tcorr(i-1)) then
+              Sat(i-1) = Sat(i-1)/EXP(0.1*(T1-Tcorr(i)))
+              Sat(i-1) = MIN(Sat(i-1),0.99*Sat(i))
+            endif
           endif
         endif
 

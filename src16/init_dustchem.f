@@ -39,6 +39,7 @@
         read(zeile,*) dust_nam(NDUST)
         j1 = index(zeile,' ')
         read(zeile(j1+1:),*) trivial(NDUST)
+        !print*,NDUST,trim(trivial(NDUST))
         if (index(zeile,'[l]')>0) then
           j2 = index(zeile,trim(trivial(NDUST)))
      &       + len(trim(trivial(NDUST)))
@@ -272,16 +273,16 @@
             !print'(A15,"-> ",A15,":",2(0pF8.1))',
      &      !     dust_nam(is),dust_nam(il),T,Tmelt(il)
           else if (old<1.Q0.and.new>1.Q0) then
-            !print'(A15,"<- ",A15,":",0pF8.1,
-     &      !     " false intersection point")',
-     &      !     dust_nam(is),dust_nam(il),T
+            print'(A15,"<- ",A15,":",0pF8.1,
+     &           " false intersection point")',
+     &           dust_nam(is),dust_nam(il),T
             if (T<Tmelt(il)) then
               Tcorr(il) = 0.5*(T+Tmelt(il))  
-              print'(" ... correct ",A15," T <",0pF7.1)',
+              print'(" ... correct liquid ",A15," T <",0pF7.1)',
      &             dust_nam(il),Tcorr(il) 
             else  
-              Tcorr(is) = 0.5*(T+Tmelt(il))  !correct solid
-              print'(" ... correct ",A15," T >",0pF7.1)',
+              Tcorr(is) = 0.5*(T+Tmelt(il))
+              print'(" ... correct solid ",A15," T >",0pF7.1)',
      &             dust_nam(is),Tcorr(is) 
             endif  
           endif  
