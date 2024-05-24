@@ -7,7 +7,7 @@ F90LINKER    = ifx
 #===================
 DEFS     = -D IFORT -diag-disable 8290,8291 
 #FFLAGS   = -r8 -i4 -g -traceback -fp-stack-check -check all,noarg_temp_created -gen-interfaces -warn interfaces -fpe0 -mcmodel medium -shared-intel -qopenmp
-FFLAGS  = -r8 -i4 -g -traceback -O3 -msse4.2 -xHOST -prec-div -fp-model source -mcmodel medium -shared-intel -qopenmp
+FFLAGS  = -r8 -i4 -O3 -msse4.2 -xHOST -prec-div -fp-model source -mcmodel medium -shared-intel -qopenmp
 INCLUDES = 
 LFLAGS   = $(FFLAGS)
 
@@ -23,6 +23,7 @@ EXECS     = ggchem16
 
 OBJECTS  = datamod.o \
            database.o \
+	   init_opac.o \
            read_parameter.o \
            demo_sweep.o \
            demo_structure.o \
@@ -48,6 +49,13 @@ OBJECTS  = datamod.o \
            upper.o \
            nucleation.o \
 	   auto_structure.o \
+	   MIEX.o \
+	   q_mie.o \
+	   calc_opac.o \
+	   effMedium.o \
+	   fastmie.o \
+	   disk_problem.o \
+	   kappaRoss.o \
            main.o
 
 .SUFFIXES : .o .f .F .f90
