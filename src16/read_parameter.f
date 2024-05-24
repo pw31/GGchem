@@ -132,9 +132,10 @@
         else if (index(line,"! auto_atmos")>0) then 
           read(line,*) auto_atmos
         else if (index(line,"! adapt_cond")>0) then 
-          adapt_cond = .true.
           i = index(line,"!")
           read(line(1:i-1),*) adapt_file
+          adapt_cond = .true.
+          if (adapt_file=='.false.') adapt_cond = .false.
         else if (index(line,"! stop_after_init")>0) then 
           read(line,*) stop_after_init
         else if (index(line,"! Mplanet")>0) then 
