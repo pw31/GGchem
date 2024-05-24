@@ -64,6 +64,7 @@
 **********************************************************************
       SUBROUTINE LOAD_DBASE
 **********************************************************************
+      use PARAMETERS,ONLY: verbose
       use dust_data,ONLY: NELEM,NDUST,dust_nam
       use DATABASE,ONLY: qp,NDAT,NLAST,dbase
       implicit none
@@ -94,11 +95,11 @@
         !print*,i,EXP(dbase(i)%ln),EXP(dbase(i)%lT)
       enddo 
  100  close(11)
-      print*,"... having read ",NDAT," datasets." 
+      if (verbose>=0) print*,"... having read ",NDAT," datasets." 
       NLAST = NDAT
       return
  200  close(11)
-      print*,"... no / unsuitable database."
+      if (verbose>=0) print*,"... no / unsuitable database."
       end
 
 **********************************************************************
@@ -119,7 +120,9 @@
       !if (qbest<1.d-8) then
       !  return 
       !else
-      print*,"==> qbest=",qbest
+      if (verbose>=0) then
+        print*,"==> qbest=",qbest
+      endif
       if (qbest<1.d-3) then
         i = ibest
         if (verbose>=0) then
@@ -156,7 +159,7 @@
       NMODI = i
       if (NDAT>NLAST+10) then
         call SAVE_DBASE
-        print*,"... saved ",NDAT," datasets."
+        if (verbose>=0) print*,"... saved ",NDAT," datasets."
       endif  
       end
 

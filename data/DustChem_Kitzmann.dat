@@ -1,0 +1,2218 @@
+dust species
+============
+270
+
+Al[s]   Aluminum
+ 3.00     (estimated)
+1
+ 1 Al
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  3.95614730e+04 -8.78672786e-01 -1.16760316e+01  2.13316168e-03 -3.41340617e-07
+
+AlClO[s]   AluminumChlorideOxide
+ 3.00     (estimated)
+3
+ 1 Al
+ 1 Cl
+ 1 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.79488952e+05 -1.20378155e+00 -4.57719482e+01  2.04484025e-03 -1.88046877e-07
+
+AlCl3[s]   AluminumChloride
+ 3.00     (estimated)
+2
+ 1 Al
+ 3 Cl
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.67520206e+05 -7.55080959e+00 -2.65239451e+01  2.27454177e-02 -1.01895799e-05
+
+AlCl3[l]   AluminumChloride(liquid)     465.7
+ 3.00     (estimated)
+2
+ 1 Al
+ 3 Cl
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.65290233e+05  2.46470256e+00 -7.57189979e+01  1.93128479e-03 -2.82588461e-07
+
+KAlCl4[s]   PotassiumTetrachloroaluminate
+ 3.00     (estimated)
+3
+ 1 Al
+ 4 Cl
+ 1 K
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  2.52918957e+05 -1.01646809e+00 -9.21232534e+01  7.15028941e-03 -6.98127575e-07
+
+NaAlCl4[s]   SodiumTetrachloroaluminate
+ 3.00     (estimated)
+3
+ 1 Al
+ 4 Cl
+ 1 Na
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  2.48483547e+05 -1.61450476e+00 -8.89087927e+01  8.29742968e-03 -1.10336820e-06
+
+K3AlCl6[s]   PotassiumHexachloroaluminate
+ 3.00     (estimated)
+3
+ 1 Al
+ 6 Cl
+ 3 K
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  4.11320703e+05 -7.41545907e-01 -1.50951972e+02  7.70494102e-03 -6.00339638e-07
+
+Na3AlCl6[s]   SodiumHexachloroaluminate
+ 3.00     (estimated)
+3
+ 1 Al
+ 6 Cl
+ 3 Na
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  4.04258859e+05 -8.11908484e-01 -1.51191982e+02  6.96442099e-03 -5.08098089e-07
+
+AlF3[s]   AluminumFluoride
+ 3.00     (estimated)
+2
+ 1 Al
+ 3 F
+# dG-Stock-fit Kitzmann+2024   
+ 5  2.48741428e+05 -5.74515817e+00 -3.42715610e+01  7.08504192e-03 -9.14472342e-07
+
+AlF3[l]   AluminumFluoride(liquid)    2523.0
+ 3.00     (estimated)
+2
+ 1 Al
+ 3 F
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  2.36057414e+05 -3.74329273e+00 -3.87227187e+01  2.68268942e-03 -1.35075697e-07
+
+K3AlF6[s]   PotassiumHexafluoraluminate
+ 3.00     (estimated)
+3
+ 1 Al
+ 6 F
+ 3 K
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  5.28418875e+05 -5.96531820e+00 -1.25312871e+02  1.26584631e-02 -1.32251414e-06
+
+Na3AlF6[s]   Cryolite
+ 3.00     (estimated)
+3
+ 1 Al
+ 6 F
+ 3 Na
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  5.32473126e+05 -1.32850788e+01 -8.47333782e+01  2.25806853e-02 -3.14891756e-06
+
+Na3AlF6[l]   Cryolite(liquid)    1285.0
+ 3.00     (estimated)
+3
+ 1 Al
+ 6 F
+ 3 Na
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  5.39432862e+05  1.92388643e+01 -3.00920550e+02  1.50438475e-03 -1.14927825e-07
+
+AlN[s]   AluminumNitride
+ 3.00     (estimated)
+2
+ 1 Al
+ 1 N
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.33937488e+05 -3.46310473e+00 -1.43441147e+01  3.45307551e-03 -3.92942971e-07
+
+NaAlO2[s]   SodiumAluminumOxide
+ 3.00     (estimated)
+3
+ 1 Al
+ 1 Na
+ 2 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  2.47693344e+05 -4.96338160e+00 -3.82877928e+01  5.86232517e-03 -6.16441251e-07
+
+K3Al2Cl9[s]   PotassiumAluminumChloride
+ 3.00     (estimated)
+3
+ 2 Al
+ 9 Cl
+ 3 K
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  5.87365422e+05  3.23645522e-02 -2.24335842e+02  7.12439679e-03 -7.85420067e-08
+
+MgAl2O4[s]   MagnesiumAluminumOxide_Spinel
+ 3.00     (estimated)
+3
+ 2 Al
+ 1 Mg
+ 4 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  4.90569767e+05 -1.27718504e+01 -4.60565209e+01  1.41504858e-02 -1.69353542e-06
+
+MgAl2O4[l]   MagnesiumAluminumOxide_Spinel(liquid)    2408.0
+ 3.00     (estimated)
+3
+ 2 Al
+ 1 Mg
+ 4 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  4.74738825e+05  3.24715238e+00 -1.43668647e+02  1.81001685e-03 -9.78361288e-08
+
+Al2O3[s]   AluminumOxide_Corundum
+ 3.00     (estimated)
+2
+ 2 Al
+ 3 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.68482216e+05 -1.04194203e+01 -2.79243495e+01  1.17904151e-02 -1.58786868e-06
+
+Al2O3[l]   AluminumOxide_Corundum(liquid)    2327.0
+ 3.00     (estimated)
+2
+ 2 Al
+ 3 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.71349126e+05  5.27368518e+00 -1.35345265e+02  1.68173925e-03 -8.80259584e-08
+
+Al2SiO5[s]   AluminumSilicate_Kyanite
+ 3.00     (estimated)
+3
+ 2 Al
+ 5 O
+ 1 Si
+# dG-Stock-fit Kitzmann+2024   
+ 5  5.91829800e+05 -1.46795986e+01 -5.53923147e+01  1.42825790e-02 -1.53227576e-06
+
+Al2S3[s]   AluminumSulfide
+ 3.00     (estimated)
+2
+ 2 Al
+ 3 S
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  2.56302710e+05 -7.09557834e+00 -4.46224561e+01  1.11985605e-02 -1.97585400e-06
+
+Na5Al3F14[s]   Chiolite
+ 3.00     (estimated)
+3
+ 3 Al
+14 F
+ 5 Na
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.22577585e+06 -1.88644205e+01 -2.51372837e+02  3.04584133e-02 -4.38730992e-06
+
+Na5Al3F14[l]   Chiolite(liquid)    1010.0
+ 3.00     (estimated)
+3
+ 3 Al
+14 F
+ 5 Na
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.25466081e+06  5.65914029e+01 -7.78124316e+02  2.63195584e-03 -2.12791940e-07
+
+Al6Si2O13[s]   AluminumSilicate_Mullite
+ 3.00     (estimated)
+3
+ 6 Al
+13 O
+ 2 Si
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.54725035e+06 -3.69528229e+01 -1.48743346e+02  3.63793477e-02 -4.03696522e-06
+
+C[s]   Graphite
+ 3.00     (estimated)
+1
+ 1 C
+# dG-Stock-fit Kitzmann+2024   
+ 5  8.56881199e+04 -1.85970689e+00 -6.36541465e+00  1.05298188e-03 -6.53880313e-08
+
+CuCN[s]   CopperCyanide
+ 3.00     (estimated)
+3
+ 1 C
+ 1 Cu
+ 1 N
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.71665067e+05 -3.78038066e+00 -2.52550354e+01  7.34838178e-03 -1.65273227e-06
+
+KCN[s]   PotassiumCyanide
+ 3.00     (estimated)
+3
+ 1 C
+ 1 K
+ 1 N
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.68698699e+05  1.12034525e+01 -1.02309550e+02 -2.74477749e-02  1.01760468e-05
+
+KCN[l]   PotassiumCyanide(liquid)     895.0
+ 3.00     (estimated)
+3
+ 1 C
+ 1 K
+ 1 N
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.66575041e+05  1.21529913e+00 -4.86914859e+01  2.32704066e-04 -2.64199422e-08
+
+K2CO3[s]   PotassiumCarbonate
+ 3.00     (estimated)
+3
+ 1 C
+ 2 K
+ 3 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  3.34344291e+05 -8.55803694e+00 -4.68749990e+01  1.28653533e-02 -1.71832942e-06
+
+K2CO3[l]   PotassiumCarbonate(liquid)    1174.0
+ 3.00     (estimated)
+3
+ 1 C
+ 2 K
+ 3 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  3.36981612e+05  4.15717104e+00 -1.29735463e+02  3.32459726e-03 -3.04460738e-07
+
+MgCO3[s]   MagnesiumCarbonate
+ 3.00     (estimated)
+3
+ 1 C
+ 1 Mg
+ 3 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.25143127e+05 -1.24471768e+01 -1.31045832e+01  1.73079099e-02 -3.51084071e-06
+
+NaCN[s]   SodiumCyanide
+ 3.00     (estimated)
+3
+ 1 C
+ 1 N
+ 1 Na
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.67819416e+05  3.15695345e+00 -6.26047356e+01 -6.14521800e-04 -9.66527946e-07
+
+NaCN[l]   SodiumCyanide(liquid)     835.0
+ 3.00     (estimated)
+3
+ 1 C
+ 1 N
+ 1 Na
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.66591702e+05  1.13058704e+00 -4.90953248e+01  5.37487268e-04 -5.03749295e-08
+
+NaCO3[s]   SodiumCarbonate
+ 3.00     (estimated)
+3
+ 1 C
+ 2 Na
+ 3 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  3.36059248e+05 -1.10382287e+01 -3.33198180e+01  1.77469210e-02 -3.02720204e-06
+
+NaCO3[l]   SodiumCarbonate(liquid)    1123.2
+ 3.00     (estimated)
+3
+ 1 C
+ 2 Na
+ 3 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  3.37162573e+05  3.27674756e+00 -1.21266784e+02  2.50079163e-03 -2.28052096e-07
+
+SiC[s]   SiliconCarbide_Beta
+ 3.00     (estimated)
+2
+ 1 C
+ 1 Si
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.48215705e+05 -3.55914006e+00 -1.47715759e+01  2.95511107e-03 -2.64574149e-07
+
+TiC[s]   TitaniumCarbide
+ 3.00     (estimated)
+2
+ 1 C
+ 1 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.64519877e+05 -3.26136608e+00 -1.75525572e+01  3.34697317e-03 -3.49004431e-07
+
+TiC[l]   TitaniumCarbide(liquid)    3290.0
+ 3.00     (estimated)
+2
+ 1 C
+ 1 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.63348449e+05  6.16290740e+00 -8.30134996e+01 -1.08144613e-03  3.14615298e-08
+
+Cr3C2[s]   ChromiumCarbide
+ 3.00     (estimated)
+2
+ 2 C
+ 3 Cr
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  3.24959667e+05 -5.90219659e+00 -5.58892318e+01  9.15158563e-03 -1.08891899e-06
+
+MgC2[s]   MagnesiumCarbide
+ 3.00     (estimated)
+2
+ 2 C
+ 1 Mg
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.79480840e+05 -7.14646387e-01 -4.56432436e+01  1.60958467e-03 -1.39766131e-07
+
+Al4C3[s]   AluminumCarbide
+ 3.00     (estimated)
+2
+ 3 C
+ 4 Al
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  4.40761080e+05 -1.03655326e+01 -6.16710679e+01  1.11886436e-02 -1.24826912e-06
+
+Cr7C3[s]   ChromiumCarbide
+ 3.00     (estimated)
+2
+ 3 C
+ 7 Cr
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  6.10951264e+05 -9.09370715e+00 -1.26884197e+02  1.55567863e-02 -1.70473518e-06
+
+Mg2C3[s]   MagnesiumCarbide
+ 3.00     (estimated)
+2
+ 3 C
+ 2 Mg
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  2.84352252e+05 -1.18824700e+00 -7.45382272e+01  2.68658659e-03 -2.33845298e-07
+
+Cr23C6[s]   ChromiumCarbide
+ 3.00     (estimated)
+2
+ 6 C
+23 Cr
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.65188497e+06 -2.81559326e+01 -3.62989824e+02  5.38290219e-02 -7.11538779e-06
+
+Ca[s]   Calcium
+ 3.00     (estimated)
+1
+ 1 Ca
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  2.14952885e+04  2.23809023e-01 -1.53797953e+01  2.55737151e-04  3.50041073e-07
+
+Ca[l]   Calcium(liquid)    1115.0
+ 3.00     (estimated)
+1
+ 1 Ca
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  2.03820611e+04  6.67845910e-01 -1.73973798e+01  6.21360306e-04 -6.11466904e-08
+
+CaCl2[s]   CalciumChloride
+ 3.00     (estimated)
+2
+ 1 Ca
+ 2 Cl
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.46315950e+05 -7.42042247e-01 -4.26259217e+01  3.39419082e-03 -8.07448366e-07
+
+CaCl2[l]   CalciumChloride(liquid)    1045.0
+ 3.00     (estimated)
+2
+ 1 Ca
+ 2 Cl
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.45189651e+05  2.55435620e+00 -6.28231893e+01  1.07711924e-03 -8.93644200e-08
+
+CaF2[s]   CalciumFluoride
+ 3.00     (estimated)
+2
+ 1 Ca
+ 2 F
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.87541208e+05 -2.24169465e+00 -3.55930278e+01  3.77990804e-03 -2.70970308e-07
+
+CaF2[l]   CalciumFluoride(liquid)    1691.0
+ 3.00     (estimated)
+2
+ 1 Ca
+ 2 F
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.84802349e+05  2.37925207e+00 -6.40993958e+01  9.77880507e-04 -7.70969273e-08
+
+Ca(OH)2[s]   CalciumHydroxide
+ 3.00     (estimated)
+3
+ 1 Ca
+ 2 H
+ 2 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  2.50485899e+05 -1.07486558e+01 -1.22509238e+01  1.75908310e-02 -4.41186722e-06
+
+CaO[s]   CalciumOxide_Lime
+ 3.00     (estimated)
+2
+ 1 Ca
+ 1 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.27422280e+05 -1.48707652e+00 -2.45256109e+01  2.26343999e-03 -2.33694842e-07
+
+CaO[l]   CalciumOxide_Lime(liquid)    3200.0
+ 3.00     (estimated)
+2
+ 1 Ca
+ 1 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.33587569e+05  1.15488855e+01 -1.21095952e+02 -1.93201796e-03  4.85731065e-08
+
+CaS[s]   CalciumSulfide
+ 3.00     (estimated)
+2
+ 1 Ca
+ 1 S
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.11533382e+05 -6.11588584e-01 -2.86959716e+01  1.52531264e-03 -1.54280623e-07
+
+CuCl[s]   CopperChloride
+ 3.00     (estimated)
+2
+ 1 Cl
+ 1 Cu
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  7.16623998e+04 -2.27919073e+00 -1.79480076e+01  7.23271559e-03 -1.98359508e-06
+
+CuCl[l]   CopperChloride(liquid)     703.0
+ 3.00     (estimated)
+2
+ 1 Cl
+ 1 Cu
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  7.16488453e+04  2.40175976e+00 -4.47333536e+01  3.43180316e-04 -3.62364194e-08
+
+NH4Cl[s]   AmmoniumChloride
+ 3.00     (estimated)
+3
+ 1 Cl
+ 4 H
+ 1 N
+# dG-Stock-fit Kitzmann+2024   
+ 5  2.12086524e+05 -9.62832043e+00 -2.32163112e+01  1.02879910e-02 -1.59468879e-06
+
+NH4ClO4[s]   AmmoniumPerchlorate
+ 3.00     (estimated)
+4
+ 1 Cl
+ 4 H
+ 1 N
+ 4 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  3.26884682e+05 -2.46117673e+01 -7.58535160e-01  2.96582816e-02 -4.37895339e-06
+
+KCl[s]   PotassiumChloride_Sylvite
+ 3.00     (estimated)
+2
+ 1 Cl
+ 1 K
+# dG-Stock-fit Kitzmann+2024   
+ 5  7.79963366e+04  2.16470229e-01 -3.14620047e+01  1.37288070e-03 -1.22682737e-07
+
+KCl[l]   PotassiumChloride_Sylvite(liquid)    1044.0
+ 3.00     (estimated)
+2
+ 1 Cl
+ 1 K
+# dG-Stock-fit Kitzmann+2024   
+ 5  7.53277286e+04  2.96410886e-02 -2.85332214e+01  2.40002673e-03 -2.56057921e-07
+
+KClO4[s]   PotassiumPerchlorate
+ 3.00     (estimated)
+3
+ 1 Cl
+ 1 K
+ 4 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.94110380e+05 -1.96598701e+01  1.22105368e+01  3.80087193e-02 -7.78811983e-06
+
+NaCl[s]   SodiumChloride_Halite
+ 3.00     (estimated)
+2
+ 1 Cl
+ 1 Na
+# dG-Stock-fit Kitzmann+2024   
+ 5  7.70530649e+04 -1.49426093e-01 -2.97409829e+01  1.90768004e-03 -2.83111668e-07
+
+NaCl[l]   SodiumChloride_Halite(liquid)    1073.8
+ 3.00     (estimated)
+2
+ 1 Cl
+ 1 Na
+# dG-Stock-fit Kitzmann+2024   
+ 5  7.48459259e+04  2.06397381e+00 -4.19024906e+01  5.11360047e-04 -4.70415127e-08
+
+NaClO4[s]   SodiumPerchlorate
+ 3.00     (estimated)
+3
+ 1 Cl
+ 1 Na
+ 4 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.92620151e+05 -1.05387085e+01 -4.31155927e+01  2.53688829e-02 -5.31876004e-06
+
+CoCl2[s]   CobaltChloride
+ 3.00     (estimated)
+2
+ 2 Cl
+ 1 Co
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.18242144e+05 -3.46387469e-01 -4.76613523e+01  3.41107116e-03 -9.20080884e-07
+
+CoCl2[l]   CobaltChloride(liquid)    1013.0
+ 3.00     (estimated)
+2
+ 2 Cl
+ 1 Co
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.12618708e+05 -1.19446504e+00 -3.64286707e+01  2.97868311e-03 -3.09335287e-07
+
+CuCl2[s]   CopperChloride
+ 3.00     (estimated)
+2
+ 2 Cl
+ 1 Cu
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  9.45530856e+04 -6.60020933e-01 -4.37704037e+01  2.64398683e-03 -4.29095089e-07
+
+FeCl2[s]   IronChloride
+ 3.00     (estimated)
+2
+ 2 Cl
+ 1 Fe
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.20344826e+05 -3.73428444e-01 -4.60940043e+01  2.42865416e-03 -4.40334451e-07
+
+FeCl2[l]   IronChloride(liquid)     950.0
+ 3.00     (estimated)
+2
+ 2 Cl
+ 1 Fe
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.13313382e+05 -5.69303662e+00 -6.08663007e+00  6.79261806e-03 -7.49660225e-07
+
+MgCl2[s]   MagnesiumChloride
+ 3.00     (estimated)
+2
+ 2 Cl
+ 1 Mg
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.23873719e+05 -2.05270854e+00 -3.61972963e+01  5.87700485e-03 -1.48981770e-06
+
+MgCl2[l]   MagnesiumChloride(liquid)     987.0
+ 3.00     (estimated)
+2
+ 2 Cl
+ 1 Mg
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.20164590e+05  1.84746189e+00 -5.57274180e+01  8.34327049e-04 -7.26653843e-08
+
+NiCl2[s]   NickelChloride
+ 3.00     (estimated)
+2
+ 2 Cl
+ 1 Ni
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.17457085e+05 -1.28526862e+00 -4.30149976e+01  3.31688447e-03 -6.38141131e-07
+
+NiCl2[l]   NickelChloride(liquid)    1304.0
+ 3.00     (estimated)
+2
+ 2 Cl
+ 1 Ni
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  7.80948239e+04 -6.19795751e+01  3.77900638e+02  4.27010684e-02 -4.58366048e-06
+
+TiCl2[s]   TitaniumChloride
+ 3.00     (estimated)
+2
+ 2 Cl
+ 1 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.47809581e+05 -2.01090971e+00 -3.93401476e+01  3.48430712e-03 -3.86843613e-07
+
+FeCl3[s]   IronChloride
+ 3.00     (estimated)
+2
+ 3 Cl
+ 1 Fe
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.41421962e+05 -3.68313148e+00 -4.48052038e+01  1.02635443e-02 -3.13550961e-06
+
+FeCl3[l]   IronChloride(liquid)     577.0
+ 3.00     (estimated)
+2
+ 3 Cl
+ 1 Fe
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.36056452e+05 -3.70612679e+00 -3.49754204e+01  8.55383510e-03 -1.30236844e-06
+
+TiCl3[s]   TitaniumChloride
+ 3.00     (estimated)
+2
+ 3 Cl
+ 1 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.87822717e+05  7.71463136e-01 -6.99285084e+01  3.09433231e-04  1.33543674e-07
+
+TiCl4[s]   TitaniumChloride
+ 3.00     (estimated)
+2
+ 4 Cl
+ 1 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  2.12517082e+05  0.00000000e+00 -7.62949502e+01  0.00000000e+00  0.00000000e+00
+
+TiCl4[l]   TitaniumChloride(liquid)     249.0
+ 3.00     (estimated)
+2
+ 4 Cl
+ 1 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  2.13180966e+05  3.81361547e+00 -1.00026972e+02 -3.21767423e-05  2.04541634e-07
+
+Co[s]   Cobalt
+ 3.00     (estimated)
+1
+ 1 Co
+# dG-Stock-fit Kitzmann+2024   
+ 5  5.13166392e+04 -1.62405724e-01 -1.71812760e+01  4.24804271e-04  1.07970434e-07
+
+Co[l]   Cobalt(liquid)    1768.0
+ 3.00     (estimated)
+1
+ 1 Co
+# dG-Stock-fit Kitzmann+2024   
+ 5  4.93691155e+04  4.39757093e-01 -2.02123175e+01  4.48297540e-04 -2.59658452e-08
+
+CoF2[s]   CobaltFluoride
+ 3.00     (estimated)
+2
+ 1 Co
+ 2 F
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.50698899e+05 -3.19346159e+00 -3.18101897e+01  6.13741693e-03 -1.22335464e-06
+
+CoF2[l]   CobaltFluoride(liquid)    1400.0
+ 3.00     (estimated)
+2
+ 1 Co
+ 2 F
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.48593433e+05  4.55290834e+00 -8.00549425e+01 -1.34082202e-04  1.34126632e-08
+
+CoF3[s]   CobaltFluoride
+ 3.00     (estimated)
+2
+ 1 Co
+ 3 F
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.75097169e+05 -1.03129009e-01 -6.74853527e+01  1.09107715e-03 -6.58316422e-08
+
+CoO[s]   CobaltOxide
+ 3.00     (estimated)
+2
+ 1 Co
+ 1 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.10057613e+05  5.70144330e-01 -3.84542698e+01  1.45543766e-04  5.43953018e-08
+
+CoSO4[s]   CobaltSulfate
+ 3.00     (estimated)
+3
+ 1 Co
+ 4 O
+ 1 S
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.09061167e+05 -1.11626182e+01 -3.77197156e+01  1.34297812e-02 -1.89100421e-06
+
+Co3O4[s]   CobaltOxide
+ 3.00     (estimated)
+2
+ 3 Co
+ 4 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  3.80548448e+05 -1.31101105e+01 -4.88975462e+01  1.49290915e-02 -1.85133604e-06
+
+Cr[s]   Chromium
+ 3.00     (estimated)
+1
+ 1 Cr
+# dG-Stock-fit Kitzmann+2024   
+ 5  4.77607361e+04 -4.40263825e-01 -1.57958708e+01  1.13516822e-03 -5.79843009e-08
+
+Cr[l]   Chromium(liquid)    2130.0
+ 3.00     (estimated)
+1
+ 1 Cr
+# dG-Stock-fit Kitzmann+2024   
+ 5  4.81204589e+04  4.36448276e+00 -4.90363908e+01 -8.05209471e-04  2.74927830e-08
+
+CrN[s]   ChromiumNitride_Carlsbergite
+ 3.00     (estimated)
+2
+ 1 Cr
+ 1 N
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.18770293e+05 -4.97369935e-01 -3.25561120e+01  1.79559473e-03 -2.41269955e-07
+
+Cr2N[s]   ChromiumNitride
+ 3.00     (estimated)
+2
+ 2 Cr
+ 1 N
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.67650077e+05 -3.74524079e-01 -5.13906602e+01  2.21776814e-03 -1.11795970e-07
+
+Cr2O3[s]   ChromiumOxide
+ 3.00     (estimated)
+2
+ 2 Cr
+ 3 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.20992055e+05 -4.75612399e+00 -6.17327502e+01  6.74303394e-03 -8.73174760e-07
+
+Cr2O3[l]   ChromiumOxide(liquid)    2603.0
+ 3.00     (estimated)
+2
+ 2 Cr
+ 3 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  3.15189559e+05  7.17393635e+00 -1.40279001e+02 -5.10060752e-04 -4.57719219e-09
+
+Cu[s]   Copper
+ 3.00     (estimated)
+1
+ 1 Cu
+# dG-Stock-fit Kitzmann+2024   
+ 5  4.06366391e+04 -1.79634835e-01 -1.54180806e+01  1.09489395e-03 -1.86378619e-07
+
+Cu[l]   Copper(liquid)    1358.0
+ 3.00     (estimated)
+1
+ 1 Cu
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  3.99235858e+04  1.14303690e+00 -2.35418733e+01  2.25456401e-04 -2.85931424e-08
+
+CuF[s]   CopperFluoride
+ 3.00     (estimated)
+2
+ 1 Cu
+ 1 F
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  8.41052221e+04  2.33965623e-01 -3.39752137e+01  1.88584495e-03 -2.35783770e-07
+
+CuF2[s]   CopperFluoride
+ 3.00     (estimated)
+2
+ 1 Cu
+ 2 F
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.23920952e+05 -4.08654208e+00 -2.58242745e+01  7.89378110e-03 -1.49033225e-06
+
+CuF2[l]   CopperFluoride(liquid)    1109.0
+ 3.00     (estimated)
+2
+ 1 Cu
+ 2 F
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.20149380e+05  2.89731262e+00 -6.53902258e+01  9.31567535e-04 -8.89935329e-08
+
+Cu(OH)2[s]   CopperHydroxide
+ 3.00     (estimated)
+3
+ 1 Cu
+ 2 H
+ 2 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  2.06355797e+05 -3.95916260e+00 -4.94825606e+01  4.80336071e-03 -6.29320853e-07
+
+CuO[s]   CopperOxide
+ 3.00     (estimated)
+2
+ 1 Cu
+ 1 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  8.89541666e+04 -2.22154272e+00 -2.13404291e+01  3.69432102e-03 -5.35789077e-07
+
+CuSO4[s]   CopperSulfate
+ 3.00     (estimated)
+3
+ 1 Cu
+ 4 O
+ 1 S
+# dG-Stock-fit Kitzmann+2024   
+ 5  2.84047015e+05 -1.14224245e+01 -3.54410526e+01  1.36158016e-02 -1.92882753e-06
+
+Cu2O[s]   CopperOxide
+ 3.00     (estimated)
+2
+ 2 Cu
+ 1 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.31216054e+05 -2.98523944e+00 -3.10704181e+01  5.11124139e-03 -8.06433201e-07
+
+Cu2O[l]   CopperOxide(liquid)    1516.7
+ 3.00     (estimated)
+2
+ 2 Cu
+ 1 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  9.76005255e+04 -4.55326447e+01  2.73066085e+02  2.71632052e-02 -2.44989574e-06
+
+KF[s]   PotassiumFluoride
+ 3.00     (estimated)
+2
+ 1 F
+ 1 K
+# dG-Stock-fit Kitzmann+2024   
+ 5  8.86139669e+04 -8.45662664e-01 -2.62587742e+01  2.80823645e-03 -4.81008607e-07
+
+KF[l]   PotassiumFluoride(liquid)    1131.0
+ 3.00     (estimated)
+2
+ 1 F
+ 1 K
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  8.72799417e+04  2.30348613e+00 -4.53753871e+01  7.03653534e-04 -6.14972394e-08
+
+NaF[s]   SodiumFluoride
+ 3.00     (estimated)
+2
+ 1 F
+ 1 Na
+# dG-Stock-fit Kitzmann+2024   
+ 5  9.14566860e+04 -1.65526792e+00 -2.23602028e+01  3.73351098e-03 -6.74943027e-07
+
+NaF[l]   SodiumFluoride(liquid)    1269.0
+ 3.00     (estimated)
+2
+ 1 F
+ 1 Na
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  9.03793301e+04  3.68434698e+00 -5.57458070e+01 -2.16907962e-04  6.52288881e-09
+
+FeF2[s]   IronFluoride
+ 3.00     (estimated)
+2
+ 2 F
+ 1 Fe
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.53341218e+05 -3.67106237e+00 -2.81347642e+01  6.03120718e-03 -1.07745617e-06
+
+FeF2[l]   IronFluoride(liquid)    1373.0
+ 3.00     (estimated)
+2
+ 2 F
+ 1 Fe
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.50373069e+05  2.11430803e+00 -6.27130835e+01  9.91351968e-04 -8.60457207e-08
+
+K(HF2)[s]   PotassiumFluoride
+ 3.00     (estimated)
+3
+ 2 F
+ 1 H
+ 1 K
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.68601497e+05  1.62631852e+01 -1.33562347e+02 -8.34705434e-02  5.77103546e-05
+
+K(HF2)[l]   PotassiumFluoride(liquid)     511.9
+ 3.00     (estimated)
+3
+ 2 F
+ 1 H
+ 1 K
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.66528902e+05  8.87442171e-01 -6.17982342e+01  1.28171669e-03 -1.62784069e-07
+
+MgF2[s]   MagnesiumFluoride
+ 3.00     (estimated)
+2
+ 2 F
+ 1 Mg
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.71210427e+05 -4.59152956e+00 -2.24393399e+01  7.43818604e-03 -1.34417324e-06
+
+MgF2[l]   MagnesiumFluoride(liquid)    1536.0
+ 3.00     (estimated)
+2
+ 2 F
+ 1 Mg
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.65082642e+05 -1.15521661e+00 -3.84505823e+01  2.24021289e-03 -1.63743730e-07
+
+FeF3[s]   IronFluoride
+ 3.00     (estimated)
+2
+ 3 F
+ 1 Fe
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  2.03997947e+05  6.57815620e-02 -6.80079239e+01  6.23048759e-04  6.92772091e-08
+
+TiF3[s]   TitaniumFluoride
+ 3.00     (estimated)
+2
+ 3 F
+ 1 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  2.58009364e+05 -1.64477817e+00 -5.89695762e+01  2.72439959e-03 -1.47924729e-07
+
+TiF4[s]   TitaniumFluoride
+ 3.00     (estimated)
+2
+ 4 F
+ 1 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  2.92318843e+05 -7.79982794e+00 -3.74842315e+01  1.43526461e-02 -2.54900680e-06
+
+Fe[s]   Iron
+ 3.00     (estimated)
+1
+ 1 Fe
+# dG-Stock-fit Kitzmann+2024   
+ 5  4.97465483e+04 -1.59189432e+00 -9.40915333e+00  2.77634358e-03 -2.67697081e-07
+
+Fe[l]   Iron(liquid)    1809.0
+ 3.00     (estimated)
+1
+ 1 Fe
+# dG-Stock-fit Kitzmann+2024   
+ 5  5.07970322e+04  3.09665802e+00 -4.09119880e+01 -4.83844765e-05 -7.73123550e-09
+
+Fe(OH)2[s]   IronHydroxide
+ 3.00     (estimated)
+3
+ 1 Fe
+ 2 H
+ 2 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  2.30405155e+05 -4.86931869e+00 -4.80985625e+01  5.79421723e-03 -7.69744512e-07
+
+Fe(OH)3[s]   IronHydroxide
+ 3.00     (estimated)
+3
+ 1 Fe
+ 3 H
+ 3 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  3.16118637e+05 -1.17745577e+01 -3.62422801e+01  1.14045533e-02 -1.47567269e-06
+
+FeO[s]   IronOxide
+ 3.00     (estimated)
+2
+ 1 Fe
+ 1 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.12580998e+05 -8.22224053e-01 -2.94134522e+01  2.02201751e-03 -2.15702771e-07
+
+FeO[l]   IronOxide(liquid)    1650.0
+ 3.00     (estimated)
+2
+ 1 Fe
+ 1 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.12514049e+05  3.15990600e+00 -5.60824718e+01 -8.45463303e-06 -1.06076738e-08
+
+FeSO4[s]   IronSulfate
+ 3.00     (estimated)
+3
+ 1 Fe
+ 4 O
+ 1 S
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.12438384e+05 -1.17465199e+01 -3.36283369e+01  1.36654695e-02 -1.90329295e-06
+
+FeS[s]   IronSulfide_Troilite
+ 3.00     (estimated)
+2
+ 1 Fe
+ 1 S
+# dG-Stock-fit Kitzmann+2024   
+ 5  9.50960372e+04 -4.08212170e+00 -1.32170968e+01  1.16370856e-02 -2.94408148e-06
+
+FeS[l]   IronSulfide_Troilite(liquid)    1463.0
+ 3.00     (estimated)
+2
+ 1 Fe
+ 1 S
+# dG-Stock-fit Kitzmann+2024   
+ 5  9.21367312e+04  2.25108459e+00 -4.66679005e+01  9.90511255e-05 -2.07187085e-08
+
+FeS2[s]   IronSulfide_Pyrite
+ 3.00     (estimated)
+2
+ 1 Fe
+ 2 S
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.36242352e+05 -5.21692864e+00 -2.47241646e+01  7.24620916e-03 -1.22480913e-06
+
+Fe2O3[s]   IronOxide_Hematite
+ 3.00     (estimated)
+2
+ 2 Fe
+ 3 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  2.87512310e+05 -8.61873973e+00 -4.01657594e+01  1.29129954e-02 -1.81430618e-06
+
+Fe2(SO4)3[s]   IronSulfate
+ 3.00     (estimated)
+3
+ 2 Fe
+12 O
+ 3 S
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  8.65388393e+05 -2.29704394e+01 -1.59078492e+02  2.27715401e-02 -2.69687042e-06
+
+Fe3O4[s]   IronOxide_Magnetite
+ 3.00     (estimated)
+2
+ 3 Fe
+ 4 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  4.02766123e+05 -9.46615236e+00 -6.95024108e+01  1.50851303e-02 -1.94445102e-06
+
+KH[s]   PotassiumHydride
+ 3.00     (estimated)
+2
+ 1 H
+ 1 K
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  4.35603275e+04 -2.08546693e+00 -1.51290074e+01  3.60652328e-03 -4.79733083e-07
+
+KOH[s]   PotassiumHydroxide
+ 3.00     (estimated)
+3
+ 1 H
+ 1 K
+ 1 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.17666704e+05 -4.81971143e-01 -3.76767031e+01 -7.78829925e-03  9.19144965e-06
+
+KOH[l]   PotassiumHydroxide(liquid)     679.0
+ 3.00     (estimated)
+3
+ 1 H
+ 1 K
+ 1 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.16433955e+05  3.91273065e-01 -4.36353481e+01  1.63308959e-03 -2.04858023e-07
+
+NaH[s]   SodiumHydride
+ 3.00     (estimated)
+2
+ 1 H
+ 1 Na
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  4.53007441e+04 -3.49634547e+00 -7.02560833e+00  5.41596124e-03 -8.55495285e-07
+
+NaOH[s]   SodiumHydroxide
+ 3.00     (estimated)
+3
+ 1 H
+ 1 Na
+ 1 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.19667796e+05 -3.13104733e+00 -2.45060404e+01  1.33956224e-03  2.74920280e-06
+
+NaOH[l]   SodiumHydroxide(liquid)     596.0
+ 3.00     (estimated)
+3
+ 1 H
+ 1 Na
+ 1 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.20180354e+05  3.25857725e+00 -6.41560547e+01 -3.75724486e-04  5.98878372e-09
+
+MgH2[s]   MagnesiumHydride
+ 3.00     (estimated)
+2
+ 2 H
+ 1 Mg
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  7.78042474e+04 -6.63625914e+00 -7.19122304e-01  6.21947816e-03 -8.15866477e-07
+
+Mg(OH)2[s]   MagnesiumHydroxide
+ 3.00     (estimated)
+3
+ 2 H
+ 1 Mg
+ 2 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  2.38926653e+05 -1.29232120e+01 -5.29702305e-01  1.97195560e-02 -4.78872180e-06
+
+H2SO4[s]   SulfuricAcid
+ 3.00     (estimated)
+3
+ 2 H
+ 4 O
+ 1 S
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.03577703e+05  0.00000000e+00 -1.06068528e+02  0.00000000e+00  0.00000000e+00
+
+H2SO4[l]   SulfuricAcid(liquid)     283.5
+ 3.00     (estimated)
+3
+ 2 H
+ 4 O
+ 1 S
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.00631550e+05 -1.61822440e+01 -1.15707596e+01  2.47155567e-02 -3.35819049e-06
+
+TiH2[s]   TitaniumHydride
+ 3.00     (estimated)
+2
+ 2 H
+ 1 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.24950060e+05 -8.10500004e+00  4.42827073e+00  7.42810858e-03 -9.77730352e-07
+
+H3PO4[s]   PhosphoricAcid
+ 3.00     (estimated)
+3
+ 3 H
+ 4 O
+ 1 P
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.64939782e+05 -3.61099944e+02  1.63564264e+03  1.65964197e+00 -1.24489599e-03
+
+H3PO4[l]   PhosphoricAcid(liquid)     315.5
+ 3.00     (estimated)
+3
+ 3 H
+ 4 O
+ 1 P
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.85874924e+05 -1.94324578e+01 -5.30271853e+00  2.69105388e-02 -2.10013110e-06
+
+K[s]   Potassium
+ 3.00     (estimated)
+1
+ 1 K
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.07711871e+04 -1.67986538e+00 -4.75011147e+00  1.10579545e-02 -7.94890781e-06
+
+K[l]   Potassium(liquid)     336.4
+ 3.00     (estimated)
+1
+ 1 K
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.08533523e+04  1.65884216e+00 -2.13630353e+01 -7.51794322e-04  1.67334271e-07
+
+KO2[s]   PotassiumSuperoxide
+ 3.00     (estimated)
+2
+ 1 K
+ 2 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.05007082e+05 -7.72875356e-01 -4.07437717e+01  4.80692992e-03 -8.10670100e-07
+
+K2O[s]   PotassiumOxide
+ 3.00     (estimated)
+2
+ 2 K
+ 1 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  9.57226256e+04  1.55925281e+00 -5.83779251e+01  2.14186500e-03  4.48264995e-08
+
+K2O2[s]   PotassiumPeroxide
+ 3.00     (estimated)
+2
+ 2 K
+ 2 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.41174562e+05 -7.04052429e-01 -6.17207087e+01  4.55402078e-03 -1.25271535e-07
+
+K2SiO3[s]   PotassiumSilicate
+ 3.00     (estimated)
+3
+ 2 K
+ 3 O
+ 1 Si
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.49837601e+05 -1.09848941e+01 -3.60190951e+01  1.88799332e-02 -3.51694879e-06
+
+K2SiO3[l]   PotassiumSilicate(liquid)    1249.0
+ 3.00     (estimated)
+3
+ 2 K
+ 3 O
+ 1 Si
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.46563610e+05  2.17252844e+00 -1.11591039e+02  2.22728976e-03 -1.90001325e-07
+
+K2SO4[s]   PotassiumSulfate
+ 3.00     (estimated)
+3
+ 2 K
+ 4 O
+ 1 S
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  3.45430996e+05 -1.13993438e+01 -4.77218942e+01  1.57402713e-02 -1.74687959e-06
+
+K2SO4[l]   PotassiumSulfate(liquid)    1342.0
+ 3.00     (estimated)
+3
+ 2 K
+ 4 O
+ 1 S
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  3.42341297e+05  5.29628493e-01 -1.16930275e+02  2.95711905e-03 -2.37122000e-07
+
+K2S[s]   PotassiumSulfide
+ 3.00     (estimated)
+2
+ 2 K
+ 1 S
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.01838109e+05  9.71172991e+00 -1.02084666e+02 -1.59124697e-02  5.11727224e-06
+
+K2S[l]   PotassiumSulfide(liquid)    1221.0
+ 3.00     (estimated)
+2
+ 2 K
+ 1 S
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  9.80431439e+04  2.91329292e+00 -6.34365573e+01  9.01680108e-04 -8.18504338e-08
+
+Mg[s]   Magnesium
+ 3.00     (estimated)
+1
+ 1 Mg
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.77050706e+04 -4.32964937e-01 -1.20328968e+01  1.82086830e-03 -3.85571922e-07
+
+Mg[l]   Magnesium(liquid)     923.0
+ 3.00     (estimated)
+1
+ 1 Mg
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.69554349e+04  2.98843608e-01 -1.56039554e+01  8.90664183e-04 -9.74766555e-08
+
+MgO[s]   MagnesiumOxide_Periclase
+ 3.00     (estimated)
+2
+ 1 Mg
+ 1 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.19424851e+05 -2.37273820e+00 -1.94396576e+01  2.74600884e-03 -2.91345311e-07
+
+MgO[l]   MagnesiumOxide_Periclase(liquid)    3105.0
+ 3.00     (estimated)
+2
+ 1 Mg
+ 1 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.09218550e+05 -2.36684670e+00 -1.43136446e+01  1.45214943e-03 -6.71153491e-08
+
+MgSiO3[s]   MagnesiumSilicate_Enstatite
+ 3.00     (estimated)
+3
+ 1 Mg
+ 3 O
+ 1 Si
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.45892578e+05 -1.02131031e+01 -2.61733840e+01  1.21879261e-02 -1.89479372e-06
+
+MgSiO3[l]   MagnesiumSilicate_Enstatite(liquid)    1850.0
+ 3.00     (estimated)
+3
+ 1 Mg
+ 3 O
+ 1 Si
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.30832115e+05 -1.39157380e+01  1.32822679e+01  7.82458565e-03 -5.38354532e-07
+
+MgTiO3[s]   MagnesiumTitaniumOxide_Geikielite
+ 3.00     (estimated)
+3
+ 1 Mg
+ 3 O
+ 1 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.51801515e+05 -9.49590846e+00 -3.17708116e+01  1.25307820e-02 -1.92439481e-06
+
+MgTiO3[l]   MagnesiumTitaniumOxide_Geikielite(liquid)    1953.0
+ 3.00     (estimated)
+3
+ 1 Mg
+ 3 O
+ 1 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.49427331e+05  4.62129839e+00 -1.21764185e+02  8.71116016e-04 -7.26038041e-08
+
+MgSO4[s]   MagnesiumSulfate
+ 3.00     (estimated)
+3
+ 1 Mg
+ 4 O
+ 1 S
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.20043207e+05 -1.28482862e+01 -2.70660962e+01  1.56755192e-02 -2.60610971e-06
+
+MgSO4[l]   MagnesiumSulfate(liquid)    1400.0
+ 3.00     (estimated)
+3
+ 1 Mg
+ 4 O
+ 1 S
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.24234844e+05  3.27454681e+00 -1.30462516e+02  3.74521195e-04 -2.94406982e-08
+
+MgTi2O5[s]   MagnesiumTitaniumOxide
+ 3.00     (estimated)
+3
+ 1 Mg
+ 5 O
+ 2 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  5.80401684e+05 -1.23736193e+01 -6.59030256e+01  1.40519822e-02 -1.72486154e-06
+
+MgTi2O5[l]   MagnesiumTitaniumOxide(liquid)    1963.0
+ 3.00     (estimated)
+3
+ 1 Mg
+ 5 O
+ 2 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  5.77434311e+05  9.04878019e+00 -2.07122777e+02  8.17583056e-04 -9.15463330e-08
+
+MgS[s]   MagnesiumSulfide
+ 3.00     (estimated)
+2
+ 1 Mg
+ 1 S
+# dG-Stock-fit Kitzmann+2024   
+ 5  9.24398307e+04 -8.15769056e-01 -2.73001022e+01  1.49607754e-03 -1.49749006e-07
+
+Mg2SiO4[s]   MagnesiumSilicate_Forsterite
+ 3.00     (estimated)
+3
+ 2 Mg
+ 4 O
+ 1 Si
+# dG-Stock-fit Kitzmann+2024   
+ 5  4.68524452e+05 -1.26076540e+01 -4.53390865e+01  1.47415627e-02 -2.01984709e-06
+
+Mg2SiO4[l]   MagnesiumSilicate_Forsterite(liquid)    2171.0
+ 3.00     (estimated)
+3
+ 2 Mg
+ 4 O
+ 1 Si
+# dG-Stock-fit Kitzmann+2024   
+ 5  4.67200785e+05  3.10534415e+00 -1.45431023e+02  1.34833249e-03 -8.11094212e-08
+
+Mg2TiO4[s]   MagnesiumTitaniumOxide
+ 3.00     (estimated)
+3
+ 2 Mg
+ 4 O
+ 1 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  4.70025102e+05 -1.23167841e+01 -4.68902483e+01  1.56545422e-02 -2.19716578e-06
+
+Mg2TiO4[l]   MagnesiumTitaniumOxide(liquid)    2013.0
+ 3.00     (estimated)
+3
+ 2 Mg
+ 4 O
+ 1 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  4.65047903e+05  6.16327738e+00 -1.64634419e+02  1.34673983e-03 -1.01840050e-07
+
+Mg2Si[s]   MagnesiumSilicide
+ 3.00     (estimated)
+2
+ 2 Mg
+ 1 Si
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  9.89125707e+04 -6.84522710e-01 -4.32294332e+01  2.88114226e-03 -3.44965361e-07
+
+Mg2Si[l]   MagnesiumSilicide(liquid)    1375.0
+ 3.00     (estimated)
+2
+ 2 Mg
+ 1 Si
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  9.10038669e+04  3.74742054e+00 -6.62234824e+01  3.25692936e-05 -7.93542550e-09
+
+Mg3N2[s]   MagnesiumNitride
+ 3.00     (estimated)
+2
+ 3 Mg
+ 2 N
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  2.21883943e+05 -2.27400877e+00 -6.69596307e+01  3.99157559e-03 -5.06837701e-07
+
+Mg3P2O8[s]   MagnesiumPhosphate
+ 3.00     (estimated)
+3
+ 3 Mg
+ 8 O
+ 2 P
+# dG-Stock-fit Kitzmann+2024   
+ 5  8.20837218e+05 -1.41696884e+01 -1.40085421e+02  1.68764781e-02 -2.00068218e-06
+
+Mg3P2O8[l]   MagnesiumPhosphate(liquid)    1626.0
+ 3.00     (estimated)
+3
+ 3 Mg
+ 8 O
+ 2 P
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  8.37956984e+05  2.08189782e+01 -3.89173864e+02  1.42155658e-03 -1.12268244e-07
+
+Mn[s]   Manganese
+ 3.00     (estimated)
+1
+ 1 Mn
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.41106072e+04 -2.42270254e-01 -1.61967153e+01  1.31281456e-03  3.98336776e-08
+
+Mn[l]   Manganese(liquid)    1519.0
+ 3.00     (estimated)
+1
+ 1 Mn
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.37226210e+04  2.27076979e+00 -3.27454555e+01  3.62324975e-04 -2.87659649e-08
+
+TiN[s]   TitaniumNitride
+ 3.00     (estimated)
+2
+ 1 N
+ 1 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.53786475e+05 -2.70363510e+00 -1.98115097e+01  3.01415525e-03 -3.10762507e-07
+
+TiN[l]   TitaniumNitride(liquid)    3220.0
+ 3.00     (estimated)
+2
+ 1 N
+ 1 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.30726874e+05 -1.07946473e+01  5.02286044e+01  3.29366751e-03 -1.55339468e-07
+
+VN[s]   VanadiumNitride
+ 3.00     (estimated)
+2
+ 1 N
+ 1 V
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.44358391e+05 -2.45789571e+00 -2.05346414e+01  2.36718695e-03 -1.93952982e-07
+
+N2O4[s]   NitrogenOxide
+ 3.00     (estimated)
+2
+ 2 N
+ 4 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  2.37188078e+05  0.00000000e+00 -9.37889955e+01  0.00000000e+00  0.00000000e+00
+
+N2O4[l]   NitrogenOxide(liquid)     261.9
+ 3.00     (estimated)
+2
+ 2 N
+ 4 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  2.15328843e+05 -1.73213887e+02  8.44257327e+02  4.72901049e-01 -2.07612460e-04
+
+Si3N4[s]   SiliconNitride_Alpha
+ 3.00     (estimated)
+2
+ 4 N
+ 3 Si
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  4.77205965e+05 -9.36192338e+00 -6.23546394e+01  7.21052314e-03 -6.17583411e-07
+
+P3N5[s]   PhosphorusNitride
+ 3.00     (estimated)
+2
+ 5 N
+ 3 P
+# dG-Stock-fit Kitzmann+2024   
+ 5  4.35659111e+05 -1.01512380e+01 -7.27597445e+01  2.07014018e-02 -3.15714207e-06
+
+Na[s]   Sodium
+ 3.00     (estimated)
+1
+ 1 Na
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.29328803e+04 -1.66531587e+00 -5.19601906e+00  9.50485573e-03 -6.02101306e-06
+
+Na[l]   Sodium(liquid)     371.0
+ 3.00     (estimated)
+1
+ 1 Na
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.30473778e+04  1.72979883e+00 -2.26032705e+01 -8.36707988e-04  1.56714088e-07
+
+NaO2[s]   SodiumSuperoxide
+ 3.00     (estimated)
+2
+ 1 Na
+ 2 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.05276574e+05  5.07197886e+00 -7.45738970e+01 -5.29184471e-03  1.50467590e-06
+
+Na2O[s]   SodiumOxide
+ 3.00     (estimated)
+2
+ 2 Na
+ 1 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.05769055e+05 -2.15069374e+00 -3.53947481e+01  4.43186016e-03 -2.17756762e-07
+
+Na2O[l]   SodiumOxide(liquid)    1405.2
+ 3.00     (estimated)
+2
+ 2 Na
+ 1 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.01809402e+05  4.60352045e+00 -7.59636081e+01  2.08240783e-04 -1.56590750e-08
+
+Na2O2[s]   SodiumPeroxide
+ 3.00     (estimated)
+2
+ 2 Na
+ 2 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.46857890e+05 -4.31095282e+00 -4.01489676e+01  8.66825380e-03 -1.27375225e-06
+
+Na2SiO3[s]   SodiumSilicate
+ 3.00     (estimated)
+3
+ 2 Na
+ 3 O
+ 1 Si
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.55600992e+05 -1.14891213e+01 -3.42818419e+01  1.77252210e-02 -3.17885176e-06
+
+Na2SiO3[l]   SodiumSilicate(liquid)    1362.0
+ 3.00     (estimated)
+3
+ 2 Na
+ 3 O
+ 1 Si
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.45518937e+05 -1.00632680e+01 -2.91018769e+01  8.48079805e-03 -7.29103055e-07
+
+Na2SO4[s]   SodiumSulfate
+ 3.00     (estimated)
+3
+ 2 Na
+ 4 O
+ 1 S
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  3.42692161e+05 -2.25384122e+01  1.01046004e+01  4.48154039e-02 -1.09888037e-05
+
+Na2SO4[l]   SodiumSulfate(liquid)    1157.0
+ 3.00     (estimated)
+3
+ 2 Na
+ 4 O
+ 1 S
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  3.43468688e+05  2.73953031e+00 -1.33502843e+02  1.71632201e-03 -1.42150834e-07
+
+Na2Si2O5[s]   SodiumSilicate
+ 3.00     (estimated)
+3
+ 2 Na
+ 5 O
+ 2 Si
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  5.77367105e+05 -1.98336134e+01 -3.75923498e+01  2.92464851e-02 -5.31742893e-06
+
+Na2Si2O5[l]   SodiumSilicate(liquid)    1147.0
+ 3.00     (estimated)
+3
+ 2 Na
+ 5 O
+ 2 Si
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  5.76243978e+05 -1.86411027e+00 -1.42723143e+02  5.95142675e-03 -5.49285179e-07
+
+Na2S[s]   SodiumSulfide
+ 3.00     (estimated)
+2
+ 2 Na
+ 1 S
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.05021633e+05  8.65340094e+00 -9.81865325e+01 -1.07949770e-02  3.03519269e-06
+
+Na2S[l]   SodiumSulfide(liquid)    1445.0
+ 3.00     (estimated)
+2
+ 2 Na
+ 1 S
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  9.80079377e+04  1.37196289e+00 -5.08551638e+01  9.71822379e-04 -7.35948506e-08
+
+Na2S2[s]   SodiumSulfide
+ 3.00     (estimated)
+2
+ 2 Na
+ 2 S
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.38476986e+05 -1.26536692e+01  1.08307780e+01  2.87469871e-02 -8.68335563e-06
+
+Na2S2[l]   SodiumSulfide(liquid)     753.0
+ 3.00     (estimated)
+2
+ 2 Na
+ 2 S
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.31140699e+05 -1.96106913e+01  6.89248946e+01  2.15443116e-02 -3.11516811e-06
+
+Ni[s]   Nickel
+ 3.00     (estimated)
+1
+ 1 Ni
+# dG-Stock-fit Kitzmann+2024   
+ 5  5.16504896e+04 -7.77013848e-01 -1.41838071e+01  1.99690154e-03 -3.49812430e-07
+
+Ni[l]   Nickel(liquid)    1728.0
+ 3.00     (estimated)
+1
+ 1 Ni
+# dG-Stock-fit Kitzmann+2024   
+ 5  5.08304187e+04  1.20995192e+00 -2.64739652e+01  2.32814994e-04 -1.13265259e-08
+
+NiS[s]   NickelSulfide_Millerite
+ 3.00     (estimated)
+2
+ 1 Ni
+ 1 S
+# dG-Stock-fit Kitzmann+2024   
+ 5  9.50501794e+04 -4.41355009e+00 -1.12354592e+01  8.98644472e-03 -1.74236869e-06
+
+NiS[l]   NickelSulfide_Millerite(liquid)    1249.0
+ 3.00     (estimated)
+2
+ 1 Ni
+ 1 S
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  9.36962624e+04  2.42064321e+00 -5.11095580e+01  6.27907694e-04 -4.35615857e-08
+
+NiS2[s]   NickelSulfide_Vaesite
+ 3.00     (estimated)
+2
+ 1 Ni
+ 2 S
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.33969820e+05 -1.18536617e+00 -4.68155592e+01  1.96038936e-03 -1.16435072e-07
+
+NiS2[l]   NickelSulfide_Vaesite(liquid)    1280.0
+ 3.00     (estimated)
+2
+ 1 Ni
+ 2 S
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.02853596e+05 -4.66569484e+01  2.70030354e+02  3.17501788e-02 -3.37301816e-06
+
+Ni3S2[s]   NickelSulfide_Heazlewoodite
+ 3.00     (estimated)
+2
+ 3 Ni
+ 2 S
+# dG-Stock-fit Kitzmann+2024   
+ 5  2.48192608e+05  8.64936287e+00 -1.31448944e+02 -3.56261370e-02  1.91075714e-05
+
+Ni3S2[l]   NickelSulfide_Heazlewoodite(liquid)    1062.0
+ 3.00     (estimated)
+2
+ 3 Ni
+ 2 S
+# dG-Stock-fit Kitzmann+2024   
+ 5  2.43896734e+05  6.97299981e+00 -1.33074613e+02  1.05358101e-03 -6.72220050e-08
+
+Ni3S4[s]   NickelSulfide
+ 3.00     (estimated)
+2
+ 3 Ni
+ 4 S
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  3.23885894e+05 -5.18841044e+00 -9.44655871e+01  8.61420071e-03  1.02583379e-07
+
+TiO[s]   TitaniumOxide
+ 3.00     (estimated)
+2
+ 1 O
+ 1 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.51467049e+05 -3.67517701e+00 -1.48232312e+01  4.74370207e-03 -5.18179755e-07
+
+TiO[l]   TitaniumOxide(liquid)    2023.0
+ 3.00     (estimated)
+2
+ 1 O
+ 1 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.49139219e+05  3.61021876e+00 -6.11671911e+01 -2.25429855e-04 -7.16490075e-09
+
+VO[s]   VanadiumOxide
+ 3.00     (estimated)
+2
+ 1 O
+ 1 V
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.43283774e+05 -3.12933880e+00 -1.79725461e+01  4.47229841e-03 -6.02107878e-07
+
+VO[l]   VanadiumOxide(liquid)    2063.0
+ 3.00     (estimated)
+2
+ 1 O
+ 1 V
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.34501171e+05 -1.96090430e+00 -1.87403712e+01  1.56710150e-03 -1.02319047e-07
+
+SiO2[s]   SiliconDioxide
+ 3.00     (estimated)
+2
+ 1 Si
+ 2 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  2.22503219e+05 -5.49253346e+00 -2.07554433e+01  6.33128431e-03 -9.10553834e-07
+
+SiO2[l]   SiliconDioxide(liquid)    1996.0
+ 3.00     (estimated)
+2
+ 1 Si
+ 2 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  2.18572729e+05 -6.96763899e+00 -5.42060828e+00  3.98662737e-03 -2.74709770e-07
+
+TiO2[s]   TitaniumOxide_Rutile
+ 3.00     (estimated)
+2
+ 2 O
+ 1 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  2.29367932e+05 -5.57936555e+00 -2.06154750e+01  6.88839217e-03 -1.02324765e-06
+
+TiO2[l]   TitaniumOxide_Rutile(liquid)    2130.0
+ 3.00     (estimated)
+2
+ 2 O
+ 1 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  2.27941650e+05  2.99575341e+00 -7.64309825e+01  4.86979003e-04 -4.66547901e-08
+
+Ti2O3[s]   TitaniumOxide
+ 3.00     (estimated)
+2
+ 3 O
+ 2 Ti
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  3.84707390e+05 -1.09530736e+01 -2.76476349e+01  1.66439179e-02 -2.60246873e-06
+
+Ti2O3[l]   TitaniumOxide(liquid)    2115.0
+ 3.00     (estimated)
+2
+ 3 O
+ 2 Ti
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  3.75053810e+05  2.50230291e+00 -1.04785305e+02  1.35778329e-03 -1.22501710e-07
+
+V2O3[s]   VanadiumOxide_Karelianite
+ 3.00     (estimated)
+2
+ 3 O
+ 2 V
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.59405896e+05 -4.52527215e+00 -6.24819531e+01  5.54725605e-03 -5.11655446e-07
+
+V2O3[l]   VanadiumOxide_Karelianite(liquid)    2340.0
+ 3.00     (estimated)
+2
+ 3 O
+ 2 V
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  3.43093907e+05 -2.18216647e+00 -6.89518686e+01  2.72686011e-03 -1.68892434e-07
+
+ZnSO4[s]   ZincSulfate
+ 3.00     (estimated)
+3
+ 4 O
+ 1 S
+ 1 Zn
+# dG-Stock-fit Kitzmann+2024   
+ 5  2.84132066e+05 -1.43222520e+01 -1.91177823e+01  2.03386986e-02 -3.22762182e-06
+
+V2O4[s]   VanadiumOxide
+ 3.00     (estimated)
+2
+ 4 O
+ 2 V
+# dG-Stock-fit Kitzmann+2024   
+ 5  4.13819994e+05 -7.70646579e+00 -6.32407100e+01  1.42849435e-02 -2.74963300e-06
+
+V2O4[l]   VanadiumOxide(liquid)    1818.0
+ 3.00     (estimated)
+2
+ 4 O
+ 2 V
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  4.00676096e+05 -7.19793281e+00 -5.41858778e+01  7.15117160e-03 -5.01127772e-07
+
+Ti3O5[s]   TitaniumOxide
+ 3.00     (estimated)
+2
+ 5 O
+ 3 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  6.13654041e+05 -1.48396471e+01 -5.92519998e+01  2.46579095e-02 -4.28719114e-06
+
+Ti3O5[l]   TitaniumOxide(liquid)    2050.0
+ 3.00     (estimated)
+2
+ 5 O
+ 3 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  6.04972057e+05  8.77424218e+00 -2.04041512e+02  1.09542825e-03 -1.22786630e-07
+
+V2O5[s]   VanadiumOxide_Shcherbinaite
+ 3.00     (estimated)
+2
+ 5 O
+ 2 V
+# dG-Stock-fit Kitzmann+2024   
+ 5  4.58052414e+05 -1.24015737e+01 -5.19405688e+01  1.86338829e-02 -3.81582733e-06
+
+V2O5[l]   VanadiumOxide_Shcherbinaite(liquid)     943.0
+ 3.00     (estimated)
+2
+ 5 O
+ 2 V
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  4.53623812e+05  4.65950429e-01 -1.23046729e+02  2.12609055e-03 -1.80711768e-07
+
+Ti4O7[s]   TitaniumOxide
+ 3.00     (estimated)
+2
+ 7 O
+ 4 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  8.45748705e+05 -8.81028174e+00 -1.47569445e+02  1.35989525e-02 -1.74027656e-06
+
+Ti4O7[l]   TitaniumOxide(liquid)    1950.0
+ 3.00     (estimated)
+2
+ 7 O
+ 4 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  8.37633721e+05  1.40851189e+01 -2.98115262e+02  8.59105634e-04 -1.32071242e-07
+
+P4O10[s]   PhosphorusOxide
+ 3.00     (estimated)
+2
+10 O
+ 4 P
+# dG-Stock-fit Kitzmann+2024   
+ 5  8.07161995e+05 -3.45392325e+01 -3.77523262e+01  4.36684614e-02 -5.76634756e-06
+
+P[s]   Phosphorus
+ 3.00     (estimated)
+1
+ 1 P
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.87706735e+04  8.85225113e+00 -5.89370578e+01 -3.58545960e-02  2.35643023e-05
+
+P[l]   Phosphorus(liquid)     317.3
+ 3.00     (estimated)
+1
+ 1 P
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.81371147e+04  5.24680933e-01 -1.80232195e+01  1.46264050e-04 -2.27606632e-08
+
+P4S3[s]   PhosphorusSulfide
+ 3.00     (estimated)
+2
+ 4 P
+ 3 S
+# dG-Stock-fit Kitzmann+2024   
+ 5  2.79232015e+05  0.00000000e+00 -1.15119351e+02  0.00000000e+00  0.00000000e+00
+
+P4S3[l]   PhosphorusSulfide(liquid)     440.0
+ 3.00     (estimated)
+2
+ 4 P
+ 3 S
+# dG-Stock-fit Kitzmann+2024   
+ 5  2.79641365e+05  2.95917646e+00 -1.34522727e+02  1.08577209e-03 -1.26315282e-07
+
+S[s]   Sulfur
+ 3.00     (estimated)
+1
+ 1 S
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.32477974e+04  8.23050169e-01 -1.91543434e+01 -7.47321931e-03  6.54197290e-06
+
+S[l]   Sulfur(liquid)     388.4
+ 3.00     (estimated)
+1
+ 1 S
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.41435817e+04  3.64526644e+00 -3.92711915e+01 -2.55809991e-03  4.34445003e-07
+
+SiS2[s]   SiliconSulfide
+ 3.00     (estimated)
+2
+ 2 S
+ 1 Si
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.46518358e+05 -2.74042250e-01 -5.03594432e+01  2.28321211e-03 -2.89382227e-07
+
+SiS2[l]   SiliconSulfide(liquid)    1363.0
+ 3.00     (estimated)
+2
+ 2 S
+ 1 Si
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.23154105e+05 -3.99423801e+01  2.25586557e+02  2.54578775e-02 -2.48960957e-06
+
+Si[s]   Silicon
+ 3.00     (estimated)
+1
+ 1 Si
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  5.37707455e+04 -1.90634256e+00 -6.69718702e+00  2.85536625e-03 -5.04218097e-07
+
+Si[l]   Silicon(liquid)    1685.0
+ 3.00     (estimated)
+1
+ 1 Si
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  4.85179320e+04  8.36154068e-01 -2.04582851e+01 -6.64287285e-05  1.82501466e-09
+
+Ti[s]   Titanium
+ 3.00     (estimated)
+1
+ 1 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  5.67715489e+04 -1.22725853e+00 -1.09643931e+01  2.16685574e-03 -2.32220397e-07
+
+Ti[l]   Titanium(liquid)    1939.0
+ 3.00     (estimated)
+1
+ 1 Ti
+# dG-Stock-fit Kitzmann+2024   
+ 5  5.97755594e+04  4.24972908e+00 -4.99011618e+01 -3.93299590e-04  2.30442968e-09
+
+V[s]   Vanadium
+ 3.00     (estimated)
+1
+ 1 V
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  6.17807295e+04 -1.05838409e+00 -1.21052411e+01  1.46087389e-03 -1.70978003e-07
+
+V[l]   Vanadium(liquid)    2190.0
+ 3.00     (estimated)
+1
+ 1 V
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  6.25807844e+04  1.90725703e+00 -3.35055418e+01  3.46422282e-04 -2.91653539e-08
+
+Zn[s]   Zinc
+ 3.00     (estimated)
+1
+ 1 Zn
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.57590637e+04 -1.23255219e-01 -1.42851529e+01  1.43666848e-03 -3.50715899e-07
+
+Zn[l]   Zinc(liquid)     692.7
+ 3.00     (estimated)
+1
+ 1 Zn
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.52712478e+04  1.05078013e+00 -2.05311382e+01  1.54411187e-04 -1.68304614e-08
+
+CaTiO3[s]   Perovskite
+ 3.00     (estimated)
+3
+ 1 Ca
+ 1 Ti
+ 3 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.67418334e+05 -1.76690310e-01 -8.73008988e+01  1.52250495e-03 -6.17788726e-08
+
+MnS[s]   Alabandite
+ 3.00     (estimated)
+2
+ 1 Mn
+ 1 S
+# dG-Stock-fit Kitzmann+2024   
+ 5  9.06436387e+04 -1.66862642e+00 -1.79236569e+01  8.06992964e-04 -5.66929724e-08
+
+CaSiO3[s]   Wollastonite
+ 3.00     (estimated)
+3
+ 1 Ca
+ 1 Si
+ 3 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.62716683e+05 -9.46358778e-01 -8.28047735e+01  1.78768486e-03 -8.89060327e-08
+
+MnSiO3[s]   Pyroxmangite
+ 3.00     (estimated)
+3
+ 1 Mn
+ 1 Si
+ 3 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  3.32849926e+05 -3.36864020e+00 -6.22533647e+01  2.11663296e-03 -1.14356461e-07
+
+Ca2SiO4[s]   Larnite
+ 3.00     (estimated)
+3
+ 2 Ca
+ 1 Si
+ 4 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  4.93875780e+05 -8.77312851e-01 -1.15484628e+02  2.59606664e-03 -1.42023767e-07
+
+Fe2SiO4[s]   Fayalite
+ 3.00     (estimated)
+3
+ 2 Fe
+ 1 Si
+ 4 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  4.53423056e+05 -1.01539238e+00 -1.19259311e+02  2.75274031e-03 -3.57875481e-08
+
+CaMgSi2O6[s]   Diopside
+ 3.00     (estimated)
+4
+ 1 Ca
+ 1 Mg
+ 2 Si
+ 6 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  7.14879075e+05 -2.02683506e+00 -1.67027563e+02  3.40331854e-03 -1.55786610e-07
+
+Ca2Al2SiO7[s]   Gehlenite
+ 3.00     (estimated)
+4
+ 2 Ca
+ 2 Al
+ 1 Si
+ 7 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  8.69013867e+05 -8.77304523e-01 -2.10886047e+02  3.89090982e-03 -1.42023261e-07
+
+CaAl2Si2O8[s]   Anorthite
+ 3.00     (estimated)
+4
+ 1 Ca
+ 2 Al
+ 2 Si
+ 8 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  9.44050597e+05 -1.96175524e+00 -2.23651676e+02  4.06183250e-03 -1.24693983e-07
+
+KAlSi3O8[s]   Microcline
+ 3.00     (estimated)
+4
+ 1 K
+ 1 Al
+ 3 Si
+ 8 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  9.25571688e+05 -5.76776148e-10 -2.26269141e+02  3.70655842e-13 -2.89356751e-17
+
+NaAlSi3O8[s]   Albite
+ 3.00     (estimated)
+4
+ 1 Na
+ 1 Al
+ 3 Si
+ 8 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  9.22809013e+05 -9.59178050e-10 -2.26418597e+02  6.20868464e-13 -4.83103848e-17
+
+H2O[s]   Water
+ 3.00     (estimated)
+2
+ 2 H
+ 1 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.16104442e+05 -3.71807542e+00 -9.96976864e+00 -3.48707432e-02  5.80283343e-05
+
+H2O[l]   Water(liquid)     273.2
+ 3.00     (estimated)
+2
+ 2 H
+ 1 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.15920483e+05 -1.22301117e+01  2.27813526e+01  4.47803479e-02 -2.37370392e-05
+
+CH4[s]   Methane
+ 3.00     (estimated)
+2
+ 1 C
+ 4 H
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.98887919e+05 -2.10028862e+00 -3.21564198e+01 -5.11567807e-02  4.95456036e-05
+
+CH4[l]   Methane(liquid)      90.7
+ 3.00     (estimated)
+2
+ 1 C
+ 4 H
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.99315295e+05  1.15344353e+01 -8.94522379e+01 -1.62883554e-01  2.02342611e-04
+
+N2[s]   Nitrogen
+ 3.00     (estimated)
+1
+ 2 N
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.14410781e+05  1.18049224e+01 -6.64971828e+01 -1.62316319e-01  3.50186933e-04
+
+N2[l]   Nitrogen(liquid)      63.1
+ 3.00     (estimated)
+1
+ 2 N
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.14244643e+05  6.86014786e+00 -4.81418787e+01 -7.09243071e-02  9.99172470e-05
+
+NH3[s]   Ammonia
+ 3.00     (estimated)
+2
+ 1 N
+ 3 H
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.35667471e+05 -2.07377235e+02  8.45827332e+02  1.63735545e+00 -2.06531295e-03
+
+NH3[l]   Ammonia(liquid)     195.4
+ 3.00     (estimated)
+2
+ 1 N
+ 3 H
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  1.43496081e+05  1.57924936e+00 -5.40734368e+01 -5.95948252e-03 -4.17593131e-06
+
+CO2[s]   CarbonDioxide
+ 3.00     (estimated)
+2
+ 1 C
+ 2 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.99149876e+05  1.43895134e+02 -5.97386159e+02 -1.69353179e+00  2.81676668e-03
+
+CO2[l]   CarbonDioxide(liquid)     216.6
+ 3.00     (estimated)
+2
+ 1 C
+ 2 O
+# dG-Stock-fit Kitzmann+2024    !!! NOT IN GGCHEM
+ 5  2.00894648e+05  6.84671188e+01 -3.86749580e+02 -2.63877845e-01  1.59636821e-04
+
+SiO[s]   SiliconOxide
+ 3.00     (estimated)
+2
+ 1 Si
+ 1 O
+# dG-Stock-fit Kitzmann+2024   
+ 5  1.45132013e+05 -1.91013973e+00 -2.02986671e+01  6.18510487e-04 -4.21634947e-08
+
