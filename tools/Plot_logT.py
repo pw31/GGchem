@@ -591,6 +591,7 @@ for i in range(0,30):
   plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{\langle H\rangle}$')
   plt.xlim(Tmin,Tmax)
   plt.ylim(nmin,nmax+1)
+  plt.ylim(nmax-12,nmax+1)
   plt.xscale('log')
   ax.set_xticks(locmaj)
   ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
