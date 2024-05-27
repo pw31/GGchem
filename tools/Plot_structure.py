@@ -119,7 +119,8 @@ if (ymax>-10):
   plt.xlabel(r'$\mathrm{dust/gas}$',fontsize=20)
   plt.ylabel(r'$z\ \mathrm{[km]}$',fontsize=20)
   plt.ylim(zmin,zmax)
-  plt.xlim(10**(ymax-8),10**(ymax+1))
+  #plt.xlim(10**(ymax-8),10**(ymax+1))
+  plt.xlim(1.E-20,1.E-2)
   plt.xscale('log')
   #ax.yaxis.set_minor_locator(LogLocator(subs=[2,3,4,5,6,7,8,9]))
   #ax.xaxis.set_minor_locator(locmin)
@@ -172,9 +173,9 @@ for i in range(4+NELEM+NMOLE,4+NELEM+NMOLE+NDUST,1):
   if (np.size(ind) == 0): continue
   ind = ind[0]
   yy = dat[:,ind]                # log10 nsolid/n<H>
-  yy = yy + lognH - logntot      # log10 nmol/ntot
+  yy = yy + lognH - logntot      # log10 nsolid/ntot
   ymax = np.max([ymax,np.max(yy[iii])])
-  ymin = ymax-4
+ymin = ymax-10
 indices = np.argsort(smean)
 if (ymax>-99):
   print solids
@@ -188,7 +189,7 @@ if (ymax>-99):
     yy = dat[:,ind]               # log10 nsolid/n<H>
     ymax = np.max([ymax,np.max(yy[iii])])
     if (np.max(yy[iii])>-99): print solid,ind,np.max(yy[iii])
-    if (np.max(yy[iii])>ymin+1):
+    if (np.max(yy[iii])>ymin):
       plt.plot(yy[iii],zz[iii],c=colo[count],ls=styl[count],lw=widt[count],label=solid)
       count = count + 1
   plt.title('condensates',fontsize=16)
@@ -196,6 +197,8 @@ if (ymax>-99):
   plt.xlabel(r'$\mathrm{log}_{10}\ n_\mathrm{cond}/n_\mathrm{tot}$',fontsize=18)
   plt.ylim(zmin,zmax)
   plt.xlim(ymin,ymax+0.3)
+  ax.xaxis.set_major_locator(MultipleLocator(2.0))
+  ax.xaxis.set_minor_locator(MultipleLocator(1.0))
   #ax.xaxis.set_minor_locator(locmin)
   #ax.set_xticks(locmaj)
   #ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
@@ -304,15 +307,15 @@ if (count>0):
 
 #================== some important molecules ====================
 fig,ax = plt.subplots(figsize=(6.5,5.5))
-mols  = ['H2','N2','H2O','O2','CO','CO2','CH4','NH3','SO2','H2S','el']
+mols  = ['H2','N2','H2O','O2','CO','COS','CO2','CH4','NH3','SO2','H2S','el']
 mols  = np.array(mols)
 count = 0
 for i in range(3,4+NELEM+NMOLE): 
   mol = keyword[i]
   yy = dat[:,i]-logntot            # log10 nmol/ntot
-  crit = -2.0
+  crit = -5.0
   ind = np.where(mols == mol)[0]
-  if (np.size(ind)>0): crit=-6.0
+  if (np.size(ind)>0): crit=-7.0
   #print i,mol,ind,np.size(ind)
   if (np.max(yy[iii])>crit):
     plt.plot(yy,zz,c=colo[count],ls=styl[count],lw=widt[count],label=mol)
@@ -321,7 +324,7 @@ plt.title('important molecules',fontsize=15)
 plt.ylabel(r'$z\ \mathrm{[km]}$',fontsize=20)
 plt.xlabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{tot}$',fontsize=20)
 plt.ylim(zmin,zmax)
-plt.xlim(-4.2,0.2)
+plt.xlim(-7.2,0.2)
 #ax.xaxis.set_minor_locator(locmin)
 #ax.set_xticks(locmaj)
 #ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))

@@ -239,11 +239,12 @@
 
           else if (dust_nam(i).eq.'S2[s]') then
             !--- Zahnle et al. (2016) ---
-            if (T1 < 413.0) then
-              psat = exp(27.0 - 18500.0/T1)*bar
-            else
-              psat = exp(16.1 - 14000.0/T1)*bar
-            end if
+            psat = exp(27.0 - 18500.0/T1)*bar
+            !if (T1 < 413.0) then
+            !  psat = exp(27.0 - 18500.0/T1)*bar
+            !else
+            !  psat = exp(16.1 - 14000.0/T1)*bar
+            !end if
             !--- Lyons 2008 ---
             !write(50,'(F8.1,2(1pE13.4))')
      &      !         T1,psat,10.0**(7.024 - 6091.0/T1)*bar
@@ -255,15 +256,36 @@
             endif
             Sat(i) = nmol(imol)*kT/psat
 
+          else if (dust_nam(i).eq.'S2[l]') then
+            !--- Zahnle et al. (2016) ---
+            psat = exp(16.1 - 14000.0/T1)*bar
+            imol = STINDEX(cmol,NMOLE,"S2")
+            if (imol<=0) then
+              print*,"*** supersat.f molecule not found ",dust_nam(i)
+              stop
+            endif
+            Sat(i) = nmol(imol)*kT/psat
+
           else if (dust_nam(i).eq.'S8[s]') then
             !--- Zahnle et al. (2016) ---
-            if (T1 < 413.0) then
-              psat = exp(20.0 - 11800.0/T1)*bar
-            else
-              psat = exp(9.6 - 7510.0/T1)*bar
-            end if
+            psat = exp(20.0 - 11800.0/T1)*bar
+            !if (T1 < 413.0) then
+            !  psat = exp(20.0 - 11800.0/T1)*bar
+            !else
+            !  psat = exp(9.6 - 7510.0/T1)*bar
+            !end if
             !--- Lyons 2008 ---
             !psat = 10.0**(4.188 - 3269.0/T1)*bar
+            imol = STINDEX(cmol,NMOLE,"S8")
+            if (imol<=0) then
+              print*,"*** supersat.f molecule not found ",dust_nam(i)
+              stop
+            endif
+            Sat(i) = nmol(imol)*kT/psat
+
+          else if (dust_nam(i).eq.'S8[l]') then
+            !--- Zahnle et al. (2016) ---
+            psat = exp(9.6 - 7510.0/T1)*bar
             imol = STINDEX(cmol,NMOLE,"S8")
             if (imol<=0) then
               print*,"*** supersat.f molecule not found ",dust_nam(i)
