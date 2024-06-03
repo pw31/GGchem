@@ -151,6 +151,7 @@ lfit = []
 lNat = []
 lstoich = []
 lTmelt = []
+lTmax = []
 for iline in range(0,9999):
   if (i>=len(lines)): break
   line = lines[i]
@@ -179,7 +180,9 @@ for iline in range(0,9999):
     #print form,name,Nat
     line = lines[i].strip()
     if (line=='s'):
-      i=i+2
+      i=i+1
+      Tmax = float(lines[i].split()[0])
+      i=i+1
       tmp = lines[i].split()
       form = form[:-3]+"[s]"
       cfit = [0.0,0.0,0.0,0.0,0.0]
@@ -191,9 +194,11 @@ for iline in range(0,9999):
       lNat.append(Nat)
       lstoich.append(stoich)
       lTmelt.append(float(0.0))
+      lTmax.append(Tmax)
     elif (line=='sl'):
       i=i+1
       Tmelt = float(lines[i].split()[0])
+      Tmax  = float(lines[i].split()[1])
       i=i+1
       tmp = lines[i].split()
       form = form[:-5]+"[s]"
@@ -206,6 +211,7 @@ for iline in range(0,9999):
       lNat.append(Nat)
       lstoich.append(stoich)
       lTmelt.append(Tmelt)
+      lTmax.append(Tmax)
       i=i+1
       tmp = lines[i].split()
       form = form[:-3]+"[l]"
@@ -218,6 +224,7 @@ for iline in range(0,9999):
       lNat.append(Nat)
       lstoich.append(stoich)
       lTmelt.append(Tmelt)
+      lTmax.append(Tmax)
     else:
       print "unknown list of condensates"
       print line
@@ -228,6 +235,7 @@ KZstoich= lstoich
 KZnel   = np.array(lNat)
 KZcoeff = np.array(lfit)
 KZtmelt = np.array(lTmelt)
+KZtmax  = np.array(lTmax)
 
 #==========================================================================
 # read BURCAT data
@@ -371,6 +379,7 @@ lcoef = []
 lGdat = []
 lrho  = []
 all   = ''
+outf = open('ignored.dat','w')
 for icond in range(0,9999):
   line1 = lines[iline]
   iline = iline+1
@@ -426,7 +435,10 @@ for icond in range(0,9999):
     Nel = Nel+1
 
   #print Ncond,warn
-  if (warn==1): continue
+  if (warn==1):
+    print form+" NOT taken into account"
+    outf.write("%s %s  ignored\n" %(form,name)) 
+    continue
   Ncond = Ncond+1
   mult = 1
   if (durch2): mult=2
@@ -544,6 +556,7 @@ for icond in range(0,9999):
   
 print
 print Ncond2," condensates"
+outf.close()
 #sys.exit()
 
 #--------------------------------------
@@ -634,12 +647,13 @@ for i in range(0,NKZ):
   for j in range(0,KZnel[i]):
     st = stoich[j]
     file.write("%2i %s\n" %(int(st[0]),st[1]))
+  tmax= "(Tmax=%8.2f)" %(KZtmax[i])  
   bem = '  !!! NOT IN GGCHEM'
   search = np.str.upper(KZnam[i])
   for GGcond in GGall:
     cc = np.str.upper(GGcond)
     if (cc==search): bem=' '
-  file.write("# dG-Stock-fit Kitzmann+2024  %s\n" %(bem))
+  file.write("# dG-Stock-fit Kitzmann+2024  %s %s\n" %(tmax,bem))
   coeff = KZcoeff[i]
   file.write(" 5 %15.8e %15.8e %15.8e %15.8e %15.8e\n"
              %(coeff[0],coeff[1],coeff[2],coeff[3],coeff[4]))
@@ -780,9 +794,26 @@ for icond in range(0,Ncond):
     if (name==''): name=KZname[iKZ]
     print pform,"has Kitzmann data"
     coeff = KZcoeff[iKZ,:]
-    dG_KZ = Stock(T2,coeff)
-    #logKs = a0/T2 + a1*np.log(T2) + a2 + a3*T2 + a4*T2**2
-    #dG_KZ = -logKs*R*T2                                        # J/mol @ 1bar
+    #dG_KZ = Stock(T2,coeff)
+    Tmax = KZtmax[iKZ]
+    a0 = coeff[0]  
+    a1 = coeff[1]  
+    a2 = coeff[2]  
+    a3 = coeff[3]  
+    a4 = coeff[4]
+    dG_KZ = 0.0*T2
+    j = 0
+    for T in T2:
+      if (T<=Tmax):
+        logKs = a0/T + a1*np.log(T) + a2 + a3*T + a4*T**2
+        dG_KZ[j] = -logKs*R*T                             # J/mol @ 1bar
+      else:
+        #ffff = a0/Tmax + a1*np.log(Tmax) + a2 + a3*Tmax + a4*Tmax**2
+        #ffff = -ffff*R*Tmax
+        ffff = -R*(a0 + a1*np.log(Tmax)*Tmax + a2*Tmax + a3*Tmax**2 + a4*Tmax**3)
+        dfdT = -R*(a1 + a1*np.log(Tmax) + a2 + 2*a3*Tmax + 3*a4*Tmax**2)
+        dG_KZ[j] = ffff + dfdT*(T-Tmax)
+      j = j+1  
     dGmean = dGmean + dG_KZ
     ymin = np.min([ymin,np.min(dG_KZ/1000)])
     ymax = np.max([ymax,np.max(dG_KZ/1000)])
