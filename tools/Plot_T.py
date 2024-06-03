@@ -269,6 +269,7 @@ if (ymax>-99):
   member.append(['H2O','H2O[l]','NH3'])
   member.append([' '])
   file  = 'data/DustChem.dat'
+  file  = 'data/DustChem_Kitzmann.dat'
   data  = open(file)
   lines = data.readlines()
   data.close
