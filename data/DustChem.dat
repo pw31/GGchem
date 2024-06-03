@@ -85,7 +85,7 @@ Ti2O3[l]   Titanium-III-Oxide(liquid)    2115.0
 2
  3 O
  2 Ti
-# dG-Stock-fit Kitzmann+2024  (Tmax= 3500.00)   !!! NOT IN GGCHEM
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3500.00)
  5  3.75053810e+05  2.50230291e+00 -1.04785305e+02  1.35778329e-03 -1.22501710e-07
 
 Ti4O7[s]       TITANIUM-OXIDE
@@ -1798,7 +1798,7 @@ Cr2O3[l]                 ESKOLAITE(liquid)    2603.0
 2
  2 Cr
  3 O
-# dG-Stock-fit Kitzmann+2024  (Tmax= 4500.00)   !!! NOT IN GGCHEM
+# dG-Stock-fit Kitzmann+2024  (Tmax= 4500.00)
  5  3.15189559e+05  7.17393635e+00 -1.40279001e+02 -5.10060752e-04 -4.57719219e-09
 
 MgCO3[s]                 MAGNESITE
@@ -2506,7 +2506,7 @@ K2SO4[s]   PotassiumSulfate
  2 K
  4 O
  1 S
-# dG-Stock-fit Kitzmann+2024  (Tmax= 1342.00)   !!! NOT IN GGCHEM
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1342.00)
  5  3.45430996e+05 -1.13993438e+01 -4.77218942e+01  1.57402713e-02 -1.74687959e-06
 
 K2SO4[l]   PotassiumSulfate(liquid)    1342.0
@@ -2515,7 +2515,7 @@ K2SO4[l]   PotassiumSulfate(liquid)    1342.0
  2 K
  4 O
  1 S
-# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)   !!! NOT IN GGCHEM
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)
  5  3.42341297e+05  5.29628493e-01 -1.16930275e+02  2.95711905e-03 -2.37122000e-07
 
 Na2SO4[s]   SodiumSulfate
@@ -2524,7 +2524,7 @@ Na2SO4[s]   SodiumSulfate
  2 Na
  4 O
  1 S
-# dG-Stock-fit Kitzmann+2024  (Tmax= 1157.00)   !!! NOT IN GGCHEM
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1157.00)
  5  3.42692161e+05 -2.25384122e+01  1.01046004e+01  4.48154039e-02 -1.09888037e-05
 
 Na2SO4[l]   SodiumSulfate(liquid)    1157.0
@@ -2533,7 +2533,7 @@ Na2SO4[l]   SodiumSulfate(liquid)    1157.0
  2 Na
  4 O
  1 S
-# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)   !!! NOT IN GGCHEM
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)
  5  3.43468688e+05  2.73953031e+00 -1.33502843e+02  1.71632201e-03 -1.42150834e-07
 
 AlN[s]          AL-NITRIDE
