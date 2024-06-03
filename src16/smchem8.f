@@ -772,7 +772,8 @@
               do ii=1,Nact
                 qual = MAX(qual,ABS(dp(ii)))
               enddo  
-              fak = MIN(1.0,3.0/qual)
+              !fak = MIN(1.0,3.0/qual)
+              fak = 3.0/MAX(3.0,qual)
               do ii=1,Nact
                 i = act_to_all(ii) 
                 xx(i) = xx(i) - fak*dp(ii)

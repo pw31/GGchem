@@ -33,6 +33,7 @@
       real*8  :: dust_vol(NDUSTmax)           ! dust monomer volume
       real*8  :: Tmelt(NDUSTmax)              ! melting points
       real*8  :: Tcorr(NDUSTmax)
+      real*8  :: fitTmax(NDUSTmax)            ! don't apply to T>Tmax
       logical :: is_liquid(NDUSTmax)
       integer :: dust_nel(NDUSTmax)           ! no of elements in dust
       integer :: dust_el(NDUSTmax,8)          ! indices of elements

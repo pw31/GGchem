@@ -7,7 +7,7 @@
       use DUST_DATA,ONLY: NDUSTmax,NEPS,NELEM,NDUST,eps0,amu,
      &                    dust_nam,dust_rho,dust_vol,dust_mass,
      &                    dust_nel,dust_nu,dust_el,fit,cfit,
-     &                    Nfit,Tfit,Bfit,
+     &                    Nfit,Tfit,Bfit,fitTmax,
      &                    elnr,elcode,elnam,mass,Tmelt,Tcorr,
      &                    DustChem_file
       use EXCHANGE,ONLY: H,Si,Al,Ca
@@ -107,6 +107,12 @@
             do k=1,Nfit(NDUST)
               read(12,*) Bfit(NDUST,k,1:14)
             enddo  
+          endif  
+          fitTmax(NDUST) = 6000.0
+          j1 = index(lastzeile,'Tmax=')
+          if (j1>0) then
+            tmp = lastzeile(j1+5:)
+            read(tmp,*) fitTmax(NDUST)
           endif  
           found = .true.
         enddo
@@ -265,7 +271,7 @@
       do i=1,Ncheck
         il = iliq(i)
         is = isol(i)
-        print*,dust_nam(il)
+        !print*,dust_nam(il)
         do iT=101,10000
           !if (S(il,iT)==0.Q0) cycle
           T = DBLE(iT)
