@@ -3,7 +3,7 @@
 ***********************************************************************
       use PARAMETERS,ONLY: Tmin,Tmax,pmin,pmax,nHmin,nHmax,useDatabase,
      >                     model_eqcond,model_pconst,Npoints,
-     >                     remove_condensates
+     >                     remove_condensates,verbose
       use CHEMISTRY,ONLY: NELM,NMOLE,elnum,cmol,catm,el,charge
       use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,muH,amu,
      >                    dust_nel,dust_el,dust_nu,dust_nam,dust_mass,
@@ -25,9 +25,10 @@
       character(len=4) :: sup
       character(len=2) :: test3
       character(len=1) :: char
-      integer :: verbose=0
+      integer :: verb
       logical :: isOK,hasW,same,no_solution,TEAinterface=.false.
 
+      verb = verbose
       !----------------------------
       ! ***  open output files  ***
       !----------------------------
@@ -317,7 +318,7 @@
         do it=1,99
           if (model_pconst) nHges = p*mu/(bk*Tg)/muH
           if (model_eqcond) then
-            call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verbose)
+            call EQUIL_COND(nHges,Tg,eps,Sat,eldust,verb)
           else
             eps = eps0
           endif  
@@ -351,7 +352,8 @@
             endif  
           endif
           fold = ff
-          print '("p-it=",i3,"  mu=",2(1pE20.12))',it,mu/amu,dmu/mu
+          if (verb>-2) print '("p-it=",i3,"  mu=",2(1pE20.12))',
+     >                       it,mu/amu,dmu/mu
           if (ABS(dmu/mu)<1.E-10) exit
           if (model_pconst.and.dmu>0.0) then
             Ncond = 0
@@ -413,10 +415,10 @@
         print'(i4," Tg[K] =",0pF8.2,"  n<H>[cm-3] =",1pE10.3)',
      >        i,Tg,nHges
 
-        write(*,1010) ' Tg=',Tg,' n<H>=',nHges,
+        if (verb>-2) write(*,1010) ' Tg=',Tg,' n<H>=',nHges,
      &                ' p=',pgas/bar,' mu=',mu/amu,
      &                ' dust/gas=',rhod/rhog
-        print*
+        if (verb>-2) print*
         write(70,2010) Tg,nHges,pgas,
      &       LOG10(MAX(1.Q-300, nel)),
      &      (LOG10(MAX(1.Q-300, nat(elnum(jj)))),jj=1,el-1),
@@ -447,7 +449,7 @@
      &        (eps(elnum(jj)),jj=el+1,NELM)
         endif
   
-        if (verbose>0) read(*,'(a1)') char
+        if (verb>0) read(*,'(a1)') char
         
       enddo  
 

@@ -265,8 +265,11 @@
       do i=1,Ncheck
         il = iliq(i)
         is = isol(i)
+        print*,dust_nam(il)
         do iT=101,10000
-          T = DBLE(iT) 
+          !if (S(il,iT)==0.Q0) cycle
+          T = DBLE(iT)
+          !print*,S(is,iT),S(il,iT)
           old = S(is,iT-1)/S(il,iT-1)
           new = S(is,iT)/S(il,iT)
           if (old>1.Q0.and.new<1.Q0) then
@@ -298,6 +301,7 @@
         il = iliq(i)
         is = isol(i)
         do iT=101,10000
+          !if (S(il,iT)==0.Q0) cycle          
           T = DBLE(iT) 
           old = S(is,iT-1)/S(il,iT-1)
           new = S(is,iT)/S(il,iT)

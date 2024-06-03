@@ -15,12 +15,17 @@
       real(kind=qp),parameter :: Joule=1.Q+7        ! 1 Joule in erg
       real(kind=qp),parameter :: mol=6.02214076Q+23 ! 1 mol
       real(kind=qp),parameter :: eV=1.60218Q-12     ! 1 eV in erg
-
       real(kind=qp) :: T1,T2,T3,TC,kT,RT,dG,lbruch,pst,psat,dGRT
       real(kind=qp) :: a(0:4),term,n1,natom,aa(0:6)
+      !real(kind=qp) :: tiny16=TINY(T1),huge16=HUGE(T1)
       integer :: i,j,l,STINDEX,el,imol,imol1,imol2,ifit
-      character(len=20) :: search,upper,leer='                    '
-
+      character(len=20) :: search,leer='                    '
+      interface
+        function upper(strIn) result(strOut)
+        character(len=*),intent(in) :: strIn
+        character(len=len(strIn)) :: strOut
+        end
+      end interface
 
       T1  = T
       T2  = T1**2
@@ -317,6 +322,9 @@
             endif
           endif
         endif
+
+        !Sat(i) = MAX(Sat(i),tiny16) 
+        !Sat(i) = MIN(Sat(i),huge16) 
 
       enddo
 
