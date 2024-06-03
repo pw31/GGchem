@@ -7,7 +7,7 @@ dispol_StockKitzmann_withoutTsuji.dat   ! dispol_file2
 dispol_WoitkeRefit.dat                  ! dispol_file3
 
 # name of data file for condensed species
-DustChem_Kitzmann.dat                   ! DustChem_file
+DustChem.dat                            ! DustChem_file
 
 # abundance options 1=EarthCrust, 2=Ocean, 3=Solar, 4=Meteorites
 3                     ! abund_pick
