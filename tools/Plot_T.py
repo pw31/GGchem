@@ -171,7 +171,7 @@ minorLocator = MultipleLocator(sep)
 ax.xaxis.set_minor_locator(minorLocator)
 minorLocator = MultipleLocator(1)
 ax.yaxis.set_minor_locator(minorLocator)
-sz = np.min([10,1+195.0/count])
+sz = np.min([10,1+150.0/count])
 leg = plt.legend(loc='lower right',fontsize=sz,fancybox=True)
 leg.get_frame().set_alpha(0.7)
 plt.tight_layout()
@@ -354,7 +354,7 @@ if (ymax>-99):
   plt.clf()
 
 #================== supersaturation ratios ===================
-fig,ax = plt.subplots(figsize=(7.5,4.0))
+fig,ax = plt.subplots()    #figsize=(7.5,4.0))
 count = 0
 for isolid in reversed(indices):
   solid = solids[isolid]
@@ -390,7 +390,7 @@ for text in leg.get_texts():
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
 plt.clf()
-fig,ax = plt.subplots(figsize=(7.5,4.0))
+fig,ax = plt.subplots()    #figsize=(7.5,4.0))
 count = 0
 for isolid in reversed(indices):
   solid = solids[isolid]
@@ -468,7 +468,7 @@ plt.clf()
 #================== some important molecules ====================
 fig,ax = plt.subplots()
 mols  = ['H2','H','N2','H2O','O2','CO','CO2','CH4','NH3','C2H2','el']
-mols  = ['CO2','N2','SO2','COS','H2S','S2','CO','H2O','H2','HCL','HF','Ar','Ne','H2SO4']
+#mols  = ['CO2','N2','SO2','COS','H2S','S2','CO','H2O','H2','HCL','HF','Ar','Ne','H2SO4']
 mols  = np.array(mols)
 ntot  = 0.0*nHtot
 for i in range(3,4+NELEM+NMOLE): # electrons, all atoms, ions and cations
@@ -482,7 +482,7 @@ for i in range(3,4+NELEM+NMOLE):
   crit = -4.0
   ind = np.where(mols == mol)[0]
   #if (np.size(ind)>0): crit=-5
-  #if (np.size(ind)>0): crit=-7
+  if (np.size(ind)>0): crit=-7
   if (np.max(yy[iii])>crit):
     plt.plot(Tg,yy,c=colo[count],ls=styl[count],lw=widt[count],label=mol)
     count = count + 1
@@ -491,14 +491,14 @@ plt.title('important molecules')
 plt.xlabel(r'$T\ \mathrm{[K]}$')
 plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{tot}$')
 plt.xlim(Tmin,Tmax)
-plt.ylim(-5.0,0.2)
+plt.ylim(-6.2,0.2)
 minorLocator = MultipleLocator(sep)
 ax.xaxis.set_minor_locator(minorLocator)
-ax.annotate(r'$\rm{current\ Earth}$',xy=(288.15,-3.45), xycoords='data',
-              xytext=(5,-35), textcoords='offset points',
-              arrowprops=dict(facecolor='black', shrink=0.1, 
-                              headwidth=7, headlength=6,width=2),
-              horizontalalignment='left', verticalalignment='center')
+#ax.annotate(r'$\rm{current\ Earth}$',xy=(288.15,-3.45), xycoords='data',
+#              xytext=(5,-35), textcoords='offset points',
+#              arrowprops=dict(facecolor='black', shrink=0.1, 
+#                              headwidth=7, headlength=6,width=2),
+#              horizontalalignment='left', verticalalignment='center')
 
 leg = plt.legend(loc='best',fontsize=9,ncol=3,fancybox=True)
 leg.get_frame().set_alpha(0.7)

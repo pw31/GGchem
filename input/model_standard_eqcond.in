@@ -6,6 +6,9 @@ dispol_BarklemCollet.dat                ! dispol_file
 dispol_StockKitzmann_withoutTsuji.dat   ! dispol_file2
 dispol_WoitkeRefit.dat                  ! dispol_file3
 
+# name of data file for condensed species
+DustChem_Kitzmann.dat                   ! DustChem_file
+
 # abundance options 1=EarthCrust, 2=Ocean, 3=Solar, 4=Meteorites
 3                     ! abund_pick
 
@@ -21,10 +24,12 @@ dispol_WoitkeRefit.dat                  ! dispol_file3
 100.0                 ! Tmin [K]      (if model_dim>0)
 1.E+0                 ! pmax [bar]    (if pconst=.true.)
 1.E+0                 ! pmin [bar]
-600                   ! Npoints      
+400                   ! Npoints      
 7                     ! NewBackIt  
 1.E+5                 ! NewBackFac
 1                     ! NewFastLevel
 3                     ! NewPreMethod
 200.0                 ! Tfast
 
+0                     ! verbose
+.false.               ! initchem_info

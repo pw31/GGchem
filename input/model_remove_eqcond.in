@@ -11,18 +11,20 @@ dispol_WoitkeRefit.dat                  ! dispol_file3
 
 # equilibrium condensation?
 .true.                ! model_eqcond
+.true.                ! phyllosilicates
 .true.                ! remove_condensates
 
 # model options
 1                     ! model_dim  (0,1,2)
 .true.                ! model_pconst
 2500.0                ! Tmax [K]
-100.0                 ! Tmin [K]      (if model_dim>0)
-1.E+0                 ! pmax [bar]    (if pconst=.true.)
-1.E+0                 ! pmin [bar]
+400.0                 ! Tmin [K]      (if model_dim>0)
+10.E+0                ! pmax [bar]    (if pconst=.true.)
+1.E-3                 ! pmin [bar]
 600                   ! Npoints      
 7                     ! NewBackIt  
 1.E+5                 ! NewBackFac
 1                     ! NewFastLevel
-1000.0                ! Tfast
+3                     ! NewPreMethod
+200.0                 ! Tfast
 
