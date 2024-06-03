@@ -1,5 +1,5 @@
 # selected elements
-H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li Mn Ni Cr V W Zr el
+H He C N O Na Mg Si Fe Al Ca Ti S Cl K F Li Mn Ni Cr V W Zr el
 
 # name of file with molecular kp-data
 dispol_BarklemCollet.dat                ! dispol_file

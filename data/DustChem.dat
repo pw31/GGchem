@@ -1,6 +1,6 @@
 dust species
 ============
-261
+268
 
 Al2O3[s]       CORUNDUM(alpha)
 3.97
@@ -71,6 +71,22 @@ TiO2[l]        RUTILE(liquid)            2130.0
  2 O
 # pvap NIST-Janaf 298-4000K, +/- 0.019:
   3 -7.07819E+04  3.68021E+01 -1.29214E-03 -6.87776E-08  1.89408E-11
+
+Ti2O3[s]   Titanium-III-Oxide
+ 4.49
+2
+ 3 O
+ 2 Ti
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2115.00)  
+ 5  3.84707390e+05 -1.09530736e+01 -2.76476349e+01  1.66439179e-02 -2.60246873e-06
+
+Ti2O3[l]   Titanium-III-Oxide(liquid)    2115.0
+ 4.3       (estimated)
+2
+ 3 O
+ 2 Ti
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3500.00)   !!! NOT IN GGCHEM
+ 5  3.75053810e+05  2.50230291e+00 -1.04785305e+02  1.35778329e-03 -1.22501710e-07
 
 Ti4O7[s]       TITANIUM-OXIDE
 4.19
@@ -1766,14 +1782,24 @@ Fe3Si4O12H2[s]           MINNESOTAITE
   5  1.34996043e+06 -3.39994115e+01 -1.51920597e+02  3.26509414e-02 -3.53887060e-06 
 
 Cr2O3[s]                 ESKOLAITE
- 3.00     (estimated)
+ 5.22
 2
  2 Cr
  3 O
 # Sharp&Huebner (1990):
 # 1 -2.86623E+05 -6.37888E+05  1.77950E+02 -1.62622E-03  0.00000E+00
 # Stock-fit to SUPCRTBL database (100-2500)K, +/-0.21 kJ/mol
-  5  3.21693392e+05 -2.88788045e+00 -7.28982870e+01  4.52054758e-03 -5.32026930e-07 
+# 5  3.21693392e+05 -2.88788045e+00 -7.28982870e+01  4.52054758e-03 -5.32026930e-07 
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2603.00)  
+  5  3.20992055e+05 -4.75612399e+00 -6.17327502e+01  6.74303394e-03 -8.73174760e-07
+
+Cr2O3[l]                 ESKOLAITE(liquid)    2603.0
+ 5.0       (estimated)
+2
+ 2 Cr
+ 3 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 4500.00)   !!! NOT IN GGCHEM
+ 5  3.15189559e+05  7.17393635e+00 -1.40279001e+02 -5.10060752e-04 -4.57719219e-09
 
 MgCO3[s]                 MAGNESITE
  3.01
@@ -2462,7 +2488,7 @@ MgSO4[s]        MG-SULFATE
  1 Mg
  1 S
  4 O
-# dG-Stock-fit Kitzmann+2024 (Tmax= 2500.00)
+# dG-Stock-fit Kitzmann+2024 (Tmax= 1495.00)
   5  3.200432e+05 -1.284829e+01 -2.706610e+01 1.567552e-02 -2.606110e-06 
 
 MgSO4[l]        MG-SULFATE(liquid)         1495
@@ -2473,6 +2499,42 @@ MgSO4[l]        MG-SULFATE(liquid)         1495
  4 O
 # dG-Stock-fit Kitzmann+2024 (Tmax= 2500.00)
   5  3.242348e+05  3.274547e+00 -1.304625e+02 3.745212e-04 -2.944070e-08
+
+K2SO4[s]   PotassiumSulfate
+ 2.66     (estimated)
+3
+ 2 K
+ 4 O
+ 1 S
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1342.00)   !!! NOT IN GGCHEM
+ 5  3.45430996e+05 -1.13993438e+01 -4.77218942e+01  1.57402713e-02 -1.74687959e-06
+
+K2SO4[l]   PotassiumSulfate(liquid)    1342.0
+ 2.5      (estimated)
+3
+ 2 K
+ 4 O
+ 1 S
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)   !!! NOT IN GGCHEM
+ 5  3.42341297e+05  5.29628493e-01 -1.16930275e+02  2.95711905e-03 -2.37122000e-07
+
+Na2SO4[s]   SodiumSulfate
+ 2.66     (estimated)
+3
+ 2 Na
+ 4 O
+ 1 S
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1157.00)   !!! NOT IN GGCHEM
+ 5  3.42692161e+05 -2.25384122e+01  1.01046004e+01  4.48154039e-02 -1.09888037e-05
+
+Na2SO4[l]   SodiumSulfate(liquid)    1157.0
+ 2.5      (estimated)
+3
+ 2 Na
+ 4 O
+ 1 S
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)   !!! NOT IN GGCHEM
+ 5  3.43468688e+05  2.73953031e+00 -1.33502843e+02  1.71632201e-03 -1.42150834e-07
 
 AlN[s]          AL-NITRIDE
 3.26
