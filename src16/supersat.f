@@ -17,7 +17,7 @@
       real(kind=qp),parameter :: eV=1.60218Q-12     ! 1 eV in erg
       real(kind=qp) :: T1,T2,T3,TC,kT,RT,dG,lbruch,pst,psat,dGRT
       real(kind=qp) :: a(0:4),term,n1,natom,aa(0:6)
-      real(kind=qp) :: TT1,TT2,ffff,dfdT
+      real(kind=qp) :: TT1,TT2,TT3,ffff,dfdT
       !real(kind=qp) :: tiny16=TINY(T1),huge16=HUGE(T1)
       integer :: i,j,l,STINDEX,el,imol,imol1,imol2,ifit
       character(len=20) :: search,leer='                    '
@@ -117,12 +117,19 @@
           pst = bar
           dGRT = a(0)/T1 + a(1)*LOG(T1) + a(2) + a(3)*T1 + a(4)*T2
           if (T1>fitTmax(i)) then
-            !-- we assume that dGRT is linear beyond Tmax --
             TT1  = fitTmax(i)
-            TT2  = TT1**2
-            ffff = a(0)/TT1 + a(1)*LOG(TT1) + a(2) + a(3)*TT1 + a(4)*TT2
-            dfdT =-a(0)/TT2 + a(1)/TT1 + a(3) + 2.0*a(4)*TT1
-            dGRT = ffff + dfdT*(T1-TT1)
+            TT2  = TT1*TT1
+            TT3  = TT1*TT2
+            !-- we assume that dGRT is linear beyond Tmax --
+            !ffff = a(0)/TT1 + a(1)*LOG(TT1) + a(2) + a(3)*TT1 + a(4)*TT2
+            !dfdT =-a(0)/TT2 + a(1)/TT1 + a(3) + 2.0*a(4)*TT1
+            !dGRT = ffff + dfdT*(T1-TT1)
+            !-- we assume that dG = dGRT*T is linear beyond Tmax 
+            ffff = a(0) + a(1)*LOG(TT1)*TT1 + a(2)*TT1 + a(3)*TT2
+     >                                                 + a(4)*TT3
+            dfdT = a(1) + a(1)*LOG(TT1) + a(2) + 2*a(3)*TT1
+     >                                         + 3*a(4)*TT2
+            dGRT = (ffff + dfdT*(T1-TT1))/T1
           endif
           lbruch = 0.Q0
           Natom = 0.0

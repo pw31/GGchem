@@ -211,7 +211,7 @@ for iline in range(0,9999):
       lNat.append(Nat)
       lstoich.append(stoich)
       lTmelt.append(Tmelt)
-      lTmax.append(Tmax)
+      lTmax.append(Tmelt)
       i=i+1
       tmp = lines[i].split()
       form = form[:-3]+"[l]"
