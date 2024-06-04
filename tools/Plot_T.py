@@ -270,6 +270,7 @@ if (ymax>-99):
   member.append([' '])
   file  = 'data/DustChem.dat'
   file  = 'data/DustChem_Kitzmann.dat'
+  file  = 'data/DustChem_extended.dat'
   data  = open(file)
   lines = data.readlines()
   data.close

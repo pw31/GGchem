@@ -1,0 +1,3357 @@
+dust species
+============
+364
+
+Al2O3[s]       CORUNDUM(alpha)
+3.97
+2
+ 2 Al
+ 3 O
+# Sharp & Huebner (1990):
+# 1  0.00000E+00 -7.32976E+05  1.84782E+02 -2.57313E-03  0.00000E+00
+# dG-fit NIST-Janaf 100-3000K, +/- 0.076:
+# 2  1.29765E+06 -3.09312E+06  7.86027E+02 -1.36327E-02  8.59619E-07
+# dG-Stock-fit NIST-Janaf 100-3000K, +/- 0.54:
+  5  3.68836E+05 -7.75003E+00 -4.32225E+01  7.53364E-03 -7.64141E-07
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.42 kJ/mol
+# 5  3.68631483e+05 -8.64121529e+00 -3.79871414e+01  8.87469049e-03 -1.02420906e-06 
+
+Al2O3[l]       CORUNDUM(liquid)          2327.0
+2.78           
+2
+ 2 Al
+ 3 O
+# dG-fit NIST-Janaf 298-4000K, +/- 0.73:
+# 2  9.69640E+06 -3.07785E+06  8.23186E+02 -3.65211E-02  2.33258E-06
+# dG-Stock-fit NIST-Janaf 298-4000K, +/- 1.8:
+  5  3.64246E+05 -1.63572E+00 -8.13311E+01  2.51029E-03  3.18884E-08
+
+MgAl2O4[s]     SPINEL
+3.58
+3
+ 1 Mg
+ 2 Al
+ 4 O
+# Sharp & Huebner (1990):
+# 1  2.50397E+05 -9.83584E+05  2.54352E+02 -4.24568E-03  0.00000E+00
+# dG-fit NIST-Janaf 100-2800K, +/- 0.17:
+# 2  1.85854E+06 -4.11695E+06  1.06653E+03 -1.81276E-02  1.26020E-08
+# dG-Stock-fit NIST-Janaf 100-2800K, +/- 0.57:
+  5  4.90917E+05 -1.01783E+01 -6.09577E+01  1.00839E-02 -9.21697E-07
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.42 kJ/mol
+# 5  4.91219736e+05 -1.04383463e+01 -6.07064749e+01  1.10721310e-02 -1.21372367e-06 
+ 
+MgAl2O4[l]     SPINEL(liquid)            2408.0
+2.75
+3
+ 1 Mg
+ 2 Al
+ 4 O
+# dG-fit NIST-Janaf 298-4000K, +/- 0.28:
+# 2  4.87016E+06 -3.93827E+06  1.00592E+03 -2.80659E-02  1.70265E-06
+# dG-Stock-fit NIST-Janaf 298-4000K, +/- 0.86:
+  5  4.70478E+05 -1.35143E+00 -1.08539E+02  2.76930E-03 -7.78980E-08
+
+TiO2[s]        RUTILE
+4.23
+2
+ 1 Ti
+ 2 O
+# dG-fit NIST-Janaf extended 50-4500K, +/- 3.0:
+# 2  0.00000E+00 -1.91963E+06  4.70841E+02 -1.22263E-02  2.13041E-07
+# pvap NIST-Janaf 100-2500K, +/- 0.040:
+  3  -7.70443E+04  4.03144E+01 -2.59140E-03  6.02422E-07 -6.86899E-11
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.07 kJ/mol
+# 5  2.29696147e+05 -3.39257317e+00 -3.33841561e+01  3.42697508e-03 -3.57218451e-07 
+
+TiO2[l]        RUTILE(liquid)            2130.0
+3.4
+2
+ 1 Ti
+ 2 O
+# pvap NIST-Janaf 298-4000K, +/- 0.019:
+  3 -7.07819E+04  3.68021E+01 -1.29214E-03 -6.87776E-08  1.89408E-11
+
+Ti2O3[s]   Titanium-III-Oxide
+ 4.49
+2
+ 3 O
+ 2 Ti
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2115.00)  
+ 5  3.84707390e+05 -1.09530736e+01 -2.76476349e+01  1.66439179e-02 -2.60246873e-06
+
+Ti2O3[l]   Titanium-III-Oxide(liquid)    2115.0
+ 4.3       (estimated)
+2
+ 3 O
+ 2 Ti
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3500.00)
+ 5  3.75053810e+05  2.50230291e+00 -1.04785305e+02  1.35778329e-03 -1.22501710e-07
+
+Ti4O7[s]       TITANIUM-OXIDE
+4.19
+2
+ 4 Ti
+ 7 O
+# dG-fit NIST-Janaf 298-2400K, +/- 0.085:
+  2  1.85821E+06 -7.06188E+06  1.70429E+03 -4.67044E-02  4.71514E-06
+
+Ti4O7[l]       TITANIUM-OXIDE(liquid)    1950.0
+3.4
+2
+ 4 Ti
+ 7 O
+# dG-fit NIST-Janaf 298-2400K, +/- 0.43:
+  2  5.06384E+06 -6.89199E+06  1.64108E+03 -5.93652E-02  4.64893E-06
+
+Mg2SiO4[s]     FOSTERITE 
+3.21
+3
+ 2 Mg
+ 1 Si
+ 4 O
+# Sharp & Huebner (1990):
+# 1  7.52334E+04 -9.38369E+05  2.47581E+02 -3.14980E-03  0.00000E+00
+# dG-fit NIST-Janaf 100-3000K, +/- 0.14:
+  2  1.70117E+06 -3.93154E+06  1.04604E+03 -1.77300E-02  7.18369E-07
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.30 kJ/mol
+# 5  4.68565218e+05 -9.17656646e+00 -6.54464326e+01  9.62799247e-03 -1.03891970e-06 
+
+Mg2SiO4[l]     FOSTERITE(liquid)         2171.0
+2.6
+3
+ 2 Mg
+ 1 Si
+ 4 O
+# dG-fit NIST-Janaf 298-3000K, +/- 0.15:
+  2  3.26302E+06 -3.87698E+06  1.03152E+03 -2.48587E-02  1.67747E-06
+
+MgSiO3[s]      ENSTATITE
+3.19
+3
+ 1 Mg
+ 1 Si
+ 3 O
+# Sharp & Huebner (1990):
+# 1  8.74400E+03 -6.92565E+05  1.77877E+02 -1.41412E-03  0.00000E+00  
+# dG-fit NIST-Janaf extended 50-2500K, +/- 1.3:
+  2  1.06060E+06 -2.90401E+06  7.57655E+02 -1.37019E-02  1.51773E-06
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.22 kJ/mol
+# 5  3.45877464e+05 -7.25703537e+00 -4.34583879e+01  7.51661166e-03 -8.20033641e-07 
+
+MgSiO3[l]      ENSTATITE(liquid)         1850.0
+2.6
+3
+ 1 Mg
+ 1 Si
+ 3 O
+# dG-fit NIST-Janaf 298-3000K, +/- 0.15:
+  2  2.94675E+06 -2.86104E+06  7.52974E+02 -2.55722E-02  2.36166E-06
+ 
+Fe[s]          IRON(alpha-delta)
+7.87
+1 
+ 1 Fe
+# Sharp & Huebner (1990):
+# 1  0.00000E+00 -9.76386E+04  3.55605E+01 -1.12348E-03  0.00000E+00
+# dG-fit NIST-Janaf 100-2200K, +/- 0.20:
+# 2  5.02534E+05 -4.20959E+05  1.70068E+02 -1.65310E-02  2.10361E-06
+# dG/RT Stock-fit NIST-Janaf 100-2200K, +/- 0.16:
+# 5  4.97717E+04 -1.41563E+00 -1.04403E+01  2.55631E-03 -2.46615E-07
+# pvap-fit NIST-Janaf 100-2200K, +/- 0.050:
+  3 -4.99622E+04  3.21370E+01  6.68363E-04 -1.13811E-06  2.57277E-10
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.04 kJ/mol
+# 5  4.98986666e+04 -6.88939863e-01 -1.46174840e+01  1.16147618e-03 -5.25986771e-08 
+
+Fe[l]          IRON(liquid)              1809.0
+6.98
+1
+ 1 Fe
+# dG-fit NIST-Janaf extended 100-4000K, +/- 0.31:
+# 2 -2.10749E+04 -4.04879E+05  1.55545E+02 -1.10965E-02  8.59559E-07
+# dG/RT Stock-fit NIST-Janaf 298-4000K, +/- 0.25:
+# 5  4.82752E+04 -1.36166E+00 -9.76140E+00  2.32702E-03 -1.99694E-07
+# pvap-fit NIST-Janaf 298-4000K, +/- 0.027:
+  3 -4.87741E+04  3.26355E+01 -1.38271E-03  1.09701E-07  0.00000E+00
+
+Fe2SiO4[s]     FAYALITE
+4.39
+3
+ 2 Fe
+ 1 Si
+ 4 O
+# Sharp & Huebner (1990):
+# 1  6.84477E+04 -9.02146E+05  2.51045E+02 -4.44028E-03  0.00000E+00
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.38:
+  5  4.49573704e+05 -9.27141132e+00 -6.61500048e+01  1.04125016e-02 -1.09203090e-06 
+
+FeS[s]         TROILITE 
+4.83
+2
+ 1 Fe
+ 1 S
+# Sharp & Huebner (1990):
+# 1 -6.83787E+04 -1.88620E+05  6.70590E+01 -2.31838E-03  0.00000E+00
+# dG-fit NIST-Janaf 100-1900K, +/- 0.73: 
+# 2 -9.91781E+05 -7.85288E+05  2.73781E+02 -4.55939E-03 -1.28752E-06
+# pvap-fit NIST-Janaf 100-1900K, +/- 0.078:
+  3 -5.69922E+04  3.86753E+01 -4.68301E-03  1.03559E-06 -8.42872E-11
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.13 kJ/mol
+# 5  9.45087108e+04 -2.49586517e+00 -1.82977281e+01  3.17438146e-03 -3.06960702e-07 
+
+FeS[l]         TROILITE(liquid)          1463.0
+3.9
+2
+ 1 Fe
+ 1 S
+# pvap-fit NIST-Janaf 298-3800K, +/- 0.078:
+  3 -5.26135E+04  3.46138E+01 -3.55056E-03  7.59195E-07 -6.94708E-11
+
+MgTi2O5[s]     MG-DITITANATE
+4.64
+3
+ 1 Mg
+ 2 Ti
+ 5 O
+# Sharp & Huebner (1990):
+# 1  3.07902E+05 -1.16223E+06  2.88995E+02 -4.64108E-03  0.00000E+00
+# dG-fit NIST-Janaf 100-3000K, +/- 0.40:
+  2  2.12742E+06 -4.86574E+06  1.21637E+03 -2.34246E-02  8.39658E-07
+
+MgTi2O5[l]     MG-DITITANATE(liquid)     1963.0
+3.7
+3
+ 1 Mg
+ 2 Ti
+ 5 O
+# dG-fit NIST-Janaf 298-4000K, +/- 0.32:
+  2  5.49485E+06 -4.75803E+06  1.18602E+03 -4.08290E-02  3.08428E-06
+
+C[s]           GRAPHITE
+2.27
+1
+ 1 C
+# dG-fit NIST-Janaf 100-6000K, +/- 0.12
+# 2  6.03572E+05 -7.21605E+05  1.61700E+02 -1.30365E-03  4.84703E-08
+# 3para pvap-fit NIST-Janaf 100-4000K, +/- 0.063:
+  4  3.27860E+01 -8.65139E+04  4.80395E-01  0.00000E+00  0.00000E+00
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.03 kJ/mol
+# 5  8.56384562e+04 -2.34505558e+00 -3.63477204e+00  1.82853336e-03 -1.98665875e-07 
+
+TiC[s]         TITANIUM-CARBIDE
+4.93
+2
+ 1 Ti
+ 1 C
+# dG-fit NIST-Janaf 100-4000K, +/- 0.32:
+  2  1.11878E+05 -1.37612E+06  3.20666E+02 -4.63379E-03  1.85306E-07
+
+TiC[l]         TITANIUM-CARBIDE(liquid)  3290.0
+3.9
+2
+ 1 Ti
+ 1 C
+# dG-fit NIST-Janaf 298-4500K, +/- 0.025:
+  2  5.34201E+05 -1.30289E+06  3.01268E+02 -6.61621E-03  5.21065E-07
+
+SiC[s]         SILICON-CARBIDE(alpha)
+3.21
+2
+ 1 Si
+ 1 C
+# dG-fit NIST-Janaf 100-4000K, +/- 0.067:
+  2  6.73337E+05 -1.24381E+06  3.21779E+02 -4.54405E-03  2.69711E-07
+
+SiO[s]         SILICON-MONOXIDE
+2.18
+2
+ 1 Si
+ 1 O
+# Gail et al. (2013):
+  3 -49520.0  32.52  0.0  0.0  0.0
+
+SiO2[s]        QUARTZ
+2.648
+2
+ 1 Si
+ 2 O
+# dG-fit NIST-Janaf 100-2000K, +/- 0.090:
+# 2  8.82926E+05 -1.86639E+06  4.64816E+02 -7.11989E-03  7.01040E-07
+# pvap-fit NIST-Janaf 100-2000K, +/- 0.080:
+  3 -7.28086E+04  3.65312E+01 -2.56109E-04 -5.24980E-07  1.53343E-10
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.18 kJ/mol
+# 5  2.22250595e+05 -5.47896711e+00 -1.96916997e+01  4.90782870e-03 -5.61247594e-07 
+
+SiO2[l]        QUARTZ(liquid)            1696.0
+2.1
+2
+ 1 Si
+ 2 O
+# pvap-fit NIST-Janaf 100-4500K, +/- 0.080:
+  3 -7.18591E+04  3.59570E+01 -6.57765E-04 -3.78705E-08  8.78339E-12
+
+Zr[s]          ZIRCONIUM(beta)
+6.52
+1
+ 1 Zr
+# dG-fit NIST-Janaf 298-2600K, +/- 0.071:
+# 2 -7.15401E+05 -6.02013E+05  1.36454E+02  1.69164E-04 -1.65674E-07
+# pvap-fit NIST-Janaf 298-2600K, +/- 0.0056:
+  3 -7.28816E+04  3.11094E+01 -6.94825E-04  2.42125E-07 -3.55274E-11
+
+Zr[l]          ZIRCONIUM(liquid)         2125.0
+5.8            estimated
+1
+ 1 Zr
+# pvap-fit NIST-Janaf 298-5500K, +/- 0.016:
+  3 -7.14144E+04  3.06541E+01 -5.47166E-04  4.59756E-08 -9.40737E-13
+
+ZrO2[s]        BADDELEYITE 
+5.68
+2
+ 1 Zr
+ 2 O
+# dG-fit NIST-Janaf 100-3500K, +/- 0.50:
+# 2  2.50975E+05 -2.20941E+06  4.66693E+02 -8.53569E-03  1.08036E-06
+# pvap-fit NIST-Janaf 298-3500K, +/- 0.062:
+  3 -9.77238E+04  4.18463E+01 -2.22011E-03  3.20813E-07 -1.60657E-11
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.14 kJ/mol
+# 5  2.64872269e+05 -3.34054963e+00 -3.41496907e+01  3.63522006e-03 -4.58432420e-07 
+
+ZrO2[l]        BADDELEYITE(liquid)       2950.0
+5.0            estimated
+2
+ 1 Zr
+ 2 O
+# pvap-fit NIST-Janaf 298-5000K, +/- 0.11:
+  3 -8.87286E+04  3.86685E+01 -1.94950E-03  2.38918E-07 -1.43097E-11
+
+ZrSiO4[s]      ZR-SILICATE
+4.56
+3
+ 1 Zr
+ 1 Si
+ 4 O
+# dG-fit NIST-Janaf 100-3000K, +/- 0.24:
+# 2  1.30614E+06 -4.09193E+06  9.38120E+02 -1.28242E-02  1.42142E-06
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.26:
+  5  4.90061109e+05 -8.78711378e+00 -5.52713896e+01  8.61307409e-03 -1.02724926e-06 
+
+W[s]           TUNGSTEN 
+19.25
+1
+ 1 W
+# pvap-fit NIST-Janaf 100-4800K, +/- 0.027:
+  3 -1.02351E+05  3.07543E+01 -6.13643E-06  5.36528E-08 -1.19522E-11
+
+W[l]           TUNGSTEN(liquid)          3680.0
+17.6           
+1
+ 1 W
+# pvap-fit NIST-Janaf 298-6000K, +/- 0.015:
+  3 -9.66863E+04  2.90491E+01  2.11260E-04 -5.93323E-08  6.15431E-12
+
+WO3[s]         W-TRIOXIDE
+7.16
+2
+ 1 W
+ 3 O
+# pvap-fit NIST-Janaf 100-3000K, +/- 0.014:
+  3 -6.63560E+04  4.06161E+01 -2.83452E-03  6.33945E-07 -7.73057E-11
+
+WO3[l]         W-TRIOXIDE(liquid)        1745.0
+7.0            estimated
+2
+ 1 W
+ 3 O
+# pvap-fit NIST-Janaf 100-3000K, +/- 0.014:
+  3 -5.98226E+04  3.68387E+01 -1.60492E-03 -3.33151E-07  8.09588E-11
+
+MgO[s]         PERICLASE
+3.58
+2
+ 1 Mg
+ 1 O
+# pvap-fit NIST-Janaf 100-4000K, +/- 0.091:
+  3 -7.91838E+04  3.57312E+01  1.45021E-04 -8.47194E-08  4.49221E-12
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.11 kJ/mol
+# 5  1.19536580e+05 -2.10490969e+00 -2.12268091e+01  2.56443555e-03 -2.95775218e-07 
+
+MgO[l]         PERICLASE(liquid)         3105.0
+2.9
+2
+ 1 Mg
+ 1 O
+# pvap-fit NIST-Janaf 298-5000K, +/- 0.035:
+  3 -7.07437E+04  3.25683E+01  6.94583E-04 -2.71415E-07  2.24580E-11
+
+FeO[s]         FERROPERICLASE
+5.99
+2
+ 1 Fe
+ 1 O
+# pvap=fit NIST-Janaf 298-2000K, +/- 0.015:
+  3 -6.30018E+04  3.66364E+01 -2.42990E-03  3.18636E-07  0.00000E+00
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.15 kJ/mol
+# 5  1.12186049e+05 -2.15232533e+00 -2.08389612e+01  2.95668210e-03 -3.22329568e-07 
+
+FeO[l]         FERROPERICLASE(liquid)    1650.0
+5.5
+2
+ 1 Fe
+ 1 O
+# pvap-fit NIST-Janaf 298-5000K, +/- 0.007:
+  3 -6.03086E+04  3.48392E+01 -2.21932E-03  2.77859E-07 -1.56828E-11
+
+Na2SiO3[s]     NA-METASILICATE
+2.4
+3
+ 2 Na
+ 1 Si
+ 3 O
+# dG-fit NIST-Janaf 100-2500K, +/- 0.17:
+  2  1.31453E+06 -2.98538E+06  8.76910E+02 -2.65571E-02  1.15443E-06
+
+Na2SiO3[l]     NA-METASILICATE(liquid)    1362.0
+1.9
+3
+ 2 Na
+ 1 Si
+ 3 O
+# dG-fit NIST-Janaf 298-2500K, +/- 0.091:
+  2  1.72092E+06 -2.93824E+06  8.49423E+02 -3.54866E-02  3.74762E-06
+
+H2O[s]         WATER-ICE
+0.93
+2
+ 2 H
+ 1 O
+# pvap special (Ackerman & Marley 2001)
+  99  0.0  0.0  0.0  0.0  0.0
+# BURCAT   200.000   273.150:
+# 7   1   200.000   273.150
+#-2.24685296E+00 -6.75476821E-02  5.16946768E-04 -1.43853988E-06  1.52564981E-09 -1.16399988E+05#-2.19509862E+01 -2.87148309E+00 -6.42956795E-02  5.10299514E-04 -1.43240686E-06  1.52353667E-09#-1.16296235E+05 -1.90806251E+01
+
+H2O[l]         WATER(liquid)    273.15
+1.0
+2
+ 2 H
+ 1 O
+# pvap special (Ackerman & Marley 2001)
+# 99  0.0  0.0  0.0  0.0  0.0
+# pvap Yaws 273-647K:
+  6  29.8605E+00 -3.1522E+03 -7.3037E+00  2.4247E-09  1.8090E-06
+# BURCAT   273.150   600.000:
+# 7   1   273.150   600.000
+# 6.50138635E+01 -6.62418086E-01  2.56199165E-03 -4.36592418E-06  2.78179029E-09 -1.22059882E+05#-2.92309066E+02  6.43892334E+01 -6.59166083E-01  2.55534440E-03 -4.35979116E-06  2.77967715E-09#-1.21956129E+05 -2.89438705E+02
+
+NH3[s]         AMONIA(liquid/solid)           195.4
+0.87
+2
+ 1 N
+ 3 H
+# pvap special (CRC Handbook of Chemistry and Physics, Weast 1971):
+  99  0.0  0.0  0.0  0.0  0.0
+
+CH4[s]         METHANE(liquid/solid)           90.7
+0.656
+2
+ 1 C
+ 4 H
+# pvap special (Prydz & Goodwin 1972):
+  99  0.0  0.0  0.0  0.0  0.0
+
+CO[s]          C-MONOXIDE(liquid/solid)   68.2
+1.14
+2
+ 1 C
+ 1 O
+# pvap Yaws 68-132K:
+  6  51.8145E+00 -7.8824E+02 -2.2734E+01  5.1225E-02  4.6603E-11
+
+CO2[s]         C-DIOXIDE(liquid/solid)   194.7
+1.98
+2
+ 1 C
+ 2 O
+# pvap Yaws 216-305K:
+  6  35.0187E+00 -1.5119E+03 -1.1335E+01  9.3383E-03  7.7626E-10
+
+H2SO4[s]       SULPHURIC-ACID
+1.6       estimated
+3
+ 2 H
+ 1 S
+ 4 O
+# pvap NIST-Janaf 100-200K (two data points), +/- 0.0:
+  3 -1.10450E+04  3.64351E+01  0.00000E+00  0.00000E+00  0.00000E+00
+
+H2SO4[l]       SULPHURIC-ACID(liquid)    283.5
+1.83
+3
+ 2 H
+ 1 S
+ 4 O
+# pvap NIST-Janaf 298-1000K, +/- 0.01:
+  3 -1.01294E+04  3.55465E+01 -8.34848E-03  0.00000E+00  0.00000E+00
+# dG-fit NIST-Janaf [s/l] 100-1000K, +/- 0.35:
+# 2  9.70368E+05 -2.53825E+06  9.35422E+02 -4.96224E-02  0.00000E+00
+# pvap Yaws 283-603K: 
+# 6  2.05820E+00 -4.1924E+03  3.2578E+00 -1.1224E-03  5.5371E-07
+
+Na[s]          SODIUM
+0.968
+1
+ 1 Na
+# pvap-fit NIST-Janaf 100-1000K, +/- 0.003:
+  3 -1.30424E+04  2.70281E+01 -1.44654E-03 -4.12467E-07  3.86734E-10
+
+Na[l]          SODIUM(liquid)     370.98 
+0.927
+1
+ 1 Na
+# pvap extended fit NIST-Janaf 100-2400K, +/- 0.003:
+  3 -1.26494E+04  2.58560E+01 -1.36371E-03  2.63744E-07  0.00000E+00
+
+NaCl[s]        HALITE
+2.165
+2
+ 1 Na
+ 1 Cl
+# dG-fit NIST-Janaf 100-1500K, +/- 0.11:
+# 2  9.69833E+04 -6.41377E+05  2.54233E+02 -1.12391E-02  0.00000E+00
+# pvap-fit NIST-Janaf 100-1000K, +/- 0.003:
+  3 -2.79146E+04  3.46023E+01 -3.11287E-03  5.30965E-07 -2.59584E-12
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.00 kJ/mol
+# 5  7.71702177e+04  3.60772291e-01 -3.26907377e+01  9.59492876e-04  1.83479700e-08 
+ 
+NaCl[l]        HALITE(liquid)     1073.8
+1.3
+2
+ 1 Na
+ 1 Cl
+# pvap-fit NIST-Janaf 298-2500K, +/- 0.13:
+  3 -2.48880E+04  3.18494E+01 -3.08748E-03  4.84990E-07 -2.60359E-11
+
+KCl[s]         SYLVITE
+1.99
+2
+ 1 K
+ 1 Cl
+# dG-fit NIST-Janaf 100-1500K, +/- 0.18:
+# 2  1.42802E+05 -6.49100E+05  2.51681E+02 -1.24419E-02  0.00000E+00
+# pvap-fit NIST-Janaf 100-2400K, +/- 0.014:
+  3 -2.69250E+04  3.39574E+01 -2.04903E-03 -2.83957E-07  1.82974E-10
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.00 kJ/mol
+# 5  7.80197852e+04  4.14754686e-01 -3.26364035e+01  1.03705058e-03  6.93111000e-09 
+
+KCl[l]	       SYLVITE(liquid)    1044.0
+1.6
+2
+ 1 K
+ 1 Cl
+# pvap-fit NIST-Janaf 298-2400K, +/- 0.036:
+  3 -2.50293E+04  3.39453E+01 -4.61815E-03  7.36857E-07  0.00000E+00
+
+S[s]           SULPHUR
+2.05
+1
+ 1 S
+# pvap-fit NIST-Janaf 100-800K, +/- 0.003:
+  3 -3.32020E+04  2.90980E+01  3.44461E-03 -4.54179E-06  1.85126E-09
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.02 kJ/mol
+# 5  3.32724046e+04 -4.49452445e-01 -1.39358772e+01  1.04739057e-03 -9.90205691e-08 
+
+S[l]           SULPHUR(liquid)    388.36
+1.7
+1
+ 1 S
+# pvap-fit NIST-Janaf 298-2400K, +/- 0.036:
+  3 -3.32601E+04  3.07134E+01 -2.01083E-03  4.47359E-07  0.00000E+00
+
+MgS[s]         MG-SULPHIDE
+2.68
+2
+ 1 Mg
+ 1 S
+# dG-fit NIST-Janaf 100-3000K, +/- 0.11:
+  2 -3.08737E+04 -7.70053E+05  2.69294E+02 -5.60302E-03  3.38303E-07
+
+LiCl[s]        LI-CHLORIDE
+2.07
+2
+ 1 Li
+ 1 Cl
+# pvap-fit NIST-Janaf 100-2000K, +/- 0.084:
+  3 -2.57733E+04  3.36349E+01 -2.43056E-03  2.35233E-07  0.00000E+00
+ 
+LiCl[l]        LI-CHLORIDE(liquid)     883.0
+1.7
+2
+ 1 Li
+ 1 Cl
+# pvap-fit NIST-Janaf 298-2000K, +/- 0.008:
+ 3 -2.38196E+04  3.23179E+01 -4.07306E-03  1.00591E-06 -9.65764E-11
+
+AlCl3[s]       AL-TRICHLORIDE
+2.48
+2
+ 1 Al
+ 3 Cl
+# dG-fit NIST-Janaf 100-1500K, +/- 0.082:
+  2  4.17188E+05 -1.40425E+06  5.68472E+02 -1.79150E-02 -4.81449E-06
+
+AlCl3[l]       AL-TRICHLORIDE(liquid)   465.7
+2.0
+2
+ 1 Al
+ 3 Cl
+# dG-fit NIST-Janaf 298-1500K, +/- 0.011:
+  2 -1.51097E+06 -1.36116E+06  4.88316E+02 -2.96109E-02  3.95859E-06
+
+CaO[s]         LIME
+3.35
+2
+ 1 Ca
+ 1 O
+# dG-fit NIST-Janaf 100-3600K, +/- 0.20:
+  2 -4.94275E+04 -1.06229E+06  2.81700E+02 -7.00317E-03  4.60182E-07
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.11 kJ/mol
+# 5  1.27379972e+05 -1.45596798e+00 -2.47956446e+01  2.33387388e-03 -2.66401835e-07 
+
+CaO[l]         LIME(liquid)     3200.0
+2.7
+2
+ 1 Ca
+ 1 O
+# dG-fit NIST-Janaf 298-4500K, +/- 0.15:
+  2  7.88379E+05 -9.87984E+05  2.61388E+02 -8.44845E-03  6.19197E-07
+
+CaCl2[s]       CA-DICHLORIDE
+2.15
+2
+ 1 Ca
+ 2 Cl
+# pvap-fit NIST-Janaf 100-2000K, +/- 0.092:
+  3 -3.91597E+04  3.71795E+01 -1.93815E-03  1.18087E-07  0.00000E+00
+
+CaCl2[l]       CA-DICHLORIDE(liquid)   1045.0
+1.7
+2
+ 1 Ca
+ 2 Cl
+# pvap-fit NIST-Janaf 298-3000K, +/- 0.025:
+  3 -3.68100E+04  3.61822E+01 -3.53647E-03  5.03350E-07 -3.05198E-11
+
+LiH[s]         LI-HYDRIDE
+0.78
+2
+ 1 Li
+ 1 H
+# pvap-fit NIST-Janaf 100-1500K, +/- 0.044:
+  3 -2.76405E+04  3.07600E+01  3.06028E-03 -3.26876E-06  7.70757E-10
+
+LiH[l]         LI-HYDRIDE(liquid)       961.8
+0.62
+2
+ 1 Li
+ 1 H
+# pvap-fit NIST-Janaf 298-2000K, +/- 0.036:
+  3 -2.63155E+04  3.30329E+01 -3.77190E-03  6.41033E-07  0.00000E+00
+
+MgTiO3[s]      GEIKIELITE
+3.88
+3
+ 1 Mg
+ 1 Ti
+ 3 O
+# Sharp & Huebner (1990):
+# 1 -1.37112E+04 -7.03325E+05  1.78643E+02 -2.41685E-03  0.00000E+00
+# dG-fit NIST-Janaf 100-3000K, +/- 0.20:
+  2  8.18358E+05 -2.94809E+06  7.57824E+02 -1.56613E-02  1.01510E-06
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.34 kJ/mol
+# 5  3.51714279e+05 -6.69866882e+00 -4.77353016e+01  7.80285274e-03 -9.36653276e-07 
+
+MgTiO3[l]      GEIKIELITE(liquid)           1953.0
+3.1
+3
+ 1 Mg
+ 1 Ti
+ 3 O
+# dG-fit NIST-Janaf 298-4000K, +/- 0.19:
+  2  2.95447E+06 -2.88536E+06  7.40614E+02 -2.52836E-02  1.86167E-06
+
+K2SiO3[s]      K-SILICATE 
+2.4
+3
+ 2 K
+ 1 Si
+ 3 O
+# dG-fit NIST-Janaf 100-2200K, +/- 0.089:
+  2  1.08754E+06 -2.93466E+06  8.61167E+02 -3.66511E-02  3.06399E-06
+
+K2SiO3[l]      K-SILICATE(liquid)   1249.0
+1.9
+3
+ 2 K
+ 1 Si
+ 3 O
+# dG-fit NIST-Janaf 298-3000K, +/- 0.34:
+  2 -2.09568E+06 -2.87130E+06  8.04917E+02 -3.03325E-02  2.75492E-06
+
+Ti[s]          TITANIUM(beta)
+4.51
+1
+ 1 Ti
+# dG-fit NIST-Janaf 298-2500K, +/- 0.021:
+  2  1.31154E+05 -4.67808E+05  1.45369E+02 -3.49413E-03  0.00000E+00
+
+Ti[l]          TITANIUM(liquid)             1939.0
+4.14
+1
+ 1 Ti
+# dG-fit NIST-Janaf 298-4500K, +/- 0.18:
+  2  1.72969E+06 -4.68384E+05  1.54389E+02 -9.64953E-03  7.21551E-07
+
+TiO[s]         TI-MONOXIDE(beta)
+4.95
+2
+ 1 Ti
+ 1 O
+# pvap-fit NIST-Janaf 298-2500K, +/- 0.007:
+  3 -7.14013E+04  3.80934E+01 -1.49104E-03  6.06190E-08  0.00000E+00
+# dG-Stock-fit NIST-Janaf 298-2500K, +/- 0.016:
+# 5  1.51511E+05 -1.32226E+00 -2.89198E+01  2.07348E-03 -1.34272E-07
+
+TiO[l]         TI-MONOXIDE(liquid)    2023.0 
+4.0
+2
+ 1 Ti
+ 1 O
+# pvap-fit NIST-Janaf 298-4500K, +/- 0.009:
+  3 -6.61504E+04  3.58743E+01 -1.97510E-03  2.33017E-07 -1.21467E-11
+# dG-Stock-fit NIST-Janaf 298-4500K, +/- 0.29:
+# 5  1.46260E+05 -1.03738E+00 -2.82152E+01  1.99343E-03 -1.66649E-07
+
+LiOH[s]        LI-HYDROXIDE 
+1.46
+3
+ 1 Li
+ 1 O
+ 1 H
+# pvap-fit NIST-Janaf 100-1500K, +/- 0.036:
+  3 -3.01062E+04  3.37718E+01  9.66853E-04 -2.02320E-06  5.34064E-10
+
+LiOH[l]        LI-HYDROXIDE(liquid)     744.3 
+1.2
+3
+ 1 Li
+ 1 O
+ 1 H
+# pvap-fit NIST-Janaf 298-2500K, +/- 0.066:
+  3 -2.87677E+04  3.42848E+01 -3.81580E-03  5.39401E-07  0.00000E+00
+
+VO[s]          V-MONOXIDE
+5.76
+2
+ 1 V
+ 1 O
+# pvap-fit NIST-Janaf 100-2600K, +/- 0.016:
+  3 -6.74603E+04  3.82717E+01 -2.78551E-03  5.72078E-07 -7.41840E-11
+
+VO[l]          V-MONOXIDE(liquid)   2063.0
+5.2
+2
+ 1 V
+ 1 O
+# pvap-fit NIST-Janaf 298-3500K, +/- 0.006:
+  3 -6.01063E+04  3.45413E+01 -2.64854E-03  4.70724E-07 -3.85068E-11
+
+V2O3[s]        KARELIANITE
+4.95
+2
+ 2 V
+ 3 O
+# dG-Stock-fit NIST-Janaf 100-2800K, +/- 0.32:
+  5  3.59474E+05 -4.09857E+00 -6.48556E+01  4.73778E-03 -3.36133E-07
+
+V2O4[s]        PARAMONTROSEITE
+4.09
+2
+ 2 V
+ 4 O
+# dG-Stock-fit NIST-Janaf 100-2200K, +/- 0.53:
+  5  4.14455E+05 -2.22575E+00 -9.36637E+01  3.73856E-03 -2.64367E-07
+
+V2O5[s]        SHCHERBINAITE
+3.37
+2
+ 2 V
+ 5 O
+# dG-Stock-fit NIST-Janaf 100-2800K, +/- 0.51:
+  5  4.58651E+05 -6.83064E+00 -8.22840E+01  6.02078E-03  0.00000E+00
+
+CaS[s]         CALCIUM-SULFIDE
+2.59
+2
+ 1 Ca
+ 1 S
+# dG-fit NIST-Janaf 100-3000K, +/- 0.13:
+  2 -8.11371E+04 -9.28021E+05  2.69568E+02 -7.11550E-03  5.21453E-07
+
+FeS2[s]	       PYRITE
+4.9
+2
+ 1 Fe
+ 2 S
+# dG-fit NIST-Janaf 100-1400K, +/- 0.052:
+  2  5.30142E+05 -1.14524E+06  4.72929E+02 -4.33681E-03 -1.49521E-06
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.19 kJ/mol
+# 5  1.36460253e+05 -3.37011418e+00 -3.49525381e+01  3.62120221e-03 -2.91680901e-07 
+
+Na2S[s]        NA-SULFIDE
+1.86
+2
+ 2 Na
+ 1 S
+# dG-fit NIST-Janaf 298-2000K, +/- 0.30:
+  2  1.99053E+06 -8.70027E+05  4.06721E+02 -2.78298E-02  0.00000E+00
+
+Mn[s]          MANGANESE(alpha-delta)
+7.43
+1
+ 1 Mn
+# pvap-fit NIST-Janaf 100-1900K, +/- 0.006:
+  3 -3.41316E+04  3.12732E+01 -5.59461E-04 -4.63498E-07  1.01677E-10
+
+Mn[l]          MANGANESE(liquid)    1519.0
+5.95
+1 
+ 1 Mn
+# pvap-fit NIST-Janaf 298-3000K, +/- 0.004:
+  3 -3.22207E+04  3.01880E+01 -1.14796E-03 -3.02939E-08  2.15830E-11
+
+MnS[s]         ALABANDITE
+4.08
+2
+ 1 Mn
+ 1 S
+# Sharp & Huebner (1990):
+  1  1.12482E+05 -1.81938E+05  5.87107E+01  8.89360E-05 -4.20876E-09
+# dG-Stock-fit Barin (1995) 298.15-2200K - liquid > 1803 K:
+# 5  9.40711924e+04  3.95836639e+00 -5.61337761e+01 -4.31478032e-03 9.88651732e-07
+
+Ni[s]          NICKEL
+ 8.91
+1
+ 1 Ni
+# Sharp&Huebner (1990):
+# 1  1.66988E+04 -1.02906E+05  3.68634E+01 -1.06761E-03  0.00000E+00
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.03 kJ/mol
+# 5  5.17843142e+04 -5.28478826e-02 -1.83743939e+01  6.29258548e-04 -3.00332076e-08 
+# dG-Stock-fit NIST-Janaf 100-2500K, +/- 0.25:
+# 5  5.16554E+04 -6.53039E-01 -1.47730E+01  1.54105E-03 -1.88089E-07
+# pvap-fit NIST-Janaf 100-2500K, +/- 0.031:  
+  3 -5.17726E+04  3.25355E+01 -8.54276E-04  1.93715E-07 -3.72769E-11
+
+Ni[l]          NICKEL(liquid)       1728.0
+ 7.81
+1
+ 1 Ni
+# dG-Stock-fit NIST-Janaf 298-3600K, +/- 0.14:
+# 5  4.92870E+04 -1.29210E+00 -8.89622E+00  1.56815E-03 -1.25802E-07
+# pvap-fit NIST-Janaf 298-3600K, +/- 0.004:  
+  3 -4.96579E+04  3.09204E+01 -2.80251E-04 -1.00993E-07  1.63913E-11
+
+Ni3S2[s]       HEAZLEWOODITE
+5.87
+2
+ 3 Ni
+ 2 S
+# Sharp & Huebner (1990):
+# 1  3.12877E+05 -5.01379E+05  2.14522E+02 -3.99302E-02  7.88559E-06
+# dG-fit NIST-Janaf 100-1600K, +/- 2.89:
+  2  6.01666E+06 -2.12962E+06  9.64054E+02 -2.19075E-01  4.70037E-05
+# Stock-fit to NIST-Janaf 100-1600K, +/- 2.88:
+# 5  2.47369E+05 -2.28925E+00 -7.62553E+01  1.41920E-03  3.25844E-06
+
+Ni3S2[l]       HEAZLEWOODITE(liquid)  1062.0
+5.0     estimated
+2
+ 3 Ni
+ 2 S
+# dG-fit NIST-Janaf 298-3800K, +/- 0.76:
+  2 -3.28883E+06 -1.98340E+06  6.88381E+02 -3.43692E-02  2.36359E-06
+# Stock-fit to NIST-Janaf 298-3800K, +/- 2.88:
+# 5  2.39462E+05 -1.46864E+00 -7.44675E+01  5.67694E-03 -4.44591E-07
+
+Cr[s]          CHROMIUM
+7.19
+1
+ 1 Cr
+# Sharp & Huebner (1990):
+# 1  6.17328E+04 -9.56115E+04  3.75174E+01 -1.61253E-03  0.00000E+00
+# pvap-fit NIST-Janaf 100-2800K, +/- 0.002:  
+  3 -4.78455E+04  3.22423E+01 -5.28710E-04 -6.17347E-08  2.88469E-12
+
+Cr[l]          CHROMIUM(liquid)     2130.0
+6.3
+1
+ 1 Cr
+# pvap-fit NIST-Janaf 298-3500K, +/- 0.007:  
+  3  -4.47712E+04  3.09753E+01 -7.84094E-04 -5.92580E-10  1.25866E-11
+
+CrN[s]         CARLSBERGITE
+6.09 
+2
+ 1 Cr
+ 1 N
+# Sharp & Huebner (1990):
+# 1 -8.70526E+04 -2.35276E+05  6.86783E+01 -1.02724E-03  0.00000E+00
+# pvap-fit NIST-Janaf 100-2500K, +/- 0.056:  
+  3 -7.51246E+04  3.88434E+01 -3.48286E-03  1.12997E-06 -1.66901E-10
+
+CaSiO3[s]      WOLLASTONITE
+2.91
+3
+ 1 Ca
+ 1 Si
+ 3 O
+# Sharp & Huebner (1990):
+# 1  6.37937E+04 -7.21819E+05  1.77647E+02 -2.59254E-03  0.00000E+00 
+# Stock-fit to SUPCRTBL database (100-2500)K, +/- 0.26:
+  5  3.60349815e+05 -6.69046172e+00 -4.57723900e+01  7.14526467e-03 -8.10884052e-07 
+
+CaTiO3[s]      PEROVSKITE
+3.98
+3
+ 1 Ca
+ 1 Ti
+ 3 O
+# Sharp & Huebner (1990):
+  1  1.19107E+04 -7.30327E+05  1.75930E+02 -2.84630E-03  1.10392E-07
+
+NiS[s]         MILLERITE
+5.37 
+2
+ 1 Ni
+ 1 S
+# Sharp & Huebner (1990):
+  1 -4.32421E+04 -1.89653E+05  7.16749E+01 -2.50684E-03  0.00000E+00
+
+NiS2[s]        VAESITE
+4.45
+2
+ 1 Ni
+ 2 S
+# Sharp & Huebner (1990):
+  1  0.00000E+00 -2.66982E+05  1.08176E+02 -1.96812E-03  0.00000E+00
+
+Ca2Al2SiO7[s]            GEHLENITE
+ 3.04
+4
+ 2 Ca
+ 2 Al
+ 1 Si
+ 7 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.53 kJ/mol
+  5  8.62597495e+05 -1.53345729e+01 -1.14305776e+02  1.63212847e-02 -1.83667817e-06 
+
+Ca3Al2Si3O12[s]          GROSSULAR
+ 3.59
+4
+ 3 Ca
+ 2 Al
+ 3 Si
+12 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.28 kJ/mol
+  5  1.45719987e+06 -3.04984323e+01 -1.69188305e+02  3.16436456e-02 -3.65778042e-06 
+
+Ca2SiO4[s]               LARNITE
+ 3.34
+3
+ 2 Ca
+ 1 Si
+ 4 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.23 kJ/mol
+  5  4.92571744e+05 -7.56137098e+00 -7.35021518e+01  8.81858864e-03 -9.61819037e-07 
+
+CaAl2SiO6[s]             Ca-TSCHERMAKS
+ 3.44
+4
+ 1 Ca
+ 2 Al
+ 1 Si
+ 6 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.57 kJ/mol
+  5  7.29279679e+05 -1.48894148e+01 -8.65985436e+01  1.58236563e-02 -1.81091331e-06 
+
+Ca3Si2O7[s]              RANKINITE
+ 2.98
+3
+ 3 Ca
+ 2 Si
+ 7 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.60 kJ/mol
+  5  8.53321852e+05 -1.38930604e+01 -1.21316096e+02  1.56422310e-02 -1.81419501e-06 
+
+Ca5P3O12F[s]             FLUORAPATITE
+ 3.10
+4
+ 5 Ca
+ 3 P
+12 O
+ 1 F
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.84 kJ/mol
+  5  1.41129898e+06 -2.34848197e+01 -2.13468028e+02  2.69904366e-02 -3.11836005e-06 
+
+Ca3MgSi2O8[s]            MERWINITE
+ 3.15
+4
+ 3 Ca
+ 1 Mg
+ 2 Si
+ 8 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.68 kJ/mol
+  5  9.72854199e+05 -1.61874095e+01 -1.39244318e+02  1.80433321e-02 -2.02068016e-06 
+
+CaAl2Si2O8[s]            ANORTHITE
+ 2.76
+4
+ 1 Ca
+ 2 Al
+ 2 Si
+ 8 O
+# Sharp & Huebner (1990):
+# 1  1.32241E+05 -1.87815E+06  4.71591E+02 -6.08175E-03  1.10392E-07
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.84 kJ/mol
+  5  9.52931762e+05 -2.00948890e+01 -1.04659272e+02  2.00006262e-02 -2.27761002e-06 
+
+CaTiSiO5[s]              SPHENE
+ 3.52
+4
+ 1 Ca
+ 1 Ti
+ 1 Si
+ 5 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.61 kJ/mol
+  5  5.92271374e+05 -1.23820812e+01 -6.59001102e+01  1.32375492e-02 -1.58473311e-06 
+
+Ca2MgSi2O7[s]            AKERMANITE
+ 2.94
+4
+ 2 Ca
+ 1 Mg
+ 2 Si
+ 7 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.37 kJ/mol
+  5  8.40531796e+05 -1.26967613e+01 -1.27578804e+02  1.37140240e-02 -1.45018331e-06 
+
+Al2SiO5[s]               KYANITE
+ 3.14
+3
+ 2 Al
+ 1 Si
+ 5 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.55 kJ/mol
+  5  5.91732586e+05 -1.43336224e+01 -5.77318148e+01  1.43818563e-02 -1.67000714e-06 
+
+CaMgSiO4[s]              MONTICELLITE
+ 3.04
+4
+ 1 Ca
+ 1 Mg
+ 1 Si
+ 4 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.34 kJ/mol
+  5  4.81844837e+05 -8.78742980e+00 -6.71523650e+01  9.91202329e-03 -1.16045951e-06 
+
+CaMgSi2O6[s]             DIOPSIDE
+ 3.28
+4
+ 1 Ca
+ 1 Mg
+ 2 Si
+ 6 O
+# Sharp & Huebner (1990):
+# 1  1.36629E+05 -1.42281E+06  3.59968E+02 -4.70714E-03  1.67622E-07
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.62 kJ/mol
+  5  7.08708047e+05 -1.48463098e+01 -8.41922224e+01  1.55572218e-02 -1.79311436e-06 
+
+MgAl2SiO6[s]             Mg-TSCHERMAKS
+ 3.00     (estimated)
+4
+ 1 Mg
+ 2 Al
+ 1 Si
+ 6 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.46 kJ/mol
+  5  7.11849088e+05 -1.53853524e+01 -8.32497429e+01  1.59118169e-02 -1.72483939e-06 
+
+KMg3AlSi3O10F2[s]        FLUORPHLOGOPITE
+ 2.88
+6
+ 1 K
+ 3 Mg
+ 1 Al
+ 3 Si
+10 O
+ 2 F
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.12 kJ/mol
+  5  1.34266472e+06 -2.66243853e+01 -1.79716466e+02  2.65961712e-02 -2.83539010e-06 
+
+Mg3Al2Si3O12[s]          PYROPE
+ 3.56
+4
+ 3 Mg
+ 2 Al
+ 3 Si
+12 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.23 kJ/mol
+  5  1.40265580e+06 -3.07260662e+01 -1.63584750e+02  3.13648867e-02 -3.58253353e-06 
+
+Ca2Al3Si3O13H[s]         CLINOZOISITE
+ 3.34
+5
+ 2 Ca
+ 3 Al
+ 3 Si
+13 O
+ 1 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.37 kJ/mol
+  5  1.56074650e+06 -3.51036585e+01 -1.68036275e+02  3.35239787e-02 -3.80688349e-06 
+
+CaSi2O5[s]               CaSi-TITANITE
+ 3.00     (estimated)
+3
+ 1 Ca
+ 2 Si
+ 5 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.83 kJ/mol
+  5  5.75998303e+05 -1.51359003e+01 -4.98525479e+01  1.54838457e-02 -1.89320524e-06 
+
+Ca5Si2CO11[s]            SPURRITE
+ 3.00     (estimated)
+4
+ 5 Ca
+ 2 Si
+ 1 C
+11 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.83 kJ/mol
+  5  1.32942414e+06 -2.13275797e+01 -1.95076256e+02  2.42285574e-02 -2.73589478e-06 
+
+KAlSi3O8[s]              MICROCLINE
+ 2.56
+4
+ 1 K
+ 1 Al
+ 3 Si
+ 8 O
+# Sharp & Huebner (1990):
+# 1  0.00000E+00 -1.83930E+06  4.49643Q+02  0.00000E+00  0.00000E+00 
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.60 kJ/mol
+  5  9.25843799e+05 -2.00266277e+01 -1.04497209e+02  1.92808024e-02 -2.15817662e-06 
+
+Ca5P3O13H[s]             HYDROXYAPATITE
+ 3.00     (estimated)
+4
+ 5 Ca
+ 3 P
+13 O
+ 1 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.61 kJ/mol
+  5  1.44006083e+06 -2.94813635e+01 -1.88209904e+02  3.10913848e-02 -3.21793835e-06 
+
+KAlSiO4[s]               KALSILITE
+ 2.64
+4
+ 1 K
+ 1 Al
+ 1 Si
+ 4 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.35 kJ/mol
+  5  4.77436960e+05 -9.68887392e+00 -6.07059394e+01  1.03288525e-02 -1.16839382e-06 
+
+KAlSi2O6[s]              LEUCITE
+ 2.46
+4
+ 1 K
+ 1 Al
+ 2 Si
+ 6 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.33 kJ/mol
+  5  6.99439926e+05 -1.40859602e+01 -8.44174332e+01  1.34215938e-02 -1.48917601e-06 
+
+NaAlSi3O8[s]             ALBITE
+ 2.62
+4
+ 1 Na
+ 1 Al
+ 3 Si
+ 8 O
+# Sharp & Huebner (1990):
+# 1  0.00000E+00 -1.83381E+06  4.49940E+02  0.00000E+00  0.00000E+00 
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.63 kJ/mol
+  5  9.23228348e+05 -2.01250674e+01 -1.03948380e+02  1.95386783e-02 -2.21736638e-06 
+
+NaAlSi2O6[s]             JADEITE
+ 2.27
+4
+ 1 Na
+ 1 Al
+ 2 Si
+ 6 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.45 kJ/mol
+  5  7.01135307e+05 -1.41373919e+01 -9.12022648e+01  1.39718592e-02 -1.51355430e-06 
+
+NaAlSiO4[s]              NEPHELINE
+ 2.62
+4
+ 1 Na
+ 1 Al
+ 1 Si
+ 4 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.32 kJ/mol
+  5  4.75918004e+05 -1.09851662e+01 -5.30633579e+01  1.10083070e-02 -1.24145079e-06 
+
+Ca2MnAl2Si3O13H[s]       PIEMONTITE(ORDERED)
+ 3.00     (estimated)
+6
+ 2 Ca
+ 1 Mn
+ 2 Al
+ 3 Si
+13 O
+ 1 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.09 kJ/mol
+  5  1.51375406e+06 -3.07755586e+01 -1.90717630e+02  2.79369987e-02 -3.06356398e-06 
+
+CaAl4Si2O12H2[s]         MARGARITE
+ 3.08
+5
+ 1 Ca
+ 4 Al
+ 2 Si
+12 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.07 kJ/mol
+  5  1.44309893e+06 -3.37381909e+01 -1.57171617e+02  3.30301518e-02 -3.70500288e-06 
+
+Ca2Al2Si3O12H2[s]        PREHNITE
+ 2.94
+5
+ 2 Ca
+ 2 Al
+ 3 Si
+12 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.01 kJ/mol
+  5  1.43491432e+06 -3.19640124e+01 -1.64145834e+02  3.14538802e-02 -3.52833434e-06 
+
+Ca2FeAl2Si3O13H[s]       EPIDOTE(ORDERED)
+ 3.47
+6
+ 2 Ca
+ 1 Fe
+ 2 Al
+ 3 Si
+13 O
+ 1 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.36 kJ/mol
+  5  1.52110644e+06 -3.24100513e+01 -1.85780229e+02  3.24572757e-02 -3.66835569e-06 
+
+Ca5Si2C2O13[s]           TILLEYITE
+ 3.00     (estimated)
+4
+ 5 Ca
+ 2 Si
+ 2 C
+13 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.87 kJ/mol
+  5  1.53705506e+06 -2.65204296e+01 -2.13583294e+02  2.87636911e-02 -3.17258152e-06 
+
+Ca3Fe2Si3O12[s]          ANDRADITE
+ 3.85
+4
+ 3 Ca
+ 2 Fe
+ 3 Si
+12 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.16 kJ/mol
+  5  1.37354563e+06 -2.76675284e+01 -1.84043066e+02  3.01134960e-02 -3.45563733e-06 
+
+KMg2Al3Si2O12H2[s]       EASTONITE
+ 3.00     (estimated)
+6
+ 1 K
+ 2 Mg
+ 3 Al
+ 2 Si
+12 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.09 kJ/mol
+  5  1.43912412e+06 -3.23216335e+01 -1.76387829e+02  3.22175536e-02 -3.75602418e-06 
+
+Mn3Al2Si3O12[s]          SPESSARTINE
+ 4.20
+4
+ 3 Mn
+ 2 Al
+ 3 Si
+12 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.15 kJ/mol
+  5  1.38161171e+06 -2.85779766e+01 -1.78706188e+02  3.04361084e-02 -3.45333929e-06 
+
+CaFeSi2O6[s]             HEDENBERGITE
+ 3.63
+4
+ 1 Ca
+ 1 Fe
+ 2 Si
+ 6 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.45 kJ/mol
+  5  6.98134965e+05 -1.34839037e+01 -9.30213229e+01  1.45095977e-02 -1.58890966e-06 
+
+Mg3Cr2Si3O12[s]          KNORRINGITE
+ 3.00     (estimated)
+4
+ 3 Mg
+ 2 Cr
+ 3 Si
+12 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.02 kJ/mol
+  5  1.34893382e+06 -2.49740809e+01 -1.96635192e+02  2.70118751e-02 -3.09049696e-06 
+
+K2Si4O9[s]               Si-WADEITE
+ 3.00     (estimated)
+3
+ 2 K
+ 4 Si
+ 9 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.50 kJ/mol
+  5  1.01667488e+06 -2.00977155e+01 -1.38517074e+02  1.94009024e-02 -2.05894748e-06 
+
+Mg2Al2Si3O12H2[s]        TSCHERMAK-TALC
+ 3.00     (estimated)
+5
+ 2 Mg
+ 2 Al
+ 3 Si
+12 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.51 kJ/mol
+  5  1.40097930e+06 -3.62595503e+01 -1.38677872e+02  3.41764010e-02 -3.82680204e-06 
+
+KAl3Si3O12H2[s]          MUSCOVITE
+ 2.83
+5
+ 1 K
+ 3 Al
+ 3 Si
+12 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.10 kJ/mol
+  5  1.41477640e+06 -3.44912170e+01 -1.50387147e+02  3.39459806e-02 -3.82848212e-06 
+
+KMg3AlSi3O12H2[s]        PHLOGOPITE
+ 2.79
+6
+ 1 K
+ 3 Mg
+ 1 Al
+ 3 Si
+12 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.07 kJ/mol
+  5  1.41793036e+06 -3.14479441e+01 -1.79288719e+02  3.13380431e-02 -3.67116218e-06 
+
+NaAl3Si3O12H2[s]         PARAGONITE
+ 2.88
+5
+ 1 Na
+ 3 Al
+ 3 Si
+12 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.90 kJ/mol
+  5  1.41336323e+06 -3.29587857e+01 -1.61093075e+02  3.23686450e-02 -3.60873981e-06 
+
+AlSi2O6H[s]              PYROPHYLLITE
+ 2.85
+4
+ 1 Al
+ 2 Si
+ 6 O
+ 1 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.40 kJ/mol
+  5  6.89210812e+05 -1.65950362e+01 -7.26639526e+01  1.54233768e-02 -1.73523289e-06 
+
+NaMg3AlSi3O12H2[s]       SODAPHLOGOPITE
+ 3.00     (estimated)
+6
+ 1 Na
+ 3 Mg
+ 1 Al
+ 3 Si
+12 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.11 kJ/mol
+  5  1.41492951e+06 -3.15519586e+01 -1.78836273e+02  3.15987143e-02 -3.73067465e-06 
+
+FeAl2O4[s]               HERCYNITE
+ 3.82
+3
+ 1 Fe
+ 2 Al
+ 4 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.48 kJ/mol
+  5  4.81628639e+05 -1.04821791e+01 -6.06176954e+01  1.15633946e-02 -1.30646071e-06 
+
+Mg3Si4O12H2[s]           TALC
+ 2.78
+4
+ 3 Mg
+ 4 Si
+12 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.35 kJ/mol
+  5  1.38260423e+06 -3.42069887e+01 -1.50202529e+02  3.25145373e-02 -3.77218234e-06 
+
+KMgAlSi4O12H2[s]         CELADONITE
+ 2.53
+6
+ 1 K
+ 1 Mg
+ 1 Al
+ 4 Si
+12 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.09 kJ/mol
+  5  1.39043685e+06 -3.36161846e+01 -1.54499505e+02  3.30660448e-02 -3.74358086e-06 
+
+NaCrSi2O6[s]             KOSMOCHLOR
+ 3.00     (estimated)
+4
+ 1 Na
+ 1 Cr
+ 2 Si
+ 6 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.34 kJ/mol
+  5  6.76527895e+05 -1.12547056e+01 -1.08686118e+02  1.17947807e-02 -1.26746203e-06 
+
+Ca2FeAlSi3O12H2[s]       FERRI-PREHNITE
+ 3.00     (estimated)
+6
+ 2 Ca
+ 1 Fe
+ 1 Al
+ 3 Si
+12 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.00 kJ/mol
+  5  1.39316116e+06 -3.10484170e+01 -1.68957297e+02  3.13788801e-02 -3.53551417e-06 
+
+MnTiO3[s]                PYROPHANITE
+ 4.51 
+3
+ 1 Mn
+ 1 Ti
+ 3 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.32 kJ/mol
+  5  3.43501206e+05 -5.53690476e+00 -5.43677539e+01  7.17052856e-03 -8.51968736e-07 
+
+Ca2Fe2AlSi3O13H[s]       Fe-EPIDOTE
+ 3.00     (estimated)
+6
+ 2 Ca
+ 2 Fe
+ 1 Al
+ 3 Si
+13 O
+ 1 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.35 kJ/mol
+  5  1.47808676e+06 -3.10394385e+01 -1.94663299e+02  3.13905696e-02 -3.52982739e-06 
+
+MgAl2SiO7H2[s]           Mg-CHLORITOID
+ 3.00     (estimated)
+5
+ 1 Mg
+ 2 Al
+ 1 Si
+ 7 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.80 kJ/mol
+  5  8.34609018e+05 -2.32086911e+01 -7.84966409e+01  2.12825178e-02 -2.42275550e-06 
+
+MnSiO3[s]                PYROXMANGITE
+ 3.75
+3
+ 1 Mn
+ 1 Si
+ 3 O
+# Sharp & Huebner (1990):
+# 1  2.27080E+05 -6.65096E+05  1.70330E+02 -7.89153E-04 -8.68715E-09
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.34 kJ/mol
+  5  3.35583164e+05 -6.94540497e+00 -4.43376556e+01  7.42666686e-03 -8.61301360e-07 
+
+CaAl2Si4O14H4[s]         WAIRAKITE
+ 2.32
+5
+ 1 Ca
+ 2 Al
+ 4 Si
+14 O
+ 4 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.15 kJ/mol
+  5  1.63374472e+06 -3.83411807e+01 -1.80988782e+02  3.57267854e-02 -4.03584567e-06 
+
+KAlSi3O9H2[s]            K-CYMRITE
+ 3.00     (estimated)
+5
+ 1 K
+ 1 Al
+ 3 Si
+ 9 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.68 kJ/mol
+  5  1.03822284e+06 -2.39997648e+01 -1.18388060e+02  2.23614876e-02 -2.48246788e-06 
+
+Fe3Al2Si3O12[s]          ALMANDINE
+ 4.32
+4
+ 3 Fe
+ 2 Al
+ 3 Si
+12 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.11 kJ/mol
+  5  1.37694373e+06 -3.01624076e+01 -1.70757821e+02  3.18755956e-02 -3.56355039e-06 
+
+Al2SiO6H2[s]             HYDROXY-TOPAZ
+ 3.00     (estimated)
+4
+ 2 Al
+ 1 Si
+ 6 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.55 kJ/mol
+  5  7.10046826e+05 -1.89246633e+01 -7.37227956e+01  1.75394028e-02 -1.94148728e-06 
+
+KFeAlSi4O12H2[s]         FERROCELADONITE
+ 3.00     (estimated)
+6
+ 1 K
+ 1 Fe
+ 1 Al
+ 4 Si
+12 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.02 kJ/mol
+  5  1.37881199e+06 -3.31575889e+01 -1.56600509e+02  3.27840985e-02 -3.67575028e-06 
+
+NaFeSi2O6[s]             ACMITE
+ 3.59
+4
+ 1 Na
+ 1 Fe
+ 2 Si
+ 6 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.48 kJ/mol
+  5  6.58310464e+05 -1.44109650e+01 -8.72988000e+01  1.47647495e-02 -1.54201896e-06 
+
+MnAl2SiO7H2[s]           Mn-CHLORITOID
+ 3.00     (estimated)
+5
+ 1 Mn
+ 2 Al
+ 1 Si
+ 7 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.66 kJ/mol
+  5  8.25978745e+05 -2.11165437e+01 -9.28503560e+01  2.03832962e-02 -2.29328952e-06 
+
+NaAlSi2O7H2[s]           ANALCITE
+ 2.27
+5
+ 1 Na
+ 1 Al
+ 2 Si
+ 7 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.38 kJ/mol
+  5  8.17658955e+05 -1.51913346e+01 -1.21475821e+02  1.56285302e-02 -1.26943573e-06 
+
+CaAl2Si2O10H4[s]         LAWSONITE
+ 3.10
+5
+ 1 Ca
+ 2 Al
+ 2 Si
+10 O
+ 4 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.77 kJ/mol
+  5  1.19159445e+06 -3.17656150e+01 -1.22689059e+02  2.96622925e-02 -3.10970945e-06 
+
+MgCr2O4[s]               PICROCHROMITE
+ 3.00     (estimated)
+3
+ 1 Mg
+ 2 Cr
+ 4 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.52 kJ/mol
+  5  4.43100749e+05 -8.93866314e+00 -6.83597627e+01  1.06667901e-02 -1.29648402e-06 
+
+Mn2SiO4[s]               TEPHROITE
+ 3.00     (estimated)
+3
+ 2 Mn
+ 1 Si
+ 4 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.33 kJ/mol
+  5  4.48945976e+05 -7.63387385e+00 -7.40229648e+01  8.91908844e-03 -1.01179968e-06 
+
+KMn3AlSi3O12H2[s]        Mn-BIOTITE
+ 3.00     (estimated)
+6
+ 1 K
+ 3 Mn
+ 1 Al
+ 3 Si
+12 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.01 kJ/mol
+  5  1.37910227e+06 -2.87364149e+01 -1.92965182e+02  3.00438350e-02 -3.63796469e-06 
+
+MgAl2Si2O10H4[s]         MAGNESIOCARPHOLITE
+ 3.00     (estimated)
+5
+ 1 Mg
+ 2 Al
+ 2 Si
+10 O
+ 4 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.76 kJ/mol
+  5  1.17636990e+06 -3.07009429e+01 -1.29039305e+02  2.80521155e-02 -3.03773059e-06 
+
+FeTiO3[s]                ILMENITE
+ 3.00     (estimated)
+3
+ 1 Fe
+ 1 Ti
+ 3 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.24 kJ/mol
+  5  3.43578828e+05 -5.48015534e+00 -5.47624616e+01  6.28551891e-03 -7.11963939e-07 
+
+AlO2H[s]                 DIASPORE
+ 3.07
+3
+ 1 Al
+ 2 O
+ 1 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.12 kJ/mol
+  5  2.44362368e+05 -7.27977593e+00 -2.28928573e+01  6.44195001e-03 -5.93135022e-07 
+
+AlO3H3[s]                GIBBSITE
+ 2.44
+3
+ 1 Al
+ 3 O
+ 3 H
+# Stock-fit to SUPCRTBL database (Tmax= 1500.00) (100-2500)K, +/-0.10 kJ/mol
+  5  3.60237388e+05 -1.61100130e+01 -1.21722434e+01  1.56746173e-02 -4.41039589e-07 
+
+FeAl2SiO7H2[s]           Fe-CHLORITOID
+ 3.61
+5
+ 1 Fe
+ 2 Al
+ 1 Si
+ 7 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.79 kJ/mol
+  5  8.25866982e+05 -2.32716061e+01 -7.93865120e+01  2.11690920e-02 -2.40465791e-06 
+
+Mg7Si2O14H6[s]           PHASEA
+ 3.00     (estimated)
+4
+ 7 Mg
+ 2 Si
+14 O
+ 6 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.52 kJ/mol
+  5  1.65684702e+06 -4.23025312e+01 -2.15816922e+02  4.24759095e-02 -4.79771905e-06 
+
+CaCO3[s]                 CALCITE
+ 2.93
+3
+ 1 Ca
+ 1 C
+ 3 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.23 kJ/mol
+  5  3.41192831e+05 -6.59161996e+00 -4.36861659e+01  6.35250845e-03 -6.93182906e-07 
+
+Mg3Si2O9H4[s]            LIZARDITE
+ 2.55
+4
+ 3 Mg
+ 2 Si
+ 9 O
+ 4 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.88 kJ/mol
+  5  1.05441784e+06 -2.91059483e+01 -1.16617124e+02  2.65442946e-02 -3.02945182e-06 
+
+Al2Si2O9H4[s]            KAOLINITE
+ 2.60
+4
+ 2 Al
+ 2 Si
+ 9 O
+ 4 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.88 kJ/mol
+  5  1.05060626e+06 -2.81900009e+01 -1.05658485e+02  1.96698275e-02 -2.50447441e-06 
+
+FeSiO3[s]                FERROSILITE
+ 3.00     (estimated)
+3
+ 1 Fe
+ 1 Si
+ 3 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.14 kJ/mol
+  5  3.36156613e+05 -6.74969618e+00 -4.72839411e+01  7.27744684e-03 -7.57311213e-07 
+
+CaSO4[s]                 ANHYDRITE
+ 2.96
+3
+ 1 Ca
+ 1 S
+ 4 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.24 kJ/mol
+  5  3.44960817e+05 -9.11376304e+00 -4.69082522e+01  8.60098355e-03 -6.56785196e-07 
+
+KFe3AlSi3O12H2[s]        ANNITE
+ 3.32
+6
+ 1 K
+ 3 Fe
+ 1 Al
+ 3 Si
+12 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.85 kJ/mol
+  5  1.38650194e+06 -3.00557949e+01 -1.89185114e+02  3.06865964e-02 -3.46736742e-06 
+
+CaMgC2O6[s]              DOLOMITE
+ 2.86
+4
+ 1 Ca
+ 1 Mg
+ 2 C
+ 6 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.40 kJ/mol
+  5  6.67659242e+05 -1.44507739e+01 -8.26439082e+01  1.42942313e-02 -1.54693105e-06 
+
+CaAl2Si4O16H8[s]         LAUMONTITE
+ 2.27
+5
+ 1 Ca
+ 2 Al
+ 4 Si
+16 O
+ 8 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.32 kJ/mol
+  5  1.86880305e+06 -4.62860912e+01 -2.14722901e+02  4.18955650e-02 -4.68563437e-06 
+
+FeAl2Si2O10H4[s]         FERROCARPHOLITE
+ 3.00     (estimated)
+5
+ 1 Fe
+ 2 Al
+ 2 Si
+10 O
+ 4 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.76 kJ/mol
+  5  1.16552224e+06 -3.03717595e+01 -1.31698394e+02  2.83126877e-02 -3.06062996e-06 
+
+Fe3Si4O12H2[s]           MINNESOTAITE
+ 3.20
+4
+ 3 Fe
+ 4 Si
+12 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.27 kJ/mol
+  5  1.34996043e+06 -3.39994115e+01 -1.51920597e+02  3.26509414e-02 -3.53887060e-06 
+
+Cr2O3[s]                 ESKOLAITE
+ 5.22
+2
+ 2 Cr
+ 3 O
+# Sharp&Huebner (1990):
+# 1 -2.86623E+05 -6.37888E+05  1.77950E+02 -1.62622E-03  0.00000E+00
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.21 kJ/mol
+# 5  3.21693392e+05 -2.88788045e+00 -7.28982870e+01  4.52054758e-03 -5.32026930e-07 
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2603.00)  
+  5  3.20992055e+05 -4.75612399e+00 -6.17327502e+01  6.74303394e-03 -8.73174760e-07
+
+Cr2O3[l]                 ESKOLAITE(liquid)    2603.0
+ 5.0       (estimated)
+2
+ 2 Cr
+ 3 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 4500.00)
+ 5  3.15189559e+05  7.17393635e+00 -1.40279001e+02 -5.10060752e-04 -4.57719219e-09
+
+MgCO3[s]                 MAGNESITE
+ 3.01
+3
+ 1 Mg
+ 1 C
+ 3 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.22 kJ/mol
+  5  3.25597757e+05 -7.79861708e+00 -3.88809415e+01  7.66101544e-03 -8.33937857e-07 
+
+Fe2TiO4[s]               ULVOSPINEL
+ 3.00     (estimated)
+3
+ 2 Fe
+ 1 Ti
+ 4 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.73 kJ/mol
+  5  4.53696339e+05 -9.82180111e+00 -5.98542752e+01  1.01762904e-02 -6.53309377e-07 
+
+MgFe2O4[s]               MAGNESIOFERRITE
+ 3.00     (estimated)
+3
+ 1 Mg
+ 2 Fe
+ 4 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.37 kJ/mol
+  5  4.09271586e+05 -8.15217601e+00 -7.52787211e+01  1.09503869e-02 -1.25544186e-06 
+
+CaFeC2O6[s]              ANKERITE
+ 3.00     (estimated)
+4
+ 1 Ca
+ 1 Fe
+ 2 C
+ 6 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.35 kJ/mol
+  5  6.57413720e+05 -1.36316196e+01 -8.75701353e+01  1.32221696e-02 -1.40934067e-06 
+
+MnO[s]                   MANGANOSITE
+ 5.37
+2
+ 1 Mn
+ 1 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.04 kJ/mol
+  5  1.10312326e+05 -6.86675842e-01 -2.93013586e+01  1.56451051e-03 -1.44084594e-07 
+
+NaAlCO5H2[s]             DAWSONITE
+ 3.00     (estimated)
+5
+ 1 Na
+ 1 Al
+ 1 C
+ 5 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.00 kJ/mol
+  5  5.68771895e+05 -2.62193800e+01  1.01364789e+01  7.71363280e-04 -7.24231640e-08 
+
+Mn2O3[s]                 BIXBYITE
+ 3.00     (estimated)
+2
+ 2 Mn
+ 3 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.03 kJ/mol
+  5  2.72856950e+05 -2.90317967e+00 -6.91451472e+01  4.21525923e-03 -2.56781919e-07 
+
+MgO2H2[s]                BRUCITE
+ 2.37
+3
+ 1 Mg
+ 2 O
+ 2 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.28 kJ/mol
+  5  2.39650552e+05 -7.31524290e+00 -3.11506420e+01  7.04889123e-03 -8.25691251e-07 
+
+Fe3Si2O9H4[s]            GREENALITE
+ 3.23
+4
+ 3 Fe
+ 2 Si
+ 9 O
+ 4 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-1.01 kJ/mol
+  5  1.02277134e+06 -2.80454668e+01 -1.24026139e+02  2.77210292e-02 -3.10911410e-06 
+
+MnCO3[s]                 RHODOCHROSITE
+ 3.70
+3
+ 1 Mn
+ 1 C
+ 3 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.18 kJ/mol
+  5  3.15940488e+05 -6.66194766e+00 -4.50094956e+01  6.51453920e-03 -6.89465137e-07 
+
+Fe2O3[s]                 HEMATITE
+ 5.27
+2
+ 2 Fe
+ 3 O
+# Sharp & Huebner (1990):
+# 1 -9.09265E+01 -5.75261E+05  1.85908E+02 -7.14322E-03  8.63059E-07
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.40 kJ/mol
+  5  2.87652920e+05 -6.81002676e+00 -4.97629281e+01  8.72469153e-03 -1.03856874e-06 
+
+Fe3O4[s]                 MAGNETITE
+ 5.20
+2
+ 3 Fe
+ 4 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.46 kJ/mol
+  5  4.01932015e+05 -8.96063162e+00 -7.10178452e+01  1.19142393e-02 -1.40431195e-06 
+# BURCAT   298.150  1870.000:
+# 7   2   298.150   850.000  1870.000
+#-1.51159774E+01  4.71818988E-02  5.07057165E-05 -2.20500060E-07  1.74835847E-10 -4.02210354E+05 -5.41043033E+01 -1.29508916E+01  2.51206660E-02  1.08730872E-04 -2.80564900E-07  1.96771679E-10 -4.02057498E+05 -6.14738750E+01
+# 6.42758083E+01 -1.32213201E-01  1.08055044E-04 -3.84829689E-08  5.20723013E-12 -4.25255511E+05 -4.72898729E+02  6.23702559E+01 -1.18104852E-01  1.00424291E-04 -5.97630912E-08  2.19153084E-11 -4.25882134E+05 -4.67112258E+02
+ 
+FeCO3[s]                 SIDERITE
+ 3.94
+3
+ 1 Fe
+ 1 C
+ 3 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.17 kJ/mol
+  5  3.16125000e+05 -6.98064865e+00 -4.43461631e+01  6.58589816e-03 -6.95843858e-07 
+
+FeO2H[s]                 GOETHITE
+ 4.26
+3
+ 1 Fe
+ 2 O
+ 1 H
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.15 kJ/mol
+  5  2.02674906e+05 -4.65512295e+00 -3.86173355e+01  5.31570546e-03 -5.71201621e-07 
+
+NiO[s]                   NICKEL
+ 6.81
+2
+ 1 Ni
+ 1 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.06 kJ/mol
+  5  1.10334948e+05 -8.36321657e-01 -3.17827306e+01  1.34857826e-03 -1.05601123e-07 
+
+CuO[s]                   TENORITE
+ 6.51
+2
+ 1 Cu
+ 1 O
+# Sharp&Huebner (1990):
+# 1 -7.88685E+03 -1.77516E+05  6.88121E+01 -1.48786E-03  0.00000E+00
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.14 kJ/mol
+  5  8.90042907e+04 -1.58722081e+00 -2.47753743e+01  2.42037804e-03 -2.39414290e-07 
+
+Cu2O[s]                  CUPRITE
+ 6.11
+2
+ 2 Cu
+ 1 O
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.08 kJ/mol
+  5  1.31712541e+05 -6.26850383e-01 -4.56094145e+01  2.92062030e-03 -3.21396958e-07 
+
+Cu[s]                    COPPER
+ 8.93
+1
+ 1 Cu
+# Sharp&Huebner (1990):
+# 1  0.00000E+00 -8.05270E+04  3.16197E+01 -3.12256E-04 -2.24747E-07
+# Stock-fit to SUPCRTBL database (100-2500)K, +/-0.03 kJ/mol
+  5  4.06509277e+04  3.27864586e-02 -1.65227378e+01  5.54989209e-04 -2.61835949e-08 
+
+NH4Cl[s]       AMMONIUM-CHLORIDE
+1.52
+3
+ 1 N
+ 4 H
+ 1 Cl
+# dG-Stock-fit NIST-Janaf 100-1500K -> (Graham Lee)
+# 5  2.12144240e+05  -9.05190775e+00  -2.63207886e+01   8.98927598e-03  -1.23486403e-06
+# dG-Stock-fit NIST-Janaf (100-1500)K, +/-0.16 kJ/mol
+  5  2.12391E+05 -6.87184E+00 -3.83434E+01  4.44416E-03  0.00000E+00
+
+NH4SH[s]       AMMONIUM-HYDROSULFIDE
+1.17
+3
+ 1 N
+ 5 H
+ 1 S
+# pvap special (Stull 1947 - NIST fit):
+  99  0.0  0.0  0.0  0.0  0.0
+
+H2S[s]         HYDROGEN-SULFIDE(liquid/solid)  187.65
+1.12
+2
+ 2 H
+ 1 S
+# pvap special (Stull 1947 - NIST fit):
+  99  0.0  0.0  0.0  0.0  0.0
+
+S2[s]         Disulfer(solid)
+2.07
+ 1
+ 2 S
+# pvap special - Zahnle et al. (2016)
+ 99  0.0  0.0  0.0  0.0  0.0
+
+S2[l]         Disulfer(liquid)      413.0
+2.0
+ 1
+ 2 S
+# pvap special - Zahnle et al. (2016) - liquid > 413 K:
+ 99  0.0  0.0  0.0  0.0  0.0
+
+S8[s]         Octasulfur(solid)
+2.07
+ 1
+ 8 S
+# pvap special - Zahnle et al. (2016) 
+ 99  0.0  0.0  0.0  0.0  0.0
+
+S8[l]         Octasulfur(liquid)    413.0
+2.0
+ 1
+ 8 S
+# pvap special - Zahnle et al. (2016) - liquid > 413 K:
+ 99  0.0  0.0  0.0  0.0  0.0
+
+P[s]           PHOSPHORUS_WHITE
+1.82
+ 1
+ 1 P
+# dG-Stock-fit NIST-Janaf (100-1000)K, +/-0.050 kJ/mol
+  5  3.81893E+04  5.02943E-01 -1.80174E+01  0.00000E+00  0.00000E+00
+
+P[l]           PHOSPHORUS(liquid)         317.3
+1.74
+ 1
+ 1 P
+# dG-Stock-fit NIST-Janaf (298-2000)K, +/-0.002 kJ/mol
+  5  3.81772E+04  6.65422E-01 -1.89113E+01  0.00000E+00  0.00000E+00
+
+P4O10[s]       PHOSPHORUS-OXIDE
+2.39
+ 2
+ 4 P
+10 O
+# dG-fit NIST-Janaf (100-1500)K, +/- 0.9 kJ/mol
+# 2  4.64719E+06 -6.80695E+06  2.12761E+03 -4.38776E-02 -1.02361E-05
+# dG-Stock-fit NIST-Janaf (100-1500)K, +/-3.5 kJ/mol
+  5  8.08199E+05 -2.50785E+01 -8.95699E+01  2.31645E-02  0.00000E+00
+# pvap NIST-Janaf cr (100-2000)K, +/- 0.15 kJ/mol:
+# 3 -1.29551E+04  3.54051E+01  2.55407E-03 -7.91002E-06  2.16014E-09
+
+P4S3[s]        PHOSPHORUS-SULFIDE
+2.08
+ 2
+ 4 P
+ 3 S
+# dG-Stock-fit NIST-Janaf (298-2000)K, +/-0.016 kJ/mol
+  5  2.78912E+05 -1.10002E+00 -1.07964E+02  6.39523E-04 -5.96168E-08
+
+P4S3[l]        PHOSPHORUS-SULFIDE(liquid)   440.0
+2.0            estimated
+ 2
+ 4 P
+ 3 S
+# dG-Stock-fit NIST-Janaf (298-3000)K, +/-0.13 kJ/mol
+  5  2.80063E+05  4.26489E+00 -1.42993E+02  0.00000E+00  0.00000E+00
+
+Zn[s]          ZINC
+7.14           
+ 1
+ 1 Zn
+# dG-Stock-fit NIST-Janaf (100-1000)K, +/-0.07 kJ/mol
+  5  1.56414E+04 -1.32671E+00 -7.87964E+00  4.59419E-03 -1.46651E-06
+
+Zn[l]          ZINC(liquid)      692.7
+6.57           
+ 1
+ 1 Zn
+# dG-Stock-fit NIST-Janaf (298-2000)K, +/-0.11 kJ/mol
+  5  1.46836E+04 -1.41251E+00 -5.35361E+00  3.06757E-03 -5.18382E-07
+
+ZnSO4[s]       ZINC-SULFATE
+3.54
+3
+ 1 Zn
+ 1 S
+ 4 O
+# dG-Stock-fit NIST-Janaf (100-2000)K, +/-1.2 kJ/mol
+  5  2.84836E+05 -8.62576E+00 -5.12505E+01  1.02815E-02 -1.02650E-06
+# dG-Stock-fit Kitzmann+2024 (Tmax= 2000.00)
+# 5  2.841321e+05 -1.432225e+01 -1.911778e+01 2.033870e-02 -3.227622e-06
+  
+ZnS[s]         SPHALERITE/WURTZITE
+4.09
+2
+ 1 Zn
+ 1 S
+# dG-Stock-fit Barin (1995) [s + l] 298.15-2200K - sphalerite < 1293 K, Wurzite > 1293 K, liquid > 1995 K :
+  5 7.30636867e+04  -2.72297464e+00  -1.60451251e+01   3.44107646e-03  -2.56383825e-07
+
+H3PO4[s]       PHOSPHORIC-ACID
+2.03
+3
+ 3 H
+ 1 P
+ 4 O
+# dG-Stock-fit NIST-Janaf cr (100-1000)K, +/-0.18 kJ/mol
+# 5  3.87111E+05 -1.83791E+01 -1.25909E+01  1.78638E-02  0.00000E+00
+# dG-Stock-fit NIST-Janaf cr (100-1000)K, +/-3.1 kJ/mol
+# 5  3.88821E+05 -5.25161E+00 -8.80331E+01  0.00000E+00  0.00000E+00
+# dG-fit NIST-Janaf (100-1000)K, +/- 2.3 kJ/mol
+  2  0.00000E+00 -3.24681E+06  1.03070E+03  1.16398E-02  0.00000E+00
+
+H3PO4[l]       PHOSPHORIC-ACID     315.5
+1.88
+3
+ 3 H
+ 1 P
+ 4 O
+# dG-Stock-fit NIST-Janaf l (298-1000)K, +/-0.06 kJ/mol
+# 5  3.89236E+05 -1.53687E+00 -1.10195E+02 -3.17818E-03  5.91170E-06
+# dG-Stock-fit NIST-Janaf l (298-1000)K, +/-1.0 kJ/mol
+# 5  3.92008E+05  6.19591E+00 -1.63947E+02  0.00000E+00  0.00000E+00
+# dG-fit NIST-Janaf (298-1000)K, +/- 2.8 kJ/mol
+  2  0.00000E+00 -3.23028E+06  9.80875E+02  0.00000E+00  0.00000E+00
+
+Mg3P2O8[s]     MAGNESIUM-PHOSPHATE
+3.06
+3
+ 3 Mg
+ 2 P
+ 8 O
+# dG-Stock-fit NIST-Janaf (298-4500)K, +/-9.4 kJ/mol
+  5  8.21497E+05 -2.86819E+00 -2.18028E+02  9.51307E-03 -3.32981E-07
+
+P3N5[s]        PHOSPHORUS-NITRIDE
+2.77
+2
+ 3 P
+ 5 N
+# dG-Stock-fit NIST-Janaf (298-1500)K, +/-0.16 kJ/mol
+  5  4.37288E+05 -2.37778E+00 -1.19426E+02  9.69466E-03 -8.12560E-07
+
+AlF3[s]        ALUMINUM-FLUORIDE
+2.88
+2
+ 1 Al
+ 3 F
+# dG-Stock-fit NIST-Janaf cr/l (100-4000)K, +/-2.1 kJ/mol
+  5  2.49027E+05 -3.35980E+00 -4.76424E+01  2.77766E-03  0.00000E+00
+
+CaF2[s]        FLUORITE
+3.18
+2
+ 1 Ca
+ 2 F
+# pvap NIST-Janaf cr/l (100-4000)K, +/- 0.18 kJ/mol:
+  3 -5.34661E+04  4.04321E+01 -2.55099E-03 -2.53640E-07  7.40848E-11
+
+KF[s]          POTASSIUM-FLUORIDE
+2.48
+2
+ 1 K
+ 1 F
+# pvap NIST-Janaf cr/l (100-3000)K, +/- 0.20 kJ/mol:
+  3 -2.95176E+04  3.54317E+01 -2.87217E-03 -2.73484E-07  1.27882E-10
+
+NaF[s]         SODIUM-FLUORIDE
+2.56
+2
+ 1 Na
+ 1 F
+# pvap NIST-Janaf cr/l (100-3000)K, +/- 0.31 kJ/mol:
+  3 -3.47698E+04  3.64918E+01 -3.18335E-03  4.09510E-08  5.71733E-11
+
+FeF2[s]        IRON-FLUORIDE
+4.09
+2
+ 1 Fe
+ 2 F
+# pvap NIST-Janaf cr/l (100-3000)K, +/- 0.14:
+  3 -3.80518E+04  3.46201E+01  2.28837E-03 -2.75233E-06  4.94191E-10
+
+MgF2[s]        MAGNESIUM-FLUORIDE
+3.15
+2
+ 1 Mg
+ 2 F
+# pvap NIST-Janaf cr/l (100-3000)K, +/- 0.28:
+# 3 -4.76043E+04  3.62239E+01  2.91639E-03 -3.02649E-06  5.16807E-10
+# pvap NIST-Janaf cr/l (100-1500)K, +/- 0.03:
+  3 -4.79940E+04  3.91839E+01 -2.66245E-03  2.93375E-07  4.74469E-11
+
+MgF2[l]        MAGNESIUM-FLUORIDE    1536.0 
+2.4 
+2
+ 1 Mg
+ 2 F
+# pvap NIST-Janaf cr/l (1600-3000)K, +/- 0.03:
+# 3 -4.18746E+04  3.57340E+01 -3.08420E-03  4.65930E-07 -3.45806E-11
+# pvap NIST-Janaf cr/l (1600-3000)K, +/- 0.001:
+  3 -4.09925E+04  3.41262E+01 -2.00296E-03  1.47788E-07  0.00000E+00
+
+HF2K[s]        POTASSIUM-BIFLUORIDE 
+2.37
+3
+ 1 H
+ 2 F
+ 1 K
+# dG-Stock-fit NIST-Janaf cr/l (100-2000)K, +/-0.83 kJ/mol
+  5  1.67652E+05 -2.27576E+00 -4.71342E+01  8.73995E-03 -1.69333E-06
+
+AlF6Na3[s]     CRYOLITE
+2.95
+3
+ 1 Al
+ 6 F
+ 3 Na
+# dG-Stock-fit NIST-Janaf cr/l (100-3000)K, +/-9.4 kJ/mol
+  5  5.33274E+05 -7.58058E+00 -1.17668E+02  1.27147E-02  1.45909E-19
+
+Li2SiO3[s]     LI-SILICATE
+2.52
+3
+ 2 Li
+ 1 Si
+ 3 O
+# dG-Stock-fit NIST-Janaf cr (100-2500)K, +/-0.37 kJ/mol
+  5  3.78736E+05 -8.35599E+00 -5.02149E+01  8.45736E-03 -8.25412E-07
+
+Li2SiO3[l]     LI-SILICATE       1474.0
+2.2            estimated
+3
+ 2 Li
+ 1 Si
+ 3 O
+# dG-Stock-fit NIST-Janaf l (298-4000)K, +/-0.40 kJ/mol
+  5  3.77984E+05 -1.47587E+00 -9.30930E+01  2.99212E-03 -2.11954E-07
+
+Li2Si2O5[s]    LI-SILICATE
+2.47
+3
+ 2 Li
+ 2 Si
+ 5 O
+# dG-Stock-fit NIST-Janaf cr (298-2500)K, +/-0.49 kJ/mol
+  5  6.04720E+05 -1.72460E+00 -1.47641E+02  3.24662E-03  0.00000E+00
+
+Li2Si2O5[l]    LI-SILICATE       1307.0
+2.1            estimated
+3
+ 2 Li
+ 2 Si
+ 5 O
+# dG-Stock-fit NIST-Janaf l (298-3000)K, +/-0.67 kJ/mol
+  5  5.99140E+05 -1.96117E+00 -1.43101E+02  4.81332E-03 -3.53317E-07
+
+Li2TiO3[s]     LI-TITANATE
+3.43
+3
+ 2 Li
+ 2 Si
+ 5 O
+# dG-Stock-fit NIST-Janaf cr (100-3000)K, +/-0.32 kJ/mol
+  5  3.84426E+05 -7.07925E+00 -5.83248E+01  7.47936E-03 -5.86251E-07
+
+Li2TiO3[l]     LI-TITANATE       1820.0
+3.0            estimated
+3
+ 2 Li
+ 2 Si
+ 5 O
+# dG-Stock-fit NIST-Janaf l (298-3000)K, +/-0.67 kJ/mol
+  5  3.73769E+05 -1.64374E+00 -8.75079E+01  3.62423E-03 -1.84980E-07
+
+Co[s]          COBALT
+8.90           
+ 1
+ 1 Co
+# dG-Stock-fit NIST-Janaf (100-2500)K, +/-0.08 kJ/mol
+  5  5.12469E+04 -7.42605E-01 -1.39362E+01  1.52138E-03 -1.53441E-07
+
+Co[l]          COBALT(liquid)      1768.0
+8.86           
+ 1
+ 1 Co
+# dG-Stock-fit NIST-Janaf (298-4000)K, +/-0.24 kJ/mol
+  5  4.88618E+04 -1.23642E+00 -9.13022E+00  1.61909E-03 -1.36086E-07
+
+CoO[s]         COBALT-MONOOXIDE
+6.44
+ 2
+ 1 Co
+ 1 O
+# dG-Stock-fit NIST-Janaf (100-3000)K, +/-0.22 kJ/mol
+  5  1.10016E+05  2.84709E-01 -3.67779E+01  5.29604E-04 -6.42463E-09
+
+Ti3O5[s]       TITANIUM-OXIDE
+4.25
+ 2
+ 3 Ti
+ 5 O
+# dG-fit NIST-Janaf 100-2000K, +/- 0.12:
+# 2  1.53106E+06 -3.94153E+06  1.03804E+03 -2.18150E-02  6.36924E-07
+# dG-Stock-fit NIST-Janaf (100-2000)K, +/-1.3 kJ/mol
+  5  6.14868E+05 -5.09815E+00 -1.14283E+02  7.55404E-03 -5.70464E-07
+
+Ti3O5[l]       TITANIUM-OXIDE(liquid)    2050.0
+3.8     estimated
+ 2
+ 3 Ti
+ 5 O
+# dG-fit NIST-Janaf 2100-4000K, +/- 0.12:
+# 2 -9.26995E+07 -4.83152E+06  1.08553E+03 -1.93110E-02  1.20031E-06
+# dG-Stock-fit NIST-Janaf (2100-4000)K, +/-0.6 kJ/mol
+  5  5.84214E+05 -1.11094E+00 -1.18391E+02  4.68272E-04  1.31866E-07
+
+Mg2TiO4[s]     QANDILIT
+4.03
+ 3
+ 2 Mg
+ 1 Ti
+ 4 O
+# dG-fit NIST-Janaf 100-2000K, +/- 0.12:
+  2  1.53106E+06 -3.94153E+06  1.03804E+03 -2.18150E-02  6.36924E-07 
+# dG-Stock-fit NIST-Janaf (100-2000)K, +/-1.2 kJ/mol
+# 5  4.70853E+05 -5.67026E+00 -8.44275E+01  3.91333E-03  3.84711E-07
+
+Mg2TiO4[l]     QANDILIT(liquid)      2013.0
+3.7     estimated
+ 3
+ 2 Mg
+ 1 Ti
+ 4 O
+# dG-Stock-fit NIST-Janaf (2100-4000)K, +/-0.6 kJ/mol
+  5  4.45378E+05 -1.77612E+00 -9.27270E+01 -2.12482E-04  2.19302E-07
+
+TiN[s]         TITANIUM-NITRIDE
+5.40
+ 2
+ 1 Ti
+ 1 N
+# dG-Stock-fit NIST-Janaf (100-3220)K, +/-0.24 kJ/mol
+  5  1.53851E+05 -2.28175E+00 -2.23116E+01  2.48084E-03 -2.32274E-07
+
+TiN[l]         TITANIUM-NITRIDE(liquid)   3220.0
+5.0     estimated
+ 2
+ 1 Ti
+ 1 N
+# dG-Stock-fit NIST-Janaf (3200-4500)K, +/-0.31 kJ/mol
+  5  1.40049E+05 -8.58684E-01 -2.41161E+01 -3.32083E-19  1.83184E-08
+
+TiF4[s]       TITANIUM-TETRAFLUORIDE
+2.8
+ 2
+ 1 Ti
+ 4 F
+# pvap NIST-Janaf cr (100-1500)K, +/- 0.03:
+  3 -1.22404E+04  3.88125E+01 -6.01473E-03  1.04681E-06  0.00000E+00
+
+TiF3[s]       TITANIUM-TRIFLUORIDE
+3.4
+ 2
+ 1 Ti
+ 3 F
+# pvap NIST-Janaf cr (298-2000)K, +/- 0.10:
+  3 -2.97991E+04  3.95014E+01 -2.94846E-03  7.42856E-07 -1.38542E-10
+
+TiCl4[s]      TITANIUM-TETRACHLORIDE
+1.9    estimated
+ 2
+ 1 Ti
+ 4 Cl
+# pvap NIST-Janaf cr (100-200)K, +/- 0.0:  a1 modified to get correct melting point
+  3 -6.77470E+03  3.71000E+01  0.00000E+00  0.00000E+00  0.00000E+00
+
+TiCl4[l]      TITANIUM-TETRACHLORIDE(liquid)  249.0
+1.73
+ 2
+ 1 Ti
+ 4 Cl
+# pvap NIST-Janaf cr (298-1000)K, +/- 0.002:   ! trouble at high T 
+# 3 -5.83535E+03  3.66409E+01 -1.52157E-02  9.01904E-06 -2.51144E-09
+# pvap NIST-Janaf cr (298-1000)K, +/- 0.007: 
+  3 -5.52902E+03  3.43492E+01 -9.24160E-03  2.52201E-06  0.00000E+00
+
+TiCl3[s]      TITANIUM-TRICHLORIDE
+2.64
+ 2
+ 1 Ti
+ 3 Cl
+# pvap NIST-Janaf cr (100-1500)K, +/- 0.01:    ! trouble at high T  
+# 3 -2.27037E+04  4.02156E+01 -1.04860E-02  6.56457E-06 -1.67199E-09
+# pvap NIST-Janaf cr (100-1500)K, +/- 0.26:  
+  3 -2.24772E+04  3.80858E+01 -4.92138E-03  1.24412E-06  0.00000E+00
+
+TiCl2[s]      TITANIUM-DICHLORIDE
+3.13
+ 2
+ 1 Ti
+ 2 Cl
+# pvap NIST-Janaf cr (100-2000)K, +/- 0.007:  
+# 3 -3.36735E+04  3.82301E+01 -2.69767E-03  6.26067E-07 -1.03445E-10
+# pvap NIST-Janaf cr (100-2000)K, +/- 0.04:  
+  3 -3.36342E+04  3.79336E+01 -2.10132E-03  1.91955E-07  0.00000E+00
+
+TiH2[s]       TITANIUM-HYDRIDE
+3.75
+ 2
+ 1 Ti
+ 2 H
+# dG-Stock-fit NIST-Janaf (100-2000)K, +/-0.57 kJ/mol
+  5  1.25239E+05 -5.72777E+00 -8.92797E+00  3.10061E-03  0.00000E+00
+
+FeCl2[s]      IRON-DICHLORIDE
+3.16
+ 2
+ 1 Fe
+ 2 Cl
+# pvap NIST-Janaf cr (100-900)K, +/- 0.022:  
+  3 -2.45703E+04  3.84749E+01 -5.42007E-03  1.73668E-06  0.00000E+00
+
+FeCl2[l]      IRON-DICHLORIDE(liquid)   950.0
+3.0     estimated
+ 2
+ 1 Fe
+ 2 Cl
+# pvap NIST-Janaf cr (1000-2000)K, +/- 0.005:  
+  3 -1.82668E+04  2.97532E+01 -1.55558E-03  0.00000E+00  0.00000E+00
+
+FeCl3[s]      IRON-TRICHLORIDE
+2.90
+ 2
+ 1 Fe
+ 3 Cl
+# pvap NIST-Janaf cr (100-500)K, +/- 0.001:  
+  3 -1.79419E+04  4.04418E+01 -3.93768E-03  0.00000E+00  0.00000E+00
+
+FeCl3[l]      IRON-TRICHLORIDE(liquid)  577.0
+2.7     estimated
+ 2
+ 1 Fe
+ 3 Cl
+# pvap NIST-Janaf cr (600-1500)K, +/- 0.022:  
+  3 -1.19535E+04  2.96064E+01 -3.03724E-03  0.00000E+00  0.00000E+00
+
+CoSO4[s]        COBALT-SULFATE
+3.71
+3
+ 1 Co
+ 1 S
+ 4 O
+# dG-Stock-fit Kitzmann+2024 (Tmax= 2000.00)
+  5  3.090612e+05 -1.116262e+01 -3.771972e+01 1.342978e-02 -1.891004e-06
+
+CuSO4[s]        COPPER-SULFATE
+3.60 
+3
+ 1 Cu
+ 1 S
+ 4 O
+# dG-Stock-fit Kitzmann+2024 (Tmax= 2000.00)
+  5  2.840470e+05 -1.142242e+01 -3.544105e+01 1.361580e-02 -1.928828e-06
+
+Fe2S3O12[s]     IRON-III-SULFATE
+3.10
+3
+ 2 Fe
+ 3 S
+12 O
+# dG-Stock-fit Kitzmann+2024 (Tmax= 2000.00)
+  5  8.653884e+05 -2.297044e+01 -1.590785e+02 2.277154e-02 -2.696870e-06
+
+FeSO4[s]        IRON-II-SULFATE
+2.84
+3
+ 1 Fe
+ 1 S
+ 4 O
+# dG-Stock-fit Kitzmann+2024 (Tmax= 2000.00)
+  5  3.124384e+05 -1.174652e+01 -3.362834e+01 1.366547e-02 -1.903293e-06
+
+MgSO4[s]        MG-SULFATE
+2.66
+3
+ 1 Mg
+ 1 S
+ 4 O
+# dG-Stock-fit Kitzmann+2024 (Tmax= 1495.00)
+  5  3.200432e+05 -1.284829e+01 -2.706610e+01 1.567552e-02 -2.606110e-06 
+
+MgSO4[l]        MG-SULFATE(liquid)         1495
+2.4         (estimated)
+3
+ 1 Mg
+ 1 S
+ 4 O
+# dG-Stock-fit Kitzmann+2024 (Tmax= 2500.00)
+  5  3.242348e+05  3.274547e+00 -1.304625e+02 3.745212e-04 -2.944070e-08
+
+K2SO4[s]   PotassiumSulfate
+ 2.66 
+3
+ 2 K
+ 4 O
+ 1 S
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1342.00)
+ 5  3.45430996e+05 -1.13993438e+01 -4.77218942e+01  1.57402713e-02 -1.74687959e-06
+
+K2SO4[l]   PotassiumSulfate(liquid)    1342.0
+ 2.5      (estimated)
+3
+ 2 K
+ 4 O
+ 1 S
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)
+ 5  3.42341297e+05  5.29628493e-01 -1.16930275e+02  2.95711905e-03 -2.37122000e-07
+
+Na2SO4[s]   SodiumSulfate
+ 2.66 
+3
+ 2 Na
+ 4 O
+ 1 S
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1157.00)
+ 5  3.42692161e+05 -2.25384122e+01  1.01046004e+01  4.48154039e-02 -1.09888037e-05
+
+Na2SO4[l]   SodiumSulfate(liquid)    1157.0
+ 2.5      (estimated)
+3
+ 2 Na
+ 4 O
+ 1 S
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)
+ 5  3.43468688e+05  2.73953031e+00 -1.33502843e+02  1.71632201e-03 -1.42150834e-07
+
+AlN[s]          AL-NITRIDE
+3.26
+2
+ 1 Al
+ 1 N
+# dG-fit NIST-Janaf 100-3000K,  +/- 0.036 kJ/mol
+# 2  5.27373E+05 -1.12465E+06  3.07533E+02 -4.89938E-03  3.88524E-07
+# dG-Stock-fit NIST-Janaf 100-3000K,  +/-0.20 kJ/mol
+  5  1.34007E+05 -2.99038E+00 -1.71221E+01  2.81870E-03 -2.92650E-07
+
+Al[s]   Aluminum
+ 2.71
+1
+ 1 Al
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1200.00)   !!! NOT IN GGCHEM
+ 5  3.95614730e+04 -8.78672786e-01 -1.16760316e+01  2.13316168e-03 -3.41340617e-07
+
+AlClO[s]   AluminumChlorideOxide
+ 3.0      (estimated)
+3
+ 1 Al
+ 1 Cl
+ 1 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)   !!! NOT IN GGCHEM
+ 5  1.79488952e+05 -1.20378155e+00 -4.57719482e+01  2.04484025e-03 -1.88046877e-07
+
+KAlCl4[s]   PotassiumTetrachloroaluminate
+ 1.85
+3
+ 1 Al
+ 4 Cl
+ 1 K
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1000.00)   !!! NOT IN GGCHEM
+ 5  2.52918957e+05 -1.01646809e+00 -9.21232534e+01  7.15028941e-03 -6.98127575e-07
+
+NaAlCl4[s]   SodiumTetrachloroaluminate
+ 2.05
+3
+ 1 Al
+ 4 Cl
+ 1 Na
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1000.00)   !!! NOT IN GGCHEM
+ 5  2.48483547e+05 -1.61450476e+00 -8.89087927e+01  8.29742968e-03 -1.10336820e-06
+
+K3AlCl6[s]   PotassiumHexachloroaluminate
+ 1.99
+3
+ 1 Al
+ 6 Cl
+ 3 K
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2000.00)   !!! NOT IN GGCHEM
+ 5  4.11320703e+05 -7.41545907e-01 -1.50951972e+02  7.70494102e-03 -6.00339638e-07
+
+Na3AlCl6[s]   SodiumHexachloroaluminate
+ 2.50     (estimated)
+3
+ 1 Al
+ 6 Cl
+ 3 Na
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2000.00)   !!! NOT IN GGCHEM
+ 5  4.04258859e+05 -8.11908484e-01 -1.51191982e+02  6.96442099e-03 -5.08098089e-07
+
+K3AlF6[s]   PotassiumHexafluoraluminate
+ 3.0      (estimated)
+3
+ 1 Al
+ 6 F
+ 3 K
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2000.00)   !!! NOT IN GGCHEM
+ 5  5.28418875e+05 -5.96531820e+00 -1.25312871e+02  1.26584631e-02 -1.32251414e-06
+
+Na3AlF6[s]   Cryolite
+ 2.95
+3
+ 1 Al
+ 6 F
+ 3 Na
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1285.00)   !!! NOT IN GGCHEM
+ 5  5.32473126e+05 -1.32850788e+01 -8.47333782e+01  2.25806853e-02 -3.14891756e-06
+
+Na3AlF6[l]   Cryolite(liquid)    1285.0
+ 2.8     (estimated)
+3
+ 1 Al
+ 6 F
+ 3 Na
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)   !!! NOT IN GGCHEM
+ 5  5.39432862e+05  1.92388643e+01 -3.00920550e+02  1.50438475e-03 -1.14927825e-07
+
+NaAlO2[s]   SodiumAluminumOxide
+ 1.5
+3
+ 1 Al
+ 1 Na
+ 2 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)   !!! NOT IN GGCHEM
+ 5  2.47693344e+05 -4.96338160e+00 -3.82877928e+01  5.86232517e-03 -6.16441251e-07
+
+K3Al2Cl9[s]   PotassiumAluminumChloride
+ 3.0         (estimated)
+3
+ 2 Al
+ 9 Cl
+ 3 K
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1500.00)   !!! NOT IN GGCHEM
+ 5  5.87365422e+05  3.23645522e-02 -2.24335842e+02  7.12439679e-03 -7.85420067e-08
+
+Al2S3[s]   AluminumSulfide
+ 2.32
+2
+ 2 Al
+ 3 S
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1500.00)   !!! NOT IN GGCHEM
+ 5  2.56302710e+05 -7.09557834e+00 -4.46224561e+01  1.11985605e-02 -1.97585400e-06
+
+Na5Al3F14[s]   Chiolite
+ 2.9
+3
+ 3 Al
+14 F
+ 5 Na
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1010.00)   !!! NOT IN GGCHEM
+ 5  1.22577585e+06 -1.88644205e+01 -2.51372837e+02  3.04584133e-02 -4.38730992e-06
+
+Na5Al3F14[l]   Chiolite(liquid)    1010.0
+ 2.7     (estimated)
+3
+ 3 Al
+14 F
+ 5 Na
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)   !!! NOT IN GGCHEM
+ 5  1.25466081e+06  5.65914029e+01 -7.78124316e+02  2.63195584e-03 -2.12791940e-07
+
+Al6Si2O13[s]   AluminumSilicate_Mullite
+ 3.27
+3
+ 6 Al
+13 O
+ 2 Si
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)   !!! NOT IN GGCHEM
+ 5  1.54725035e+06 -3.69528229e+01 -1.48743346e+02  3.63793477e-02 -4.03696522e-06
+
+CuCN[s]   CopperCyanide
+ 2.92
+3
+ 1 C
+ 1 Cu
+ 1 N
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1000.00)   !!! NOT IN GGCHEM
+ 5  1.71665067e+05 -3.78038066e+00 -2.52550354e+01  7.34838178e-03 -1.65273227e-06
+
+KCN[s]   PotassiumCyanide
+ 1.52
+3
+ 1 C
+ 1 K
+ 1 N
+# dG-Stock-fit Kitzmann+2024  (Tmax=  895.00)   !!! NOT IN GGCHEM
+ 5  1.68698699e+05  1.12034525e+01 -1.02309550e+02 -2.74477749e-02  1.01760468e-05
+
+KCN[l]   PotassiumCyanide(liquid)     895.0
+ 1.4     (estimated)
+3
+ 1 C
+ 1 K
+ 1 N
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)   !!! NOT IN GGCHEM
+ 5  1.66575041e+05  1.21529913e+00 -4.86914859e+01  2.32704066e-04 -2.64199422e-08
+
+K2CO3[s]   PotassiumCarbonate
+ 2.43
+3
+ 1 C
+ 2 K
+ 3 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1174.00)   !!! NOT IN GGCHEM
+ 5  3.34344291e+05 -8.55803694e+00 -4.68749990e+01  1.28653533e-02 -1.71832942e-06
+
+K2CO3[l]   PotassiumCarbonate(liquid)    1174.0
+ 2.3      (estimated)
+3
+ 1 C
+ 2 K
+ 3 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2500.00)   !!! NOT IN GGCHEM
+ 5  3.36981612e+05  4.15717104e+00 -1.29735463e+02  3.32459726e-03 -3.04460738e-07
+
+NaCN[s]   SodiumCyanide
+ 1.6
+3
+ 1 C
+ 1 N
+ 1 Na
+# dG-Stock-fit Kitzmann+2024  (Tmax=  835.00)   !!! NOT IN GGCHEM
+ 5  1.67819416e+05  3.15695345e+00 -6.26047356e+01 -6.14521800e-04 -9.66527946e-07
+
+NaCN[l]   SodiumCyanide(liquid)     835.0
+ 1.5
+3
+ 1 C
+ 1 N
+ 1 Na
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)   !!! NOT IN GGCHEM
+ 5  1.66591702e+05  1.13058704e+00 -4.90953248e+01  5.37487268e-04 -5.03749295e-08
+
+Na2CO3[s]   SodiumCarbonate
+ 2.54
+3
+ 1 C
+ 2 Na
+ 3 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1123.15)   !!! NOT IN GGCHEM
+ 5  3.36059248e+05 -1.10382287e+01 -3.33198180e+01  1.77469210e-02 -3.02720204e-06
+
+Na2CO3[l]   SodiumCarbonate(liquid)    1123.2
+ 2.4       (estimated)
+3
+ 1 C
+ 2 Na
+ 3 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2500.00)   !!! NOT IN GGCHEM
+ 5  3.37162573e+05  3.27674756e+00 -1.21266784e+02  2.50079163e-03 -2.28052096e-07
+
+Cr3C2[s]   ChromiumCarbide
+ 6.68
+2
+ 2 C
+ 3 Cr
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2500.00)   !!! NOT IN GGCHEM
+ 5  3.24959667e+05 -5.90219659e+00 -5.58892318e+01  9.15158563e-03 -1.08891899e-06
+
+MgC2[s]   MagnesiumCarbide
+ 2.32
+2
+ 2 C
+ 1 Mg
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2500.00)   !!! NOT IN GGCHEM
+ 5  1.79480840e+05 -7.14646387e-01 -4.56432436e+01  1.60958467e-03 -1.39766131e-07
+
+Al4C3[s]   AluminumCarbide
+ 2.36
+2
+ 3 C
+ 4 Al
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)   !!! NOT IN GGCHEM
+ 5  4.40761080e+05 -1.03655326e+01 -6.16710679e+01  1.11886436e-02 -1.24826912e-06
+
+Mg2C3[s]   MagnesiumCarbide
+ 2.2      (estimated)
+2
+ 3 C
+ 2 Mg
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2500.00)   !!! NOT IN GGCHEM
+ 5  2.84352252e+05 -1.18824700e+00 -7.45382272e+01  2.68658659e-03 -2.33845298e-07
+
+Ca[s]   Calcium
+ 1.55
+1
+ 1 Ca
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1115.00)   !!! NOT IN GGCHEM
+ 5  2.14952885e+04  2.23809023e-01 -1.53797953e+01  2.55737151e-04  3.50041073e-07
+
+Ca[l]   Calcium(liquid)    1115.0
+ 1.5     (estimated)
+1
+ 1 Ca
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2500.00)   !!! NOT IN GGCHEM
+ 5  2.03820611e+04  6.67845910e-01 -1.73973798e+01  6.21360306e-04 -6.11466904e-08
+
+Ca(OH)2[s]   CalciumHydroxide
+ 2.21
+3
+ 1 Ca
+ 2 H
+ 2 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1000.00)   !!! NOT IN GGCHEM
+ 5  2.50485899e+05 -1.07486558e+01 -1.22509238e+01  1.75908310e-02 -4.41186722e-06
+
+CuCl[s]   CopperChloride
+ 4.14
+2
+ 1 Cl
+ 1 Cu
+# dG-Stock-fit Kitzmann+2024  (Tmax=  703.00)   !!! NOT IN GGCHEM
+ 5  7.16623998e+04 -2.27919073e+00 -1.79480076e+01  7.23271559e-03 -1.98359508e-06
+
+CuCl[l]   CopperChloride(liquid)     703.0
+ 4.0      (estimated)
+2
+ 1 Cl
+ 1 Cu
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)   !!! NOT IN GGCHEM
+ 5  7.16488453e+04  2.40175976e+00 -4.47333536e+01  3.43180316e-04 -3.62364194e-08
+
+NH4ClO4[s]   AmmoniumPerchlorate
+ 1.95
+4
+ 1 Cl
+ 4 H
+ 1 N
+ 4 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1500.00)   !!! NOT IN GGCHEM
+ 5  3.26884682e+05 -2.46117673e+01 -7.58535160e-01  2.96582816e-02 -4.37895339e-06
+
+KClO4[s]   PotassiumPerchlorate
+ 2.52
+3
+ 1 Cl
+ 1 K
+ 4 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1500.00)   !!! NOT IN GGCHEM
+ 5  1.94110380e+05 -1.96598701e+01  1.22105368e+01  3.80087193e-02 -7.78811983e-06
+
+NaClO4[s]   SodiumPerchlorate
+ 2.5
+3
+ 1 Cl
+ 1 Na
+ 4 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1500.00)   !!! NOT IN GGCHEM
+ 5  1.92620151e+05 -1.05387085e+01 -4.31155927e+01  2.53688829e-02 -5.31876004e-06
+
+CoCl2[s]   CobaltChloride
+ 3.36
+2
+ 2 Cl
+ 1 Co
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1013.00)   !!! NOT IN GGCHEM
+ 5  1.18242144e+05 -3.46387469e-01 -4.76613523e+01  3.41107116e-03 -9.20080884e-07
+
+CoCl2[l]   CobaltChloride(liquid)    1013.0
+ 3.2      (estimated)
+2
+ 2 Cl
+ 1 Co
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2000.00)   !!! NOT IN GGCHEM
+ 5  1.12618708e+05 -1.19446504e+00 -3.64286707e+01  2.97868311e-03 -3.09335287e-07
+
+CuCl2[s]   CopperChloride
+ 3.39
+2
+ 2 Cl
+ 1 Cu
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1500.00)   !!! NOT IN GGCHEM
+ 5  9.45530856e+04 -6.60020933e-01 -4.37704037e+01  2.64398683e-03 -4.29095089e-07
+
+MgCl2[s]   MagnesiumChloride
+ 2.32
+2
+ 2 Cl
+ 1 Mg
+# dG-Stock-fit Kitzmann+2024  (Tmax=  987.00)   !!! NOT IN GGCHEM
+ 5  1.23873719e+05 -2.05270854e+00 -3.61972963e+01  5.87700485e-03 -1.48981770e-06
+
+MgCl2[l]   MagnesiumChloride(liquid)     987.0
+ 2.2      (estimated)
+2
+ 2 Cl
+ 1 Mg
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2500.00)   !!! NOT IN GGCHEM
+ 5  1.20164590e+05  1.84746189e+00 -5.57274180e+01  8.34327049e-04 -7.26653843e-08
+
+NiCl2[s]   NickelChloride
+ 3.55
+2
+ 2 Cl
+ 1 Ni
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1304.00)   !!! NOT IN GGCHEM
+ 5  1.17457085e+05 -1.28526862e+00 -4.30149976e+01  3.31688447e-03 -6.38141131e-07
+
+NiCl2[l]   NickelChloride(liquid)    1304.0
+ 3.4      (estimated)
+2
+ 2 Cl
+ 1 Ni
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1800.00)   !!! NOT IN GGCHEM
+ 5  7.80948239e+04 -6.19795751e+01  3.77900638e+02  4.27010684e-02 -4.58366048e-06
+
+CoF2[s]   CobaltFluoride
+ 4.46
+2
+ 1 Co
+ 2 F
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1400.00)   !!! NOT IN GGCHEM
+ 5  1.50698899e+05 -3.19346159e+00 -3.18101897e+01  6.13741693e-03 -1.22335464e-06
+
+CoF2[l]   CobaltFluoride(liquid)    1400.0
+ 4.3      (estimated)
+2
+ 1 Co
+ 2 F
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)   !!! NOT IN GGCHEM
+ 5  1.48593433e+05  4.55290834e+00 -8.00549425e+01 -1.34082202e-04  1.34126632e-08
+
+CoF3[s]   CobaltFluoride
+ 3.88
+2
+ 1 Co
+ 3 F
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1500.00)   !!! NOT IN GGCHEM
+ 5  1.75097169e+05 -1.03129009e-01 -6.74853527e+01  1.09107715e-03 -6.58316422e-08
+
+Co3O4[s]   CobaltOxide
+ 6.07
+2
+ 3 Co
+ 4 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1500.00)   !!! NOT IN GGCHEM
+ 5  3.80548448e+05 -1.31101105e+01 -4.88975462e+01  1.49290915e-02 -1.85133604e-06
+
+Cr2N[s]   ChromiumNitride
+ 6.87
+2
+ 2 Cr
+ 1 N
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2500.00)   !!! NOT IN GGCHEM
+ 5  1.67650077e+05 -3.74524079e-01 -5.13906602e+01  2.21776814e-03 -1.11795970e-07
+
+CuF[s]   CopperFluoride
+ 7.1
+2
+ 1 Cu
+ 1 F
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2000.00)   !!! NOT IN GGCHEM
+ 5  8.41052221e+04  2.33965623e-01 -3.39752137e+01  1.88584495e-03 -2.35783770e-07
+
+CuF2[s]   Copper-II-Fluoride
+ 4.23
+2
+ 1 Cu
+ 2 F
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1109.00)   !!! NOT IN GGCHEM
+ 5  1.23920952e+05 -4.08654208e+00 -2.58242745e+01  7.89378110e-03 -1.49033225e-06
+
+CuF2[l]   Copper-II-Fluoride(liquid)    1109.0
+ 4.0      (estimated)
+2
+ 1 Cu
+ 2 F
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2500.00)   !!! NOT IN GGCHEM
+ 5  1.20149380e+05  2.89731262e+00 -6.53902258e+01  9.31567535e-04 -8.89935329e-08
+
+Cu(OH)2[s]   CopperHydroxide
+ 3.37 
+3
+ 1 Cu
+ 2 H
+ 2 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1500.00)   !!! NOT IN GGCHEM
+ 5  2.06355797e+05 -3.95916260e+00 -4.94825606e+01  4.80336071e-03 -6.29320853e-07
+
+KHF2[s]   PotassiumFluoride
+ 2.37
+3
+ 2 F
+ 1 H
+ 1 K
+# dG-Stock-fit Kitzmann+2024  (Tmax=  511.95)   !!! NOT IN GGCHEM
+ 5  1.68601497e+05  1.62631852e+01 -1.33562347e+02 -8.34705434e-02  5.77103546e-05
+
+KHF2[l]   PotassiumFluoride(liquid)     511.9
+ 2.3      (estimated)
+3
+ 2 F
+ 1 H
+ 1 K
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2000.00)   !!! NOT IN GGCHEM
+ 5  1.66528902e+05  8.87442171e-01 -6.17982342e+01  1.28171669e-03 -1.62784069e-07
+
+FeF3[s]   IronFluoride
+ 3.87
+2
+ 3 F
+ 1 Fe
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2000.00)   !!! NOT IN GGCHEM
+ 5  2.03997947e+05  6.57815620e-02 -6.80079239e+01  6.23048759e-04  6.92772091e-08
+
+Fe(OH)2[s]   IronHydroxide
+ 3.4
+3
+ 1 Fe
+ 2 H
+ 2 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1500.00)   !!! NOT IN GGCHEM
+ 5  2.30405155e+05 -4.86931869e+00 -4.80985625e+01  5.79421723e-03 -7.69744512e-07
+
+Fe(OH)3[s]   IronHydroxide
+ 4.25 
+3
+ 1 Fe
+ 3 H
+ 3 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1500.00)   !!! NOT IN GGCHEM
+ 5  3.16118637e+05 -1.17745577e+01 -3.62422801e+01  1.14045533e-02 -1.47567269e-06
+
+KH[s]   PotassiumHydride
+ 1.47
+2
+ 1 H
+ 1 K
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1500.00)   !!! NOT IN GGCHEM
+ 5  4.35603275e+04 -2.08546693e+00 -1.51290074e+01  3.60652328e-03 -4.79733083e-07
+
+KOH[s]   PotassiumHydroxide
+ 2.12
+3
+ 1 H
+ 1 K
+ 1 O
+# dG-Stock-fit Kitzmann+2024  (Tmax=  679.00)   !!! NOT IN GGCHEM
+ 5  1.17666704e+05 -4.81971143e-01 -3.76767031e+01 -7.78829925e-03  9.19144965e-06
+
+KOH[l]   PotassiumHydroxide(liquid)     679.0
+ 2.0     (estimated)
+3
+ 1 H
+ 1 K
+ 1 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2000.00)   !!! NOT IN GGCHEM
+ 5  1.16433955e+05  3.91273065e-01 -4.36353481e+01  1.63308959e-03 -2.04858023e-07
+
+NaH[s]   SodiumHydride
+ 1.4
+2
+ 1 H
+ 1 Na
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1500.00)   !!! NOT IN GGCHEM
+ 5  4.53007441e+04 -3.49634547e+00 -7.02560833e+00  5.41596124e-03 -8.55495285e-07
+
+NaOH[s]   SodiumHydroxide
+ 2.13
+3
+ 1 H
+ 1 Na
+ 1 O
+# dG-Stock-fit Kitzmann+2024  (Tmax=  596.00)   !!! NOT IN GGCHEM
+ 5  1.19667796e+05 -3.13104733e+00 -2.45060404e+01  1.33956224e-03  2.74920280e-06
+
+NaOH[l]   SodiumHydroxide(liquid)     596.0
+ 2.0      (estimated)
+3
+ 1 H
+ 1 Na
+ 1 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2500.00)   !!! NOT IN GGCHEM
+ 5  1.20180354e+05  3.25857725e+00 -6.41560547e+01 -3.75724486e-04  5.98878372e-09
+
+MgH2[s]   MagnesiumHydride
+ 1.45
+2
+ 2 H
+ 1 Mg
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2000.00)   !!! NOT IN GGCHEM
+ 5  7.78042474e+04 -6.63625914e+00 -7.19122304e-01  6.21947816e-03 -8.15866477e-07
+
+Mg(OH)2[s]   MagnesiumHydroxide
+ 2.34
+3
+ 2 H
+ 1 Mg
+ 2 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1000.00)   !!! NOT IN GGCHEM
+ 5  2.38926653e+05 -1.29232120e+01 -5.29702305e-01  1.97195560e-02 -4.78872180e-06
+
+K[s]   Potassium
+ 0.86
+1
+ 1 K
+# dG-Stock-fit Kitzmann+2024  (Tmax=  336.35)   !!! NOT IN GGCHEM
+ 5  1.07711871e+04 -1.67986538e+00 -4.75011147e+00  1.10579545e-02 -7.94890781e-06
+
+K[l]   Potassium(liquid)     336.4
+ 0.82   (estimated)
+1
+ 1 K
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1500.00)   !!! NOT IN GGCHEM
+ 5  1.08533523e+04  1.65884216e+00 -2.13630353e+01 -7.51794322e-04  1.67334271e-07
+
+KO2[s]   PotassiumSuperoxide
+ 2.14
+2
+ 1 K
+ 2 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1500.00)   !!! NOT IN GGCHEM
+ 5  1.05007082e+05 -7.72875356e-01 -4.07437717e+01  4.80692992e-03 -8.10670100e-07
+
+K2O[s]   PotassiumOxide
+ 2.35
+2
+ 2 K
+ 1 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2000.00)   !!! NOT IN GGCHEM
+ 5  9.57226256e+04  1.55925281e+00 -5.83779251e+01  2.14186500e-03  4.48264995e-08
+
+K2O2[s]   PotassiumPeroxide
+ 2.2     (estimated)
+2
+ 2 K
+ 2 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2000.00)   !!! NOT IN GGCHEM
+ 5  1.41174562e+05 -7.04052429e-01 -6.17207087e+01  4.55402078e-03 -1.25271535e-07
+
+K2S[s]   PotassiumSulfide
+ 1.8
+2
+ 2 K
+ 1 S
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1221.00)   !!! NOT IN GGCHEM
+ 5  1.01838109e+05  9.71172991e+00 -1.02084666e+02 -1.59124697e-02  5.11727224e-06
+
+K2S[l]   PotassiumSulfide(liquid)    1221.0
+ 1.75    (estimated)
+2
+ 2 K
+ 1 S
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)   !!! NOT IN GGCHEM
+ 5  9.80431439e+04  2.91329292e+00 -6.34365573e+01  9.01680108e-04 -8.18504338e-08
+
+Mg[s]   Magnesium
+ 1.74
+1
+ 1 Mg
+# dG-Stock-fit Kitzmann+2024  (Tmax=  923.00)   !!! NOT IN GGCHEM
+ 5  1.77050706e+04 -4.32964937e-01 -1.20328968e+01  1.82086830e-03 -3.85571922e-07
+
+Mg[l]   Magnesium(liquid)     923.0
+ 1.7    (estimated)
+1
+ 1 Mg
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2000.00)   !!! NOT IN GGCHEM
+ 5  1.69554349e+04  2.98843608e-01 -1.56039554e+01  8.90664183e-04 -9.74766555e-08
+
+Mg2Si[s]   MagnesiumSilicide
+ 1.99
+2
+ 2 Mg
+ 1 Si
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1375.00)   !!! NOT IN GGCHEM
+ 5  9.89125707e+04 -6.84522710e-01 -4.32294332e+01  2.88114226e-03 -3.44965361e-07
+
+Mg2Si[l]   MagnesiumSilicide(liquid)    1375.0
+ 1.95     (estimated)
+2
+ 2 Mg
+ 1 Si
+# dG-Stock-fit Kitzmann+2024  (Tmax= 4000.00)   !!! NOT IN GGCHEM
+ 5  9.10038669e+04  3.74742054e+00 -6.62234824e+01  3.25692936e-05 -7.93542550e-09
+
+Mg3N2[s]   MagnesiumNitride
+ 2.71
+2
+ 3 Mg
+ 2 N
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2500.00)   !!! NOT IN GGCHEM
+ 5  2.21883943e+05 -2.27400877e+00 -6.69596307e+01  3.99157559e-03 -5.06837701e-07
+
+VN[s]   VanadiumNitride
+ 6.13
+2
+ 1 N
+ 1 V
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3500.00)   !!! NOT IN GGCHEM
+ 5  1.44358391e+05 -2.45789571e+00 -2.05346414e+01  2.36718695e-03 -1.93952982e-07
+
+N2O4[s]   NitrogenOxide
+ 1.44
+2
+ 2 N
+ 4 O
+# dG-Stock-fit Kitzmann+2024  (Tmax=  261.95)   !!! NOT IN GGCHEM
+ 5  2.37188078e+05  0.00000000e+00 -9.37889955e+01  0.00000000e+00  0.00000000e+00
+
+N2O4[l]   NitrogenOxide(liquid)     261.9
+ 1.4      (estimated)
+2
+ 2 N
+ 4 O
+# dG-Stock-fit Kitzmann+2024  (Tmax=  500.00)   !!! NOT IN GGCHEM
+ 5  2.15328843e+05 -1.73213887e+02  8.44257327e+02  4.72901049e-01 -2.07612460e-04
+
+Si3N4[s]   SiliconNitride_Alpha
+ 3.17
+2
+ 4 N
+ 3 Si
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)   !!! NOT IN GGCHEM
+ 5  4.77205965e+05 -9.36192338e+00 -6.23546394e+01  7.21052314e-03 -6.17583411e-07
+
+NaO2[s]   SodiumSuperoxide
+ 2.2
+2
+ 1 Na
+ 2 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2000.00)   !!! NOT IN GGCHEM
+ 5  1.05276574e+05  5.07197886e+00 -7.45738970e+01 -5.29184471e-03  1.50467590e-06
+
+Na2O[s]   SodiumOxide
+ 2.27
+2
+ 2 Na
+ 1 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1405.20)   !!! NOT IN GGCHEM
+ 5  1.05769055e+05 -2.15069374e+00 -3.53947481e+01  4.43186016e-03 -2.17756762e-07
+
+Na2O[l]   SodiumOxide(liquid)    1405.2
+ 2.2      (estimated)
+2
+ 2 Na
+ 1 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)   !!! NOT IN GGCHEM
+ 5  1.01809402e+05  4.60352045e+00 -7.59636081e+01  2.08240783e-04 -1.56590750e-08
+
+Na2O2[s]   SodiumPeroxide
+ 3.8
+2
+ 2 Na
+ 2 O
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2500.00)   !!! NOT IN GGCHEM
+ 5  1.46857890e+05 -4.31095282e+00 -4.01489676e+01  8.66825380e-03 -1.27375225e-06
+
+Na2Si2O5[s]   SodiumSilicate
+ 2.48
+3
+ 2 Na
+ 5 O
+ 2 Si
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1147.00)   !!! NOT IN GGCHEM
+ 5  5.77367105e+05 -1.98336134e+01 -3.75923498e+01  2.92464851e-02 -5.31742893e-06
+
+Na2Si2O5[l]   SodiumSilicate(liquid)    1147.0
+ 2.4          (estimated)
+3
+ 2 Na
+ 5 O
+ 2 Si
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2500.00)   !!! NOT IN GGCHEM
+ 5  5.76243978e+05 -1.86411027e+00 -1.42723143e+02  5.95142675e-03 -5.49285179e-07
+
+Na2S2[s]   SodiumSulfide
+ 3.00     (estimated)
+2
+ 2 Na
+ 2 S
+# dG-Stock-fit Kitzmann+2024  (Tmax=  753.00)   !!! NOT IN GGCHEM
+ 5  1.38476986e+05 -1.26536692e+01  1.08307780e+01  2.87469871e-02 -8.68335563e-06
+
+Na2S2[l]   SodiumSulfide(liquid)     753.0
+ 3.00     (estimated)
+2
+ 2 Na
+ 2 S
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1500.00)   !!! NOT IN GGCHEM
+ 5  1.31140699e+05 -1.96106913e+01  6.89248946e+01  2.15443116e-02 -3.11516811e-06
+
+Ni3S4[s]   NickelSulfide
+ 4.84
+2
+ 3 Ni
+ 4 S
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1100.00)   !!! NOT IN GGCHEM
+ 5  3.23885894e+05 -5.18841044e+00 -9.44655871e+01  8.61420071e-03  1.02583379e-07
+
+SiS2[s]   SiliconSulfide
+ 1.85
+2
+ 2 S
+ 1 Si
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1363.00)   !!! NOT IN GGCHEM
+ 5  1.46518358e+05 -2.74042250e-01 -5.03594432e+01  2.28321211e-03 -2.89382227e-07
+
+SiS2[l]   SiliconSulfide(liquid)    1363.0
+ 1.8      (estimated)
+2
+ 2 S
+ 1 Si
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2000.00)   !!! NOT IN GGCHEM
+ 5  1.23154105e+05 -3.99423801e+01  2.25586557e+02  2.54578775e-02 -2.48960957e-06
+
+Si[s]   Silicon
+ 2.33
+1
+ 1 Si
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1685.00)   !!! NOT IN GGCHEM
+ 5  5.37707455e+04 -1.90634256e+00 -6.69718702e+00  2.85536625e-03 -5.04218097e-07
+
+Si[l]   Silicon(liquid)    1685.0
+ 2.3     (estimated)
+1
+ 1 Si
+# dG-Stock-fit Kitzmann+2024  (Tmax= 4500.00)   !!! NOT IN GGCHEM
+ 5  4.85179320e+04  8.36154068e-01 -2.04582851e+01 -6.64287285e-05  1.82501466e-09
+
+V[s]   Vanadium
+ 6.1
+1
+ 1 V
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2190.00)   !!! NOT IN GGCHEM
+ 5  6.17807295e+04 -1.05838409e+00 -1.21052411e+01  1.46087389e-03 -1.70978003e-07
+
+V[l]   Vanadium(liquid)    2190.0
+ 6.0     (estimated)
+1
+ 1 V
+# dG-Stock-fit Kitzmann+2024  (Tmax= 4500.00)   !!! NOT IN GGCHEM
+ 5  6.25807844e+04  1.90725703e+00 -3.35055418e+01  3.46422282e-04 -2.91653539e-08
+
+
+
+----- deactivated ------
+Fe3O4[l]                 MAGNETITE(liquid)          1870.000
+ 5.0    estimated
+2
+ 3 Fe
+ 4 O 
+# BURCAT  1870.000  6000.000:
+  7   1  1870.000  6000.000
+  4.19391302E+00  3.27674098E-03 -1.76195981E-06  3.01749091E-10 -2.05237173E-14 -3.88481051E+05 -1.41295222E+02  6.35899876E+00 -1.87844918E-02  5.62631955E-05 -5.97630912E-08  2.19153084E-11 -3.88328195E+05 -1.48664794E+02
+
+

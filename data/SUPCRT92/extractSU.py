@@ -636,6 +636,12 @@ file.write("dust species\n")
 file.write("============\n")
 file.write("%i\n" % NKZ)
 for i in range(0,NKZ):
+  bem = '  !!! NOT IN GGCHEM'
+  search = np.str.upper(KZnam[i])
+  for GGcond in GGall:
+    cc = np.str.upper(GGcond)
+    if (cc==search): bem=' '
+  #if (bem==' '): continue  
   file.write("\n")
   if (KZname[i].find('liquid')>0):
     file.write("%s   %s   %7.1f\n" %(KZnam[i],KZname[i],KZtmelt[i]))
@@ -648,11 +654,6 @@ for i in range(0,NKZ):
     st = stoich[j]
     file.write("%2i %s\n" %(int(st[0]),st[1]))
   tmax= "(Tmax=%8.2f)" %(KZtmax[i])  
-  bem = '  !!! NOT IN GGCHEM'
-  search = np.str.upper(KZnam[i])
-  for GGcond in GGall:
-    cc = np.str.upper(GGcond)
-    if (cc==search): bem=' '
   file.write("# dG-Stock-fit Kitzmann+2024  %s %s\n" %(tmax,bem))
   coeff = KZcoeff[i]
   file.write(" 5 %15.8e %15.8e %15.8e %15.8e %15.8e\n"

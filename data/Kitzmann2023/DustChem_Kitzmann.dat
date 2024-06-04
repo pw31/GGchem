@@ -296,7 +296,7 @@ NaCN[l]   SodiumCyanide(liquid)     835.0
 # dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)   !!! NOT IN GGCHEM
  5  1.66591702e+05  1.13058704e+00 -4.90953248e+01  5.37487268e-04 -5.03749295e-08
 
-NaCO3[s]   SodiumCarbonate
+Na2CO3[s]   SodiumCarbonate
  3.00     (estimated)
 3
  1 C
@@ -305,7 +305,7 @@ NaCO3[s]   SodiumCarbonate
 # dG-Stock-fit Kitzmann+2024  (Tmax= 1123.15)   !!! NOT IN GGCHEM
  5  3.36059248e+05 -1.10382287e+01 -3.33198180e+01  1.77469210e-02 -3.02720204e-06
 
-NaCO3[l]   SodiumCarbonate(liquid)    1123.2
+Na2CO3[l]   SodiumCarbonate(liquid)    1123.2
  3.00     (estimated)
 3
  1 C
@@ -776,7 +776,7 @@ Cr2O3[l]   ChromiumOxide(liquid)    2603.0
 2
  2 Cr
  3 O
-# dG-Stock-fit Kitzmann+2024  (Tmax= 4500.00)   !!! NOT IN GGCHEM
+# dG-Stock-fit Kitzmann+2024  (Tmax= 4500.00)  
  5  3.15189559e+05  7.17393635e+00 -1.40279001e+02 -5.10060752e-04 -4.57719219e-09
 
 Cu[s]   Copper
@@ -1246,7 +1246,7 @@ K2SO4[s]   PotassiumSulfate
  2 K
  4 O
  1 S
-# dG-Stock-fit Kitzmann+2024  (Tmax= 1342.00)   !!! NOT IN GGCHEM
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1342.00)  
  5  3.45430996e+05 -1.13993438e+01 -4.77218942e+01  1.57402713e-02 -1.74687959e-06
 
 K2SO4[l]   PotassiumSulfate(liquid)    1342.0
@@ -1255,7 +1255,7 @@ K2SO4[l]   PotassiumSulfate(liquid)    1342.0
  2 K
  4 O
  1 S
-# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)   !!! NOT IN GGCHEM
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)  
  5  3.42341297e+05  5.29628493e-01 -1.16930275e+02  2.95711905e-03 -2.37122000e-07
 
 K2S[s]   PotassiumSulfide
@@ -1602,7 +1602,7 @@ Na2SO4[s]   SodiumSulfate
  2 Na
  4 O
  1 S
-# dG-Stock-fit Kitzmann+2024  (Tmax= 1157.00)   !!! NOT IN GGCHEM
+# dG-Stock-fit Kitzmann+2024  (Tmax= 1157.00)  
  5  3.42692161e+05 -2.25384122e+01  1.01046004e+01  4.48154039e-02 -1.09888037e-05
 
 Na2SO4[l]   SodiumSulfate(liquid)    1157.0
@@ -1611,7 +1611,7 @@ Na2SO4[l]   SodiumSulfate(liquid)    1157.0
  2 Na
  4 O
  1 S
-# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)   !!! NOT IN GGCHEM
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3000.00)  
  5  3.43468688e+05  2.73953031e+00 -1.33502843e+02  1.71632201e-03 -1.42150834e-07
 
 Na2Si2O5[s]   SodiumSilicate
@@ -1803,7 +1803,7 @@ Ti2O3[s]   TitaniumOxide
 2
  3 O
  2 Ti
-# dG-Stock-fit Kitzmann+2024  (Tmax= 2115.00)   !!! NOT IN GGCHEM
+# dG-Stock-fit Kitzmann+2024  (Tmax= 2115.00)  
  5  3.84707390e+05 -1.09530736e+01 -2.76476349e+01  1.66439179e-02 -2.60246873e-06
 
 Ti2O3[l]   TitaniumOxide(liquid)    2115.0
@@ -1811,7 +1811,7 @@ Ti2O3[l]   TitaniumOxide(liquid)    2115.0
 2
  3 O
  2 Ti
-# dG-Stock-fit Kitzmann+2024  (Tmax= 3500.00)   !!! NOT IN GGCHEM
+# dG-Stock-fit Kitzmann+2024  (Tmax= 3500.00)  
  5  3.75053810e+05  2.50230291e+00 -1.04785305e+02  1.35778329e-03 -1.22501710e-07
 
 V2O3[s]   VanadiumOxide_Karelianite
