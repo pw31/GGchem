@@ -63,8 +63,8 @@
       open(unit=12,file="ProDiMo.out",status='old')
       do i=1,21
         read(12,'(A99999)') line
-        if (index(line,'Mstar')) read(line(20:),*) Mstar
-        if (index(line,'Rstar')) read(line(20:),*) Rstar
+        if (index(line,'Mstar')>0) read(line(20:),*) Mstar
+        if (index(line,'Rstar')>0) read(line(20:),*) Rstar
       enddo
       Mstar = Mstar*Msun
       Rstar = Rstar*Rsun
