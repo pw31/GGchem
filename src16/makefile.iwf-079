@@ -1,7 +1,7 @@
-#F90          = ifx
-#F90LINKER    = ifx
-F90          = gfortran
-F90LINKER    = gfortran
+F90          = ifx
+F90LINKER    = ifx
+#F90          = gfortran
+#F90LINKER    = gfortran
 
 # for IFORT-Compiler
 #===================
@@ -13,11 +13,11 @@ LFLAGS   = $(FFLAGS)
 
 # for gfortran-Compiler
 #======================
-DEFS      = 
-FFLAGS    = -fdefault-real-8 -fdefault-double-8 -g -fbounds-check -fbacktrace -std=legacy
+#DEFS      = 
+#FFLAGS    = -fdefault-real-8 -fdefault-double-8 -g -fbounds-check -fbacktrace -std=legacy
 #FFLAGS    = -fdefault-real-8 -fdefault-double-8 -g -O5 -std=legacy
-INCLUDES  = 
-LFLAGS    = $(FFLAGS)
+#INCLUDES  = 
+#LFLAGS    = $(FFLAGS)
 
 EXECS     = ggchem16
 
