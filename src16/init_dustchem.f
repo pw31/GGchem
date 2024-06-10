@@ -112,6 +112,8 @@
           j1 = index(lastzeile,'Tmax=')
           if (j1>0) then
             tmp = lastzeile(j1+5:)
+            j1  = index(tmp,")")
+            if (j1>0) tmp = tmp(:j1-1)
             read(tmp,*) fitTmax(NDUST)
           endif  
           found = .true.
