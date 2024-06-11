@@ -76,26 +76,40 @@ num_fields = 5
 for iline in range(0,999999):
   if (i>=len(lines)): break
   line = lines[i]
-  i = i+1
+  i+=1
   if (line[79:80]=='1'):
-    if (line.find('.G')==-1): continue
+    if (line.find('G  ')==-1): continue
     molnam = line.split()[0]
-    print molnam
+    #print line
     fit = []
     line = lines[i]
-    i = i+1
+    i+=1
     for j in range(num_fields): fit.append(float(line[width*j:width*(j+1)])) 
     line = lines[i]
-    i = i+1
+    i+=1
     for j in range(num_fields): fit.append(float(line[width*j:width*(j+1)])) 
     line = lines[i]
-    i = i+1
-    for j in range(num_fields-1): fit.append(float(line[width*j:width*(j+1)])) 
+    i+=1
+    for j in range(num_fields): fit.append(float(line[width*j:width*(j+1)])) 
     fit = np.array(fit,dtype='double')
-    #print fit
-    BUnam.append(molnam)
-    BUnamU.append(molnam.upper())
-    BUfit.append(fit)
+    #print molnam,fit[14]
+    #--- check for same molecule (isomer)
+    ind = np.where(np.array(BUnam)==molnam)[0]
+    if (len(ind)>0):
+      j = ind[0]
+      dH298 = BUfit[j][14]
+      print "there is another isomere of ",molnam
+      print "previous: ",BUnam[j],dH298
+      print "    this: ",molnam,fit[14]
+      if (fit[14]<dH298):
+        print "    the new isomer is more stable! replacing ..."
+        BUfit[j] = fit
+      else:
+        print "    which is less stable => OK"
+    else:
+      BUnam.append(molnam)
+      BUnamU.append(molnam.upper())
+      BUfit.append(fit)
 BUnamU = np.array(BUnamU)
 
 iplot = 0
