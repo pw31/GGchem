@@ -12,12 +12,18 @@
       implicit none
       integer :: loop,i,ii,j,iel,e,smax,ret
       character(len=2) :: cel(40),elnam
-      character(len=20) :: molname,upper,leer='                    '
+      character(len=20) :: molname,leer='                    '
       character(len=200) :: filename
       character(len=300) :: line
       character(len=1) :: char
       logical :: found,charged
       real*8 :: fiterr
+      interface
+        function upper(strIn) result(strOut)
+        character(len=*),intent(in) :: strIn
+        character(len=len(strIn)) :: strOut
+        end
+      end interface
 
       cel(:) = '.'
       read(elements,*,end=100) cel
