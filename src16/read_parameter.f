@@ -24,7 +24,7 @@
       dispol_file(3) = 'dispol_WoitkeRefit.dat'
       dispol_file(4) = ''
       DustChem_file  = 'DustChem.dat'
-      elements       = 'H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li el'
+      elements       = ' H He C N O Na Mg Si Fe Al Ca Ti S Cl K Li el '
       pick_mfrac         = .false.
       model_eqcond       = .false.
       remove_condensates = .false.
@@ -67,7 +67,7 @@
       ! ***  change parameters via input file  ***
       !-------------------------------------------
       iarg = iargc()
-      if (iarg==0) then
+      if (iarg<=0) then
         print*,"using default parameters"
         return
       endif  
