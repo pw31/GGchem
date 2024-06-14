@@ -411,9 +411,9 @@ FO                    2   F  O  1  1                  : Oxygen_Fluoride
  4  2.611965E+04 -1.340329E+00 -3.795730E+00  3.452322E-04 -1.799026E-08
 TiOF                  3   F  O Ti  1  1  1            : Titanium_Fluoride_Oxide
  4  1.484051E+05 -1.234062E+00 -2.243868E+01  4.662412E-04 -4.663767E-08
-FO2_ofo               2   F  O  1  2                  : Oxygen_Flouride_OFO
+OFO                   2   F  O  1  2                  : Oxygen_Flouride_OFO
  4  2.360852E+04 -1.785984E+00 -1.641671E+01  5.370918E-04 -3.346022E-08
-FO2_foo               2   F  O  1  2                  : Oxygen_Flouride_FOO
+FOO                   2   F  O  1  2                  : Oxygen_Flouride_FOO
  4  6.594646E+04 -2.087758E+00 -1.323914E+01  5.725118E-04 -2.920663E-08
 PF                    2   F  P  1  1                  : Phosphorus_Fluoride
  4  5.359291E+04 -1.214444E+00 -3.841637E+00  3.338508E-04 -2.211344E-08

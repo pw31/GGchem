@@ -1,0 +1,670 @@
+Heat of formation at 0K [kJ/mol] (Millar 1997, A&AS 121, 139) + NIST
+520
+H             216.0 
+He            0.0 
+C             711.2 
+N             470.8 
+O             246.8
+Na            107.6 
+Mg            146.5 
+Si            446.0 
+P             315.6 
+S             274.7
+Cl            119.6 
+Fe            414.0
+F             79.0
+H2            0.0 
+CH            592.5 
+NH            376.5
+OH            38.4 
+SiH           374.9 
+PH            237.0 
+HS            136.5 
+HCl           -92.1
+C2            817.0 
+CN            436.8 
+CO            -113.802
+SiC           734.7 
+CP            516.0
+CS            262.0 
+CCl           384.0 
+N2            0.0 
+NO            90.8 
+SiN           485.0
+PN            106.0 
+NS            263.0 
+O2            0.0 
+SiO           -101.6 
+PO            -32.0
+SO            5.0 
+ClO           101.8 
+SiS           106.0
+S2            128.3 
+CH2           390.0
+CH2OH         -9.0
+NH2           191.6 
+H2O           -238.9 
+SiH2          289.0 
+PH2           142.2 
+H2S           -17.6
+C2H           560.0 
+HCN           135.5 
+HNC           201.0 
+HCO           44.8 
+HCSi          ......
+HCP           167.0 
+HCS           310.0 
+HNO           100.0 
+HNSi          162.8 
+O2H           13.4
+HPO           ...... 
+HS2           ...... 
+C3            831.0 
+CCN           556.0 
+CCO           ......
+SiC2          610.0 
+CCP           ...... 
+C2S           ...... 
+OCN           154.0 
+SiNC          ......
+CO2           -393.1 
+OCS           -142.0 
+N2O           85.5 
+NO2           36.0 
+SiO2          -281.2
+SO2           -294.3 
+CH3           149.0 
+NH3           -38.9 
+SiH3          202.9 
+C2H2          228.6
+H2O2          -130.0 
+H2S2          16.0 
+H2CN          189.0 
+H2CO          -104.7 
+SiCH2         ......
+H2CS          105.0 
+H2SiO         ...... 
+C3H           602.5
+CCCH          602.5 
+SiC2H         ...... 
+HCCP          ......
+C4            1052.0 
+C3N           ...... 
+C3O           ...... 
+SiC3          ...... 
+C3P           ......
+C3S           ...... 
+CH4           -66.8 
+SiH4          46.0 
+C2H3          262.2 
+CH2NH         ......
+SiCH3         ...... 
+CH2PH         ...... 
+H2C3          512.0 
+H2CCC         512.0
+C3H2          472.0
+CH2CN         245.0
+CH2CO         -44.6 
+SiC2H2        ...... 
+CHOOH         -378.8 
+C4H           775.015 
+HC3N          351.0
+SiC3H         ...... 
+C5            1081.0 
+SiC4          ...... 
+C4P           ...... 
+C4S           ......
+C2H4          60.7 
+CH3OH         -190.7 
+C3H3          343.0 
+CH3CN         81.0 
+C4H2          440.0
+C5H           853.43
+C6            1312.0 
+C5N           ...... 
+C2H5          130.0 
+C3H4          195.1
+CH3CHO        -155.0 
+H3C3N         184.0 
+C5H2          723.0 
+C6H           991.8
+HC5N          ......
+C7            1325.0 
+C2H6          -69.1 
+HCOOCH3       -355.5 
+H3C4N         338.0 
+C6H2          652.0
+C7H           1080.1
+C8            1487.0 
+C7N           ...... 
+CH3OCH3       -166.3 
+C2H5OH 	      -217.1
+CH3C4H         425.0 
+C7H2          933.0 
+C8H           1218.5 
+HC7N          ...... 
+C9            1554.0
+C2H6CO        -217.2 
+H3C6N         ...... 
+C8H2          864.0 
+C9H           1296.8 
+C9N           ......
+C7H4          ...... 
+C9H2          1142.0 
+HC9N          ...... 
+H3C8N         ...... 
+H-            143.2
+C-            ...... 
+O-            105.4 
+S-            75.0 
+OH-           -137.7 
+CN-           63.6
+H+            1528.0 
+He+           2372.0 
+C+            1797.6 
+N+            1873.1 
+O+            1560.7
+Na+           603.4 
+Mg+           884.2 
+Si+           1233.0 
+P+            1328.0 
+S+            1272.0
+Cl+           1371.0 
+Fe+           1173.0 
+H2+           1488.3 
+HeH+          1352.0 
+CH+           1619.1
+NH+           1678.1 
+OH+           1292.7 
+SiH+          1136.2 
+PH+           1219.0 
+HS+           1137.0
+HCl+          1137.7 
+C2+           1992.0 
+CN+           1796.3 
+CO+           1238.3 
+SiC+          ......
+CP+           1529.0 
+CS+           1356.0 
+CCl+          1243.0 
+N2+           1503.3 
+NO+           984.7
+SiN+          ...... 
+PN+           1249.0 
+NS+           1119.0 
+O2+           1164.7 
+SiO+          1001.2
+PO+           778.0 
+SO+           1000.7 
+ClO+          1158.0 
+SiS+          ...... 
+S2+           1031.0
+H3+           1107.0 
+CH2+          1386.0 
+NH2+          1266.4 
+H2O+          977.9 
+SiH2+         1155.2
+PH2+          1090.0 
+H2S+          991.0 
+H2Cl+         867.0 
+C2H+          1689.0 
+HCN+          1448.0
+HCO+          825.6 
+HOC+          963.0 
+HCSi+         ...... 
+HCP+          1208.0 
+HCS+          1018.0
+N2H+          1035.5 
+HNO+          1074.4 
+HNSi+         ...... 
+HPN+          ...... 
+HNS+          ......
+O2H+          1108.5 
+SiOH+         ......
+HPO+          ...... 
+HSO+          ...... 
+HSiS+         ......
+S2H+          ...... 
+C3+           2004.0 
+CCN+          1715.0 
+CNC+          1620.0 
+C2O           286.60
+C2O+          ......
+SiC2+         1594.0 
+CCP+          ...... 
+C2S+          ...... 
+NCO+          1289.0 
+SiNC+         ......
+CO2+          935.7 
+OCS+          936.0 
+NO2+          977.0 
+SO2+          894.0 
+CH3+          1098.0
+NH3+          941.0 
+H3O+          597.0 
+SiH3+         992.0 
+PH3+          966.0 
+H3S+          797.0
+C2H2+         1328.5 
+HCNH+         947.0 
+H2NC+         1109.0 
+H2CO+         944.5 
+SiCH2+        ......
+PCH2+         ...... 
+H2CS+         1006.0 
+H2CCl+        962.1 
+H2NO+         939.7 
+SiNH2+        889.9
+PNH2+         ...... 
+H2SiO+        ...... 
+H2PO+         ...... 
+H2S2+         913.0 
+C3H+          1593.0
+CCNH+         1531.0 
+HC2O+         1096.0 
+C2HO+         ...... 
+SiC2H+        ...... 
+PC2H+         ......
+HC2S+         ...... 
+HNCO+         1015.0 
+SiNCH+        ...... 
+HCO2+         589.0 
+HOCS+         757.0
+HSiO2+        ...... 
+HSO2+         597.0 
+C4+           2187.0 
+C3N+          ...... 
+C3O+          ......
+SiC3+         ...... 
+C3S+          ...... 
+C2N2+         1594.8 
+CH4+          1140.0 
+NH4+          630.0
+SiH4+         1170.0 
+C2H3+         1120.9 
+H3CO+         703.0 
+SiCH3+        977.0 
+PCH3+         ......
+H3CS+         901.0 
+PNH3+         ...... 
+H3SiO+        ...... 
+H3S2+         ...... 
+C3H2+         1381.0
+CH2CN+        1214.0 
+CH2CO+        882.7 
+SiC2H2+       ...... 
+PC2H2+        ...... 
+C4H+          1805.0
+HC3N+         1474.0 
+HC3O+         971.0 
+SiC3H+        ...... 
+PC3H+         ...... 
+HC3S+         ......
+C5+           2162.0 
+C4N+          ...... 
+SiC4+         ...... 
+C4P+          ...... 
+C4S+          ......
+CH5+          905.0 
+SiH5+         917.0 
+C2H4+         1074.0 
+CH4N+         745.0 
+CH2NH2+       ......
+CH3OH+        856.2 
+SiCH4+        1015.0 
+PCH4+         ...... 
+C3H3+        1075.0
+CH2CCH+      1201.645
+CH2CCH       352.384
+H2C3H+        ......
+CH3CN+        1258.0 
+CH3CO+        653.0 
+SiC2H3+       ...... 
+PC2H3+        ...... 
+CHOOH2+       403.0
+C4H2+         1422.0 
+H2C3N+        1127.5 
+C3H2O+        1157.0 
+SiC3H2+       ...... 
+C5H+          ......
+HC4N+         ...... 
+SiC4H+        ...... 
+PC4H+         ...... 
+HC4S+         ...... 
+C6+           ......
+C5N+          ...... 
+C2H5+         914.0 
+CH3OH2        567.0 
+C3H4+         1194.5 
+H4C2N+        817.0
+CH3CHO+       831.9 
+PC2H4+        ...... 
+C4H3+         1217.0 
+H3C3O+        751.0 
+C5H2+         ......
+H2C4N+        ...... 
+PC4H2+        ...... 
+C6H+ 	      ...... 
+HC5N+         ...... 
+C7+           2299.0
+C2H6+         1043.0 
+C3H5+         969.0 
+C2H5O+        583.0 
+H5C2O+        ...... 
+H4C3N+        817.0
+COOCH4+       688.0 
+C5H3+         ...... 
+H3C4N+        ...... 
+C6H2+         1569.0 
+H2C5N+        ......
+C7H+          ...... 
+C8+           ...... 
+C7N+          ...... 
+C2H7+         856.4 
+C2H5OH+       793.1
+C2H6O+        801.0 
+C4H5+         1076.0 
+H5C2O2+       386.0 
+C5H4+         1332.0 
+H4C4N+        ......
+C6H3+         ...... 
+H3C5N+        ...... 
+C7H2+         ...... 
+C8H+          ...... 
+HC7N+         ......
+C9+           2451.0 
+C2H6OH+       542.0 
+C2H7O+        507.0 
+C2H6CO+       719.7 
+C5H5+         1132.0
+C6H4+         1400.0 
+C7H3+         ...... 
+C8H2+         1741.0 
+H2C7N+        ...... 
+C9H+          ......
+C10+          ...... 
+C9N+          ...... 
+C3H6OH+       490.0 
+C6H5+         1141.3 
+C7H4+         ......
+H4C6N+        ...... 
+C8H3+         ...... 
+H3C7N+        ...... 
+C9H2+         ...... 
+HC9N+         ......
+C7H5+         ...... 
+C8H4+         ...... 
+C9H3+         ...... 
+H2C9N+        ...... 
+C8H5+         ......
+C9H4+         ...... 
+H4C8N+        ...... 
+H3C9N+        ...... 
+C9H5+         ...... 
+D             219.8
+HD              0.3
+D2              0.0
+LiH           140.8
+ND2           188.3
+ND3           -51.6
+OD             36.9
+HDO          -242.3
+D2O          -246.3
+Ne              0.0
+NaH           126.2
+MgH           230.3
+PH3            13.4
+SH            140.0
+SD            137.9
+O3            144.5
+e-              0.0
+CH3O           17.4
+CH3CH3        -84.0
+CH3OH2+       136.0
+CH2O          -108.700
+HOC           218.
+FeO           -272.
+SiC           -73.22
+NH2OH         -39.9
+H2NO           71.33
+HOCO         -179.912
+H2D+           1105.4
+ND2            188.3
+ND3           -51.6
+HF           -273.3
+DF           -276.2
+DS            137.9
+HD+          1490.498
+D+            219.804
+NCO           126.91
+NO2-          -182.66
+HNCO          -116.04
+C2H-          277.57
+O2H-          -88.88
+H2DO+         589.1
+DCN           127.89
+OD+           1291.20
+HDO+          974.5
+DCO+          823.3 
+CD            592.5
+CD+          1619.1
+N2D+         1035.5
+ND            376.5
+NHD           191.6
+NH2D          -38.9
+NH3D+         630.0
+CHD+          1386.0 
+CH2D+         1098.0
+CH3D+         1098.0
+CHD           390.0
+CH2D          149.0
+CH3D          -66.8
+ND            376.5
+C2D           560.0
+DNC           201.0
+C2HD          228.6
+CH4D+         905.0
+C2H2D+       1120.9
+C3D+         1593.0
+C3H2D+       1075.0 
+ND+          1678.1
+NHD+         1266.4 
+NH2D+         941.0
+HCND+         947.0 
+HDNC+        1109.0 
+DNO+         1074.4
+D-            146.1
+HCOOH         115.0
+CH3CHCH2     35.014
+C3H7+        825.0
+C4H3         545.65
+CH2CHCCH     294.717
+CH2CHC2H     294.717
+CH2CHCHCH2   125.118
+C4H4+         ......
+CH3C4H        ......
+C4H7+         ......
+C5H+          ......
+C5H2+         ......
+C5H3+         ......
+CH3C4H+       1332.0
+C6+           ......
+C6H+          ......
+C6H3+         ......
+C6H6         100.410
+C6H6+         ......
+C6H7+         ......
+C7H+          ......
+C7H2+         ......
+C7H3+         ......
+C7H4+         ......
+C7H5+         ......
+CH3C6H        ......
+C7H4+         ......
+C8+           ......
+C8H+          ......
+C8H3+         ......
+C8H4+         ......
+C8H5+         ......
+CH3CCH       195.10
+CH2CCH2      195.10
+HC4H          440.0
+CH3CH3+      1043.0
+C3H6+        ......
+HCCN         479.7    http://atct.anl.gov
+HCOOH+       721.94   http://atct.anl.gov
+CH2OOH+      792.90   http://atct.anl.gov
+CH3OO+       1003.49  http://atct.anl.gov
+CCCN         715.7    http://atct.anl.gov
+CCCN+        1867.6   http://atct.anl.gov
+CH3CHCH2+    975.15   http://atct.anl.gov
+CH2CHCCH+    1221.7   http://atct.anl.gov
+C5H3+        1521.6   http://garfield.chem.elte.hu/Burcat/burcat.html
+
+-------------------------------------------------------------
+http://garfield.chem.elte.hu/Burcat/burcat.html hf.doc
+Extended Third Millenium ideal Gas and Condensed Phase thermochemical Databse for Combustion with Updates from Active Thermochemical Tables
+Elke Goos,Alexander Burcat, Brank Ruscic 
+
+-------------------------------------------------------------
+Heats of formation and singlet-triplet separations of hydroxymethylene
+and 1-hydroxyethylidene. HOCO = CH2O (H at 296K)
+Matus MH1, Nguyen MT, Dixon DA.
+J Phys Chem A. 2006 Jul 20;110(28):8864-71.
+
+-------------------------------------------------------------
+HOC : Marenich et al. 2003 J Phys Chem A 2003, 107, 2343
+
+-------------------------------------------------------------
+NH2OH : wikipedia
+
+-------------------------------------------------------------
+HOCO:JOSEPH S. FRANCISCO et al. Vol. 43, No. 12   December 2010   1519-1526   ACCOUNTS OF CHEMICAL RESEARCH
+
+-------------------------------------------------------------
+H2D+ from difference in zero point energy J. Ramanlal, O. L. Polyansky⋆, and J. Tennyson A&A 406, 383–384 (2003) DOI: 10.1051/0004-6361:20030774
+here I use the exothermicity of the reaction H3+ + HD -> H2D+ + H2
+to estimate a consistent value for H2D+ 1105.4
+
+-------------------------------------------------------------
+http://cccbdb.nist.gov/hf0k.asp
+
+-------------------------------------------------------------
+H2DO+ (H3O+: 597.)
+H2DO+ ZPE: 6791 cm^-1 to 6806 cm^-1
+H3O+  ZPE: 7451 cm^-1
+difference is 7.895 KJ/mol
+ZPE from Huang et al. 2003 Journal of Chem Physics 118, 5431
+doi: 10.1063/1.1555974
+
+-------------------------------------------------------------
+OD+ ???
+OD         36.9
+OH        38.4
+OH+       1292.7 -> OD+ = OH+ +(OD-OH) = 1292.7 +36.9 - 38.4
+
+-------------------------------------------------------------
+Hugo 2009
+
+-------------------------------------------------------------
+DCN
+E(Harmonic zero-point energy) = 2907.80 cm^-1 E(Anarmonic ZPE) =
+2908.98 cm^-1 use E(AZPE, HCN) = 3503.48 cm^-1, E(DCN) = 2907.80 cm^-1
+difference = 7.1118 KJ/mol (or 855K) H(HCN) = 135 KJ/mol -> H(DCN) Jan
+Bron Journal of the Chemical Society Faraday Transactions 2 70(5) ·
+January 1974 DOI: 10.1039/f29747000871
+-------------------------------------------------------------
+
+The
+standard enthalpy of formation or standard heat of formation of a
+compound is the change of enthalpy during the formation of 1 mole of
+the compound from its constituent elements
+
+Each equation uses different Hreactant and Hproduct values
+
+For the bond dissociation equation: Delta H = BDE of reactants - BDE
+of products The BDE of reactants is positive because in a reaction,
+you are breaking the bonds of the reactants. The BDE of products is
+negative because you are forming the bonds of the products, not
+breaking them (hence the negative).
+
+For the heat of formation equation: Delta H = Heat of formation of
+products - Heat of formation of reactants The heat of formation of
+products is positive because you are forming the products. The heat of
+formation of the reactants is negative because you are breaking the
+bonds of the reactants, not forming them.
+
+Both equations give you the same delta H value for the reaction, but
+they use different values. One uses the bond dissociation energies and
+the other uses heat of formation. The bond dissociation energy and the
+heats of formation are opposites of one another.
+
+
+------------
+http://atct.anl.gov
+H2  0.0
+HD  0.328
+HD+ 1490.498
+H2NO 71.33
+H3+ 1110.304
+H2O -238.928
+H+ 1528.084
+OH 37.253
+NH 358.75
+CH2OH -10.44
+HCO 41.46
+O- 105.868
+NCO 126.91
+NO2-  -182.66
+HNCO  -116.04
+C2H-   277.57
+O2H-      -88.88
+HCO-   11.62
+O+ 1560.786
+NH2- 114.95
+HC2O  176.88
+H2F+  774.25
+CH3CH  374.6
+C2O  375.0
+C+    1797.848
+H2CN  242.23
+CH3O+  1062.57
+O2H+  1110.87
+COC 642.7
+N2H 252.40
+CHD      390.0
+D-  146.1
+-----------------------------------------
+HDO+   H2O+ (H2O-HDO) = 977.9 - (-238.9 + 242.3) =974.5 (rough estimate)
+DCO+ = HCO+ and adjustment
+Meudon PDR deuterium chemsitry (Roueff: use main isotoplogue heat of formation
+when it is not known)
+CD   = CH   = 592.5
+CD+  = CH+  = 1619.1
+N2D+ = N2H+ = 1035.5
+ND = NH     =  376.5
+NHD  = NH2  =  191.6
+NH2D = NH3  =  -38.9
+NH3D+ = NH4+  = 630.0
+CHD+, CH2D+, CH4+
+CHD = CH2 =      390.0
+CH2D = CH3
+CH3D = CH4
+ND   = NH
+C2D  = C2H
+DNC  = HNC
+C2HD = C2H2
+CH4D+ = CH5+
+C2H2D+
+C3D+
+C3H2D+
+ND+
+NHD+
+NH2D+
+HCND+   = HCNH+   947.0 
+HDNC+   = H2NC+  1109.0 
+DNO+    = HNO+   1074.4 
+------------------------
+D- use the electron affinity of K. R. Lykke, K. K. Murray, and W. C. Lineberger
+Phys. Rev. A 43, 6104 – Published 1 June 1991
+------------------------
