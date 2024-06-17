@@ -1,5 +1,5 @@
 Heat of formation at 0K [kJ/mol] (Millar 1997, A&AS 121, 139) + NIST
-520
+519
 H             216.0 
 He            0.0 
 C             711.2 
@@ -221,6 +221,7 @@ HPN+          ......
 HNS+          ......
 O2H+          1108.5 
 SiOH+         ......
+HSiO+         886.4
 HPO+          ...... 
 HSO+          ...... 
 HSiS+         ......
@@ -424,7 +425,6 @@ CH3OH2+       136.0
 CH2O          -108.700
 HOC           218.
 FeO           -272.
-SiC           -73.22
 NH2OH         -39.9
 H2NO           71.33
 HOCO         -179.912
