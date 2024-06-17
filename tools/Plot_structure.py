@@ -175,7 +175,7 @@ for i in range(4+NELEM+NMOLE,4+NELEM+NMOLE+NDUST,1):
   yy = dat[:,ind]                # log10 nsolid/n<H>
   yy = yy + lognH - logntot      # log10 nsolid/ntot
   ymax = np.max([ymax,np.max(yy[iii])])
-ymin = ymax-10
+ymin = ymax-15
 indices = np.argsort(smean)
 if (ymax>-99):
   print solids

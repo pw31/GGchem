@@ -12,18 +12,12 @@
       implicit none
       integer :: loop,i,ii,j,iel,e,smax,ret
       character(len=2) :: cel(40),elnam
-      character(len=20) :: molname,leer='                    '
+      character(len=20) :: molname,uname,leer='                    '
       character(len=200) :: filename
       character(len=300) :: line
       character(len=1) :: char
       logical :: found,charged
       real*8 :: fiterr
-      interface
-        function upper(strIn) result(strOut)
-        character(len=*),intent(in) :: strIn
-        character(len=len(strIn)) :: strOut
-        end
-      end interface
 
       cel(:) = '.'
       read(elements,*,end=100) cel
@@ -139,10 +133,12 @@
           if (smax>Natmax) cycle   ! stoichiometric coefficient > Natmax
           if (m_kind(0,i)==1.and.natom(i)==1) cycle  ! pure atom
           j = index(molname,"_")
+          uname = molname
+          call upper(uname)
           if (j>1) then
-            cmol(i) = upper(molname(j+1:)//leer(1:j))
+            cmol(i) = uname(j+1:)//leer(1:j)
           else
-            cmol(i) = upper(molname)
+            cmol(i) = uname
           endif
           charged = .false.
           do j=1,m_kind(0,i)

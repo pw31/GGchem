@@ -6,7 +6,7 @@
      &                    dust_nam,dust_nel,dust_el,dust_nu,dust_mass,
      &                    is_liquid,Tcorr,elnam,Nfit,Tfit,Bfit,fitTmax
       implicit none
-      integer,parameter  :: qp = selected_real_kind ( 33, 4931 )
+      integer,parameter :: qp = selected_real_kind ( 33, 4931 )
       real*8,intent(in) :: T
       real(kind=qp),intent(in) :: nat(NELEM),nmol(NMOLE)
       real(kind=qp),intent(out):: Sat(NDUST)
@@ -21,12 +21,6 @@
       !real(kind=qp) :: tiny16=TINY(T1),huge16=HUGE(T1)
       integer :: i,j,l,STINDEX,el,imol,imol1,imol2,ifit
       character(len=20) :: search,leer='                    '
-      interface
-        function upper(strIn) result(strOut)
-        character(len=*),intent(in) :: strIn
-        character(len=len(strIn)) :: strOut
-        end
-      end interface
 
       T1  = T
       T2  = T1**2
@@ -79,8 +73,9 @@
             n1 = nat(dust_el(i,1))
           else
             search = trim(dust_nam(i))
+            call upper(search)
             l = index(search,'[')
-            search = upper(search(1:l-1)//leer(l:20))
+            search = search(1:l-1)//leer(l:20)
             imol = STINDEX(cmol,NMOLE,search)
             if (imol<=0) then
               print*,"*** supersat.f molecule not found ",dust_nam(i)
@@ -99,8 +94,9 @@
             n1 = nat(dust_el(i,1))
           else
             search = trim(dust_nam(i))
+            call upper(search)
             l = index(search,'[')
-            search = upper(search(1:l-1)//leer(l:20))
+            search = search(1:l-1)//leer(l:20)
             imol = STINDEX(cmol,NMOLE,search)
             if (imol<=0) then
               print*,"*** supersat.f molecule not found ",dust_nam(i)
@@ -154,8 +150,9 @@
             n1 = nat(dust_el(i,1))
           else
             search = trim(dust_nam(i))
+            call upper(search)
             l = index(search,'[')
-            search = upper(search(1:l-1)//leer(l:20))
+            search = search(1:l-1)//leer(l:20)
             imol = STINDEX(cmol,NMOLE,search)
             if (imol<=0) then
               print*,"*** supersat.f molecule not found ",dust_nam(i)

@@ -38,13 +38,13 @@
       initchem_info      = .true.
       disk_model         = .true.
       abund_pick   = 3
-      model_dim    = 1
+      model_dim    = 0
       model_struc  = 0
       verbose      = 0
       Npoints      = 100
       Tfast        = 1000.d0
       Tmin         = 100.d0
-      Tmax         = 6000.d0
+      Tmax         = 1000.d0
       pmin         = 1.d0*bar
       pmax         = 1.d0*bar
       nHmin        = 4.d+19

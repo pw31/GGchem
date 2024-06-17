@@ -6,6 +6,9 @@ dispol_BarklemCollet.dat                ! dispol_file
 dispol_StockKitzmann_withoutTsuji.dat   ! dispol_file2
 dispol_WoitkeRefit.dat                  ! dispol_file3
 
+# name of data file for condensed species
+DustChem_extended.dat                            ! DustChem_file
+
 # abundance options 0=custom 1=EarthCrust, 2=Ocean, 3=Solar, 4=Meteorites
 .false.               ! pick_mfrac
 0                     ! abund_pick
