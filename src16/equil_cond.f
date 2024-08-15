@@ -1653,7 +1653,8 @@
             base(imax,:) = tmp2(:) 
           endif
           if (DF(ii,ii)==0.Q0) then
-            print*,"*** WARNING: triangulation impossible in equil_cond"
+            if (verbose>0) print*,"*** WARNING:",
+     >         "triangulation impossible in equil_cond"
             cycle  
           endif  
           do k=ii+1,Nsolve

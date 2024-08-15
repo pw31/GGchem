@@ -4,7 +4,7 @@
       use PARAMETERS,ONLY: Mpl,Rpl,Tmin,Tmax,pmin,pmax,nHmin,nHmax,
      >                     model_eqcond,model_pconst,Npoints,
      >                     model_struc,struc_file,remove_condensates,
-     >                     model_eqcond
+     >                     model_eqcond,Nseq,Tseq
       use CHEMISTRY,ONLY: NELM,NMOLE,elnum,cmol,catm,el,charge
       use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,
      >                    muH,mass,mel,amu,grav,
@@ -25,7 +25,7 @@
       integer :: i,j,k,l,e,jj,dk,NOUT,Nfirst,Nlast,Ninc,iW,idum
       integer :: it,n1,n2,n3,n4,n5,Ndat,dind(1000),ek,eind(1000)
       integer :: Nx,Nz,ix,iz,Nfound,e_source(100),e_target(100)
-      integer :: stindex,cut,verbose=0
+      integer :: stindex,cut,iseq,verbose=0
       character(len=20000) :: header
       character(len=200) :: line,filename
       character(len=20) :: name,short_name(NDUST),dname,ename
@@ -461,9 +461,14 @@
      &                   (elnam(elnum(j)),j=el+1,NELM)
         print'(99(1pE12.3))',(eps0(elnum(j)),j=1,el-1),
      &                       (eps0(elnum(j)),j=el+1,NELM)
-        
+
+        if (i==Nfirst.and.Nseq>1) then  ! on base point, use Tseq() to get solution
+          iseq = 1
+          Tg = Tseq(1)
+        endif
         !--- run chemistry (+phase equilibrium)    ---
         !--- iterate to achieve requested pressure ---
+ 100    continue
         do it=1,99
           if (model_pconst) nHges = p*mu/(bk*Tg)/muH
           if (model_eqcond) then
@@ -505,8 +510,16 @@
           fold = ff
           print '("p-it=",i3,"  mu=",2(1pE20.12))',it,mu/amu,dmu/mu
           if (ABS(dmu/mu)<1.E-10) exit
-        enddo  
-
+        enddo
+        if (i==Nfirst.and.Nseq>1) then  ! on base point, use Tseq() to get solution
+          if (iseq<Nseq) then
+            iseq = iseq+1
+            Tg = Tseq(iseq)
+            if (iseq==Nseq) Tg=Tgas(i)
+            goto 100
+          endif
+        endif
+          
         !--- remove all condensates and put them in reservoir? ---
         if (remove_condensates) then
           fac = 1.Q+0
