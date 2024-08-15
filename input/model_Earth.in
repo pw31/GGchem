@@ -1,0 +1,35 @@
+# selected elements
+H He C N O Ar Ne F S Cl Fe Mn Si Mg Ca Al Na K Ti P Cr el
+
+# name of files with molecular kp-data
+dispol_BarklemCollet.dat                ! dispol_file
+dispol_StockKitzmann_withoutTsuji.dat   ! dispol_file2
+dispol_WoitkeRefit.dat                  ! dispol_file3
+
+# name of data file for condensed species
+DustChem_extended.dat                   ! DustChem_file
+
+# abundance options 0=custom 1=EarthCrust, 2=Ocean, 3=Solar, 4=Meteorites
+.false.               ! pick_mfrac
+0                     ! abund_pick
+abund_Earth.in
+
+# equilibrium condensation?
+.true.                ! model_eqcond
+
+# model options
+0                     ! model_dim  (0,1,2)
+.true.                ! model_pconst
+1.013                 ! pmax [bar]
+288.15                ! Tmin
+288.15                ! Tmax [K]
+50                    ! Npoints
+5                     ! Nseq
+2000.0  1000.  600.  400.  288.15 
+10                    ! NewBackIt  
+1.E+10                ! NewBackFac
+1                     ! NewFastLevel
+3                     ! NewPreMethod
+720.0                 ! Tfast
+
+0 ! verbose
