@@ -16,18 +16,22 @@ abund_Venus_Paul.in
 
 # equilibrium condensation?
 .true.                ! model_eqcond
-.false.               ! adapt_cond
+.true.                ! remove_condensates
 
 # model options
-0                     ! model_dim  (0,1,2)
+1                     ! model_dim  (0,1,2)
+7                     ! model_struc 
+VenusHighResFit.dat
+0.815                 ! Mplanet [MEarth]
+0.950                 ! Rplanet [REarth]
 .true.                ! model_pconst
 735.0                 ! Tmax [K]
 735.0                 ! Tmin [K]
+91.0                  ! pmax [bar]
+1.E-4                 ! pmin [bar]
+200                   ! Npoints
 4                     ! Nseq
 3000.0 2000.0 1100.0 735.0 
-90.0                  ! pmax [bar]
-90.0                  ! pmin [bar]
-400                   ! Npoints
 10                    ! NewBackIt  
 1.E+10                ! NewBackFac
 1                     ! NewFastLevel
