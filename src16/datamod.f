@@ -8,7 +8,7 @@
       logical :: useDataBase,remove_condensates,phyllosilicates
       logical :: metal_sulphates 
       logical :: auto_atmos,adapt_cond,stop_after_init,use_SiO
-      logical :: disk_model
+      logical :: disk_model,output_dispol
       real*8  :: Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,Tseq(100)
       real*8  :: Mpl,Rpl,gamma,Tmin_atmos
       end

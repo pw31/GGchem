@@ -5,7 +5,7 @@
      >     model_struc,model_eqcond,Npoints,useDatabase,verbose,
      >     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,pick_mfrac,use_SiO,
      >     abund_file,struc_file,remove_condensates,phyllosilicates,
-     >     metal_sulphates, 
+     >     metal_sulphates,output_dispol, 
      >     initchem_info,auto_atmos,stop_after_init,Mpl,Rpl,gamma,
      >     adapt_cond,adapt_file,method_eqcond,Nseq,Tseq,Tmin_atmos,
      >     disk_model 
@@ -37,6 +37,7 @@
       model_pconst       = .true.
       initchem_info      = .true.
       disk_model         = .true.
+      output_dispol      = .false.
       abund_pick   = 3
       model_dim    = 0
       model_struc  = 0
@@ -100,6 +101,8 @@
           read(line,*) use_SiO
         else if (index(line,"! disk_model")>0) then   
           read(line,*) disk_model
+        else if (index(line,"! output_dispol")>0) then   
+          read(line,*) output_dispol
         else if (index(line,"! model_dim")>0) then   
           read(line,*) model_dim
         else if (index(line,"! model_pconst")>0) then   

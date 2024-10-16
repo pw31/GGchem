@@ -89,7 +89,7 @@
       real*8,dimension(NLAMmax) :: kabs,ksca,kext
       real    :: kapROSS,kRoss,dustgas
       integer :: i,imol,iraus,e,aIraus,aIIraus,j,verb,dk,it,stindex
-      integer :: k,keyel,dustst
+      integer :: k,keyel,dustst,count
       integer :: H2O,CO2,CH4,O2,H2,N2,NH3,CO,OCS,SO2,S2,H2S,HCl,HF
       logical :: included,haeufig,raus(NMOLE)
       logical :: rausI(NELEM),rausII(NELEM)
@@ -324,7 +324,7 @@
         if (e==el) then
           write(*,'("    Element ",A2,1pE15.3)') 'el',0.Q0
           write(*,'(1x,A18,1pE10.3)') "nel",nel
-          threshold = 1.Q-3*nel
+          threshold = 1.Q-30*nel
         else   
           write(*,'("    Element ",A2,1pE15.3)') elnam(i),eps0(i)*nHges 
           !threshold = eps(i)*nHges*1.D-5
@@ -362,6 +362,7 @@
         enddo  
 
         raus = .false.
+        count = 0
         do 
           iraus = 0
           nmax  = 0.Q0
@@ -382,6 +383,8 @@
           if (.not.haeufig) exit
           write(*,'(1x,A18,1pE10.3)') "n"//trim(cmol(iraus)),nmol(iraus)
           raus(iraus) = .true.
+          count = count+1
+          if (count>15) exit
         enddo
       enddo  
 
