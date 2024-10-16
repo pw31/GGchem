@@ -256,27 +256,9 @@
      >         (catm(m_kind(j,i)),j=1,m_kind(0,i)),
      >         (m_anz(j,i),j=1,m_kind(0,i))
           nout = 4
-          if (fit(i)==6)              nout=7
+          if (fit(i)==6) nout=7
           if (fit(i)==7.or.fit(i)==8) nout=13
           write(12,'(I2,99(1pE16.8))') fit(i),(a(i,j),j=0,nout)
-          !read(line,*) molname,iel,cel(1:iel),m_anz(1:iel,i)
-          !molname=trim(molname)
-          !fiterr = 0.0
-          !j = index(line,"+/-")
-          !if (j>0) read(line(j+3:),*) fiterr
-          !error(i) = fiterr
-          !read(12,'(A300)') line
-          !read(line,*) fit(i)
-          !if (fit(i)==6) then
-          !  read(line,*) fit(i),(a(i,j),j=0,7)
-          !else if (fit(i)==7) then
-          !  i_nasa = 1
-          !  read(line,*) fit(i),(a(i,j),j=0,13)
-          !else if (fit(i)==8) then
-          !  read(line,*) fit(i),(a(i,j),j=0,13)
-          !else   
-          !  read(line,*) fit(i),(a(i,j),j=0,4)
-          !endif  
         enddo
         close(12)
       endif
