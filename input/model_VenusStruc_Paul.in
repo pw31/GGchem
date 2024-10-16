@@ -29,7 +29,7 @@ VenusHighResFit.dat
 735.0                 ! Tmin [K]
 91.0                  ! pmax [bar]
 1.E-4                 ! pmin [bar]
-200                   ! Npoints
+800                   ! Npoints
 4                     ! Nseq
 3000.0 2000.0 1100.0 735.0 
 10                    ! NewBackIt  

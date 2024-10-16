@@ -13,6 +13,7 @@ DustChem_extended.dat                   ! DustChem_file
 .false.               ! pick_mfrac
 0                     ! abund_pick
 abund_Venus_Paul.in
+.true.                ! output_dispol
 
 # equilibrium condensation?
 .true.                ! model_eqcond

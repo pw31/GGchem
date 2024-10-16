@@ -131,13 +131,13 @@ if (ymax>-10):
   plt.clf()
 
 #================ the gas phase element abundances ===================
-fig,ax = plt.subplots(figsize=(6.5,5.5))
+fig,ax = plt.subplots(figsize=(5.5,7.5))
 count = 0
 ymax = -100.0
 for i in range(4+NELEM+NMOLE+2*NDUST,4+NELEM+NMOLE+2*NDUST+NELEM,1):
   yy = dat[:,i]               # log10 eps
   ymax=np.max([ymax,np.max(yy)])
-ymin = ymax-10.0  
+ymin = ymax-17.0  
 for i in range(4+NELEM+NMOLE+2*NDUST,4+NELEM+NMOLE+2*NDUST+NELEM,1):
   elm = keyword[i]
   element = elm[3:]
