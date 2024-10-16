@@ -80,7 +80,8 @@
       real*8,allocatable,save :: amerk(:),ansave(:)
       real*8,allocatable,save :: badness(:),pcorr(:,:) 
       integer,allocatable,save :: pkey(:)
-!$omp threadprivate(TiC,ilauf,amerk,ansave,badness,pcorr,pkey)
+!$omp threadprivate(TiC,H2O,CH4,CO2,ilauf,amerk,ansave,badness)
+!$omp threadprivate(pcorr,pkey)
 *-----------------------------------------------------------------------      
 
       ifatal = 0
@@ -187,7 +188,7 @@
 *-----------------------------------------------------------------------
 *     ! estimate atomic pressures: new method
 *     =======================================
-      sortq(:) = 1.Q0
+      sortq(:) = 1.0
  110  Nseq = nel
       done(:) = .false.                ! all elements to be estimated here
       !if (charge) done(el)=.true.     ! ... except for the electrons      
@@ -550,7 +551,7 @@
         !--- solve with different methods ---
         if (verbose>1) then 
           print'("corr",99(1pE11.2))',pcorr(enew,act_to_all(1:Nact))
-        endif  
+        endif
         qual  = 9.d+99
         do iloop=1,4
           if (iloop==1) then
@@ -772,8 +773,12 @@
               do ii=1,Nact
                 qual = MAX(qual,ABS(dp(ii)))
               enddo  
-              !fak = MIN(1.0,3.0/qual)
-              fak = 3.0/MAX(3.0,qual)
+              if (qual>1.d+99) exit      ! not working, try next imethod
+              if (qual==0.d0) then
+                qual = 1.d+99
+                exit                     ! not working, try next imethod
+              endif  
+              fak = MIN(1.0,3.0/qual)
               do ii=1,Nact
                 i = act_to_all(ii) 
                 xx(i) = xx(i) - fak*dp(ii)
@@ -796,7 +801,7 @@
           do ii=1,Nact
             i = act_to_all(ii)
             anmono(i) = pbefore(i)    ! do not use pre-it corrections again
-          enddo 
+          enddo
           if (verbose>1) read(*,'(A1)') char
         enddo  
         if (qual>1.d-4) then
@@ -930,10 +935,6 @@
           DF = DF0
           call GAUSS8(nel,Nact,DF,dp,FF)
         endif  
-        !do i=1,Nact
-        !  print'(99(1pE11.3E3))',DF0(i,1:Nact),dp(i),FF0(i)
-        !enddo  
-        !print*,ind
 
 *       ! apply limited NR step and check convergence 	  
 *       =============================================

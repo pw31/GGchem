@@ -78,7 +78,8 @@
       real(kind=qp),allocatable,save :: amerk(:),ansave(:)
       real(kind=qp),allocatable,save :: badness(:),pcorr(:,:) 
       integer,allocatable,save :: pkey(:)
-!$omp threadprivate(TiC,ilauf,amerk,ansave,badness,pcorr,pkey)
+!$omp threadprivate(TiC,H2O,CH4,CO2,ilauf,amerk,ansave,badness)
+!$omp threadprivate(pcorr,pkey)
 *-----------------------------------------------------------------------      
 
       ifatal = 0
@@ -246,7 +247,7 @@
             if (.not.done(e)) then
               known = .false.
               exit
-            endif  
+            endif
             if (e==enew) then
               l = nu
               affect = .true.
@@ -780,7 +781,7 @@
               qual = 0.Q0
               do ii=1,Nact
                 qual = MAX(qual,ABS(dp(ii)))
-              enddo  
+              enddo
               !fak = MIN(1.Q0,3.Q0/qual)
               fak = 3.Q0/MAX(3.Q0,qual)
               do ii=1,Nact
@@ -1304,7 +1305,7 @@
       real(kind=qp),parameter :: Rgas=8.3144598Q+0
       real(kind=qp),parameter :: ln10=LOG(10.Q0)
       real(kind=qp),parameter :: lnatm=LOG(atm), lnbar=LOG(bar)
-      real(kind=qp) :: lnk,dG 
+      real(kind=qp) :: lnk,dG
       real(kind=qp) :: h_rt,s_r               !Added by Yui Kawashima
       real(kind=qp) :: dG_rt_ref(NELEM),dG_rt !Added by Yui Kawashima
       integer:: k,j                           !Added by Yui Kawashima
