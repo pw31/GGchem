@@ -3,7 +3,7 @@
 **********************************************************************
       use PARAMETERS,ONLY: model_eqcond,phyllosilicates,use_SiO,
      &                     metal_sulphates
-      use CHEMISTRY,ONLY: NMOLE,NELM,catm
+      use CHEMISTRY,ONLY: NMOLE,NELM,catm,cmol
       use DUST_DATA,ONLY: NDUSTmax,NEPS,NELEM,NDUST,eps0,amu,
      &                    dust_nam,dust_rho,dust_vol,dust_mass,
      &                    dust_nel,dust_nu,dust_el,fit,cfit,
@@ -16,7 +16,7 @@
       real*8 :: dmass,prec(NDUSTmax)
       character(len=10000) :: allcond
       character(len=200):: zeile,lastzeile
-      character(len=100) :: trivial(NDUSTmax),tmp
+      character(len=100) :: trivial(NDUSTmax),tmp,search
       character(len=2)  :: name
       logical :: found,allfound,hasH,hasSi,hasAl,hasCa
 
@@ -134,7 +134,23 @@
         if ((.not.use_SiO).and.
      &       trim(dust_nam(NDUST))=='SiO[s]') allfound=.false.
         if ((.not.metal_sulphates).and.
-     &       index(trivial(NDUST),'SULFATE')>0) allfound=.false.   
+     &       index(trivial(NDUST),'SULFATE')>0) allfound=.false.
+        if ((fit(NDUST)==3.or.fit(NDUST)==4.or.fit(NDUST)==6
+     &       .or.fit(NDUST)==99)
+     &       .and.SUM(dust_nu(NDUST,1:dust_nel(NDUST)))>1) then
+          
+          search = dust_nam(NDUST)
+          j1 = index(search,"[")
+          search = search(1:j1-1)
+          call upper(search)
+          if (dust_nam(NDUST)=='NH4SH[s]') search='H2S'
+          found = .false.
+          do j=1,NMOLE
+            if (trim(cmol(j))==trim(search)) found=.true.
+          enddo
+          print*,fit(NDUST),trim(dust_nam(NDUST)),trim(search),found
+          if (.not.found) allfound=.false.
+        endif
         if (allfound) then
           dust_mass(NDUST) = dmass
           dust_vol(NDUST) = dmass/dust_rho(NDUST)
