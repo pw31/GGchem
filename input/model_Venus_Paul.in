@@ -5,6 +5,7 @@ H C N O F S Cl Fe Mn Si Mg Ca Al Na K Ti el
 dispol_BarklemCollet.dat                ! dispol_file
 dispol_StockKitzmann_withoutTsuji.dat   ! dispol_file2
 dispol_WoitkeRefit.dat                  ! dispol_file3
+.false.                                 ! output_dispol
 
 # name of data file for condensed species
 DustChem_extended.dat                   ! DustChem_file
@@ -33,6 +34,6 @@ abund_Venus_Paul.in
 1.E+10                ! NewBackFac
 1                     ! NewFastLevel
 3                     ! NewPreMethod
-900.0                 ! Tfast
+1000.0                 ! Tfast
 
 0 ! verbose

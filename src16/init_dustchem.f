@@ -3,7 +3,7 @@
 **********************************************************************
       use PARAMETERS,ONLY: model_eqcond,phyllosilicates,use_SiO,
      &                     metal_sulphates
-      use CHEMISTRY,ONLY: NMOLE,NELM,catm
+      use CHEMISTRY,ONLY: NMOLE,NELM,catm,cmol
       use DUST_DATA,ONLY: NDUSTmax,NEPS,NELEM,NDUST,eps0,amu,
      &                    dust_nam,dust_rho,dust_vol,dust_mass,
      &                    dust_nel,dust_nu,dust_el,fit,cfit,
@@ -12,12 +12,13 @@
      &                    DustChem_file
       use EXCHANGE,ONLY: H,Si,Al,Ca
       implicit none
-      integer :: i,imax,j,k,el,j1,j2
+      integer :: i,imax,j,k,l,el,j1,j2,imol,STINDEX
       real*8 :: dmass,prec(NDUSTmax)
       character(len=10000) :: allcond
       character(len=200):: zeile,lastzeile
       character(len=100) :: trivial(NDUSTmax),tmp
       character(len=2)  :: name
+      character(len=20) :: search,leer='                    '
       logical :: found,allfound,hasH,hasSi,hasAl,hasCa
 
       write(*,*) 
@@ -134,7 +135,24 @@
         if ((.not.use_SiO).and.
      &       trim(dust_nam(NDUST))=='SiO[s]') allfound=.false.
         if ((.not.metal_sulphates).and.
-     &       index(trivial(NDUST),'SULFATE')>0) allfound=.false.   
+     &       index(trivial(NDUST),'SULFATE')>0) allfound=.false.
+        if (allfound) then
+          if (fit(NDUST)==3.or.fit(NDUST)==4.or.
+     &        fit(NDUST)==6.or.fit(NDUST)==99) then
+            !--- check whether corresponding molecule exists ---
+            if (dust_nel(NDUST)>1.or.dust_nu(NDUST,1)>1) then
+              search = trim(dust_nam(NDUST))
+              call upper(search)
+              l = index(search,'[')
+              search = search(1:l-1)//leer(l:20)
+              imol = STINDEX(cmol,NMOLE,search)
+              !print*,imol,trim(search),search.eq.'NH4SH'
+              if (imol==0.and.search.ne.'NH4SH') then
+                allfound=.false.
+              endif
+            endif
+          endif
+        endif
         if (allfound) then
           dust_mass(NDUST) = dmass
           dust_vol(NDUST) = dmass/dust_rho(NDUST)

@@ -5,6 +5,8 @@ H C N O F S Cl Fe Mn Si Mg Ca Al Na K Ti el
 dispol_BarklemCollet.dat                ! dispol_file
 dispol_StockKitzmann_withoutTsuji.dat   ! dispol_file2
 dispol_WoitkeRefit.dat                  ! dispol_file3
+### 20.0                                ! H2SO4_super1
+### 10.0                                ! H2SO4_super2
 
 # name of data file for condensed species
 DustChem_extended.dat                   ! DustChem_file
@@ -21,15 +23,15 @@ abund_Venus_Paul.in
 # model options
 1                     ! model_dim  (0,1,2)
 7                     ! model_struc 
-VenusHighResFit.dat
+VenusHighResFit_1000.dat
 0.815                 ! Mplanet [MEarth]
 0.950                 ! Rplanet [REarth]
 .true.                ! model_pconst
 735.0                 ! Tmax [K]
 735.0                 ! Tmin [K]
 91.0                  ! pmax [bar]
-1.E-4                 ! pmin [bar]
-800                   ! Npoints
+3.E-5                 ! pmin [bar]
+1000                  ! Npoints
 4                     ! Nseq
 3000.0 2000.0 1100.0 735.0 
 10                    ! NewBackIt  
