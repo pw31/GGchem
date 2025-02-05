@@ -172,22 +172,19 @@
           read(line,*) method_eqcond
         else if (index(line,"! dispol_file2")>0) then 
           i = index(line,"!")
-          !read(line(1:i-1),*) dispol_file(2)
           dispol_file(2) = line(1:i-1)
           dispol_set = 2
         else if (index(line,"! dispol_file3")>0) then 
           i = index(line,"!")
-          !read(line(1:i-1),*) dispol_file(3)
           dispol_file(3) = line(1:i-1)
           dispol_set = 3
         else if (index(line,"! dispol_file4")>0) then 
           i = index(line,"!")
-          !read(line(1:i-1),*) dispol_file(4)
           dispol_file(4) = line(1:i-1)
           dispol_set = 4
         else if (index(line,"! dispol_file")>0) then 
           i = index(line,"!")
-          read(line(1:i-1),*) dispol_file(1)
+          dispol_file(1) = line(1:i-1)
           dispol_set = 1
         else if (index(line,"! DustChem_file")>0) then 
           i = index(line,"!")
