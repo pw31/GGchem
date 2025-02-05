@@ -18,7 +18,7 @@
       character(len=200):: zeile,lastzeile
       character(len=100) :: trivial(NDUSTmax),tmp,search
       character(len=2)  :: name
-      character(len=20) :: search,leer='                    '
+      character(len=20) :: leer='                    '
       logical :: found,allfound,hasH,hasSi,hasAl,hasCa
 
       write(*,*) 
