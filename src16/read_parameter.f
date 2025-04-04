@@ -36,7 +36,7 @@
       stop_after_init    = .false.
       model_pconst       = .true.
       initchem_info      = .true.
-      disk_model         = .true.
+      disk_model         = .false.
       output_dispol      = .false.
       abund_pick   = 3
       model_dim    = 0
