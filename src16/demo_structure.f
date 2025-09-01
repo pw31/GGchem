@@ -432,7 +432,7 @@
       !--------------------------------------------------------
         open(3,file=filename,status='old')
         do i=1,99999
-          read(3,'(A200)',end=557) line
+          read(3,'(A200)',end=558) line
           if (index(line,"! Number of atmosphere layers:")>0) then
             read(3,*) Npoints
             print*,"Noints=",Npoints
@@ -460,7 +460,7 @@
             nHtot = dens/muH
           endif
         enddo
- 557    close(3)
+ 558    close(3)
         do i=1,Npoints
           estruc(i,:) = eps0(:)
         enddo

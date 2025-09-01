@@ -24,10 +24,10 @@
      >                    NewFastLevel,NewPreMethod,
      >                    nml=>NMOLE,nel=>NELM,cmol,catm,
      >                    m_kind,m_anz,charge,elion,el,
-     >                    Natom,Ncmax,STOImax,H,C,N,O,
+     >                    Natom,Ncmax,STOImax,H,C,N,O,S,
      >                    th1,th2,th3,th4,TT1,TT2,TT3
       use EXCHANGE,ONLY: chemcall,chemiter,preUse,preIter,preEst,
-     >                   DUALcorr,HCOcorr
+     >                   DUALcorr,HCOcorr,COScorr
       implicit none
 *-----------------------------------------------------------------------
 *  Dimensionierung fuer die Molekuel- und Atom Felder. Hier ist auf
@@ -52,12 +52,14 @@
       integer :: e,i,j,j1,ii,jj,l,it,m1,m2,piter,ifatal,ipull,pullmax
       integer :: lmin,lmax,Nseq,iloop,imethod,enew,i1,i2,i3,s1,s2,s3,s4
       integer :: eseq(nel),imaj(nel),imaj2(nel)
-      integer :: NpreLoop,NpreIt,Ntaken,Nestim,DUALco,HCOco
+      integer :: NpreLoop,NpreIt,Ntaken,Nestim,DUALco,HCOco,COSco
       integer :: ind,indx(nel),info,ipvt(nel)
       integer,parameter :: itmax=200
       real*8 :: finish,qual,qual0,qual1,qual2,qual3,qmost,qq
       real*8 :: g(0:nml),limit
-      real*8 :: pH2O,pCO2,pCH4,lpH2O,lpCO2,lpCH4,lpH,lpO,lpC
+      real*8 :: pH2O,pCO2,pCH4,pSO2,pS2
+      real*8 :: lpH2O,lpCO2,lpCH4,lpSO2,lpS2
+      real*8 :: lpH,lpO,lpC,lpS
       real*8 :: kT,kT1,cc,nelek,ng,Sa,fak,lth,arg,term,f,fs
       real*8 :: pel,delta,pat,atfrac,atmax,lnp,lnp3
       real*8 :: nges(nel),coeff(-3:Ncmax),lnc(-3:Ncmax)
@@ -72,16 +74,17 @@
       real*8 :: condnum1,work2(nel)
       logical :: from_merk,eact(nel),redo(nel),done(nel),affect,known
       logical :: relevant(nml)
-      logical :: possible,ptake,HCOproblem,hasH,hasC,hasO,IS_NAN
+      logical :: HCOproblem,COSproblem,hasH,hasC,hasO,hasS
+      logical :: possible,ptake,IS_NAN
       character(len=5000) :: mols
       character(len=100) :: txt
       character(len=1) :: char,bem
-      integer,save :: TiC,H2O,CH4,CO2,ilauf=0
+      integer,save :: TiC,H2O,CH4,CO2,SO2,SS2,ilauf=0
       real*8,allocatable,save :: amerk(:),ansave(:)
       real*8,allocatable,save :: badness(:),pcorr(:,:) 
       integer,allocatable,save :: pkey(:)
-!$omp threadprivate(TiC,H2O,CH4,CO2,ilauf,amerk,ansave,badness)
-!$omp threadprivate(pcorr,pkey)
+!$omp threadprivate(TiC,H2O,CH4,CO2,SO2,SS2)
+!$omp threadprivate(pcorr,pkey,ilauf,amerk,ansave,badness)
 *-----------------------------------------------------------------------      
 
       ifatal = 0
@@ -92,6 +95,8 @@
         H2O = stindex(cmol,nml,'H2O    ')
         CH4 = stindex(cmol,nml,'CH4    ')
         CO2 = stindex(cmol,nml,'CO2    ')
+        SO2 = stindex(cmol,nml,'SO2    ')
+        SS2 = stindex(cmol,nml,'S2     ')
         badness = 1.d0
         pcorr   = 1.d0
         pkey    = 0
@@ -121,7 +126,7 @@
 *     ! compute equilibrium constants
 *     ===============================
       do i=1,nml
-        if (i.ne.TiC) g(i)=gk(i)       ! compute all equil.constants lnk
+        if (i.ne.TiC) g(i)=gk(i,Tg)       ! compute all equil.constants lnk
       enddo  
 
 *    TiC Gleichgewichtskonstante von Andreas Gauger ist anders
@@ -154,6 +159,7 @@
       Nestim = 0
       DUALco = 0
       HCOco  = 0
+      COSco  = 0
       if ((ilauf.gt.10).and.merk) then
         do i=1,nel
           anmono(i) = amerk(i) * anhges
@@ -546,8 +552,56 @@
             endif  
             HCOco = HCOco + 1
           endif  
+          !--- special case CO2,SO2,S2 ---
+          COSproblem = (Nact==4).and.(enew==C.or.enew==O.or.enew==S)
+     >                 .and.(CO2>0).and.(SO2>0).and.(SS2>0)
+          if (COSproblem) then
+            hasC = .false.
+            hasO = .false.
+            hasS = .false.
+            do ii=1,Nact
+              i = act_to_all(ii)
+              if (i==C) hasC=.true.
+              if (i==O) hasO=.true.
+              if (i==S) hasS=.true.
+            enddo  
+            COSproblem = hasC.and.hasO.and.hasS
+          endif  
+          if (COSproblem) then
+            pCO2 = eps(C)*anHges*kT
+            pSO2 = (eps(O)*anHges*kT-2*pCO2)/2
+            pS2  = (eps(S)*anHges*kT-pSO2)/2
+            COSproblem = (pCO2>0).and.(pSO2>0).and.(pS2>0)
+          endif
+          if (COSproblem) then
+            lpCO2 = LOG(pCO2)
+            lpSO2 = LOG(pSO2)
+            lpS2  = LOG(pS2)
+            lpS = (lpS2-g(SS2))/2
+            lpO = (lpSO2-g(SO2)-lpS)/2
+            lpC = (lpCO2-g(CO2)-2*lpO)
+            if (verbose>1) print*,"applying CO2-SO2-S2 correction ..."
+            !print'(2(1pE16.8))',         pCO2,anHges*kT*eps(C)
+            !print'(2(1pE16.8))',2*pCO2+2*pSO2,anHges*kT*eps(O)
+            !print'(2(1pE16.8))',   pSO2+2*pS2,anHges*kT*eps(S)
+            !print'(2(1pE16.8))',pCO2,EXP(lpC+lpO*2+g(CO2))
+            !print'(2(1pE16.8))',pSO2,EXP(lpS+lpO*2+g(SO2))
+            !print'(2(1pE16.8))', pS2,EXP(    lpS*2+g(SS2))
+            anmono(C) = EXP(lpC)*kT1
+            anmono(O) = EXP(lpO)*kT1
+            anmono(S) = EXP(lpS)*kT1
+            pbefore(C) = anmono(C)
+            pbefore(O) = anmono(O)
+            pbefore(S) = anmono(S)
+            if (NewFastLevel<3.and.ptake) then
+              anmono(C) = anmono(C)*pcorr(enew,C)
+              anmono(O) = anmono(O)*pcorr(enew,O)
+              anmono(S) = anmono(S)*pcorr(enew,S)
+            endif  
+            COSco = COSco + 1
+          endif
         endif
-  
+
         !--- solve with different methods ---
         if (verbose>1) then 
           print'("corr",99(1pE11.2))',pcorr(enew,act_to_all(1:Nact))
@@ -1254,6 +1308,7 @@
       preEst   = preEst   + Nestim
       DUALcorr = DUALcorr + DUALco
       HCOcorr  = HCOcorr  + HCOco
+      COScorr  = COScorr  + COSco
 !$omp end critical(counters)
 
       return
@@ -1270,23 +1325,34 @@
 
       CONTAINS       ! internal functions - not visible to other units 
 ************************************************************************
-      REAL*8 FUNCTION gk(i)
+      REAL*8 FUNCTION gk(i,Tg)
 ************************************************************************
 *****  returns  ln(kp) [cgs] for different fit formula             *****
 ************************************************************************
       use CHEMISTRY,ONLY: a,th1,th2,th3,th4,TT1,TT2,TT3,fit,natom,cmol,
      >                    NELEM,elnum,b_nasa,c_nasa
+      use PARAMETERS,ONLY: H2SO4_super1,H2SO4_super2
       implicit none
       integer,intent(in) :: i          ! index of molecule
+      real*8,intent(in) :: Tg
       real*8,parameter :: bar=1.d+6, atm=1.013d+6, Rcal=1.987d+0
       real*8,parameter :: Rgas=8.3144598d+0
       real*8,parameter :: ln10=LOG(10.d0)
       real*8,parameter :: lnatm=LOG(atm), lnbar=LOG(bar)
-      real*8 :: lnk,dG
+      real*8 :: lnk,dG,fac
       real*8 :: h_rt,s_r               !Added by Yui Kawashima
       real*8 :: dG_rt_ref(NELEM),dG_rt !Added by Yui Kawashima
       integer:: k,j                    !Added by Yui Kawashima
+      integer,save :: iH2SO4 = 0
+      logical,save :: firstCall = .true.
 
+      if (firstCall) then
+        if (cmol(i)=="H2SO4") then
+          iH2SO4 = i
+          firstCall = .false.
+        endif
+      endif
+        
       if (i.eq.0) then
         gk = -1000.d0                  ! tiny kp for unassigned molecules
         return
@@ -1415,6 +1481,11 @@
         print*,cmol(i),"i,fit=",i,fit(i)
         stop "???"
       endif  
+
+      if (i==iH2SO4) then
+        fac = LOG(735.0/Tg)
+        lnk = lnk + H2SO4_super1 + H2SO4_super2*fac
+      endif
 
       gk = lnk
       end FUNCTION gk

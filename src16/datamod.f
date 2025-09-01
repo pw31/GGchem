@@ -10,7 +10,7 @@
       logical :: auto_atmos,adapt_cond,stop_after_init,use_SiO
       logical :: disk_model,output_dispol
       real*8  :: Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,Tseq(100)
-      real*8  :: Mpl,Rpl,gamma,Tmin_atmos
+      real*8  :: Mpl,Rpl,gamma,Tmin_atmos,H2SO4_super1,H2SO4_super2
       end
 
 ************************************************************************
@@ -119,5 +119,5 @@
       integer,parameter :: Br=35,Kr=36,Rb=37,Sr=38,Y=39,Zr=40,W=41
       integer*8 :: chemcall=0,chemiter=0,itransform=0,ieqcond=0
       integer*8 :: preIter=0,preEst=0,preUse=0,DUALcorr=0,HCOcorr=0
-      integer*8 :: ieqconditer=0
+      integer*8 :: COScorr=0,ieqconditer=0
       end
