@@ -318,7 +318,7 @@
       enddo
           
       print*
-      write(*,*) '-----  where are the elements?  -----'
+      write(*,*) '-----  where are the elements? [cm-3], conc. -----'
       do e=1,NELM
         i = elnum(e)
         if (e==el) then
@@ -328,10 +328,11 @@
         else   
           write(*,'("    Element ",A2,1pE15.3)') elnam(i),eps0(i)*nHges 
           !threshold = eps(i)*nHges*1.D-5
-          threshold = eps(i)*nHges*1.D-15
-          if (nat(i).gt.threshold) then
-            write(*,'(1x,A18,1pE10.3)') "n"//trim(elnam(i)), nat(i) 
-          endif  
+          !threshold = eps(i)*nHges*1.D-15
+          !if (nat(i).gt.threshold) then
+          write(*,'(1x,A18,2(1pE10.3))') "n"//trim(elnam(i)),
+     >                                   nat(i), nat(i)/ngas 
+          !endif  
         endif  
 
         raus = .false.
@@ -356,8 +357,8 @@
           if (iraus==0) exit
           haeufig = (nmax.gt.eps0(i)*1.D-2)
           if (.not.haeufig) exit
-          write(*,'(1x,A18,1pE10.3)') 
-     >          "n"//trim(dust_nam(iraus)),eldust(iraus)*nHges 
+          write(*,'(1x,A18,2(1pE10.3))') "n"//trim(dust_nam(iraus)),
+     >         eldust(iraus)*nHges,eldust(iraus)*nHges/ngas 
           raus(iraus) = .true.
         enddo  
 
@@ -381,7 +382,8 @@
           enddo  
           haeufig = (nmax.gt.threshold)
           if (.not.haeufig) exit
-          write(*,'(1x,A18,1pE10.3)') "n"//trim(cmol(iraus)),nmol(iraus)
+          write(*,'(1x,A18,2(1pE10.3))') "n"//trim(cmol(iraus)),
+     >         nmol(iraus),nmol(iraus)/ngas
           raus(iraus) = .true.
           count = count+1
           if (count>15) exit

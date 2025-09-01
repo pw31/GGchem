@@ -294,6 +294,8 @@
             !end if
             !--- Lyons 2008 ---
             !psat = 10.0**(4.188 - 3269.0/T1)*bar
+            !Zahnle et al.(1989)
+            psat = 1.316E-3*exp(4.969 - 2201.0/T1)*atm
             imol = STINDEX(cmol,NMOLE,"S8")
             if (imol<=0) then
               print*,"*** supersat.f molecule not found ",dust_nam(i)

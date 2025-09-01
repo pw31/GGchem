@@ -404,6 +404,47 @@
         Nlast  = Npoints
         Ninc   = 1             ! bottom to top
 
+      !--------------------------------------------------------
+      else if (model_struc==10) then   ! BD_Phoenix structures
+      !--------------------------------------------------------
+        open(3,file=filename,status='old')
+        do i=1,99999
+          read(3,'(A200)',end=557) line
+          if (index(line,"! Number of atmosphere layers:")>0) then
+            read(3,*) Npoints
+            print*,"Noints=",Npoints
+          else if (index(line,"! Radius [cm]")>0) then
+            do j=0,Npoints/8-1
+              read(3,*) zz(1+j*8:8+j*8)
+            enddo
+            zz(1:Npoints) = zz(1:Npoints)-zz(Npoints)
+            print*,"z/km=",zz(1:Npoints)/km
+          else if (index(line,"! Temperature [K]")>0) then
+            do j=0,Npoints/8-1
+              read(3,*) Tgas(1+j*8:8+j*8)
+            enddo
+            print*,"Tgas=",Tgas(1:Npoints)
+          else if (index(line,"! Gas pressure [dyn cm-2]")>0) then
+            do j=0,Npoints/8-1
+              read(3,*) press(1+j*8:8+j*8)
+            enddo
+            print*,"press=",press(1:Npoints)
+          else if (index(line,"! Density [g cm-3]")>0) then
+            do j=0,Npoints/8-1
+              read(3,*) dens(1+j*8:8+j*8)
+            enddo
+            print*,"dens=",dens(1:Npoints)
+            nHtot = dens/muH
+          endif
+        enddo
+ 557    close(3)
+        do i=1,Npoints
+          estruc(i,:) = eps0(:)
+        enddo
+        Nfirst = Npoints
+        Nlast  = 1
+        Ninc   = -1            ! top to bottom 
+
       else
         print*,"*** unknown file format =",model_struc
         stop
