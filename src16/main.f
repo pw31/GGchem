@@ -6,7 +6,7 @@
      >                     disk_model
       use EXCHANGE,ONLY: chemcall,chemiter,ieqcond,ieqconditer,
      >                   itransform,preEst,preUse,preIter,
-     >                   DUALcorr,HCOcorr
+     >                   DUALcorr,HCOcorr,COScorr
       use DATABASE,ONLY: NLAST
       implicit none
 
@@ -53,6 +53,8 @@
      >                     REAL(DUALcorr)/REAL(chemcall)
       print'("  H-C-O corrections/call = ",0pF9.3)',
      >                      REAL(HCOcorr)/REAL(chemcall)
+      print'("  C-O-S corrections/call = ",0pF9.3)',
+     >                      REAL(COScorr)/REAL(chemcall)
       if (model_eqcond) then
         print'("   eq condensation calls = ",I8)',ieqcond
         print'("      eq iterations/call = ",0pF8.2)',

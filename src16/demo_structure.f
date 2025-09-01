@@ -21,7 +21,7 @@
       real :: tau,p,pe,rho,nHges,nges,kT,pgas,mu,gg,Hp,mugas
       real :: muold,dmu,ff,fold,dfdmu,km=1.D+5,AU=1.4959787d+13 
       real :: Jstar,Nstar,rhog,dustV,rhod,L3,bmix,emono,rdum,zdum
-      real :: Tg,Td,cT,rcut
+      real :: Tg,Td,cT,rcut,Kzz
       integer :: i,j,k,l,e,jj,dk,NOUT,Nfirst,Nlast,Ninc,iW,idum
       integer :: it,n1,n2,n3,n4,n5,Ndat,dind(1000),ek,eind(1000)
       integer :: Nx,Nz,ix,iz,Nfound,e_source(100),e_target(100)
@@ -404,6 +404,29 @@
         Nlast  = Npoints
         Ninc   = 1             ! bottom to top
 
+      !--------------------------------------------------------
+      else if (model_struc==10) then     ! Paul's pT-*.dat
+      !--------------------------------------------------------
+        open(3,file=filename,status='old')
+        do i=1,2
+          read(3,'(A200)') line
+        enddo
+        Npoints = 0
+        do i=1,99999
+          read(3,*,end=557) zdum,Tg,Kzz,rho,pgas
+          if (pgas*bar<pmin) cycle
+          Npoints = Npoints+1
+          zz(Npoints) = zdum*km
+          Tgas(Npoints)  = Tg
+          press(Npoints) = pgas*bar
+          dens(Npoints) = rho
+          estruc(Npoints,:) = eps0(:)
+        enddo
+ 557    close(3)
+        Nfirst = Npoints
+        Nlast  = 1
+        Ninc   = -1             ! data given top to bottom
+        
       else
         print*,"*** unknown file format =",model_struc
         stop
