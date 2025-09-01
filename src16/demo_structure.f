@@ -2,9 +2,9 @@
       SUBROUTINE DEMO_STRUCTURE
 ***********************************************************************
       use PARAMETERS,ONLY: Mpl,Rpl,Tmin,Tmax,pmin,pmax,nHmin,nHmax,
-     >                     model_eqcond,model_pconst,Npoints,
+     >                     model_eqcond,model_pconst,model_refine,
      >                     model_struc,struc_file,remove_condensates,
-     >                     model_eqcond,Nseq,Tseq
+     >                     model_eqcond,Nseq,Tseq,Np=>Npoints
       use CHEMISTRY,ONLY: NELM,NMOLE,elnum,cmol,catm,el,charge
       use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,
      >                    muH,mass,mel,amu,grav,
@@ -21,11 +21,13 @@
       real :: tau,p,pe,rho,nHges,nges,kT,pgas,mu,gg,Hp,mugas
       real :: muold,dmu,ff,fold,dfdmu,km=1.D+5,AU=1.4959787d+13 
       real :: Jstar,Nstar,rhog,dustV,rhod,L3,bmix,emono,rdum,zdum
-      real :: Tg,Td,cT,rcut,Kzz
+      real :: Tg,Td,cT,rcut,Kzz,pp,fak1,fak2,mean
+      real,dimension(Npmax) :: Ttmp,dtmp,ptmp,ztmp
+      real(kind=qp),dimension(Npmax,NELEM) :: etmp
       integer :: i,j,k,l,e,jj,dk,NOUT,Nfirst,Nlast,Ninc,iW,idum
       integer :: it,n1,n2,n3,n4,n5,Ndat,dind(1000),ek,eind(1000)
       integer :: Nx,Nz,ix,iz,Nfound,e_source(100),e_target(100)
-      integer :: stindex,cut,iseq,verbose=0
+      integer :: Npoints,stindex,cut,iseq,verbose=0
       character(len=20000) :: header
       character(len=200) :: line,filename
       character(len=20) :: name,short_name(NDUST),dname,ename
@@ -435,44 +437,82 @@
           read(3,'(A200)',end=558) line
           if (index(line,"! Number of atmosphere layers:")>0) then
             read(3,*) Npoints
-            print*,"Noints=",Npoints
+            !print*,"Noints=",Npoints
           else if (index(line,"! Radius [cm]")>0) then
             do j=0,Npoints/8-1
               read(3,*) zz(1+j*8:8+j*8)
             enddo
-            zz(1:Npoints) = zz(1:Npoints)-zz(Npoints)
-            print*,"z/km=",zz(1:Npoints)/km
+            !print*,"z/km=",zz(1:Npoints)/km
           else if (index(line,"! Temperature [K]")>0) then
             do j=0,Npoints/8-1
               read(3,*) Tgas(1+j*8:8+j*8)
             enddo
-            print*,"Tgas=",Tgas(1:Npoints)
+            !print*,"Tgas=",Tgas(1:Npoints)
           else if (index(line,"! Gas pressure [dyn cm-2]")>0) then
             do j=0,Npoints/8-1
               read(3,*) press(1+j*8:8+j*8)
             enddo
-            print*,"press=",press(1:Npoints)
+            !print*,"press=",press(1:Npoints)
           else if (index(line,"! Density [g cm-3]")>0) then
             do j=0,Npoints/8-1
               read(3,*) dens(1+j*8:8+j*8)
             enddo
-            print*,"dens=",dens(1:Npoints)
+            !print*,"dens=",dens(1:Npoints)
             nHtot = dens/muH
           endif
         enddo
  558    close(3)
         do i=1,Npoints
           estruc(i,:) = eps0(:)
+          if (press(i)<pmin) Nlast=i 
+          if (press(i)<pmax) Nfirst=i
         enddo
-        Nfirst = Npoints
-        Nlast  = 1
-        Ninc   = -1            ! top to bottom 
+        !--- smooth the structure a bit ---
+        Ttmp = Tgas
+        do i=2,Npoints-1
+          mean     = dens(i)*Tgas(i)/press(i)
+          Tgas(i)  = (Ttmp(i-1)+2*Ttmp(i)+Ttmp(i+1))/4
+          dens(i)  = mean/Tgas(i)*press(i)
+          nHtot(i) = dens(i)/muH
+        enddo
+        zz(1:Npoints) = zz(1:Npoints)-zz(Nfirst)
+        Ninc = -1            ! top to bottom 
 
       else
         print*,"*** unknown file format =",model_struc
         stop
       endif  
 
+      if (model_refine) then
+        ztmp = zz
+        ptmp = press
+        Ttmp = Tgas
+        dtmp = dens
+        etmp = estruc
+        j = 1
+        if (Ninc==-1) j=Npoints
+        do i=1,Np
+          fac = (i-1.0)/(Np-1.0)
+          pp = EXP(LOG(pmax)+fac*LOG(pmin/pmax))
+          do
+            if (pp>ptmp(j+Ninc)) exit
+            j = j+Ninc
+          enddo
+          fak1 = LOG(pp/ptmp(j))/LOG(ptmp(j+Ninc)/ptmp(j))
+          fak2 = 1.0-fak1
+          print'(I4,4(1pE12.5),I4)',i,ptmp(j),pp,ptmp(j+Ninc),fak1,j
+          zz(i)    =     fak2*ztmp(j)     +fak1*ztmp(j+Ninc)
+          press(i) = EXP(fak2*LOG(ptmp(j))+fak1*LOG(ptmp(j+Ninc)))
+          Tgas(i)  =     fak2*Ttmp(j)     +fak1*Ttmp(j+Ninc)
+          dens(i)  = EXP(fak2*LOG(dtmp(j))+fak1*LOG(dtmp(j+Ninc)))
+          estruc(i,:) =  fak2*etmp(j,:)   +fak1*etmp(j+Ninc,:)
+          nHtot(i) = dens(i)/muH
+        enddo
+        Nfirst = 1
+        Nlast = Np
+        Ninc = 1
+      endif
+      
       !----------------------------
       ! ***  open output files  ***
       !----------------------------

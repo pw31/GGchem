@@ -2,13 +2,13 @@
       module PARAMETERS
 ************************************************************************
       character(len=200) :: elements,abund_file,struc_file,adapt_file
-      integer :: abund_pick,model_dim,Npoints,model_struc,verbose
-      integer :: method_eqcond,Nseq
+      integer :: abund_pick,model_dim,Npoints,model_struc
+      integer :: method_eqcond,Nseq,verbose
       logical :: model_eqcond,model_pconst,pick_mfrac,initchem_info
       logical :: useDataBase,remove_condensates,phyllosilicates
       logical :: metal_sulphates 
       logical :: auto_atmos,adapt_cond,stop_after_init,use_SiO
-      logical :: disk_model,output_dispol
+      logical :: disk_model,output_dispol,model_refine
       real*8  :: Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,Tseq(100)
       real*8  :: Mpl,Rpl,gamma,Tmin_atmos,H2SO4_super1,H2SO4_super2
       end
