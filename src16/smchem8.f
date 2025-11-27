@@ -57,8 +57,8 @@
       integer,parameter :: itmax=200
       real*8 :: finish,qual,qual0,qual1,qual2,qual3,qmost,qq
       real*8 :: g(0:nml),limit
-      real*8 :: pH2O,pCO2,pCH4,pSO2,pS2
-      real*8 :: lpH2O,lpCO2,lpCH4,lpSO2,lpS2
+      real*8 :: pH2O,pCO2,pCH4,pSO2,pS2,pS8
+      real*8 :: lpH2O,lpCO2,lpCH4,lpSO2,lpS2,lpS8
       real*8 :: lpH,lpO,lpC,lpS
       real*8 :: kT,kT1,cc,nelek,ng,Sa,fak,lth,arg,term,f,fs
       real*8 :: pel,delta,pat,atfrac,atmax,lnp,lnp3
@@ -79,11 +79,11 @@
       character(len=5000) :: mols
       character(len=100) :: txt
       character(len=1) :: char,bem
-      integer,save :: TiC,H2O,CH4,CO2,SO2,SS2,ilauf=0
+      integer,save :: TiC,H2O,CH4,CO2,SO2,SS2,SS8,ilauf=0
       real*8,allocatable,save :: amerk(:),ansave(:)
       real*8,allocatable,save :: badness(:),pcorr(:,:) 
       integer,allocatable,save :: pkey(:)
-!$omp threadprivate(TiC,H2O,CH4,CO2,SO2,SS2)
+!$omp threadprivate(TiC,H2O,CH4,CO2,SO2,SS2,SS8)
 !$omp threadprivate(pcorr,pkey,ilauf,amerk,ansave,badness)
 *-----------------------------------------------------------------------      
 
@@ -97,6 +97,7 @@
         CO2 = stindex(cmol,nml,'CO2    ')
         SO2 = stindex(cmol,nml,'SO2    ')
         SS2 = stindex(cmol,nml,'S2     ')
+        SS8 = stindex(cmol,nml,'S8     ')
         badness = 1.d0
         pcorr   = 1.d0
         pkey    = 0
@@ -571,13 +572,15 @@
             pCO2 = eps(C)*anHges*kT
             pSO2 = (eps(O)*anHges*kT-2*pCO2)/2
             pS2  = (eps(S)*anHges*kT-pSO2)/2
-            COSproblem = (pCO2>0).and.(pSO2>0).and.(pS2>0)
+            pS8  = (eps(S)*anHges*kT-pSO2)/8
+            COSproblem = (pCO2>0).and.(pSO2>0).and.(pS2>0).and.(pS8>0)
           endif
           if (COSproblem) then
             lpCO2 = LOG(pCO2)
             lpSO2 = LOG(pSO2)
             lpS2  = LOG(pS2)
-            lpS = (lpS2-g(SS2))/2
+            lpS8  = LOG(pS8)
+            lpS = MIN((lpS2-g(SS2))/2,(lpS8-g(SS8))/8)
             lpO = (lpSO2-g(SO2)-lpS)/2
             lpC = (lpCO2-g(CO2)-2*lpO)
             if (verbose>1) print*,"applying CO2-SO2-S2 correction ..."
@@ -587,6 +590,7 @@
             !print'(2(1pE16.8))',pCO2,EXP(lpC+lpO*2+g(CO2))
             !print'(2(1pE16.8))',pSO2,EXP(lpS+lpO*2+g(SO2))
             !print'(2(1pE16.8))', pS2,EXP(    lpS*2+g(SS2))
+            !print'(2(1pE16.8))', pS8,EXP(    lpS*8+g(SS8))
             anmono(C) = EXP(lpC)*kT1
             anmono(O) = EXP(lpO)*kT1
             anmono(S) = EXP(lpS)*kT1
