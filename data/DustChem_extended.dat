@@ -1,6 +1,6 @@
 dust species
 ============
-364
+361
 
 Al2O3[s]       CORUNDUM(alpha)
 3.97
@@ -1996,32 +1996,11 @@ H2S[s]         HYDROGEN-SULFIDE(liquid/solid)  187.65
 # pvap special (Stull 1947 - NIST fit):
   99  0.0  0.0  0.0  0.0  0.0
 
-S2[s]         Disulfer(solid)
-2.07
- 1
- 2 S
-# pvap special - Zahnle et al. (2016)
- 99  0.0  0.0  0.0  0.0  0.0
-
-S2[l]         Disulfer(liquid)      413.0
-2.0
- 1
- 2 S
-# pvap special - Zahnle et al. (2016) - liquid > 413 K:
- 99  0.0  0.0  0.0  0.0  0.0
-
 S8[s]         Octasulfur(solid)
 2.07
  1
  8 S
-# pvap special - Zahnle et al. (2016) 
- 99  0.0  0.0  0.0  0.0  0.0
-
-S8[l]         Octasulfur(liquid)    413.0
-2.0
- 1
- 8 S
-# pvap special - Zahnle et al. (2016) - liquid > 413 K:
+# pvap special - Zahnle et al. (1989) 
  99  0.0  0.0  0.0  0.0  0.0
 
 P[s]           PHOSPHORUS_WHITE
