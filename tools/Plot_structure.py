@@ -60,6 +60,10 @@ Tmin  = np.min(Tg[iii])
 Tmax  = np.max(Tg[iii])
 Tmin  = Tmin*0.9
 Tmax  = Tmax*1.1
+rhomin = np.min(rho[iii])
+rhomax = np.max(rho[iii])
+rhomin = rhomin*0.9
+rhomax = rhomax*1.1
 ntot  = 0.0*nHtot
 for i in range(3,4+NELEM+NMOLE): # electrons, all atoms, ions and cations
   ntot = ntot + 10**dat[:,i]
@@ -94,6 +98,18 @@ plt.plot(Tg,zz,lw=4)
 plt.ylabel(r'$z\ \mathrm{[km]}$',fontsize=20)
 plt.xlabel(r'$T\ \mathrm{[K]}$',fontsize=20)
 plt.xlim(Tmin,Tmax)
+plt.ylim(zmin,zmax)
+plt.tight_layout()
+plt.savefig(pp,format='pdf')
+plt.clf()
+
+#================== density structure ====================
+fig,ax = plt.subplots(figsize=(5.5,7.5))
+plt.plot(rho,zz,lw=4)
+plt.ylabel(r'$z\ \mathrm{[km]}$',fontsize=20)
+plt.xlabel(r'$\rho\ \mathrm{[g/cm^3]}$',fontsize=20)
+plt.xscale('log')
+plt.xlim(rhomin,rhomax)
 plt.ylim(zmin,zmax)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
@@ -161,7 +177,7 @@ plt.tight_layout()
 plt.savefig(pp,format='pdf')
 plt.clf()
 
-#================== solid particle densities ===================
+#================== solid densities ===================
 solids = []
 smean = []
 ymax = -100.0
@@ -175,7 +191,7 @@ for i in range(4+NELEM+NMOLE,4+NELEM+NMOLE+NDUST,1):
   yy = dat[:,ind]                # log10 nsolid/n<H>
   yy = yy + lognH - logntot      # log10 nsolid/ntot
   ymax = np.max([ymax,np.max(yy[iii])])
-ymin = ymax-15
+ymin = ymax-8
 indices = np.argsort(smean)
 if (ymax>-99):
   print solids
@@ -202,7 +218,7 @@ if (ymax>-99):
   #ax.xaxis.set_minor_locator(locmin)
   #ax.set_xticks(locmaj)
   #ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
-  leg = plt.legend(loc='best',fontsize=10,fancybox=True,handlelength=2.5)
+  leg = plt.legend(loc='upper right',fontsize=9,fancybox=True,ncol=1,handlelength=2.0)
   leg.get_frame().set_alpha(0.7)
   plt.tight_layout()
   plt.savefig(pp,format='pdf')

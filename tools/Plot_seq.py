@@ -12,7 +12,7 @@ plt.rcParams['xtick.labelsize'] = plt.rcParams['ytick.labelsize'] = 12
 plt.rcParams['xtick.major.size'] = plt.rcParams['ytick.major.size'] = 7
 plt.rcParams['xtick.minor.size'] = plt.rcParams['ytick.minor.size'] = 4
 plt.rcParams['xtick.major.width'] = plt.rcParams['ytick.major.width'] = 1.6
-plt.rcParams['font.size'] = 16
+plt.rcParams['font.size'] = 14
 pp = PdfPages('ggchem.pdf')
 import sys
 
@@ -335,11 +335,12 @@ for isolid in reversed(indices):
   if (np.max(logS[iii])>-6):
     plt.plot(xx,logS,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
     count = count + 1
+plt.plot([xmin,xmax],[0,0],ls="--",c='black',lw=1.0)
 plt.title('supersaturation ratios')
 plt.xlabel(r'$x$')
 plt.ylabel(r'$\mathrm{log}_{10}\ S$')
 plt.xlim(xmin,xmax)
-plt.ylim(-2,+5)
+plt.ylim(-4,+7)
 sz = np.min([11,1+60.0/count])
 col = 1
 if (count>10): 
@@ -360,7 +361,7 @@ for isolid in reversed(indices):
   if (np.size(ind) == 0): continue
   ind = ind[0]
   #print solid,ind
-  S = 10**dat[:,ind]              # S
+  S = 10**dat[:,ind]
   if (np.max(S[iii])>0.7):
     plt.plot(xx,S,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
     count = count + 1
@@ -385,6 +386,7 @@ if (count>0):
 #================== some important molecules ====================
 fig,ax = plt.subplots()
 mols  = ['CO2','N2','SO2','COS','H2S','S8','CO','H2O','H2','HCL','HF','Ar','Ne','H2SO4']
+mols =  ['CO2','N2','SO2','H2S','S8','CO','H2O','H2','HCL','HF','H2SO4','FHO3S','Cl2']
 mols  = np.array(mols)
 ntot  = 0.0*nHtot
 for i in range(3,4+NELEM+NMOLE): # electrons, all atoms, ions and cations
@@ -394,9 +396,9 @@ count = 0
 for i in range(3,4+NELEM+NMOLE): 
   mol = keyword[i]
   yy = dat[:,i]-lntot            # log10 nmol/ntot
-  crit = -3
+  crit = -7
   ind = np.where(mols == mol)[0]
-  if (np.size(ind)>0): crit=-3
+  if (np.size(ind)>0): crit=-9
   #print i,mol,ind,np.size(ind)
   if (np.max(yy[iii])>crit):
     plt.plot(xx,yy,c=colo[count],ls=styl[count],lw=widt[count],label=mol)
@@ -404,8 +406,42 @@ for i in range(3,4+NELEM+NMOLE):
 plt.title('important molecules')
 plt.xlabel(r'$x$')
 plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{mol}/n_\mathrm{tot}$')
-plt.xlim(xmin,xmax)
-plt.ylim(-6.0,1.5)
+plt.xlim(0,xmax)
+plt.ylim(-9.0,0.5)
+leg = plt.legend(loc='upper right',fontsize=9,ncol=2,fancybox=True)
+leg.get_frame().set_alpha(0.7)
+plt.tight_layout()
+plt.savefig(pp,format='pdf')
+plt.clf()
+
+#================== atomic pressures ====================
+fig,ax = plt.subplots()
+mols =  ['H','C','N','O','S','Cl','F']
+mols  = np.array(mols)
+ntot  = 0.0*nHtot
+for i in range(3,4+NELEM+NMOLE): # electrons, all atoms, ions and cations
+  ntot = ntot + 10**dat[:,i]
+lntot = np.log10(ntot)
+count = 0
+ymax = -999.0
+for i in range(3,4+NELEM+NMOLE): 
+  mol = keyword[i]
+  yy = dat[:,i]-lntot            # log10 nmol/ntot
+  crit = +1
+  ind = np.where(mols == mol)[0]
+  if (np.size(ind)>0): crit=-999
+  #print i,mol,ind,np.size(ind)
+  if (np.max(yy[iii])>crit):
+    ymax = np.max([ymax,np.max(yy[iii])])
+    plt.plot(xx,yy,c=colo[count],ls=styl[count],lw=widt[count],label=mol)
+    count = count + 1
+plt.title('free atoms')
+plt.xlabel(r'$x$')
+plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{at}/n_\mathrm{tot}$')
+ymax = ymax+5
+ymin = ymax-130
+plt.xlim(0,xmax)
+#plt.ylim(ymin,ymax)
 leg = plt.legend(loc='best',fontsize=9,ncol=2,fancybox=True)
 leg.get_frame().set_alpha(0.7)
 plt.tight_layout()
