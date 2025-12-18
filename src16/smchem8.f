@@ -24,7 +24,7 @@
      >                    NewFastLevel,NewPreMethod,
      >                    nml=>NMOLE,nel=>NELM,cmol,catm,
      >                    m_kind,m_anz,charge,elion,el,
-     >                    Natom,Ncmax,STOImax,H,C,N,O,S,
+     >                    Ncmax,STOImax,H,C,N,O,S,
      >                    th1,th2,th3,th4,TT1,TT2,TT3
       use EXCHANGE,ONLY: chemcall,chemiter,preUse,preIter,preEst,
      >                   DUALcorr,HCOcorr,COScorr
@@ -55,23 +55,23 @@
       integer :: NpreLoop,NpreIt,Ntaken,Nestim,DUALco,HCOco,COSco
       integer :: ind,indx(nel),info,ipvt(nel)
       integer,parameter :: itmax=200
-      real*8 :: finish,qual,qual0,qual1,qual2,qual3,qmost,qq
-      real*8 :: g(0:nml),limit
-      real*8 :: pH2O,pCO2,pCH4,pSO2,pS2,pS8
-      real*8 :: lpH2O,lpCO2,lpCH4,lpSO2,lpS2,lpS8
-      real*8 :: lpH,lpO,lpC,lpS
-      real*8 :: kT,kT1,cc,nelek,ng,Sa,fak,lth,arg,term,f,fs
-      real*8 :: pel,delta,pat,atfrac,atmax,lnp,lnp3
-      real*8 :: nges(nel),coeff(-3:Ncmax),lnc(-3:Ncmax)
-      real*8 :: DF(nel,nel),dp(nel),FF(nel),pmol,crit,delp,nold
-      real*8 :: DF0(nel,nel),FF0(nel),xscale(nel),fscale(nel)
-      real*8 :: nsave(nel),null(nel),sortq(nel)
-      real*8 :: conv(0:itmax,nel),converge(0:itmax)
-      real*8 :: soll,haben,abw,sum,maxs,mcharge
-      real*8 :: pbefore(nel),norm(nel),xx(nel)
-      real*8 :: emax,pges,pwork,pwork2,pp,psc,ptest,aim
-      real*8 :: work(nel*(nel+1))
-      real*8 :: condnum1,work2(nel)
+      real :: finish,qual,qual0,qual1,qual2,qual3,qmost,qq
+      real :: g(0:nml),limit
+      real :: pH2O,pCO2,pCH4,pSO2,pSO3,pS2,pS8
+      real :: lpH2O,lpCO2,lpCH4,lpSO2,lpSO3,lpS2,lpS8
+      real :: lpH,lpO,lpC,lpS
+      real :: kT,kT1,cc,nelek,ng,Sa,fak,lth,arg,term,f,fs,epsH
+      real :: pel,delta,pat,atfrac,atmax,lnp,lnp3
+      real :: nges(nel),coeff(-3:Ncmax),lnc(-3:Ncmax)
+      real :: DF(nel,nel),dp(nel),FF(nel),pmol,crit,delp,nold
+      real :: DF0(nel,nel),FF0(nel),xscale(nel),fscale(nel)
+      real :: nsave(nel),null(nel),sortq(nel)
+      real :: conv(0:itmax,nel),converge(0:itmax)
+      real :: soll,haben,abw,sum,maxs,mcharge
+      real :: pbefore(nel),norm(nel),xx(nel)
+      real :: emax,pges,pwork,pwork2,pp,psc,ptest,aim,lnpmin
+      real :: work(nel*(nel+1))
+      real :: condnum1,work2(nel)
       logical :: from_merk,eact(nel),redo(nel),done(nel),affect,known
       logical :: relevant(nml)
       logical :: HCOproblem,COSproblem,hasH,hasC,hasO,hasS
@@ -79,11 +79,11 @@
       character(len=5000) :: mols
       character(len=100) :: txt
       character(len=1) :: char,bem
-      integer,save :: TiC,H2O,CH4,CO2,SO2,SS2,SS8,ilauf=0
-      real*8,allocatable,save :: amerk(:),ansave(:)
-      real*8,allocatable,save :: badness(:),pcorr(:,:) 
+      integer,save :: TiC,H2O,CH4,CO2,SO2,SO3,SS2,SS8,ilauf=0
+      real,allocatable,save :: amerk(:),ansave(:)
+      real,allocatable,save :: badness(:),pcorr(:,:) 
       integer,allocatable,save :: pkey(:)
-!$omp threadprivate(TiC,H2O,CH4,CO2,SO2,SS2,SS8)
+!$omp threadprivate(TiC,H2O,CH4,CO2,SO2,SO3,SS2,SS8)
 !$omp threadprivate(pcorr,pkey,ilauf,amerk,ansave,badness)
 *-----------------------------------------------------------------------      
 
@@ -96,6 +96,7 @@
         CH4 = stindex(cmol,nml,'CH4    ')
         CO2 = stindex(cmol,nml,'CO2    ')
         SO2 = stindex(cmol,nml,'SO2    ')
+        SO3 = stindex(cmol,nml,'SO3    ')
         SS2 = stindex(cmol,nml,'S2     ')
         SS8 = stindex(cmol,nml,'S8     ')
         badness = 1.d0
@@ -196,7 +197,7 @@
 *     ! estimate atomic pressures: new method
 *     =======================================
       sortq(:) = 1.0
- 110  Nseq = nel
+      Nseq = nel
       done(:) = .false.                ! all elements to be estimated here
       !if (charge) done(el)=.true.     ! ... except for the electrons      
       !if (charge) Nseq=nel-1
@@ -256,7 +257,7 @@
             if (.not.done(e)) then
               known = .false.
               exit
-            endif  
+            endif
             if (e==enew) then
               l = nu
               affect = .true.
@@ -269,7 +270,7 @@
           if (verbose>0) mols = trim(mols)//" "//cmol(i)
           lmin = MIN(lmin,l)
           lmax = MAX(lmax,l)
-          coeff(l) = coeff(l) + l*EXP(lnp)
+          if (enew==el) coeff(l)=coeff(l)+l*EXP(lnp)
           if (l>0.and.(enew/=el)) then
             lnc(l) = MAX(lnc(l),LOG(REAL(l))+lnp)
             sum = LOG(pges) - lnp - LOG(REAL(l))
@@ -278,6 +279,7 @@
             if (ptest<pwork) then
               pwork2 = pwork
               pwork = ptest
+              lnpmin = sum/l
               imaj2(enew) = imaj(enew)
               imaj(enew) = i
               !print*,"first",cmol(i),pwork,lnc(l)
@@ -323,33 +325,49 @@
           ! solve 1d equation above with Newton's method 
           !----------------------------------------------
           pp = pwork/psc
-          do piter=1,99                  
-            f  = pp*psc-pges
-            fs = psc
-            do l=lmin,lmax
-              if (coeff(l)==0.d0) cycle
-              f  = f  + coeff(l)*pp**l
-              fs = fs + coeff(l)*l*pp**(l-1)
-            enddo
-            if (fs==0.d0) stop "*** fs=0 in smchem8 1d-pre-it."
-            delta = f/fs
-            pp = pp-delta
-            if (verbose>1) print'(A2,I3,1pE25.15,1pE10.2)',
-     >                     catm(enew),piter,pp*psc,delta/pp
-            if (ABS(delta)<1.d-4*ABS(pp)) exit 
-          enddo  
-          if (piter>=99) then
-            write(*,*) "*** smchem8 no conv in 1D pre-it "//catm(enew)
-            write(*,*) anHges,Tg
-            do i=1,nel
-              write(*,'(A2,1x,0pF30.26)') catm(i),eps(i)
-            enddo
-            write(*,*) "psc=",real(psc),lmin,lmax
-            write(*,*) "  lnc:",lnc(lmin:lmax)
-            write(*,*) "coeff:",coeff(lmin:lmax)
-            goto 1000
-          endif  
-          anmono(enew) = pp*psc*kT1
+          if (pp>1.E-250) then
+            do piter=1,99                  
+              f  = pp*psc-pges
+              fs = psc
+              do l=lmin,lmax
+                if (coeff(l)==0.d0) cycle
+                f  = f  + coeff(l)*pp**l
+                fs = fs + coeff(l)*l*pp**(l-1)
+              enddo
+              if (fs==0.d0) then
+                print*,"*** fs=0 in smchem8 1d-pre-it."
+                epsH = eps(1)
+                open(unit=12,file='fatal8.case')
+                do i=1,nel
+                  write(12,'(A2,1x,0pF22.16)')
+     >              catm(i),12.d0+log10(eps(i)/epsH)
+                enddo  
+                write(12,*) anhges*epsH,Tg
+                close(12)
+                stop "here"
+              endif
+              delta = f/fs
+              pp = pp-delta
+              !if (verbose>1) print'(A2,I3,1pE25.15,1pE10.2)',
+     >        !               catm(enew),piter,pp*psc,delta/pp
+              if (ABS(delta)<1.d-4*ABS(pp)) exit 
+            enddo  
+            if (piter>=99) then
+              write(*,*) "*** smchem8 no conv in 1D pre-it "//catm(enew)
+              write(*,*) anHges,Tg
+              do i=1,nel
+                write(*,'(A2,1x,0pF30.26)') catm(i),eps(i)
+              enddo
+              write(*,*) "psc=",real(psc),lmin,lmax
+              write(*,*) "  lnc:",lnc(lmin:lmax)
+              write(*,*) "coeff:",coeff(lmin:lmax)
+              goto 1000
+            endif  
+            anmono(enew) = pp*psc*kT1
+          else
+            anmono(enew) = EXP(lnpmin+LOG(kT1))
+            !print*,lnpmin,EXP(lnpmin),kT1,anmono(enew)
+          endif
         endif  
 
         !-----------------------------------------------------------
@@ -409,7 +427,7 @@
         if (i>0) then
           pmol = g(i)
           do j=1,m_kind(0,i)
-            pmol = pmol + m_anz(j,i)*LOG(anmono(m_kind(j,i))*kT)
+            pmol = pmol + m_anz(j,i)*(LOG(anmono(m_kind(j,i)))+LOG(kT))
           enddo
           pmol = EXP(pmol)
           i1 = 0
@@ -466,13 +484,13 @@
                 s4 = m_anz(j,i3)
                 cycle
               endif  
-              lnp3 = lnp3 + m_anz(j,i3)*LOG(anmono(e)*kT)
+              lnp3 = lnp3 + m_anz(j,i3)*(LOG(anmono(e))+LOG(kT))
             enddo
             lnp = g(i)
             do j=1,m_kind(0,i)
               e = m_kind(j,i)
               if (e==i1.or.e==i2) cycle
-              lnp = lnp + m_anz(j,i)*LOG(anmono(e)*kT)
+              lnp = lnp + m_anz(j,i)*(LOG(anmono(e))+LOG(kT))
             enddo
             if (verbose>1) print*,"readjusting "//catm(i1)//" "
      >                   //catm(i2)
@@ -490,8 +508,9 @@
             possible = (dp(1)<1000.0).and.(dp(2)<1000.0)
           endif
           if (possible) then
-            anmono(i1) = EXP(dp(1))*kT1
-            anmono(i2) = MIN(anmono(i2),EXP(dp(2))*kT1)
+            anmono(i1) = EXP(dp(1)+LOG(kT1))
+            anmono(i2) = MIN(pbefore(i2),EXP(dp(2)+LOG(kT1)))
+            !print*,anmono(i1),anmono(i2)
             !print'(A2,9(1pE16.8))',catm(i1),eps(i1)*anHges*kT,
      >      !                       s1*EXP(lnp+s1*dp(1)+s2*dp(2))
      >      !                      +s3*EXP(lnp3+s3*dp(1)+s4*dp(2))
@@ -504,7 +523,7 @@
               anmono(i2) = anmono(i2)*pcorr(enew,i2)
             endif  
             DUALco = DUALco+1
-          endif  
+          endif
           !--- special case CH4+CO2+H2O ---
           HCOproblem = (Nact>2).and.(enew==H.or.enew==C.or.enew==O)
      >                 .and.(CH4>0).and.(H2O>0).and.(CO2>0)
@@ -604,6 +623,56 @@
             endif  
             COSco = COSco + 1
           endif
+          !--- special case CO2,SO2,SO3 ---
+          COSproblem = (Nact==4).and.(enew==C.or.enew==O.or.enew==S)
+     >                 .and.(CO2>0).and.(SO2>0).and.(SO3>0)
+     >                 .and.(.not.COSproblem)     
+          if (COSproblem) then
+            hasC = .false.
+            hasO = .false.
+            hasS = .false.
+            do ii=1,Nact
+              i = act_to_all(ii)
+              if (i==C) hasC=.true.
+              if (i==O) hasO=.true.
+              if (i==S) hasS=.true.
+            enddo  
+            COSproblem = hasC.and.hasO.and.hasS
+          endif  
+          if (COSproblem) then
+            pCO2 = eps(C)*anHges*kT
+            pSO2 = (3*eps(S)-eps(O))*anHges*kT+2*pCO2
+            pSO3 = (eps(O)-2*eps(S))*anHges*kT-2*pCO2
+            COSproblem = (pCO2>0).and.(pSO2>0).and.(pSO3>0)
+            !print*,pCO2,pSO2,pSO3
+          endif
+          if (COSproblem) then
+            lpCO2 = LOG(pCO2)
+            lpSO2 = LOG(pSO2)
+            lpSO3 = LOG(pSO3)
+            lpO = g(SO2)-g(SO3)-lpSO2+lpSO3
+            lpS = lpSO2-g(SO2)-2*lpO
+            lpC = lpCO2-g(CO2)-2*lpO            
+            if (verbose>1) print*,"applying CO2-SO2-SO3 correction ..."
+            !print'(2(1pE16.8))',                pCO2,anHges*kT*eps(C)
+            !print'(2(1pE16.8))',2*pCO2+2*pSO2+3*pSO3,anHges*kT*eps(O)
+            !print'(2(1pE16.8))',           pSO2+pSO3,anHges*kT*eps(S)
+            !print'(2(1pE16.8))',pCO2,EXP(lpC+lpO*2+g(CO2))
+            !print'(2(1pE16.8))',pSO2,EXP(lpS+lpO*2+g(SO2))
+            !print'(2(1pE16.8))',pSO3,EXP(lpS+lpO*3+g(SO3))
+            anmono(C) = EXP(lpC)*kT1
+            anmono(O) = EXP(lpO)*kT1
+            anmono(S) = EXP(lpS)*kT1
+            pbefore(C) = anmono(C)
+            pbefore(O) = anmono(O)
+            pbefore(S) = anmono(S)
+            if (NewFastLevel<3.and.ptake) then
+              anmono(C) = anmono(C)*pcorr(enew,C)
+              anmono(O) = anmono(O)*pcorr(enew,O)
+              anmono(S) = anmono(S)*pcorr(enew,S)
+            endif  
+            COSco = COSco + 1
+          endif          
         endif
 
         !--- solve with different methods ---
@@ -635,7 +704,7 @@
             do it=1,299
               do ii=1,Nact
                 i = act_to_all(ii)
-                xx(i) = LOG(anmono(i)*kT)
+                xx(i) = LOG(anmono(i))+LOG(kT)
                 xscale(i) = anmono(i)*kT
                 if (i==el) then
                   fscale(ii) = 1.d0/mcharge
@@ -694,6 +763,7 @@
      >                       it,bem,anmono(act_to_all(1:Nact))*kT,qual
               NpreIt = NpreIt+1
               if (it>1.and.qual<1.d-10) exit
+              if (IS_NAN(qual)) exit
             enddo
             NpreLoop = NpreLoop+1
 
@@ -785,6 +855,7 @@
                   fak=MIN(fak,0.8d0*null(i)*kT/dp(ii))
                 endif
               enddo
+              if (IS_NAN(qual)) exit              
             enddo  
             NpreLoop = NpreLoop+1
 
@@ -794,7 +865,7 @@
             do it=1,299
               do ii=1,Nact
                 i = act_to_all(ii)
-                xx(i) = LOG(anmono(i)*kT)
+                xx(i) = LOG(anmono(i))+LOG(kT)
                 xscale(i) = anmono(i)*kT
                 if (i==el) then
                   fscale(ii) = 1.d0/mcharge
@@ -840,9 +911,9 @@
               do ii=1,Nact
                 i = act_to_all(ii) 
                 xx(i) = xx(i) - fak*dp(ii)
-                anmono(i) = exp(xx(i))*kT1
+                anmono(i) = exp(xx(i)+LOG(kT1))
                 if (IS_NAN(anmono(i))) then
-                  qual=2.d+99
+                  qual = 2.d+99
                   exit
                 endif  
               enddo
@@ -852,6 +923,7 @@
      >                       it,anmono(act_to_all(1:Nact))*kT,fak,qual
               NpreIt = NpreIt+1
               if (qual<1.d-10.or.qual>1.d+99) exit
+              if (IS_NAN(qual)) exit              
             enddo  
             NpreLoop = NpreLoop+1
           endif
@@ -884,7 +956,7 @@
           pcorr(enew,i) = anmono(i)/pbefore(i)    
         enddo 
         if (verbose>1) print'("corr",99(1pE11.2))',
-     >                 pcorr(enew,act_to_all(1:Nact))
+     >                 (pcorr(enew,act_to_all(i)),i=1,Nact)
         if (verbose>1) read(*,'(A1)') char
       enddo  
 *
@@ -1297,7 +1369,7 @@
         enddo
       endif
       
-      if (verbose.gt.0) print '("  ==> smchem used it=",I3,
+      if (verbose.gt.0) print '("  ==> smchem8 used it=",I3,
      &                          " conv=",1pE9.2)',it,crit
       if (verbose.gt.0) print'("number of pre-iterations",I4,
      &     " -- used saved initial guesses",0pF5.1,"%")',
@@ -1334,7 +1406,7 @@
 *****  returns  ln(kp) [cgs] for different fit formula             *****
 ************************************************************************
       use CHEMISTRY,ONLY: a,th1,th2,th3,th4,TT1,TT2,TT3,fit,natom,cmol,
-     >                    NELEM,elnum,b_nasa,c_nasa
+     >                    Natom,NELEM,elnum,b_nasa,c_nasa
       implicit none
       integer,intent(in) :: i          ! index of molecule
       real*8,intent(in) :: Tg
