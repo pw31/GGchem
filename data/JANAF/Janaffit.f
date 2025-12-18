@@ -376,6 +376,10 @@
       write(*,*) '357 = P4O10_cr pvap'
       write(*,*) '358 = AlN'
       write(*,*) '359 = AlN_cr'
+      write(*,*) '360 = H2SO4-1(H2O)[s/l]'
+      write(*,*) '361 = H2SO4-2(H2O)[s/l]'
+      write(*,*) '362 = H2SO4-3(H2O)[s/l]'
+      write(*,*) '363 = H2SO4-4(H2O)[s/l]'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -2817,6 +2821,42 @@
         Edzahl = 2
         stoich(2) = 1.D0
         stoich(3) = 1.D0
+      elseif (specie.eq.360) then
+        call READ_DATEI('H2SO4_1H2O_cr_l.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('H.txt'     ,dG,T,Nmax,N,S,2)
+        call READ_DATEI('S.txt'     ,dG,T,Nmax,N,S,3)
+        call READ_DATEI('O.txt'     ,dG,T,Nmax,N,S,4)
+        Edzahl = 3
+        stoich(2) = 4.D0
+        stoich(3) = 1.D0
+        stoich(4) = 5.D0
+      elseif (specie.eq.361) then
+        call READ_DATEI('H2SO4_2H2O_cr_l.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('H.txt'     ,dG,T,Nmax,N,S,2)
+        call READ_DATEI('S.txt'     ,dG,T,Nmax,N,S,3)
+        call READ_DATEI('O.txt'     ,dG,T,Nmax,N,S,4)
+        Edzahl = 3
+        stoich(2) = 6.D0
+        stoich(3) = 1.D0
+        stoich(4) = 6.D0
+      elseif (specie.eq.362) then
+        call READ_DATEI('H2SO4_3H2O_cr_l.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('H.txt'     ,dG,T,Nmax,N,S,2)
+        call READ_DATEI('S.txt'     ,dG,T,Nmax,N,S,3)
+        call READ_DATEI('O.txt'     ,dG,T,Nmax,N,S,4)
+        Edzahl = 3
+        stoich(2) = 8.D0
+        stoich(3) = 1.D0
+        stoich(4) = 7.D0
+      elseif (specie.eq.363) then
+        call READ_DATEI('H2SO4_4H2O_cr_l.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('H.txt'     ,dG,T,Nmax,N,S,2)
+        call READ_DATEI('S.txt'     ,dG,T,Nmax,N,S,3)
+        call READ_DATEI('O.txt'     ,dG,T,Nmax,N,S,4)
+        Edzahl = 3
+        stoich(2) = 10.D0
+        stoich(3) = 1.D0
+        stoich(4) = 8.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop

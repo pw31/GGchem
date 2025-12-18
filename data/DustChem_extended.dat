@@ -1,6 +1,6 @@
 dust species
 ============
-361
+363
 
 Al2O3[s]       CORUNDUM(alpha)
 3.97
@@ -3321,7 +3321,25 @@ V[l]   Vanadium(liquid)    2190.0
 # dG-Stock-fit Kitzmann+2024  (Tmax= 4500.00)   !!! NOT IN GGCHEM
  5  6.25807844e+04  1.90725703e+00 -3.35055418e+01  3.46422282e-04 -2.91653539e-08
 
+H2SO4-H2O[s]     SulfuricAcid_Monohydrate
+1.6
+3
+ 4 H
+ 1 S
+ 5 O
+# dG-fit NIST-Janaf 100-300K, +/- 0.045 kJ/mol
+# 2  0.00000E+00 -3.51852E+06  1.12360E+03  2.79845E-01  0.00000E+00 
+# dG-fit NIST-Janaf 100-300K, modified to match freezing point
+ 2  0.00000E+00 -3.51890E+06  1.12360E+03  2.79845E-01  0.00000E+00 
 
+H2SO4-H2O[l]     SulfuricAcid_Monohydrate(liquid)   281.626
+1.75
+3
+ 4 H
+ 1 S
+ 5 O
+# dG-Stock-fit NIST-Janaf 200-1000K, +/- 1.04:
+ 5  4.24784E+05 -1.74743E+00 -1.42794E+02  8.90724E-03  0.00000E+00
 
 ----- deactivated ------
 Fe3O4[l]                 MAGNETITE(liquid)          1870.000
