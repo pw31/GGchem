@@ -152,8 +152,9 @@
       do e=1,NELM
         if (e==el) cycle
         i = elnum(e) 
-        write(*,'(" n<",A2,">=",1pE10.4,2x,1pE10.4)')
-     >      elnam(i),nHges*eps(i),eps(i)/eps0(i)
+        write(*,'(" n<",A2,">=",1pE10.4,2x,1pE10.4,0pF23.18)')
+     >       elnam(i),nHges*eps(i),eps(i)/eps0(i),
+     >       12.q0+LOG10(eps(i))
       enddo  
 
       ngas = nel      ! cm-3
