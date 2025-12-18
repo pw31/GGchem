@@ -1357,7 +1357,6 @@
 ************************************************************************
       use CHEMISTRY,ONLY: a,th1,th2,th3,th4,TT1,TT2,TT3,fit,natom,cmol,
      >                    NELEM,elnum,b_nasa,c_nasa
-      use PARAMETERS,ONLY: H2SO4_super1,H2SO4_super2
       implicit none
       integer,intent(in) :: i                 ! index of molecule
       real*8,intent(in) :: Tg
@@ -1509,11 +1508,6 @@
         stop "???"
       endif  
 
-      if (i==iH2SO4) then
-        fac = LOG(735.0/Tg)
-        lnk = lnk + H2SO4_super1 + H2SO4_super2*fac
-      endif
-      
       gk = lnk
       end FUNCTION gk
 

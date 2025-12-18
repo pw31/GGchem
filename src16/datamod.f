@@ -10,7 +10,7 @@
       logical :: auto_atmos,adapt_cond,stop_after_init,use_SiO
       logical :: disk_model,output_dispol,model_refine
       real*8  :: Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,Tseq(100)
-      real*8  :: Mpl,Rpl,gamma,Tmin_atmos,H2SO4_super1,H2SO4_super2
+      real*8  :: Mpl,Rpl,gamma,Tmin_atmos
       end
 
 ************************************************************************
