@@ -1,6 +1,6 @@
 dust species
 ============
-363
+367
 
 Al2O3[s]       CORUNDUM(alpha)
 3.97
@@ -3321,7 +3321,7 @@ V[l]   Vanadium(liquid)    2190.0
 # dG-Stock-fit Kitzmann+2024  (Tmax= 4500.00)   !!! NOT IN GGCHEM
  5  6.25807844e+04  1.90725703e+00 -3.35055418e+01  3.46422282e-04 -2.91653539e-08
 
-H2SO4-H2O[s]     SulfuricAcid_Monohydrate
+H2SO4-1H2O[s]    SulfuricAcid_Monohydrate
 1.6
 3
  4 H
@@ -3330,16 +3330,79 @@ H2SO4-H2O[s]     SulfuricAcid_Monohydrate
 # dG-fit NIST-Janaf 100-300K, +/- 0.045 kJ/mol
 # 2  0.00000E+00 -3.51852E+06  1.12360E+03  2.79845E-01  0.00000E+00 
 # dG-fit NIST-Janaf 100-300K, modified to match freezing point
- 2  0.00000E+00 -3.51890E+06  1.12360E+03  2.79845E-01  0.00000E+00 
+  2  0.00000E+00 -3.51890E+06  1.12360E+03  2.79845E-01  0.00000E+00 
 
-H2SO4-H2O[l]     SulfuricAcid_Monohydrate(liquid)   281.626
-1.75
+H2SO4-1H2O[l]    SulfuricAcid_Monohydrate(liquid)   281.63
+1.75   w/w=85%
 3
  4 H
  1 S
  5 O
 # dG-Stock-fit NIST-Janaf 200-1000K, +/- 1.04:
  5  4.24784E+05 -1.74743E+00 -1.42794E+02  8.90724E-03  0.00000E+00
+
+H2SO4-2H2O[s]    SulfuricAcid_Dihydrate
+1.55
+3
+ 6 H
+ 1 S
+ 6 O
+# dG-fit NIST-Janaf 100-200K (two points)
+  2  0.0000000E+00 -4.5064560E+06  1.5337600E+03  0.0000000E+00  0.0000000E+00 
+  
+H2SO4-2H2O[l]    SulfuricAcid_Dihydrate(liquid)   233.70
+1.64   w/w=73%
+3
+ 6 H
+ 1 S
+ 6 O
+# dG-Stock-fit NIST-Janaf 298-1000K, +/- 1.4 kJ/mol:
+# 5  5.3767479E+05 -1.7241875E+01 -7.9129564E+01  1.9156840E-02  0.0000000E+00
+# dG-Stock-fit NIST-Janaf modified to match freezing point
+  5  5.3767479E+05 -1.7241875E+01 -7.6390000E+01  1.9156840E-02  0.0000000E+00
+
+H2SO4-4H2O[s]    SulfuricAcid_Tetrahydrate
+1.45
+3
+10 H
+ 1 S
+ 8 O
+# dG-fit NIST-Janaf 100-200K (two points)
+  2  0.0000000E+00 -6.4635470E+06  2.1775400E+03  0.0000000E+00  0.0000000E+00 
+  
+H2SO4-4H2O[l]    SulfuricAcid_Tetrahydrate(liquid)   244.90
+1.52   w/w=57%
+3
+10 H
+ 1 S
+ 8 O
+# dG-Stock-fit NIST-Janaf 298-1000K, +/- 0.98 kJ/mol:
+# 5  7.7461531E+05 -1.0428597E+01 -1.9925073E+02  1.2073303E-02  0.0000000E+00
+# dG-Stock-fit NIST-Janaf modified to match freezing point
+  5  7.7461531E+05 -1.0428597E+01 -1.9617000E+02  1.2073303E-02  0.0000000E+00
+
+
+----- does not work because of the broken stoichiometry -----
+H2SO4-6.5H2O[s]    SulfuricAcid_Hemihexahydrate
+1.30
+3
+15 H
+ 1 S
+10.5 O
+# dG-fit NIST-Janaf 100-200K (two points)
+  2  0.0000000E+00 -8.8997525E+06  2.9946700E+03  0.0000000E+00  0.0000000E+00 
+  
+H2SO4-6.5H2O[l]    SulfuricAcid_Hemihexahydrate(liquid)   220.3
+1.35   w/w=45.6%
+3
+15 H
+ 1 S
+10.5 O
+# dG-Stock-fit NIST-Janaf 298-1000K, +/- 1.12 kJ/mol:
+  5  1.0699621E+06 -1.8459296E+00 -3.5062816E+02  4.5823947E-03  1.1268777E-06
+# dG-Stock-fit NIST-Janaf modified to match freezing point
+# 5  7.7461531E+05 -1.0428597E+01 -1.9617000E+02  1.2073303E-02  0.0000000E+00
+
 
 ----- deactivated ------
 Fe3O4[l]                 MAGNETITE(liquid)          1870.000

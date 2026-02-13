@@ -380,6 +380,7 @@
       write(*,*) '361 = H2SO4-2(H2O)[s/l]'
       write(*,*) '362 = H2SO4-3(H2O)[s/l]'
       write(*,*) '363 = H2SO4-4(H2O)[s/l]'
+      write(*,*) '364 = H2SO4-6.5(H2O)[s/l]'
       read(*,*) specie
 *
       if (specie.eq.1) then
@@ -2857,11 +2858,20 @@
         stoich(2) = 10.D0
         stoich(3) = 1.D0
         stoich(4) = 8.D0
+      elseif (specie.eq.364) then
+        call READ_DATEI('H2SO4_6.5H2O_cr_l.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('H.txt'     ,dG,T,Nmax,N,S,2)
+        call READ_DATEI('S.txt'     ,dG,T,Nmax,N,S,3)
+        call READ_DATEI('O.txt'     ,dG,T,Nmax,N,S,4)
+        Edzahl = 3
+        stoich(2) = 15.D0
+        stoich(3) = 1.D0
+        stoich(4) = 10.5D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop
       endif
-      write(*,'("stoichiometry:",99(I3))') 1,INT(stoich(2:Edzahl+1))
+      write(*,'("stoichiometry:",I2,99(F5.1))') 1,stoich(2:Edzahl+1)
       write(*,*)
 *
       write(*,*) 'T data from ... to ...'
@@ -2997,7 +3007,18 @@
         Ndat = Ndat+dN
       endif  
 
+ 90   continue
       write(*,*) Ndat,' data points'
+      do i=1,Ndat
+        print*,x(i),y(i)
+      enddo
+      print*,"add fake data point? (y/n)"
+      read(*,*) answer
+      if (answer=='y') then
+        Ndat = Ndat+1
+        read(*,*) x(Ndat),y(Ndat)
+        goto 90
+      endif
  100  write(*,*)
 
       if (mode.eq.3) then
@@ -3152,10 +3173,10 @@
       STOP
  1000 format(' a_',i1,' = ',1pE12.5)
  1010 format(2(0pF9.2),99(1pE14.5))
- 1020 format(99(0pF13.6))
+ 1020 format(99(0pF15.7))
  1031 format('Abweichung max/mean = ',1pE9.2,' kJ/mol',1pE9.2)
  1032 format('Abweichung max/mean = ',2(1pE9.2))
- 2000 format(99(1pE13.5))
+ 2000 format(99(1pE15.7))
       end
 *
 *
