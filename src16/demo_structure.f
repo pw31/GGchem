@@ -3,8 +3,9 @@
 ***********************************************************************
       use PARAMETERS,ONLY: Mpl,Rpl,Tmin,Tmax,pmin,pmax,nHmin,nHmax,
      >                     model_eqcond,model_pconst,model_refine,
-     >                     model_struc,struc_file,remove_condensates,
-     >                     model_eqcond,Nseq,Tseq,Np=>Npoints
+     >                     model_smooth,model_struc,struc_file,
+     >                     remove_condensates,model_eqcond,
+     >                     Nseq,Tseq,Np=>Npoints
       use CHEMISTRY,ONLY: NELM,NMOLE,elnum,cmol,catm,el,charge
       use DUST_DATA,ONLY: NELEM,NDUST,elnam,eps0,bk,bar,
      >                    muH,mass,mel,amu,grav,
@@ -21,7 +22,7 @@
       real :: tau,p,pe,rho,nHges,nges,kT,pgas,mu,gg,Hp,mugas
       real :: muold,dmu,ff,fold,dfdmu,km=1.D+5,AU=1.4959787d+13 
       real :: Jstar,Nstar,rhog,dustV,rhod,L3,bmix,emono,rdum,zdum
-      real :: Tg,Td,cT,rcut,Kzz,pp,fak1,fak2,mean
+      real :: Tg,Td,cT,rcut,Kzz,pp,fak1,fak2,mean,mean1,mean2
       real,dimension(Npmax) :: Ttmp,dtmp,ptmp,ztmp
       real(kind=qp),dimension(Npmax,NELEM) :: etmp
       integer :: i,j,k,l,e,jj,dk,NOUT,Nfirst,Nlast,Ninc,iW,idum
@@ -467,14 +468,6 @@
           if (press(i)<pmin) Nlast=i 
           if (press(i)<pmax) Nfirst=i
         enddo
-        !--- smooth the structure a bit ---
-        Ttmp = Tgas
-        do i=2,Npoints-1
-          mean     = dens(i)*Tgas(i)/press(i)
-          Tgas(i)  = (Ttmp(i-1)+2*Ttmp(i)+Ttmp(i+1))/4
-          dens(i)  = mean/Tgas(i)*press(i)
-          nHtot(i) = dens(i)/muH
-        enddo
         zz(1:Npoints) = zz(1:Npoints)-zz(Nfirst)
         Ninc = -1            ! top to bottom 
 
@@ -483,6 +476,9 @@
         stop
       endif  
 
+      !---------------------------------------
+      ! ***  grid refining the structure?  ***
+      !---------------------------------------
       if (model_refine) then
         ztmp = zz
         ptmp = press
@@ -496,21 +492,35 @@
           pp = EXP(LOG(pmax)+fac*LOG(pmin/pmax))
           do
             if (pp>ptmp(j+Ninc)) exit
+            if (j+Ninc<2.or.j+Ninc>Npoints-1) exit
             j = j+Ninc
           enddo
-          fak1 = LOG(pp/ptmp(j))/LOG(ptmp(j+Ninc)/ptmp(j))
-          fak2 = 1.0-fak1
-          print'(I4,4(1pE12.5),I4)',i,ptmp(j),pp,ptmp(j+Ninc),fak1,j
-          zz(i)    =     fak2*ztmp(j)     +fak1*ztmp(j+Ninc)
-          press(i) = EXP(fak2*LOG(ptmp(j))+fak1*LOG(ptmp(j+Ninc)))
-          Tgas(i)  =     fak2*Ttmp(j)     +fak1*Ttmp(j+Ninc)
-          dens(i)  = EXP(fak2*LOG(dtmp(j))+fak1*LOG(dtmp(j+Ninc)))
-          estruc(i,:) =  fak2*etmp(j,:)   +fak1*etmp(j+Ninc,:)
+          fak2 = LOG(pp/ptmp(j))/LOG(ptmp(j+Ninc)/ptmp(j))
+          fak1 = 1.0-fak2
+          print'(I4,4(1pE12.5),I4,I4)',i,ptmp(j),pp,ptmp(j+Ninc),
+     >                                 fak1,j,j+Ninc
+          zz(i)    =     fak1*ztmp(j)     +fak2*ztmp(j+Ninc)
+          press(i) = EXP(fak1*LOG(ptmp(j))+fak2*LOG(ptmp(j+Ninc)))
+          Tgas(i)  =     fak1*Ttmp(j)     +fak2*Ttmp(j+Ninc)
+          estruc(i,:) =  fak1*etmp(j,:)   +fak2*etmp(j+Ninc,:)
+          mean1    = dtmp(j)*Ttmp(j)/ptmp(j)
+          mean2    = dtmp(j+Ninc)*Ttmp(j+Ninc)/ptmp(j+Ninc)
+          mean     = fak1*mean1+fak2*mean2
+          dens(i)  = mean/Tgas(i)*press(i)
+          !dens(i)  = EXP(fak1*LOG(dtmp(j))+fak2*LOG(dtmp(j+Ninc)))
+          !print*,dens(i),EXP(fak1*LOG(dtmp(j))+fak2*LOG(dtmp(j+Ninc)))
           nHtot(i) = dens(i)/muH
         enddo
         Nfirst = 1
         Nlast = Np
         Ninc = 1
+      endif
+
+      !-----------------------------------
+      ! ***  smoothing the structure?  ***
+      !-----------------------------------
+      if (model_smooth>0) then
+        call BOX_CAR(Np,model_smooth)
       endif
       
       !----------------------------
@@ -709,3 +719,25 @@
  2011 format(9999(1x,1pE19.10))
       end  
 
+
+***********************************************************************
+      subroutine BOX_CAR(Np,Nsmooth)
+***********************************************************************
+      use STRUCTURE,ONLY: Tgas,press,dens,nHtot
+      use DUST_DATA,ONLY: muH
+      implicit none
+      integer,intent(in) :: Np,Nsmooth
+      integer :: ns,i
+      real :: mean,Ttmp(Np)
+      print*,"smoothing the T-structure ",Nsmooth,Np
+      do ns=1,Nsmooth
+        !--- smooth the structure a bit ---
+        Ttmp(1:Np) = Tgas(1:Np)
+        do i=2,Np-1
+          mean     = dens(i)*Tgas(i)/press(i)
+          Tgas(i)  = (Ttmp(i-1)+2*Ttmp(i)+Ttmp(i+1))/4
+          dens(i)  = mean/Tgas(i)*press(i)
+          nHtot(i) = dens(i)/muH
+        enddo
+      enddo
+      end

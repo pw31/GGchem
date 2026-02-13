@@ -3,7 +3,7 @@
 ************************************************************************
       character(len=200) :: elements,abund_file,struc_file,adapt_file
       integer :: abund_pick,model_dim,Npoints,model_struc
-      integer :: method_eqcond,Nseq,verbose
+      integer :: method_eqcond,model_smooth,Nseq,verbose
       logical :: model_eqcond,model_pconst,pick_mfrac,initchem_info
       logical :: useDataBase,remove_condensates,phyllosilicates
       logical :: metal_sulphates 

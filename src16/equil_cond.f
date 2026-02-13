@@ -48,15 +48,16 @@
       real(kind=qp) :: turnon,maxon,minoff,fac,fac2,amount,Nt,dscalemax
       real(kind=qp) :: deps,esum,emax,NRstep,dev,LastDev,val1,val2,test
       real(kind=qp) :: det(2),converge(5000,NELEM),crit,cbest,qualDF
-      real(kind=qp) :: deplete1,deplete2,small=1.Q-30
+      real(kind=qp) :: deplete1,deplete2
       real(kind=qp) :: dterm,dtmax,dlim,varfac,target,Qfinish,Sfinish
+      real(kind=qp),parameter :: small=1.Q-30
       integer,parameter :: itmax=5000
       integer,dimension(NELEM) :: elem,Nslot,eind
       integer,dimension(NDUST) :: dind,dlin,switchedON,switchedOFF
       integer,dimension(NELEM,NDUST) :: dustkind,stoich
       integer :: it,i,j,k,el,el2,Nact,Nact_read,Neq,slots,sl,dk,eq
-      integer :: itry,knowns,unknowns,unknown,ii,jj,lastit,laston=0
-      integer :: dtry,dtry_last=0,imaxon,iminoff,info,ipvt(NELEM)
+      integer :: itry,knowns,unknowns,unknown,ii,jj,lastit,laston
+      integer :: dtry,dtry_last,imaxon,iminoff,info,ipvt(NELEM)
       integer :: e_num(NELEM),e_num_save(NELEM)
       integer :: Nunsolved,unsolved(NELEM),Nvar1,Nvar2,var(NELEM)
       integer :: Nsolve,ebest,dbest,nonzero,itrivial,iread,ioff,method
@@ -243,7 +244,9 @@
       ddust  = 0.Q0                 ! initial state dust-free
       eps    = eps0                 ! initial gas abundances 
       active = .false.              ! no solid condensing
-
+      laston = 0
+      dtry_last=0
+      
       !--------------------------------------------
       ! ***  load initial state from database?  ***
       !--------------------------------------------
@@ -1516,9 +1519,9 @@
         enddo  
         dx = dx*fac
         limited = (fac<1.Q0)
-        !if (iminoff>0.and.(iminoff.ne.laston)) then
-        if (iminoff>0) then
-          if (verbose>=0) print*,"will switch off ",dust_nam(iminoff) 
+        if (iminoff>0.and.(iminoff.ne.laston)) then
+        !if (iminoff>0) then
+          if (verbose>=0) print*,"will switch off1 ",dust_nam(iminoff) 
           active(iminoff) = .false.
           lastit = -99
           !if (iminoff.eq.laston) then
@@ -1746,7 +1749,7 @@
             el = elnum(i)
             if (base_el(jj,el)==0.Q0) cycle
             scale(jj) = MIN(scale(jj),eps(el))
-          enddo  
+          enddo
           del = varfac*scale(jj)             ! tiny amount of lin.comb.of.cond. to evaporate
           do itJac=1,99
             check(:) = eps(:) + del*base_el(jj,:)
@@ -1779,7 +1782,7 @@
             LastRow(1:Nsolve) = DF(1:Nsolve,jj)
             LastDev = dev
           enddo
-          !j = act_to_dust(jj)
+          j = act_to_dust(jj)
           !print'("JAC:",A18,99(1pE10.2))',
      >    !     trim(dust_nam(j)),DF(1:Nsolve,jj)
         enddo
@@ -1869,8 +1872,11 @@
         do ii=1,Nsolve
           i = act_to_dust(ii)
           del = -dstep(i)
+          !print'(A20,2(I4),L2,9(1pE11.3))',dust_nam(i),it,lastit,
+     >    !     i==laston,ddust(i),del,dscale(i)
           if (del<0.Q0.and.ddust(i)>0.1*dscale(i)) then ! try small ddust before switching off
             fac2 = (-ddust(i)+0.05*dscale(i))/del       ! ddust+fac*del = 0.05*dscale
+            !print*,"... 1",fac2
             if (fac2<1.Q0.and.verbose>0) print*,"*** limiting dust 1 "
      >                                   //dust_nam(i),REAL(fac2)
             if (fac2<fac) then
@@ -1881,6 +1887,7 @@
           else if (ddust(i)+del<0.Q0.and.
      >             i==laston.and.it<lastit+5) then      ! just switched on: keep on trying
             fac2 = -0.9*ddust(i)/del                    ! ddust+fac*del = ddust/10
+            !print*,"... 2",fac2
             if (fac2<1.Q0.and.verbose>0) print*,"*** limiting dust 2 "
      >                                  //dust_nam(i),REAL(fac2)
             if (fac2<fac) then
@@ -1888,8 +1895,13 @@
               iminoff = 0
               limdust = .true.
             endif  
-          else if (ddust(i)+del<0.Q0) then              ! preparation to switch off next
-            fac2 = (-ddust(i)-small*dscale(i))/del      ! ddust+fac*del = -small*dscale
+          else if (ddust(i)+del<0.Q0) then
+            if (i==laston) then
+              fac2 = -0.5*ddust(i)/del                    ! ddust+fac*del = 0.5*ddust
+            else                                          ! preparation to switch off next
+              fac2 = (-ddust(i)-small*dscale(i))/del      ! ddust+fac*del = -small*dscale
+            endif
+            !print*,"... 3",fac2
             if (fac2<1.Q0.and.verbose>0) print*,"*** limiting dust 3 "
      >                                   //dust_nam(i),REAL(fac2)
             if (fac2<fac) then
@@ -1897,6 +1909,7 @@
               iminoff = i
               limdust = .true.
             endif
+            if (it>30) stop
           endif  
         enddo
         do i=1,NELM
@@ -1917,8 +1930,10 @@
         dstep = dstep*fac
         xstep = xstep*fac
         limited = (fac<1.Q0)
-        if (iminoff>0) then
-          if (verbose>=0) print*,"will switch off ",dust_nam(iminoff) 
+        if (iminoff>0.and.(iminoff.ne.laston)) then
+        !if (iminoff>0) then
+          if (verbose>=0) print*,"will switch off2 ",dust_nam(iminoff),
+     >                           iminoff,laston
           active(iminoff) = .false.
           lastit = -99
         endif

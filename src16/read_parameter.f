@@ -5,7 +5,7 @@
      >     model_struc,model_eqcond,Npoints,useDatabase,verbose,
      >     Tfast,Tmin,Tmax,pmin,pmax,nHmin,nHmax,pick_mfrac,use_SiO,
      >     abund_file,struc_file,remove_condensates,phyllosilicates,
-     >     metal_sulphates,output_dispol,model_refine, 
+     >     metal_sulphates,output_dispol,model_refine,model_smooth, 
      >     initchem_info,auto_atmos,stop_after_init,Mpl,Rpl,gamma,
      >     adapt_cond,adapt_file,method_eqcond,Nseq,Tseq,Tmin_atmos,
      >     disk_model 
@@ -42,6 +42,7 @@
       model_dim    = 0
       model_struc  = 0
       model_refine = .false.
+      model_smooth = 0
       verbose      = 0
       Npoints      = 100
       Tfast        = 1000.d0
@@ -113,6 +114,8 @@
           if (model_struc>0) read(1,'(A200)') struc_file
         else if (index(line,"! model_refine")>0) then   
           read(line,*) model_refine
+        else if (index(line,"! model_smooth")>0) then   
+          read(line,*) model_smooth
         else if (index(line,"! Tmax")>0) then   
           read(line,*) Tmax
         else if (index(line,"! Tmin_atmos")>0) then 
