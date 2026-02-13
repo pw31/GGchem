@@ -332,7 +332,7 @@ for isolid in reversed(indices):
   if (np.size(ind) == 0): continue
   ind = ind[0]
   logS = dat[:,ind]              # log10 S
-  if (np.max(logS[iii])>-6):
+  if (np.max(logS[iii])>-4):
     plt.plot(xx,logS,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
     count = count + 1
 plt.plot([xmin,xmax],[0,0],ls="--",c='black',lw=1.0)
@@ -340,13 +340,13 @@ plt.title('supersaturation ratios')
 plt.xlabel(r'$x$')
 plt.ylabel(r'$\mathrm{log}_{10}\ S$')
 plt.xlim(xmin,xmax)
-plt.ylim(-4,+7)
-sz = np.min([11,1+60.0/count])
+plt.ylim(-4,+8)
+sz = np.min([11,1+50.0/count])
 col = 1
 if (count>10): 
-  sz = np.min([11,1+60.0/count*2])
+  sz = np.min([11,1+50.0/count*2])
   col = 2
-leg = plt.legend(loc='best',fontsize=sz,fancybox=True,ncol=col,handlelength=3)
+leg = plt.legend(loc='best',fontsize=sz,fancybox=True,ncol=col,handlelength=2)
 leg.get_frame().set_alpha(0.7)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
@@ -372,12 +372,12 @@ if (count>0):
   plt.ylabel(r'$S$')
   plt.xlim(xmin,xmax)
   plt.ylim(0,1.05)
-  sz = np.min([11,1+60.0/count])
+  sz = np.min([11,1+50.0/count])
   col = 1
   if (count>10): 
-    sz = np.min([11,1+60.0/count*2])
+    sz = np.min([11,1+50.0/count*2])
     col = 2
-  leg = plt.legend(loc='best',fontsize=sz,fancybox=True,ncol=col,handlelength=3)
+  leg = plt.legend(loc='best',fontsize=sz,fancybox=True,ncol=col,handlelength=2)
   leg.get_frame().set_alpha(0.7)
   plt.tight_layout()
   plt.savefig(pp,format='pdf')

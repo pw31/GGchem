@@ -22,9 +22,7 @@ for fit in fits:
   temp2 = []
   fitpt = []
   for line in lines:
-    # Split our line into columns
     data = line.split()
-    # Add the columns to the lists
     temp2.append(float(data[0]))
     fitpt.append(float(data[1]))
 
@@ -39,6 +37,11 @@ for fit in fits:
   # plot model
   plt.plot(temp2,fitpt,label=fit[0])
 
+  aa = -1.7811484E+07
+  bb =  6.0492334E+03
+  yy = (aa + bb*temp2)/1000.0
+  plt.plot(temp2,yy)
+  
 # Add x and y labels to the graph
 plt.xlabel('T [K]')
 plt.ylabel('dG, Kp or Pvap')

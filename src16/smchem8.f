@@ -276,6 +276,7 @@
             sum = LOG(pges) - lnp - LOG(REAL(l))
             if (sum>300.0*l) cycle
             ptest = EXP(sum/l)
+            !print*,cmol(i),sum,l,ptest
             if (ptest<pwork) then
               pwork2 = pwork
               pwork = ptest
@@ -319,8 +320,8 @@
             coeff(l) = EXP(lnc(l)+l*psc)
           enddo
           psc = EXP(psc)
-          !if (verbose>1) print'(" coeff(",I2,":",I2,")=",99(1pE10.2))',
-     >    !               lmin,lmax,coeff(lmin:lmax)
+          if (verbose>1) print'(" coeff(",I2,":",I2,")=",99(1pE10.2))',
+     >                   lmin,lmax,coeff(lmin:lmax)
           !----------------------------------------------
           ! solve 1d equation above with Newton's method 
           !----------------------------------------------
@@ -1219,6 +1220,7 @@
           e = 0
           do i=1,nel
             xx(i) = LOG(anmono(i)*kT)
+            !print*,iredo,catm(i),xx(i)
             if (redo(i)) cycle   
             atfrac = anmono(i)/anHges
             if (atfrac>1.d-30) cycle   
@@ -1246,6 +1248,7 @@
               endif  
             enddo
             if (.not.affect) cycle
+            !print*,cmol(i),g(i),l,pmol
             lmin = MIN(lmin,l)
             lmax = MAX(lmax,l)
             coeff(l) = coeff(l)+EXP(pmol)

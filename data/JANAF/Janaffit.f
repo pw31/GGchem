@@ -383,6 +383,7 @@
       write(*,*) '364 = H2SO4-6.5(H2O)[s/l]'
       read(*,*) specie
 *
+      stoich(1) = 1.D0
       if (specie.eq.1) then
         call READ_DATEI('CO.txt',dG,T,Nmax,N,S,1) 
         call READ_DATEI('C.txt' ,dG,T,Nmax,N,S,2) 
@@ -2855,6 +2856,7 @@
         call READ_DATEI('S.txt'     ,dG,T,Nmax,N,S,3)
         call READ_DATEI('O.txt'     ,dG,T,Nmax,N,S,4)
         Edzahl = 3
+        stoich(1) = 2.D0
         stoich(2) = 10.D0
         stoich(3) = 1.D0
         stoich(4) = 8.D0
@@ -2864,14 +2866,15 @@
         call READ_DATEI('S.txt'     ,dG,T,Nmax,N,S,3)
         call READ_DATEI('O.txt'     ,dG,T,Nmax,N,S,4)
         Edzahl = 3
-        stoich(2) = 15.D0
-        stoich(3) = 1.D0
-        stoich(4) = 10.5D0
+        stoich(1) = 2.D0
+        stoich(2) = 30.D0
+        stoich(3) = 2.D0
+        stoich(4) = 21.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop
       endif
-      write(*,'("stoichiometry:",I2,99(F5.1))') 1,stoich(2:Edzahl+1)
+      write(*,'("stoichiometry:",99(F5.1))') stoich(1:Edzahl+1)
       write(*,*)
 *
       write(*,*) 'T data from ... to ...'
@@ -2900,7 +2903,7 @@
       do i=1,Nmax(1)
         if ((T(1,i).ge.T1).and.(T(1,i).le.T2)) then
           xx = T(1,i)
-          yy = dG(1,i)
+          yy = stoich(1)*dG(1,i)
           ok = .true.
           do ed=2,Edzahl+1
             gef = .false.

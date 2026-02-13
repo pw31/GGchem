@@ -281,11 +281,12 @@
               lnpmin = sum/l
               imaj2(enew) = imaj(enew)
               imaj(enew) = i
-              !print*,"first",cmol(i),pwork,lnc(l)
+              !print*,"first",cmol(i),pwork,l,lnc(l)
             else if (ptest<pwork2) then  
               pwork2 = ptest
               imaj2(enew) = i
-              !print*,"second",cmol(i),pwork,lnc(l)
+              !print*,"second",cmol(i),g(i),lnp,enew,pges,ptest,pwork,
+     >        !                l,lnc(l)
             endif
           endif
         enddo
@@ -308,7 +309,7 @@
             psc = MAX(psc,-ptest)
           enddo  
           psc = -psc
-          !if (verbose>1) print*,"pwork=",REAL(pwork),"  psc=",REAL(psc)
+          if (verbose>1) print*,"pwork=",REAL(pwork),"  psc=",REAL(psc)
           !------------------------------------------------
           ! store coeff for Sum_l coeff(l) (p*psc)^l = pges 
           !------------------------------------------------
@@ -318,8 +319,8 @@
             coeff(l) = EXP(lnc(l)+l*psc)
           enddo
           psc = EXP(psc)
-          !if (verbose>1) print'(" coeff(",I2,":",I2,")=",99(1pE10.2))',
-     >    !               lmin,lmax,coeff(lmin:lmax)
+          if (verbose>1) print'(" coeff(",I2,":",I2,")=",99(1pE10.2))',
+     >                   lmin,lmax,coeff(lmin:lmax)
           !----------------------------------------------
           ! solve 1d equation above with Newton's method 
           !----------------------------------------------
