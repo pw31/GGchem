@@ -1909,7 +1909,6 @@
               iminoff = i
               limdust = .true.
             endif
-            if (it>30) stop
           endif  
         enddo
         do i=1,NELM
