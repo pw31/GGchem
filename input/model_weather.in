@@ -1,0 +1,36 @@
+# selected elements
+H C N O S Cl F Fe el
+
+# name of files with molecular kp-data
+dispol_BarklemCollet.dat                ! dispol_file
+dispol_StockKitzmann_withoutTsuji.dat   ! dispol_file2
+dispol_WoitkeRefit.dat                  ! dispol_file3
+
+# name of data file for condensed species
+DustChem_extended.dat    ! DustChem_file
+
+# abundance options 0=custom 1=EarthCrust, 2=Ocean, 3=Solar, 4=Meteorites
+.false.               ! pick_mfrac
+0                     ! abund_pick
+abund_Venus_gas.in
+
+# equilibrium condensation?
+.true.                ! model_eqcond
+.false.               ! remove_condensates
+.false.               ! useDatabase
+
+# model options
+1                     ! model_dim  (0,1,2)
+3                     ! model_struc 
+weather_02051000.dat
+.false.               ! model_refine
+0.815                 ! Mplanet [MEarth]
+0.950                 ! Rplanet [REarth]
+.false.               ! model_pconst
+10                    ! NewBackIt  
+1.E+10                ! NewBackFac
+1                     ! NewFastLevel
+3                     ! NewPreMethod
+1000.0                ! Tfast
+
+0 ! verbose

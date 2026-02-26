@@ -25,7 +25,7 @@
       real :: Tg,Td,cT,rcut,Kzz,pp,fak1,fak2,mean,mean1,mean2
       real,dimension(Npmax) :: Ttmp,dtmp,ptmp,ztmp
       real(kind=qp),dimension(Npmax,NELEM) :: etmp
-      integer :: i,j,k,l,e,jj,dk,NOUT,Nfirst,Nlast,Ninc,iW,idum
+      integer :: i,j,j1,j2,k,l,e,jj,dk,NOUT,Nfirst,Nlast,Ninc,iW,idum
       integer :: it,n1,n2,n3,n4,n5,Ndat,dind(1000),ek,eind(1000)
       integer :: Nx,Nz,ix,iz,Nfound,e_source(100),e_target(100)
       integer :: Npoints,stindex,cut,iseq,verbose=0
@@ -96,11 +96,18 @@
         open(3,file=filename,status='old')
         read(3,'(A200)') line
         read(3,*) n1,n2,n3,n4,n5,Npoints  ! NELM,NMOLE,NDUST,NEPS,NNUC,Npoints
-        Ndat = 6 + 2*n1 + n2 + 2*n3
+        Ndat = 7 + 2*n1 + n2 + 2*n3
         read(3,'(A20000)') header
-        do j=Ndat-n1-n3+1,Ndat-n1
+        j1 = 8 + n1 + n2 + n3
+        j2 = j1 + n3 - 1
+        do j=j1,j2
           dname = adjustl(header(j*20-19:j*20))
-          dname = trim(dname(2:))//"[s]"
+          print*,trim(dname)
+          if (index(dname,'[l]')>0) then
+            dname = trim(dname(2:))
+          else
+            dname = trim(dname(2:))//"[s]"
+          endif  
           dind(j) = 0
           do dk=1,NDUST
             if (trim(dust_nam(dk))==trim(dname)) then
@@ -109,17 +116,21 @@
             endif  
           enddo
           if (dind(j)==0) then
-            print*,"*** dust kind "//trim(dname)//" not found."
-            stop
+            if (dname.ne.'passive[s]') then
+              print*,"*** dust kind "//trim(dname)//" not found."
+              stop
+            endif  
           endif  
-        enddo  
+        enddo
         Nfound = 0
         do k=1,NELM-1
           e = elnum(k)
           efound = .false.
-          do j=6+n1+n2+2*n3+1,6+n1+n2+2*n3+n1
+          j1 = 8 + n1 + n2 + 2*n3
+          j2 = j1 + n1
+          do j=j1,j2
             ename = adjustl(header(j*20-19:j*20))
-            !print*,e,"eps"//trim(elnam(e))//" = "//trim(ename)
+            print*,e," eps"//trim(elnam(e))//" = "//trim(ename)
             if (trim(ename)=="eps"//trim(elnam(e))) then
               Nfound = Nfound+1
               efound = .true.
@@ -136,11 +147,12 @@
         enddo
         do i=1,Npoints
           print*,i,Npoints
-          read(3,*) dat(1:Ndat) 
+          read(3,*) dat(1:Ndat)
           Tgas(i)  = dat(1)
           nHtot(i) = dat(2)
           press(i) = dat(3)
           dens(i)  = dat(5)
+          zz(i)    = dat(6)
           pelec(i) = 10.d0**dat(7)*bk*Tgas(i)
           estruc(i,:) = eps0(:)          
           do k=1,Nfound
@@ -149,19 +161,24 @@
             estruc(i,e) = 10.Q0**dat(j)
           enddo   
           if (model_eqcond) then
-            do j=Ndat-n1-n3+1,Ndat-n1
+            j1 = 8 + n1 + n2 + n3
+            j2 = j1 + n3 - 1
+            do j=j1,j2
               ddust = 10.Q0**dat(j)
               dk = dind(j)
+              if (dind(j)==0) cycle
+              dname = adjustl(header(j*20-19:j*20))
+              !print*,dk,trim(dname),trim(dust_nam(dk))
               do k=1,dust_nel(dk)
                 e = dust_el(dk,k)
                 estruc(i,e) = estruc(i,e) + ddust*dust_nu(dk,k)    
               enddo
-            enddo  
+            enddo
           endif  
           !do k=1,NELM-1
           !  e = elnum(k) 
           !  print'(I3,A3,2(1pE18.10))',i,elnam(e),eps0(e),estruc(i,e) 
-          !enddo  
+          !enddo
         enddo
         close(3)
         Nfirst = 1
