@@ -592,7 +592,8 @@
      &                   (elnam(elnum(j)),j=el+1,NELM)
         print'(99(1pE12.3))',(eps0(elnum(j)),j=1,el-1),
      &                       (eps0(elnum(j)),j=el+1,NELM)
-
+        !if (i==108) verbose=1
+        
         if (i==Nfirst.and.Nseq>1) then  ! on base point, use Tseq() to get solution
           iseq = 1
           Tg = Tseq(1)

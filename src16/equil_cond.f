@@ -44,7 +44,7 @@
       real(kind=qp),dimension(NDUST,NELEM) :: mat
       real(kind=qp),dimension(NELEM,NDUST) :: AA,base
       real(kind=qp) :: worst,xmin,Smax,Smin,qual,qold,SQUAL,del
-      real(kind=qp) :: abun,tmp1,amax
+      real(kind=qp) :: abun,tmp1,amax,maxq
       real(kind=qp) :: turnon,maxon,minoff,fac,fac2,amount,Nt,dscalemax
       real(kind=qp) :: deps,esum,emax,NRstep,dev,LastDev,val1,val2,test
       real(kind=qp) :: det(2),converge(5000,NELEM),crit,cbest,qualDF
@@ -348,6 +348,7 @@
       limited = .false.
       ifail = 0
       no_action = 0
+      iwillswitchoff = 0
       
 !---------------------------  start of main iteration loop  ----------------------------
 
@@ -368,11 +369,7 @@
           Nact = Nact_read
           pot = 0.0
         else if (it>lastit+3) then
-          maxon   = 0.Q0 
           minoff  = 0.Q0 
-          imaxon  = 0
-          Smax = 0.Q0
-          imax = 0
           if (qual==0.Q0) limited=.false.
           do i=1,NDUST
             Sat1(i) = 0.0
@@ -392,19 +389,27 @@
             esum = esum**1.65            ! simple condensates first
             abun = dscalemax/dscale(i)   ! potentially abundant condensates first
             abun = MIN(abun,1.Q+10)
-            pot(i)  = 1.Q0/(esum+0.05*abun+1.0*switchedOFF(i))
+            pot(i) = 1.Q0/(esum+0.01*abun)/(1.0+1000*switchedOFF(i)**4)
             Sat1(i) = Sat0(i)**pot(i)
+            if (verbose>0.and.(.not.active(i)).and.Sat0(i)>1.Q0) then
+              print'(A20,I3," simplicity=",1pE10.3," abun=",1pE10.3,
+     >           " pot=",3(1pE10.3))',dust_nam(i),switchedOFF(i),
+     >           1.Q0/esum,1.Q0/(0.01*abun),pot(i),Sat0(i),Sat1(i)-1.Q0
+            endif  
+          enddo
+          Smax   = 0.Q0
+          imax   = 0
+          maxq   = 0.Q0
+          maxon  = 0.Q0 
+          imaxon = 0          
+          do i=1,NDUST
             if (Sat1(i)>Smax) then
               Smax = Sat1(i)
               imax = i
             endif  
-            if (verbose>0.and.(.not.active(i)).and.Sat0(i)>1.Q0) then
-              print'(A20," simplicity=",1pE10.3," abun=",1pE10.3,
-     >                   " pot=",3(1pE10.3))',dust_nam(i),
-     >           1.Q0/esum,1.Q0/abun,pot(i),Sat0(i),Sat1(i)-1.Q0
-            endif  
-          enddo 
-          do i=1,NDUST
+            if (i==laston) cycle
+            if (i==iwillswitchoff) cycle
+            maxq = MAX(maxq,Sat1(i)-1.Q0)
             if (Sat1(i)>1.Q0.and.(.not.active(i))) then
               turnon = Sat1(i)-1.Q0 
               if (turnon>maxon.and.(.not.limited)) then
@@ -414,15 +419,15 @@
             endif  
           enddo
           if (verbose>0) print*,"imaxon,maxon=",dust_nam(imaxon),
-     >                          real(maxon),no_action
-          if (qual>maxon.and.no_action<50) then  ! keep on iterating without switching on yet
-            maxon = 0.0
+     >                          real(maxq),real(maxon),no_action
+          if (maxq>maxon.and.no_action<50) then  ! keep on iterating without switching on yet
+            maxon = 0.Q0
             imaxon = 0
           endif  
           if (verbose>0) print'("limited=",L1,
      >                   "  Smax=",1pE10.3,2x,A18)',
      >                   limited,Smax,dust_nam(imax)
-          if (verbose>0.and.maxon>0.Q0) print'("  maxon =",
+          if (verbose>0.and.imaxon>0) print'("  maxon =",
      >                   1pE10.2,2x,A18)',maxon,dust_nam(imaxon)
 
           if (maxon>0.0*MAX(Smax-1.Q0,0.Q0)) then
@@ -1886,11 +1891,15 @@
           del = -dstep(i)
           if (verbose>0) print'(A20,2(I4),L2,9(1pE11.3))',dust_nam(i),
      >         it,lastit,i==laston,ddust(i),del,dscale(i)
-          if (i==laston.and.ddust(i)==0.Q0.and.del<0.Q0) then
-            fac = 0.0
-            iminoff = i
-            if (verbose>0) print*,"*** ddust=0 after switch on "
-     >                            //trim(dust_nam(i))
+          if (i==laston.and.ddust(i)<=0.Q0.and.del<0.Q0) then
+            fac2 = (-ddust(i)-small*dscale(i))/del      ! ddust+fac*del = -small*dscale
+            if (fac2<1.Q0.and.verbose>0) print*,"*** ddust=0 after "
+     >               //"switch on "//trim(dust_nam(i)),REAL(fac2)
+            if (fac2<fac) then
+              fac = fac2
+              iminoff = i
+              limdust = .true.
+            endif
           else if (del<0.Q0.and.ddust(i)>0.1*dscale(i)) then ! try small ddust before switching off
             fac2 = (-ddust(i)+0.05*dscale(i))/del            ! ddust+fac*del = 0.05*dscale
             !print*,"... 1",fac2
@@ -1912,12 +1921,8 @@
               iminoff = 0
               limdust = .true.
             endif  
-          else if (ddust(i)+del<0.Q0) then
-            if (i==laston) then
-              fac2 = -0.5*ddust(i)/del                    ! ddust+fac*del = 0.5*ddust
-            else                                          ! preparation to switch off next
-              fac2 = (-ddust(i)-small*dscale(i))/del      ! ddust+fac*del = -small*dscale
-            endif
+          else if (ddust(i)+del<0.Q0) then              ! preparation to switch off next
+            fac2 = (-ddust(i)-small*dscale(i))/del      ! ddust+fac*del = -small*dscale
             !print*,"... 3",fac2
             if (fac2<1.Q0.and.verbose>0) print*,"*** limiting dust 3 "
      >                                   //dust_nam(i),REAL(fac2)
@@ -1946,14 +1951,16 @@
         dstep = dstep*fac
         xstep = xstep*fac
         limited = (fac<1.Q0)
-        if (iminoff>0.and.((iminoff.ne.laston).or.
-     >                     (ddust(iminoff)==0.Q0))) then
-        !if (iminoff>0) then
-          if (verbose>=0) print*,"will switch off2 ",dust_nam(iminoff),
-     >                           iminoff,laston
-          active(iminoff) = .false.
-          lastit = -99
-          iwillswitchoff = iminoff
+        if (iminoff>0) then
+          if ((iminoff.ne.laston).or.(no_action>10)
+     >        .or.(ddust(iminoff)<=0.Q0)) then
+          !if (iminoff>0) then
+            if (verbose>=0) print*,"will switch off2 ",
+     >                      dust_nam(iminoff),iminoff,laston,no_action
+            active(iminoff) = .false.
+            lastit = -99
+            iwillswitchoff = iminoff
+          endif
         endif
 
         !if (verbose>0) then

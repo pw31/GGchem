@@ -24,7 +24,7 @@
       integer :: NEPS                      ! number of affected elements
       
       character(len=2)  :: elnam(NELEM)       ! names of elements
-      character(len=20) :: dust_nam(NDUSTmax) ! names of dust species
+      character(len=20) :: dust_nam(0:NDUSTmax) ! names of dust species
       integer :: elnr(NELEM),elcode(NELEM)    ! element cross-indices
       real(kind=qp) :: eps0(NELEM)            ! element abundances
       real*8  :: mass(NELEM)                  ! element masses
