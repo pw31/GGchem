@@ -221,7 +221,7 @@ if (ymax>-99):
   #ax.xaxis.set_minor_locator(locmin)
   #ax.set_xticks(locmaj)
   #ax.xaxis.set_major_formatter(FormatStrFormatter('%d'))
-  leg = plt.legend(loc='upper right',fontsize=9,fancybox=True,ncol=1,handlelength=2.0)
+  leg = plt.legend(loc='best',fontsize=9,fancybox=True,ncol=1,handlelength=2.0)
   leg.get_frame().set_alpha(0.7)
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
