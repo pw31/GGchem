@@ -197,8 +197,9 @@ if (ymax>-99):
   print solids
   fig,ax = plt.subplots(figsize=(5.5,7.5))
   count = 0
-  for isolid in reversed(indices):
-    solid = solids[isolid]
+  #for isolid in reversed(indices):
+  #  solid = solids[isolid]
+  for solid in solids: 
     ind = np.where(keyword == 'n'+solid)[0]
     if (np.size(ind) == 0): continue
     ind = ind[0]
@@ -207,6 +208,8 @@ if (ymax>-99):
     if (np.max(yy[iii])>-99): print solid,ind,np.max(yy[iii])
     if (np.max(yy[iii])>ymin):
       plt.plot(yy[iii],zz[iii],c=colo[count],ls=styl[count],lw=widt[count],label=solid)
+      count = count + 1
+    elif (solid=='H2SO4[l]' or solid=='H2SO4'):    
       count = count + 1
   plt.title('condensates',fontsize=16)
   plt.ylabel(r'$z\ \mathrm{[km]}$',fontsize=18)
