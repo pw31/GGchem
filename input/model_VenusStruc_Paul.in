@@ -5,11 +5,9 @@ H C N O F S Cl Fe Mn Si Mg Ca Al Na K Ti el
 dispol_BarklemCollet.dat                ! dispol_file
 dispol_StockKitzmann_withoutTsuji.dat   ! dispol_file2
 dispol_WoitkeRefit.dat                  ! dispol_file3
-### 20.0                                ! H2SO4_super1
-### 10.0                                ! H2SO4_super2
 
 # name of data file for condensed species
-DustChem_extended.dat                   ! DustChem_file
+DustChem_extended.dat                  ! DustChem_file
 
 # abundance options 0=custom 1=EarthCrust, 2=Ocean, 3=Solar, 4=Meteorites
 .false.               ! pick_mfrac
@@ -38,6 +36,6 @@ VenusHighResFit_1000.dat
 1.E+10                ! NewBackFac
 1                     ! NewFastLevel
 3                     ! NewPreMethod
-900.0                 ! Tfast
+1000.0                 ! Tfast
 
 0 ! verbose
