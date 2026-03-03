@@ -64,7 +64,7 @@
       integer :: ifail,Nall,imax,swap,irow,erow,Eact,Nlin,iback,e1,e2
       integer :: act_to_elem(NELEM),act_to_dust(NELEM)
       integer :: Nzero,Ntrivial,etrivial(NELEM),dtrivial(NELEM)
-      integer :: no_action,itJac,last_tri,method_failed
+      integer :: no_action,itJac,last_tri,method_failed,iwillswitchoff
       logical,dimension(NELEM) :: e_resolved,e_act,e_taken,is_esolved
       logical,dimension(NELEM) :: e_eliminated,eblocked
       logical,dimension(0:NDUST) :: active,act_read,act_old
@@ -359,6 +359,9 @@
         changed = .false.
         Smax = maxval(Sat0)
         ioff = 0
+        if (verbose>0) print*,"it,lastit=",it,lastit,
+     >                 "laston="//trim(dust_nam(laston)),
+     >                 " willswitchoff="//trim(dust_nam(iwillswitchoff))
         if ((qread<0.5).and.(it<=3).and.(Nact_read>0)
      >                             .and.(qual>0.Q0)) then
           active = act_read
@@ -368,8 +371,13 @@
           maxon   = 0.Q0 
           minoff  = 0.Q0 
           imaxon  = 0
+          Smax = 0.Q0
+          imax = 0
           if (qual==0.Q0) limited=.false.
           do i=1,NDUST
+            Sat1(i) = 0.0
+            if (i==laston) cycle
+            if (i==iwillswitchoff) cycle
             xmin = 9.Q+99 
             esum = 0.Q0
             emax = 0.Q0
@@ -386,19 +394,17 @@
             abun = MIN(abun,1.Q+10)
             pot(i)  = 1.Q0/(esum+0.05*abun+1.0*switchedOFF(i))
             Sat1(i) = Sat0(i)**pot(i)
-            if (verbose>1.and.(.not.active(i)).and.Sat0(i)>1.Q0) then
-              print'(A20," simplicity=",1pE10.3," abun=",1pE10.3,
-     >                   " pot=",3(1pE10.3))',
-     >           dust_nam(i),1.Q0/esum,1.Q0/abun,pot(i),Sat0(i),Sat1(i)
-            endif  
-          enddo 
-          Smax = 0.Q0
-          imax = 0
-          do i=1,NDUST
             if (Sat1(i)>Smax) then
               Smax = Sat1(i)
               imax = i
             endif  
+            if (verbose>0.and.(.not.active(i)).and.Sat0(i)>1.Q0) then
+              print'(A20," simplicity=",1pE10.3," abun=",1pE10.3,
+     >                   " pot=",3(1pE10.3))',dust_nam(i),
+     >           1.Q0/esum,1.Q0/abun,pot(i),Sat0(i),Sat1(i)-1.Q0
+            endif  
+          enddo 
+          do i=1,NDUST
             if (Sat1(i)>1.Q0.and.(.not.active(i))) then
               turnon = Sat1(i)-1.Q0 
               if (turnon>maxon.and.(.not.limited)) then
@@ -407,6 +413,8 @@
               endif  
             endif  
           enddo
+          if (verbose>0) print*,"imaxon,maxon=",dust_nam(imaxon),
+     >                          real(maxon),no_action
           if (qual>maxon.and.no_action<50) then  ! keep on iterating without switching on yet
             maxon = 0.0
             imaxon = 0
@@ -436,7 +444,7 @@
               active(imaxon) = .true.
               if (verbose>=0) then
                 print*,"switch on ",trim(dust_nam(imaxon))
-              endif  
+              endif
             endif  
           endif  
           Nact = 0
@@ -575,7 +583,8 @@
             switchedON(i) = switchedON(i)+1
             if (verbose>-1) then
               write(97,*) it,"on  ",dust_nam(i),switchedON(i)
-            endif  
+            endif
+            !if (dust_nam(i)=='S[s]') verbose=1
           else if (act_old(i).and.(.not.active(i))) then
             action = .true.
             switchedOFF(i) = switchedOFF(i)+1
@@ -1441,6 +1450,7 @@
         fac = 1.Q0
         iminoff = 0
         limdust = .false.
+        iwillswitchoff = 0
         do ii=1,Nsolve
           i  = act_to_elem(ii) 
           el = Iindex(i)
@@ -1487,7 +1497,7 @@
               fac2 = (-ddust(dk)-small*dscale(dk))/del  ! ddust+fac*del = -small*dscale
               if (fac2<1.0.and.verbose>0) print*,"*** limiting dust 3 "
      >                              //dust_nam(dk),REAL(fac2)
-              if (fac2<fac) then
+              if (fac2<fac.and.fac2>0.Q0) then
                 fac = fac2 
                 iminoff = dk
                 limdust = .true.
@@ -1524,6 +1534,7 @@
           if (verbose>=0) print*,"will switch off1 ",dust_nam(iminoff) 
           active(iminoff) = .false.
           lastit = -99
+          iwillswitchoff = iminoff
           !if (iminoff.eq.laston) then
           !  print*,"=> fall back"
           !  active = save_active
@@ -1869,13 +1880,19 @@
         fac = 1.Q0
         iminoff = 0
         limdust = .false.
+        iwillswitchoff = 0
         do ii=1,Nsolve
           i = act_to_dust(ii)
           del = -dstep(i)
-          !print'(A20,2(I4),L2,9(1pE11.3))',dust_nam(i),it,lastit,
-     >    !     i==laston,ddust(i),del,dscale(i)
-          if (del<0.Q0.and.ddust(i)>0.1*dscale(i)) then ! try small ddust before switching off
-            fac2 = (-ddust(i)+0.05*dscale(i))/del       ! ddust+fac*del = 0.05*dscale
+          if (verbose>0) print'(A20,2(I4),L2,9(1pE11.3))',dust_nam(i),
+     >         it,lastit,i==laston,ddust(i),del,dscale(i)
+          if (i==laston.and.ddust(i)==0.Q0.and.del<0.Q0) then
+            fac = 0.0
+            iminoff = i
+            if (verbose>0) print*,"*** ddust=0 after switch on "
+     >                            //trim(dust_nam(i))
+          else if (del<0.Q0.and.ddust(i)>0.1*dscale(i)) then ! try small ddust before switching off
+            fac2 = (-ddust(i)+0.05*dscale(i))/del            ! ddust+fac*del = 0.05*dscale
             !print*,"... 1",fac2
             if (fac2<1.Q0.and.verbose>0) print*,"*** limiting dust 1 "
      >                                   //dust_nam(i),REAL(fac2)
@@ -1929,12 +1946,14 @@
         dstep = dstep*fac
         xstep = xstep*fac
         limited = (fac<1.Q0)
-        if (iminoff>0.and.(iminoff.ne.laston)) then
+        if (iminoff>0.and.((iminoff.ne.laston).or.
+     >                     (ddust(iminoff)==0.Q0))) then
         !if (iminoff>0) then
           if (verbose>=0) print*,"will switch off2 ",dust_nam(iminoff),
      >                           iminoff,laston
           active(iminoff) = .false.
           lastit = -99
+          iwillswitchoff = iminoff
         endif
 
         !if (verbose>0) then
