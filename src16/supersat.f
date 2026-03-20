@@ -1,6 +1,7 @@
 *********************************************************************
       SUBROUTINE SUPERSAT(T,nat,nmol,Sat)
 *********************************************************************
+      use PARAMETERS,ONLY: use_SiO
       use CHEMISTRY,ONLY: NMOLE,cmol
       use DUST_DATA,ONLY: NELEM,NDUST,bk,atm,rgas,bar,fit,cfit,
      &                    dust_nam,dust_nel,dust_el,dust_nu,dust_mass,
@@ -84,6 +85,9 @@
             n1 = nmol(imol)
           endif
           Sat(i) = n1*kT/psat
+          if (.not.use_SiO.and.dust_nam(i)=='SiO[s]') then
+            Sat(i) = 1.E-99
+          endif
 
         else if (fit(i)==4) then
           !----------------------------------------

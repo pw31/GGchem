@@ -132,8 +132,8 @@
         endif  
         if ((.not.phyllosilicates).and.hasH
      &       .and.(hasSi.or.hasAl.or.hasCa)) allfound=.false.
-        if ((.not.use_SiO).and.
-     &       trim(dust_nam(NDUST))=='SiO[s]') allfound=.false.
+        !if ((.not.use_SiO).and.
+     &  !     trim(dust_nam(NDUST))=='SiO[s]') allfound=.false.
         if ((.not.metal_sulphates).and.
      &       index(trivial(NDUST),'SULFATE')>0) allfound=.false.
         if ((fit(NDUST)==3.or.fit(NDUST)==4.or.fit(NDUST)==6
