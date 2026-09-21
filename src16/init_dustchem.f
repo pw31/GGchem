@@ -144,6 +144,7 @@
           search = search(1:j1-1)
           call upper(search)
           if (dust_nam(NDUST)=='NH4SH[s]') search='H2S'
+          if (index(dust_nam(NDUST),'H2SO4-')>0) search='H2SO4'
           found = .false.
           do j=1,NMOLE
             if (trim(cmol(j))==trim(search)) found=.true.

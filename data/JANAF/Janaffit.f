@@ -381,6 +381,11 @@
       write(*,*) '362 = H2SO4-3(H2O)[s/l]'
       write(*,*) '363 = H2SO4-4(H2O)[s/l]'
       write(*,*) '364 = H2SO4-6.5(H2O)[s/l]'
+      write(*,*) '365 = H2SO4-1(H2O)[s/l] pvap'
+      write(*,*) '366 = H2SO4-2(H2O)[s/l] pvap'
+      write(*,*) '367 = H2SO4-3(H2O)[s/l] pvap'
+      write(*,*) '368 = H2SO4-4(H2O)[s/l] pvap'
+      write(*,*) '369 = H2SO4-6.5(H2O)[s/l] pvap'
       read(*,*) specie
 *
       stoich(1) = 1.D0
@@ -2870,6 +2875,41 @@
         stoich(2) = 30.D0
         stoich(3) = 2.D0
         stoich(4) = 21.D0
+      elseif (specie.eq.365) then
+        call READ_DATEI('H2SO4_1H2O_cr_l.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('H2O.txt'     ,dG,T,Nmax,N,S,2)
+        call READ_DATEI('H2SO4.txt'   ,dG,T,Nmax,N,S,3)
+        Edzahl = 2
+        stoich(2) = 1.D0
+        stoich(3) = 1.D0
+      elseif (specie.eq.366) then
+        call READ_DATEI('H2SO4_2H2O_cr_l.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('H2O.txt'     ,dG,T,Nmax,N,S,2)
+        call READ_DATEI('H2SO4.txt'   ,dG,T,Nmax,N,S,3)
+        Edzahl = 2
+        stoich(2) = 2.D0
+        stoich(3) = 1.D0
+      elseif (specie.eq.367) then
+        call READ_DATEI('H2SO4_3H2O_cr_l.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('H2O.txt'     ,dG,T,Nmax,N,S,2)
+        call READ_DATEI('H2SO4.txt'   ,dG,T,Nmax,N,S,3)
+        Edzahl = 2
+        stoich(2) = 3.D0
+        stoich(3) = 1.D0
+      elseif (specie.eq.368) then
+        call READ_DATEI('H2SO4_4H2O_cr_l.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('H2O.txt'     ,dG,T,Nmax,N,S,2)
+        call READ_DATEI('H2SO4.txt'   ,dG,T,Nmax,N,S,3)
+        Edzahl = 2
+        stoich(2) = 4.D0
+        stoich(3) = 1.D0
+      elseif (specie.eq.369) then
+        call READ_DATEI('H2SO4_6.5H2O_cr_l.txt',dG,T,Nmax,N,S,1)
+        call READ_DATEI('H2O.txt'     ,dG,T,Nmax,N,S,2)
+        call READ_DATEI('H2SO4.txt'   ,dG,T,Nmax,N,S,3)
+        Edzahl = 2
+        stoich(2) = 6.5
+        stoich(3) = 1.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop
@@ -2934,7 +2974,7 @@
               y(Ndat) = -yy*1000.D0/(Rgas*xx)
             else if (mode.eq.4) then
               x(Ndat) = xx
-              y(Ndat) = (DLOG(bar) + yy*1000.D0/(Rgas*xx))*xx
+              y(Ndat) = ((1-sumst)*DLOG(bar) + yy*1000.D0/(Rgas*xx))*xx
             else if (mode.eq.0) then
               x(Ndat) = xx
               y(Ndat) = yy * 1000.D0
