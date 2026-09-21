@@ -412,7 +412,7 @@
             maxq = MAX(maxq,Sat1(i)-1.Q0)
             if (Sat1(i)>1.Q0.and.(.not.active(i))) then
               turnon = Sat1(i)-1.Q0 
-              if (turnon>maxon.and.(.not.limited)) then
+              if (turnon>maxon.and.(.not.limited.or.no_action>15)) then
                 maxon  = turnon
                 imaxon = i
               endif  
