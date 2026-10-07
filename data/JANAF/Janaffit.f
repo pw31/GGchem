@@ -381,6 +381,8 @@
       write(*,*) '362 = H2SO4-3(H2O)[s/l]'
       write(*,*) '363 = H2SO4-4(H2O)[s/l]'
       write(*,*) '364 = H2SO4-6.5(H2O)[s/l]'
+      write(*,*) '365 = S8overS[s/l]_vap'
+      write(*,*) '366 = Si_cr'      
       read(*,*) specie
 *
       stoich(1) = 1.D0
@@ -2870,6 +2872,17 @@
         stoich(2) = 30.D0
         stoich(3) = 2.D0
         stoich(4) = 21.D0
+      elseif (specie.eq.365) then
+        call READ_DATEI('S_cr,l.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('S8.txt'    ,dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(1) = 8.D0
+        stoich(2) = 1.D0
+      elseif (specie.eq.366) then
+        call READ_DATEI('Si_cr,l.txt',dG,T,Nmax,N,S,1) 
+        call READ_DATEI('Si.txt'   ,dG,T,Nmax,N,S,2) 
+        Edzahl = 1
+        stoich(2) = 1.D0
       else
         write(*,*) 'Specie=',specie,' ???'
         stop
@@ -3199,7 +3212,7 @@
       do
         read(12,'(A100)',end=999) zeile
         read(zeile,*,iostat=ok) T,Cp,SS,HGoverT,HH,dH,dG
-        !write(*,*) trim(zeile),ok
+        !print*,trim(zeile),ok
         if (ok==0) then
           Nmax(Nr) = Nmax(Nr) + 1
           x(Nr,Nmax(Nr)) = T              ! [K]
