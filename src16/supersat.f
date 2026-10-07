@@ -143,7 +143,10 @@
           !dG = dGRT*RT                                      ! Joule/mol
           !print*,dust_nam(i),T1,dG*Joule/mol/eV/Natom,      ! eV/atom
      >    !                      dG*Joule/mol/dust_mass(i)   ! erg/g
-
+          !if (dust_nam(i).eq.'H2SO4-1H2O[l]') then
+          !  write(99,*) REAL(T1),REAL(Sat(i))
+          !endif
+          
         else if (fit(i)==6) then
           !---------------------------------------------------------------
           !***  Yaws' Chemical Properties Handbook (McGraw-Hill 1999)  ***
@@ -317,6 +320,39 @@
             endif
             Sat(i) = nmol(imol)*kT/psat
 
+          else if (dust_nam(i).eq.'H2SO4-1H2O[l]') then
+            imol1 = STINDEX(cmol,NMOLE,"H2O")
+            imol2 = STINDEX(cmol,NMOLE,"H2SO4")
+            !print*,a(0:4)
+            !print*,imol1,imol2
+            !print*,nmol(imol1),nmol(imol2)
+            !stop
+            if (imol1<=0.or.imol2<=0) then
+              print*,"*** supersat.f molecule not found ",dust_nam(i)
+              stop
+            endif
+            psat = EXP(a(0)/T1 + a(1) + a(2)*T1 + a(3)*T2 + a(4)*T3)
+            Sat(i) = (nmol(imol1)*kT)**1*nmol(imol2)*kT/psat
+            !print*,REAL(T1),REAL(Sat(i))
+            
+          else if (dust_nam(i).eq.'H2SO4-2H2O[l]') then
+            imol1 = STINDEX(cmol,NMOLE,"H2O")
+            imol2 = STINDEX(cmol,NMOLE,"H2SO4")
+            psat = EXP(a(0)/T1 + a(1) + a(2)*T1 + a(3)*T2 + a(4)*T3)
+            Sat(i) = (nmol(imol1)*kT)**2*nmol(imol2)*kT/psat
+            
+          else if (dust_nam(i).eq.'H2SO4-3H2O[l]') then
+            imol1 = STINDEX(cmol,NMOLE,"H2O")
+            imol2 = STINDEX(cmol,NMOLE,"H2SO4")
+            psat = EXP(a(0)/T1 + a(1) + a(2)*T1 + a(3)*T2 + a(4)*T3)
+            Sat(i) = (nmol(imol1)*kT)**3*nmol(imol2)*kT/psat
+            
+          else if (dust_nam(i).eq.'H2SO4-4H2O[l]') then
+            imol1 = STINDEX(cmol,NMOLE,"H2O")
+            imol2 = STINDEX(cmol,NMOLE,"H2SO4")
+            psat = EXP(a(0)/T1 + a(1) + a(2)*T1 + a(3)*T2 + a(4)*T3)
+            Sat(i) = (nmol(imol1)*kT)**4*nmol(imol2)*kT/psat
+            
           else
             print*,"*** supersat.f fit=",fit(i)," ??? ",dust_nam(i)
             stop
@@ -346,6 +382,6 @@
         !Sat(i) = MIN(Sat(i),huge16) 
 
       enddo
-
+      
       RETURN
       end
