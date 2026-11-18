@@ -145,6 +145,9 @@
             print*,"not found "//trim(elnam(e))
           endif
         enddo
+        open(13,file='eps_struc.out',status='replace')
+        write(13,'(99(A13))') 'z[km]','p[bar]','T[K]',
+     >       (elnam(elnum(k)),k=1,NELM-1)
         do i=1,Npoints
           print*,i,Npoints
           read(3,*) dat(1:Ndat)
@@ -159,7 +162,9 @@
             j = e_source(k)
             e = e_target(k)
             estruc(i,e) = 10.Q0**dat(j)
-          enddo   
+          enddo
+          write(13,'(99(1pE13.5))') zz(i)/km,press(i)/bar,Tgas(i),
+     >         (estruc(i,elnum(k)),k=1,NELM-1)
           if (model_eqcond) then
             j1 = 8 + n1 + n2 + n3
             j2 = j1 + n3 - 1
@@ -174,13 +179,14 @@
                 estruc(i,e) = estruc(i,e) + ddust*dust_nu(dk,k)    
               enddo
             enddo
-          endif  
+          endif
           !do k=1,NELM-1
           !  e = elnum(k) 
           !  print'(I3,A3,2(1pE18.10))',i,elnam(e),eps0(e),estruc(i,e) 
           !enddo
         enddo
         close(3)
+        close(13)
         Nfirst = 1
         Nlast  = Npoints
         Ninc   = 1             ! bottom to top

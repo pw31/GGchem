@@ -1,6 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from label_lines import label_lines
 import sys
+import os
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter, ScalarFormatter, LogLocator
 from matplotlib.backends.backend_pdf import PdfPages
 plt.rcParams['lines.linewidth'] = 3
@@ -118,6 +120,15 @@ if (ymax>-10):
 fig,ax = plt.subplots()
 count = 0
 ymax = -100.0
+epsfile = 'eps_struc.out'
+has_eps = os.path.isfile(epsfile)
+if has_eps:
+  data = open(epsfile)
+  head = data.readline()
+  keyw = np.array(head.split())
+  data.close()
+  edat = np.loadtxt(epsfile,skiprows=1)
+  pdat = edat[:,1]
 for i in range(4+NELEM+NMOLE+2*NDUST,4+NELEM+NMOLE+2*NDUST+NELEM,1):
   elm = keyword[i]
   element = elm[3:]
@@ -125,18 +136,20 @@ for i in range(4+NELEM+NMOLE+2*NDUST,4+NELEM+NMOLE+2*NDUST+NELEM,1):
   ymax=np.max([ymax,np.max(yy)])            
   if (np.max(yy)>-20):
     plt.plot(lp,yy,c=colo[count],ls=styl[count],lw=widt[count],label=element)
+    if (has_eps):
+      ind = np.where(keyw==elm[3:])[0]
+      yy  = edat[:,ind]
+      #print elm,ind,keyw[ind]
+      plt.plot(np.log10(pdat),np.log10(yy),c=colo[count],ls=':',lw=2)
     count = count+1
 plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$')
 plt.ylabel(r'$\log\,\epsilon_{\rm gas}$')
 plt.xlim(pmin,pmax)
-plt.ylim(ymax-12,ymax+0.3)
-#minorLocator = MultipleLocator(sep)
-#ax.xaxis.set_minor_locator(minorLocator)
-#minorLocator = MultipleLocator(1)
-#ax.yaxis.set_minor_locator(minorLocator)
-sz = np.min([9,1+120.0/count])
-leg = plt.legend(loc='lower right',fontsize=sz,fancybox=True)
-leg.get_frame().set_alpha(0.7)
+plt.ylim(ymax-10,ymax+0.3)
+#sz = np.min([9,1+120.0/count])
+#leg = plt.legend(loc='lower right',fontsize=sz,fancybox=True)
+#leg.get_frame().set_alpha(0.7)
+label_lines(ax,fontsize=11)
 plt.tight_layout()
 plt.savefig(pp,format='pdf')
 plt.clf()
@@ -157,8 +170,8 @@ for i in range(4+NELEM+NMOLE,4+NELEM+NMOLE+NDUST,1):
   #print solid[1:],ind,np.max(yy[iii])
 indices = np.argsort(smean)
 if (ymax>-99):
-  ymin = ymax-12
-  print solids
+  ymin = ymax-10
+  #print solids
   fig,ax = plt.subplots()
   count = 0
   for isolid in reversed(indices):
@@ -169,28 +182,25 @@ if (ymax>-99):
     yy = dat[:,ind]               # log10 nsolid/n<H>
     ymax = np.max([ymax,np.max(yy[iii])])
     if (np.max(yy[iii])>ymin):
+      #print solid
       plt.plot(lp[iii],yy[iii],c=colo[count],ls=styl[count],lw=widt[count],label=solid)
       count = count + 1
   plt.title('condensates')
   plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$')
   plt.ylabel(r'$\mathrm{log}_{10}\ n_\mathrm{solid}/n_\mathrm{\langle H\rangle}$')
-  #plt.xscale('log')
   plt.xlim(pmin,pmax)
   plt.ylim(ymin,ymax+0.3)
-  #minorLocator = MultipleLocator(sep)
-  #ax.xaxis.set_minor_locator(minorLocator)
-  #minorLocator = MultipleLocator(1.0)
-  #ax.yaxis.set_minor_locator(minorLocator)
-  sz = np.min([9,1+120.0/count])
-  col = 1
-  if (count>20): 
-    sz = np.min([9,1+200.0/count])
-    col = 2
-  if (count>40): 
-    sz = np.min([9,1+250.0/count])
-    col = 3
-  leg = plt.legend(loc='best',fontsize=sz,ncol=col,handlelength=3,fancybox=True)
-  leg.get_frame().set_alpha(0.7)
+  #sz = np.min([9,1+120.0/count])
+  #col = 1
+  #if (count>20): 
+  #  sz = np.min([9,1+200.0/count])
+  #  col = 2
+  #if (count>40): 
+  #  sz = np.min([9,1+250.0/count])
+  #  col = 3
+  #leg = plt.legend(loc='best',fontsize=sz,ncol=col,handlelength=3,fancybox=True)
+  #leg.get_frame().set_alpha(0.7)
+  label_lines(ax,fontsize=10)
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
   plt.clf()
@@ -206,25 +216,26 @@ if (ymax>-99):
     print Tg[iT],iact,outp  
 
 #================== condensation groups =============================
-  family = ['silicates','feldspar','Ca-Al-Ti','iron','iron-oxides',
+  family = ['silicates','feldspar','Ca-Al-Ti','iron','metal-oxides',
             'sulphide','phyllosilicates','halide','P-compounds','ices','other']
   Nfam   = len(family)
   member = []
-  member.append(['MgSiO3','Mg2SiO4','Mn2SiO4','NaAlSiO4','Fe2SiO4','Na2SiO3','CaMgSi2O6',
-                 'KAlSiO4','CaSiO3'])
+  member.append(['MgSiO3','Mg2SiO4','Mn2SiO4','NaAlSiO4','Fe2SiO4','Na2SiO3','CaMgSi2O6','Ca3Al2Si3O12',
+                 'KAlSiO4','CaSiO3','Mg2SiO4[l]','MgSiO3[l]','Na2Si2O5','SiO2','SiO2[l]',
+                 'Al6Si2O13','CaTiSiO5','Ca3Fe2Si3O12','Mn3Al2Si3O12'])
   member.append(['KAlSi3O8','CaAl2Si2O8','NaAlSi3O8'])
-  member.append(['Al2O3','Ca3Al2Si3O12','MnTiO3','CaTiSiO5','Ca2Al2SiO7','Ti4O7','FeAl2O4','Ca2MgSi2O7',
-                 'Ca2MgSi2O7','TiO2','CaTiO3','MgAl2O4','Ca3Fe2Si3O12','FeTiO3','Mn3Al2Si3O12'])
-  member.append(['Fe'])
-  member.append(['Fe3O4'])
-  member.append(['FeS','MnS'])
+  member.append(['Al2O3','MnTiO3','Ti4O7','FeAl2O4','TiO2','CaTiO3','MgAl2O4','FeTiO3',
+                 'MgTiO3','Mg2TiO4','Mg2TiO4[l]','Ti3O5','Ca2MgSi2O7','Ca2Al2SiO7','Ca2SiO4'])
+  member.append(['Fe','Fe[l]'])
+  member.append(['Fe3O4','MgO'])
+  member.append(['FeS','MnS','Na2S'])
   member.append(['Mg3Si2O9H4','NaMg3AlSi3O12H2','MnAl2SiO7H2','Mg3Si4O12H2','FeAl2SiO7H2','KFe3AlSi3O12H2',
                  'CaAl2Si2O10H4','Fe3Si2O9H4','KMg3AlSi3O12H2'])
   member.append(['NaCl','KCl'])
   member.append(['Ca5P3O13H','Ca5P3O12F'])
-  member.append(['H2O','NH3'])
+  member.append(['H2O','NH3','CO2','CH4','N2'])
   member.append([' '])
-  file  = 'data/DustChem.dat'
+  file  = 'data/DustChem_extended.dat'
   data  = open(file)
   lines = data.readlines()
   data.close
@@ -246,7 +257,7 @@ if (ymax>-99):
     if (np.size(ind) == 0): continue
     ind = ind[0]
     yy = 10**dat[:,ind]               # nsolid/n<H>
-    if (np.max(yy)<1.E-9): continue
+    if (np.max(yy)<1.E-16): continue
     found = False
     ifam = Nfam-1
     for fam in range(0,Nfam):
@@ -258,11 +269,13 @@ if (ymax>-99):
       if (found): break
     rhom = 0.0  
     mass = 0.0
+    #print solid
     for l in range(0,Nline):
       if (len(lines[l])<6): continue  
       test = lines[l].split()[0]
       search = solid
       if (str.find(search,'[l]')<0): search = search+'[s]'
+      #print search,test.strip()
       if (search==test.strip()):
         #print lines[l].strip()
         #print lines[l+1]
@@ -292,17 +305,19 @@ if (ymax>-99):
   for ifam in range(0,Nfam):
     mass_ratio = rho_fam[ifam]
     mass_ratio = mass_ratio[iii]/rho_all[iii]
-    plt.plot(lp[iii],dust_gas[iii]*mass_ratio,lw=2,c=colo[count],label=family[ifam])
-    count = count + 1
+    if (np.max(dust_gas[iii]*mass_ratio)>10**(ymax-7)):
+      plt.plot(lp[iii],dust_gas[iii]*mass_ratio,lw=2,c=colo[count],label=family[ifam])
+      count = count + 1
   plt.xlabel(r'$\log_{10}\ p\ \mathrm{[bar]}$')
   plt.ylabel(r'$\mathrm{dust/gas}$')
   plt.yscale('log')
   plt.xlim(pmin,pmax)
   ymax = np.max(np.log10(dust_gas))
-  plt.ylim(10**(ymax-4),10**ymax*12)
+  plt.ylim(10**(ymax-7),10**ymax*2)
   ax.yaxis.set_minor_locator(LogLocator(subs=[2,3,4,5,6,7,8,9]))
-  leg = plt.legend(loc='upper center',fontsize=9,fancybox=True,ncol=4)
-  leg.get_frame().set_alpha(0.7)
+  #leg = plt.legend(loc='upper center',fontsize=9,fancybox=True,ncol=4)
+  #leg.get_frame().set_alpha(0.7)
+  label_lines(ax,fontsize=11)
   plt.tight_layout()
   plt.savefig(pp,format='pdf')
   plt.clf()
@@ -352,7 +367,7 @@ for isolid in reversed(indices):
   S = 10**dat[:,ind]  
   logS = dat[:,ind]              # log10 S
   if (np.max(S[iii])>0.7):
-    print solid
+    #print solid
     plt.plot(lp,logS,c=colo[count],ls=styl[count],lw=widt[count],label=solid)
     count = count + 1
 plt.title('supersaturation ratios')
@@ -458,7 +473,7 @@ for i in range(0,30):
     yy = dat[:,mol]                # log10 nmol [cm-3]
     yy = yy - lognH                # log10 nmol/n<H>
     if (np.max(yy[iii]-maxy[iii])>-limit or molname=='el'):
-      print molname,abu
+      #print molname,abu
       plt.plot(lp,yy,c=colo[count],ls=styl[count],lw=widt[count],label=molname)
       count = count + 1
   plt.title(titel)
